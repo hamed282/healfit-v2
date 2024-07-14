@@ -1,6 +1,5 @@
 from rest_framework.serializers import Serializer, ModelSerializer, SerializerMethodField
-from accounts.models import User, RoleUserModel
-from django.shortcuts import get_object_or_404
+from accounts.models import User, RoleUserModel, RoleModel
 
 
 class UserSerializer(ModelSerializer):
@@ -25,3 +24,8 @@ class UserValueSerializer(ModelSerializer):
         model = User
         exclude = ('password', 'last_login')
 
+
+class RoleSerializer(ModelSerializer):
+    class Meta:
+        model = RoleModel
+        fields = '__all__'

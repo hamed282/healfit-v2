@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from accounts.models import User
-from .serializers import UserSerializer, UserValueSerializer
+from accounts.models import User, RoleModel
+from .serializers import UserSerializer, UserValueSerializer, RoleSerializer
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -84,3 +84,10 @@ class UserValueView(APIView):
 
         ser_data = UserSerializer(instance=product, many=True)
         return Response({'data': ser_data.data, 'number_of_pages': number_of_pages})
+
+
+class RoleView(APIView):
+    def get(self, request):
+        role = RoleModel.objects.all()
+        ser_data = RoleSerializer(instance=role, many=True)
+        return Response(data=ser_data.data)
