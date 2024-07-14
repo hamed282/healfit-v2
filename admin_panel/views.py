@@ -2,10 +2,14 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from accounts.models import User, RoleModel
-from .serializers import UserSerializer, UserValueSerializer, RoleSerializer
+from .serializers import UserSerializer, UserValueSerializer, RoleSerializer, LoginUserSerializer
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.tokens import RefreshToken
+from accounts.serializers import UserLoginSerializer
 
 
 class UserView(APIView):
@@ -91,3 +95,39 @@ class RoleView(APIView):
         role = RoleModel.objects.all()
         ser_data = RoleSerializer(instance=role, many=True)
         return Response(data=ser_data.data)
+
+
+class LoginUserView(APIView):
+
+    def post(self, request):
+        """
+        parameters:
+        1. email
+        2. password
+        """
+        form = request.data
+        ser_data = UserLoginSerializer(data=form)
+        if ser_data.is_valid():
+            try:
+                user = authenticate(email=form['email'], password=form['password'])
+                if user is not None:
+                    user = User.objects.get(email=form['email'])
+                    if user.is_admin:
+                        token_access = AccessToken.for_user(user)
+                        token_refresh = RefreshToken.for_user(user)
+
+                        ser_data = LoginUserSerializer(instance=user)
+
+                        return Response(data={'data': {'access_token': str(token_access),
+                                                       'refresh_token': str(token_refresh),
+                                                       'token_type': 'Bearer',
+                                                       'user': ser_data.data}},
+                                        status=status.HTTP_200_OK)
+                    return Response(data='user is not active', status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    return Response(data='user invalid', status=status.HTTP_400_BAD_REQUEST)
+            except:
+                return Response(data={'message': 'Authenticate Error.'},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)

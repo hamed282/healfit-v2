@@ -1,4 +1,5 @@
-from rest_framework.serializers import Serializer, ModelSerializer, SerializerMethodField
+from rest_framework.serializers import Serializer, ModelSerializer, SerializerMethodField, EmailField, CharField
+
 from accounts.models import User, RoleUserModel, RoleModel
 
 
@@ -29,3 +30,8 @@ class RoleSerializer(ModelSerializer):
     class Meta:
         model = RoleModel
         fields = '__all__'
+
+
+class LoginUserSerializer(Serializer):
+    email = EmailField()
+    password = CharField(max_length=200)
