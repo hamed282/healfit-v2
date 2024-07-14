@@ -1,0 +1,86 @@
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from accounts.models import User
+from .serializers import UserSerializer, UserValueSerializer
+from accounts.serializers import UserRegisterSerializer
+from rest_framework import status
+from math import ceil
+
+
+class UserView(APIView):
+    def get(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
+        ser_data = UserValueSerializer(instance=user)
+        return Response(ser_data.data)
+
+    def post(self, request):
+        """
+                parameters:
+                1. first_name
+                2. last_name
+                3. email
+                4. phone_number
+                5. trn_number
+                6. company_name
+                7. password
+                """
+        form = request.data
+        ser_data = UserRegisterSerializer(data=form)
+        if ser_data.is_valid():
+            user = User.objects.filter(email=form['email']).exists()
+            if not user:
+                User.objects.create_user(first_name=form['first_name'],
+                                         last_name=form['last_name'],
+                                         email=form['email'],
+                                         phone_number=form['phone_number'],
+                                         trn_number=form['trn_number'],
+                                         company_name=form['company_name'],
+                                         password=form['password']),
+                return Response(data={'message': 'user created'},
+                                status=status.HTTP_201_CREATED)
+
+            else:
+                return Response(data={'message': 'user with this Email already exists.'},
+                                status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, user_id):
+        """
+        parameters:
+        1. first_name
+        2. last_name
+        3. emai
+        4. phone_number
+        5. company_name
+        6. trn_number
+        7. zoho_customer_id
+        8. is_active
+        """
+        user = get_object_or_404(User, id=user_id)
+        form = request.data
+
+        ser_user_info = UserValueSerializer(instance=user, data=form, partial=True)
+        if ser_user_info.is_valid():
+            ser_user_info.save()
+            return Response(data={'message': 'Done'}, status=status.HTTP_200_OK)
+        return Response(data=ser_user_info.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserValueView(APIView):
+    def get(self, request):
+        page = self.request.query_params.get('page', None)
+
+        per_page = 20
+        product_count = len(User.objects.all())
+        number_of_pages = ceil(product_count / per_page)
+
+        if page is not None:
+            page = int(page)
+            product = User.objects.all()[per_page*(page-1):per_page*page]
+        else:
+            product = User.objects.all()
+
+        ser_data = UserSerializer(instance=product, many=True)
+        return Response({'data': ser_data.data, 'number_of_pages': number_of_pages})
