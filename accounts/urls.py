@@ -11,5 +11,8 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('logout/', views.UserLogout.as_view(), name='logout'),
     path('auth/google/', views.GoogleLoginView.as_view(), name='google_login'),
+    path('auth/apple/', views.AppleLoginView.as_view(), name='apple_login'),
 
+    path('address/', views.UserAddressView.as_view(), name='user_address'),
+    path('info/', views.UserInfoView.as_view(), name='user_info'),
 ]

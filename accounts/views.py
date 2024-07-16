@@ -13,6 +13,8 @@ from django.contrib.auth import update_session_auth_hash
 import urllib.parse
 from django.conf import settings
 import requests
+import jwt
+from datetime import datetime, timedelta
 
 
 class UserRegisterView(APIView):
@@ -233,7 +235,6 @@ class UserInfoView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-"https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fapi%2Fv2%2Faccounts%2Fauth%2Fgoogle%2F&prompt=consent&response_type=code&client_id=732746251099-5ripvofcvuh3l8sf46hf3tcgsvkapi1g.apps.googleusercontent.com&scope=openid%20email%20profile&access_type=offline&service=lso&o2v=2&ddm=0&flowName=GeneralOAuthFlow"
 class GoogleLoginView(APIView):
 
     def post(self, request):
@@ -272,3 +273,49 @@ class GoogleLoginView(APIView):
         }
         "https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?response_type=code&client_id=732746251099-5ripvofcvuh3l8sf46hf3tcgsvkapi1g.apps.googleusercontent.com&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fapi%2Fv2%2Faccounts%2Fauth%2Fgoogle%2F&scope=email%20profile&access_type=online&service=lso&o2v=1&ddm=0&flowName=GeneralOAuthFlow"
         return Response(tokens, status=status.HTTP_200_OK)
+
+
+class AppleLoginView(APIView):
+
+    def post(self, request):
+        id_token = request.data.get('id_token')
+        client_secret = self.generate_client_secret()
+
+        # Verify the ID token with Apple
+        headers = {
+            'kid': settings.APPLE_KEY_ID,
+            'alg': 'ES256'
+        }
+        audience = settings.APPLE_CLIENT_ID
+        claims = jwt.decode(id_token, verify=False)
+
+        if claims['aud'] != audience:
+            return Response({'error': 'Invalid audience'}, status=status.HTTP_400_BAD_REQUEST)
+
+        email = claims.get('email')
+        name = claims.get('name', '')
+
+        user, created = User.objects.get_or_create(email=email, defaults={'name': name})
+
+        refresh = RefreshToken.for_user(user)
+        tokens = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+
+        return Response(tokens, status=status.HTTP_200_OK)
+
+    def generate_client_secret(self):
+        headers = {
+            'alg': 'ES256',
+            'kid': settings.APPLE_KEY_ID
+        }
+        payload = {
+            'iss': settings.APPLE_TEAM_ID,
+            'iat': datetime.utcnow(),
+            'exp': datetime.utcnow() + timedelta(days=180),
+            'aud': 'https://appleid.apple.com',
+            'sub': settings.APPLE_CLIENT_ID
+        }
+        client_secret = jwt.encode(payload, settings.APPLE_PRIVATE_KEY, algorithm='ES256', headers=headers)
+        return client_secret
