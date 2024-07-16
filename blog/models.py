@@ -41,8 +41,7 @@ class BlogModel(models.Model):
     author = models.CharField(max_length=64)
     role = models.CharField(max_length=24)
     slug = models.SlugField(unique=True)
-    # category = models.ForeignKey(BlogCategoryModel, on_delete=models.CASCADE)
-    category = models.CharField(max_length=24, blank=True, null=True)
+    category = models.ForeignKey(BlogCategoryModel, on_delete=models.CASCADE)
 
     # SEO Fields
     follow = models.BooleanField(default=False)
