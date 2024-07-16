@@ -1,7 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import User, AddressModel
-from .serializers import UserRegisterSerializer, UserLoginSerializer, ChangePasswordSerializer, UserAddressSerializer
+from .serializers import (UserRegisterSerializer, UserLoginSerializer, ChangePasswordSerializer, UserAddressSerializer,
+                          UserInfoSerializer, UserInfoChangeSerializer)
 from rest_framework import status
 from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth import authenticate
@@ -159,15 +160,14 @@ class UserAddressView(APIView):
         form = request.data
         ser_address = UserAddressSerializer(data=form)
         if ser_address.is_valid():
-            address = AddressModel.objects.create(user=request.user,
-                                                  address=form['address'],
-                                                  additional_information=form['additional_information'],
-                                                  emirats=form['emirats'],
-                                                  city=form['city'],
-                                                  country=form['country'],
-                                                  phone_number=form['phone_number'])
-            # address.save()
-            return Response(data={'massage': 'Address added'}, status=status.HTTP_201_CREATED)
+            AddressModel.objects.create(user=request.user,
+                                        address=form['address'],
+                                        additional_information=form['additional_information'],
+                                        emirats=form['emirats'],
+                                        city=form['city'],
+                                        country=form['country'],
+                                        phone_number=form['phone_number'])
+            return Response(data={'message': 'Address added'}, status=status.HTTP_201_CREATED)
         else:
             return Response(data=ser_address.errors, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -193,13 +193,47 @@ class UserAddressView(APIView):
 
                 address = AddressModel.objects.get(id=address_id)
                 address.delete()
-                return Response(data={'massage': 'address deleted'}, status=status.HTTP_200_OK)
+                return Response(data={'message': 'address deleted'}, status=status.HTTP_200_OK)
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+class UserInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_id = request.user.id
+        user_info = get_object_or_404(User, id=user_id)
+        if user_info.id == request.user.id:
+            ser_user_info = UserInfoSerializer(instance=user_info)
+        else:
+            ser_user_info = None
+        return Response(data=ser_user_info.data)
+
+    def put(self, request):
+        """
+        parameters:
+        1. first_name
+        2. last_name
+        3. emai
+        4. phone_number
+        """
+        user_info = get_object_or_404(User, id=request.user.id)
+        if user_info.id == request.user.id:
+            form = request.data
+
+            ser_user_info = UserInfoChangeSerializer(instance=user_info, data=form, partial=True)
+            if ser_user_info.is_valid():
+                ser_user_info.save()
+                return Response(data={'message': 'Done'}, status=status.HTTP_200_OK)
+            return Response(data=ser_user_info.errors, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+"https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fapi%2Fv2%2Faccounts%2Fauth%2Fgoogle%2F&prompt=consent&response_type=code&client_id=732746251099-5ripvofcvuh3l8sf46hf3tcgsvkapi1g.apps.googleusercontent.com&scope=openid%20email%20profile&access_type=offline&service=lso&o2v=2&ddm=0&flowName=GeneralOAuthFlow"
 class GoogleLoginView(APIView):
 
     def post(self, request):
@@ -214,27 +248,27 @@ class GoogleLoginView(APIView):
             'redirect_uri': settings.GOOGLE_REDIRECT_URI,
             'grant_type': 'authorization_code'
         }
-        token_response = requests.post(token_url, data=token_data)
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+        token_response = requests.post(token_url, data=token_data, headers=headers)
         token_json = token_response.json()
-
         access_token = token_json.get('access_token')
         user_info_url = "https://www.googleapis.com/oauth2/v1/userinfo"
         user_info_params = {'access_token': access_token}
         user_info_response = requests.get(user_info_url, params=user_info_params)
         user_info = user_info_response.json()
-
         if 'error' in user_info:
             return Response({'message': user_info['error']['message'], 'status': user_info['error']['status']},
                             status=status.HTTP_401_UNAUTHORIZED)
-
         email = user_info.get('email')
-        name = user_info.get('name')
-
-        user, created = User.objects.get_or_create(email=email)
+        first_name = user_info.get('given_name')
+        last_name = user_info.get('family_name')
+        user, created = User.objects.get_or_create(email=email, first_name=first_name, last_name=last_name)
         refresh = RefreshToken.for_user(user)
         tokens = {
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
-
+        "https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?response_type=code&client_id=732746251099-5ripvofcvuh3l8sf46hf3tcgsvkapi1g.apps.googleusercontent.com&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Fapi%2Fv2%2Faccounts%2Fauth%2Fgoogle%2F&scope=email%20profile&access_type=online&service=lso&o2v=1&ddm=0&flowName=GeneralOAuthFlow"
         return Response(tokens, status=status.HTTP_200_OK)
