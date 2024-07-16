@@ -10,6 +10,21 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.serializers import UserLoginSerializer
+from blog.serializers import BlogAllSerializer, BlogSerializer
+from blog.models import BlogModel
+
+
+class LanguageView(APIView):
+    def get(self, request):
+        data = [{
+            'id': 1,
+            'title': 'English',
+            'locale': 'en',
+            'backward': 'false',
+            'default': 'true',
+            'active': 'true'
+        }]
+        return Response(data={'data': data})
 
 
 class UserView(APIView):
@@ -131,3 +146,57 @@ class LoginUserView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
 
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Blog
+class BlogListView(APIView):
+    def get(self, request):
+        blogs = BlogModel.objects.all()
+        ser_data = BlogAllSerializer(instance=blogs, many=True)
+        return Response(data=ser_data.data)
+
+
+class BlogView(APIView):
+    def get(self, request, blog_id):
+        blog = get_object_or_404(BlogModel, id=blog_id)
+        ser_data = BlogSerializer(instance=blog)
+        return Response(data=ser_data.data)
+
+    def post(self, request):
+        form = request.data
+
+        ser_data = BlogSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, blog_id):
+        if blog_id is None:
+            return Response(data={'message': 'Input Blog ID'})
+        try:
+            blog = BlogModel.objects.get(id=blog_id)
+        except:
+            return Response(data={'message': 'Blog is not exist'})
+
+        ser_data = BlogSerializer(instance=blog, data=request.data, partial=True)
+
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.data, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, blog_id):
+        if blog_id is None:
+            return Response(data={'message': 'Input Blog ID'})
+
+        try:
+            blog = BlogModel.objects.get(id=blog_id)
+        except:
+            return Response(data={'message': 'Blog is not exist'})
+
+        blog.delete()
+
+        return Response(data={'message': f'The Blog ID {blog_id} was deleted'})
+
+
