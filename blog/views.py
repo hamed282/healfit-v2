@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from .models import BlogModel, BlogTagModel
-from .serializers import BlogSerializer, BlogAllSerializer
+from .models import BlogModel, BlogCategoryModel
+from .serializers import BlogSerializer, BlogAllSerializer, RelatedBlogSerializer, MetaCategorySerializer
 import math
 from rest_framework import status
 
@@ -41,13 +41,15 @@ class RelatedPostView(APIView):
     def get(self, request):
         limit = self.request.query_params.get('limit', None)
         category = self.request.query_params.get('category', None)
-
+        category = get_object_or_404(BlogCategoryModel, category=category)
         if limit is not None:
             blog = BlogModel.objects.filter(category=category)[:int(limit)]
         else:
             blog = BlogModel.objects.filter(category=category)
-        ser_data = BlogAllSerializer(instance=blog, many=True)
-        return Response(data=ser_data.data)
+        ser_data = RelatedBlogSerializer(instance=blog, many=True)
+
+        ser_meta = MetaCategorySerializer(instance=category)
+        return Response(data={'data': ser_data.data, 'meta': ser_meta.data})
 
 
 

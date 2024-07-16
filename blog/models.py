@@ -1,6 +1,20 @@
 from django.db import models
 
 
+class BlogCategoryModel(models.Model):
+    category = models.CharField(max_length=16)
+
+    # SEO Fields
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60)
+    meta_description = models.CharField(max_length=150)
+
+    def __str__(self):
+        return f'{self.category}'
+
+
 class BlogTagModel(models.Model):
     objects = None
     tag = models.CharField(max_length=50, unique=True)
@@ -27,7 +41,7 @@ class BlogModel(models.Model):
     author = models.CharField(max_length=64)
     role = models.CharField(max_length=24)
     slug = models.SlugField(unique=True)
-    category = models.CharField(max_length=24)
+    category = models.ForeignKey(BlogCategoryModel, on_delete=models.CASCADE)
 
     # SEO Fields
     follow = models.BooleanField(default=False)
