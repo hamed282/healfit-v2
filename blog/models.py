@@ -3,7 +3,7 @@ from django.db import models
 
 class BlogTagModel(models.Model):
     objects = None
-    tag = models.CharField(max_length=50)
+    tag = models.CharField(max_length=50, unique=True)
 
     class Meta:
         verbose_name = 'Blog Tag'

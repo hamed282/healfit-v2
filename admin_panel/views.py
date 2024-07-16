@@ -10,8 +10,8 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.serializers import UserLoginSerializer
-from blog.serializers import BlogAllSerializer, BlogSerializer
-from blog.models import BlogModel
+from blog.serializers import BlogAllSerializer, BlogSerializer, BlogTagSerializer
+from blog.models import BlogModel, BlogTagModel
 
 
 class LanguageView(APIView):
@@ -199,4 +199,47 @@ class BlogView(APIView):
 
         return Response(data={'message': f'The Blog ID {blog_id} was deleted'})
 
+
+class BLogTagListView(APIView):
+    def get(self, request):
+        blog_tag = BlogTagModel.objects.all()
+        ser_data = BlogTagSerializer(instance=blog_tag, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = BlogTagSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, tag_id):
+        form = request.data
+        tag_blog = BlogTagModel.objects.get(id=tag_id)
+        ser_data = BlogTagSerializer(instance=tag_blog, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, tag_id):
+        if tag_id is None:
+            return Response(data={'message': 'Input Tag ID'})
+
+        try:
+            tag_blog = BlogTagModel.objects.get(id=tag_id)
+        except:
+            return Response(data={'message': 'Tag is not exist'})
+
+        tag_blog.delete()
+
+        return Response(data={'message': f'The Blog ID {tag_id} was deleted'})
+
+
+class BLogTagItemView(APIView):
+    def get(self, request, tag_id):
+        tag = get_object_or_404(BlogTagModel, id=tag_id)
+        ser_data = BlogTagSerializer(instance=tag)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
