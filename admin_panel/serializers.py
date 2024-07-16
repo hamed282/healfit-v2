@@ -1,7 +1,7 @@
 from rest_framework.serializers import Serializer, ModelSerializer, SerializerMethodField, EmailField, CharField
 
 from accounts.models import User, RoleUserModel, RoleModel
-from blog.models import BlogTagModel
+from blog.models import BlogTagModel, AddBlogTagModel
 
 
 class UserSerializer(ModelSerializer):
@@ -41,4 +41,10 @@ class LoginUserSerializer(Serializer):
 class BlogTagSerializer(ModelSerializer):
     class Meta:
         model = BlogTagModel
+        fields = '__all__'
+
+
+class AddBlogTagSerializer(ModelSerializer):
+    class Meta:
+        model = AddBlogTagModel
         fields = '__all__'

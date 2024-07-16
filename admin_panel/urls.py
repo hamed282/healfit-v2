@@ -23,4 +23,9 @@ urlpatterns = [
     path('tag/', views.BLogTagListView.as_view(), name='tag_list'),
     path('tag/<int:tag_id>/', views.BLogTagListView.as_view(), name='tag_create'),
     path('tag/item/<int:tag_id>/', views.BLogTagItemView.as_view(), name='tag_item'),
+
+    # Add Blog Tag
+    path('addtag/', views.AddBLogTagListView.as_view(), name='addtag_post'),
+    path('addtag/<int:blog_id>/', views.AddBLogTagListView.as_view(), name='addtag'),
+
 ]

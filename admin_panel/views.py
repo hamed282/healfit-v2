@@ -2,7 +2,8 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from accounts.models import User, RoleModel
-from .serializers import UserSerializer, UserValueSerializer, RoleSerializer, LoginUserSerializer, BlogTagSerializer
+from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, LoginUserSerializer, BlogTagSerializer,
+                          AddBlogTagSerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -11,7 +12,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.serializers import UserLoginSerializer
 from blog.serializers import BlogAllSerializer, BlogSerializer
-from blog.models import BlogModel, BlogTagModel
+from blog.models import BlogModel, BlogTagModel, AddBlogTagModel
 
 
 class LanguageView(APIView):
@@ -243,3 +244,40 @@ class BLogTagItemView(APIView):
         ser_data = BlogTagSerializer(instance=tag)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
+
+class AddBLogTagListView(APIView):
+    def post(self, request):
+        form = request.data
+        ser_data = AddBlogTagSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, blog_id):
+        if blog_id is None:
+            return Response(data={'message': 'Input Blog ID'})
+        try:
+            add_tag = AddBlogTagModel.objects.get(blog=blog_id)
+        except:
+            return Response(data={'message': 'Blog is not exist'})
+
+        ser_data = AddBlogTagSerializer(instance=add_tag, data=request.data, partial=True)
+
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.data, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, blog_id):
+        if blog_id is None:
+            return Response(data={'message': 'Input Blog ID'})
+
+        try:
+            add_tag = AddBlogTagModel.objects.get(blog=blog_id)
+        except:
+            return Response(data={'message': 'Blog is not exist'})
+
+        add_tag.delete()
+
+        return Response(data={'message': f'The Blog ID {blog_id} was deleted'})
