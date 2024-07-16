@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from accounts.models import User, RoleModel
-from .serializers import UserSerializer, UserValueSerializer, RoleSerializer, LoginUserSerializer
+from .serializers import UserSerializer, UserValueSerializer, RoleSerializer, LoginUserSerializer, BlogTagSerializer
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.serializers import UserLoginSerializer
-from blog.serializers import BlogAllSerializer, BlogSerializer, BlogTagSerializer
+from blog.serializers import BlogAllSerializer, BlogSerializer
 from blog.models import BlogModel, BlogTagModel
 
 

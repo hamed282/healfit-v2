@@ -23,7 +23,7 @@ class BlogModel(models.Model):
     body = models.TextField()
     author = models.CharField(max_length=64)
     role = models.CharField(max_length=24)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     category = models.CharField(max_length=24)
 
     # SEO Fields
@@ -40,7 +40,7 @@ class BlogModel(models.Model):
 class AddBlogTagModel(models.Model):
     objects = None
     tag = models.OneToOneField(BlogTagModel, on_delete=models.CASCADE, unique=True)
-    blog = models.ForeignKey(BlogModel, on_delete=models.CASCADE, related_name='blog_tag')
+    blog = models.OneToOneField(BlogModel, on_delete=models.CASCADE, related_name='blog_tag')
 
     def __str__(self):
         return f'{self.tag}'

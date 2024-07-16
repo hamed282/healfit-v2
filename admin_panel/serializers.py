@@ -1,6 +1,7 @@
 from rest_framework.serializers import Serializer, ModelSerializer, SerializerMethodField, EmailField, CharField
 
 from accounts.models import User, RoleUserModel, RoleModel
+from blog.models import BlogTagModel
 
 
 class UserSerializer(ModelSerializer):
@@ -35,3 +36,9 @@ class RoleSerializer(ModelSerializer):
 class LoginUserSerializer(Serializer):
     email = EmailField()
     password = CharField(max_length=200)
+
+
+class BlogTagSerializer(ModelSerializer):
+    class Meta:
+        model = BlogTagModel
+        fields = '__all__'

@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from .models import BlogModel, BlogTagModel
-from .serializers import BlogSerializer, BlogAllSerializer, BlogTagSerializer
+from .serializers import BlogSerializer, BlogAllSerializer
 import math
 from rest_framework import status
 

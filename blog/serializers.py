@@ -1,11 +1,22 @@
-from rest_framework.serializers import ModelSerializer, DateField
-from .models import BlogModel, BlogTagModel
+from rest_framework.serializers import ModelSerializer, DateField, SerializerMethodField
+from .models import BlogModel, AddBlogTagModel
 
 
 class BlogSerializer(ModelSerializer):
+    meta_tag = SerializerMethodField()
+
     class Meta:
         model = BlogModel
         fields = '__all__'
+
+    def get_meta_tag(self, obj):
+        try:
+            tag = AddBlogTagModel.objects.get(blog=obj)
+            tag = tag.tag.tag
+        except:
+            tag = None
+
+        return tag
 
 
 class BlogAllSerializer(ModelSerializer):
@@ -16,7 +27,4 @@ class BlogAllSerializer(ModelSerializer):
         fields = ['id', 'cover_image', 'title', 'short_description', 'slug', 'created']
 
 
-class BlogTagSerializer(ModelSerializer):
-    class Meta:
-        model = BlogTagModel
-        fields = '__all__'
+
