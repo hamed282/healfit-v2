@@ -18,7 +18,7 @@ class BLogListView(APIView):
         if limit is not None:
             blog = BlogModel.objects.all()[:int(limit)]
             ser_data = BlogAllSerializer(instance=blog, many=True)
-            return Response(data=ser_data.data)
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
         if page is not None:
             page = int(page)
@@ -27,14 +27,14 @@ class BLogListView(APIView):
             blog = BlogModel.objects.all()
 
         ser_data = BlogAllSerializer(instance=blog, many=True)
-        return Response({'data': ser_data.data, 'number_of_pages': number_of_pages})
+        return Response({'data': ser_data.data, 'number_of_pages': number_of_pages}, status=status.HTTP_200_OK)
 
 
 class BlogView(APIView):
     def get(self, request, slug):
         blog = get_object_or_404(BlogModel, slug=slug)
         ser_data = BlogSerializer(instance=blog)
-        return Response(data=ser_data.data)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 
 class RelatedPostView(APIView):
@@ -62,7 +62,8 @@ class RelatedPostView(APIView):
         ser_data = RelatedBlogSerializer(instance=blog, many=True)
 
         ser_meta = MetaCategorySerializer(instance=category)
-        return Response(data={'data': ser_data.data, 'meta': ser_meta.data, 'number_of_pages': number_of_pages})
+        return Response(data={'data': ser_data.data, 'meta': ser_meta.data, 'number_of_pages': number_of_pages},
+                        status=status.HTTP_200_OK)
 
 
 
