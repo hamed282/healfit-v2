@@ -162,16 +162,10 @@ class UserAddressView(APIView):
         form = request.data
         ser_address = UserAddressSerializer(data=form)
         if ser_address.is_valid():
-            AddressModel.objects.create(user=request.user,
-                                        address=form['address'],
-                                        additional_information=form['additional_information'],
-                                        emirats=form['emirats'],
-                                        city=form['city'],
-                                        country=form['country'],
-                                        phone_number=form['phone_number'])
+            ser_address.save()
             return Response(data={'message': 'Address added'}, status=status.HTTP_201_CREATED)
         else:
-            return Response(data=ser_address.errors, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(data=ser_address.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):
         address_id = self.request.query_params.get('address_id', None)
