@@ -212,7 +212,7 @@ class UserInfoView(APIView):
             ser_user_info = None
         return Response(data=ser_user_info.data)
 
-    def put(self, request):
+    def put(self, request, user_id):
         """
         parameters:
         1. first_name
@@ -220,7 +220,7 @@ class UserInfoView(APIView):
         3. emai
         4. phone_number
         """
-        user_info = get_object_or_404(User, id=request.user.id)
+        user_info = get_object_or_404(User, id=user_id)
         if user_info.id == request.user.id:
             form = request.data
 

@@ -16,4 +16,5 @@ urlpatterns = [
     path('address/', views.UserAddressView.as_view(), name='user_address'),
     path('address/<int:address_id>/', views.UserAddressView.as_view(), name='user_address'),
     path('info/', views.UserInfoView.as_view(), name='user_info'),
+    path('info/<int:user_id>/', views.UserInfoView.as_view(), name='user_info'),
 ]
