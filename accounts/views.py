@@ -186,8 +186,7 @@ class UserAddressView(APIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request):
-        address_id = self.request.query_params.get('address_id', None)
+    def delete(self, request, address_id):
         address = get_object_or_404(AddressModel, id=address_id)
         if address_id is not None:
             if address.user.id == request.user.id:
@@ -196,7 +195,7 @@ class UserAddressView(APIView):
                 address.delete()
                 return Response(data={'message': 'address deleted'}, status=status.HTTP_200_OK)
             else:
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
+                return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
