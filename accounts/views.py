@@ -173,8 +173,7 @@ class UserAddressView(APIView):
         else:
             return Response(data=ser_address.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request):
-        address_id = self.request.query_params.get('address_id', None)
+    def put(self, request, address_id):
         address = get_object_or_404(AddressModel, id=address_id)
         if address.user.id == request.user.id:
             form = request.data
