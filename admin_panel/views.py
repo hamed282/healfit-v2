@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from accounts.models import User, RoleModel
+from accounts.models import User, RoleModel, RoleUserModel
 from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, LoginUserSerializer, BlogTagSerializer,
-                          AddBlogTagSerializer)
+                          AddBlogTagSerializer, AddRoleSerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -111,6 +111,25 @@ class RoleView(APIView):
         role = RoleModel.objects.all()
         ser_data = RoleSerializer(instance=role, many=True)
         return Response(data=ser_data.data)
+
+    def put(self, request):
+        form = request.data
+
+        user = get_object_or_404(User, id=form['user'])
+        if RoleUserModel.objects.filter(user=user).exists():
+            role_user = get_object_or_404(RoleUserModel, user=user)
+            ser_data = AddRoleSerializer(instance=role_user, data=form, partial=True)
+            if ser_data.is_valid():
+                ser_data.save()
+                return Response(data=ser_data.data, status=status.HTTP_200_OK)
+            return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        ser_data = AddRoleSerializer(data=form)
+
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginUserView(APIView):

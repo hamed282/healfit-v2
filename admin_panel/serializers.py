@@ -33,6 +33,12 @@ class RoleSerializer(ModelSerializer):
         fields = '__all__'
 
 
+class AddRoleSerializer(ModelSerializer):
+    class Meta:
+        model = RoleUserModel
+        fields = '__all__'
+
+
 class LoginUserSerializer(Serializer):
     email = EmailField()
     password = CharField(max_length=200)
