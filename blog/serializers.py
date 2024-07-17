@@ -4,7 +4,7 @@ from .models import BlogModel, AddBlogTagModel, BlogCategoryModel
 
 class BlogSerializer(ModelSerializer):
     meta_tag = SerializerMethodField()
-    category = SlugRelatedField(slug_field='category', read_only=True)
+    category = SlugRelatedField(slug_field='category', queryset=BlogCategoryModel.objects.all(),)
 
     class Meta:
         model = BlogModel
