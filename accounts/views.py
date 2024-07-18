@@ -201,8 +201,29 @@ class UserAddressView(APIView):
 
 
 class CurrentAddressView(APIView):
-    def put(self, request, user_id):
+    def post(self, request):
+        """
+                parameters:
+                {
+                    address_id
+                }
+                """
+        form = request.data
+        ser_data = CurrentAddressSerializer(data=form)
+        if ser_data.is_valid():
+            CurrentAddressModel.objects.create(user=request.user,
+                                               address=form['address'])
+            return Response(data={'message': 'Address added'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self, request, user_id):
+        """
+        parameters:
+        {
+            user_id
+        }
+        """
         current_address = get_object_or_404(CurrentAddressModel, user=user_id)
         if current_address.user.id == request.user.id:
             form = request.data
