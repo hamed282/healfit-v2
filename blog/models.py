@@ -2,7 +2,7 @@ from django.db import models
 
 
 class BlogCategoryModel(models.Model):
-    category = models.CharField(max_length=16)
+    category = models.CharField(max_length=16, unique=True)
 
     # SEO Fields
     follow = models.BooleanField(default=False)
