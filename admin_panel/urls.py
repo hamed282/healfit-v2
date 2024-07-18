@@ -20,12 +20,16 @@ urlpatterns = [
     path('blog/item/', views.BlogView.as_view(), name='blog_item'),
 
     # Blog Tag
-    path('tag/', views.BLogTagListView.as_view(), name='tag_list'),
-    path('tag/<int:tag_id>/', views.BLogTagListView.as_view(), name='tag_create'),
-    path('tag/item/<int:tag_id>/', views.BLogTagItemView.as_view(), name='tag_item'),
+    path('blog/tag/', views.BLogTagListView.as_view(), name='tag_list'),
+    path('blog/tag/<int:tag_id>/', views.BLogTagListView.as_view(), name='tag_create'),
+    path('blog/tag/item/<int:tag_id>/', views.BLogTagItemView.as_view(), name='tag_item'),
 
     # Add Blog Tag
-    path('addtag/', views.AddBLogTagListView.as_view(), name='addtag_post'),
-    path('addtag/<int:blog_id>/', views.AddBLogTagListView.as_view(), name='addtag'),
+    path('blog/addtag/', views.AddBLogTagListView.as_view(), name='addtag_post'),
+    path('blog/addtag/<int:blog_id>/', views.AddBLogTagListView.as_view(), name='addtag'),
+
+    # Blog Category
+    path('blog/category/', views.BlogCategoryView.as_view(), name='category'),
+    path('blog/category/<int:category_id>/', views.BlogCategoryView.as_view(), name='category_put'),
 
 ]
