@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from accounts.models import User, RoleModel, RoleUserModel
 from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, LoginUserSerializer, BlogTagSerializer,
-                          AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer)
+                          AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -182,14 +182,12 @@ class BlogView(APIView):
         ser_data = BlogSerializer(instance=blog)
         return Response(data=ser_data.data)
 
-    def post(self, request):
-        form = request.data
-
-        ser_data = BlogSerializer(data=form)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, *args, **kwargs):
+        serializer = CombinedBlogSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, blog_id):
         if blog_id is None:
@@ -218,6 +216,30 @@ class BlogView(APIView):
         blog.delete()
 
         return Response(data={'message': f'The Blog ID {blog_id} was deleted'})
+
+
+class BlogCategoryView(APIView):
+    def get(self, request):
+        category = BlogCategoryModel.objects.all()
+        ser_data = BlogCategorySerializer(instance=category, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = BlogCategorySerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, category_id):
+        form = request.data
+        category = BlogCategoryModel.objects.get(id=category_id)
+        ser_data = BlogCategorySerializer(instance=category, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BLogTagListView(APIView):
@@ -300,31 +322,3 @@ class AddBLogTagListView(APIView):
         add_tag.delete()
 
         return Response(data={'message': f'The Blog ID {blog_id} was deleted'})
-
-
-class BlogCategoryView(APIView):
-    def get(self, request):
-        category = BlogCategoryModel.objects.all()
-        ser_data = BlogCategorySerializer(instance=category, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        form = request.data
-        ser_data = BlogCategorySerializer(data=form)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, category_id):
-        form = request.data
-        category = BlogCategoryModel.objects.get(id=category_id)
-        ser_data = BlogCategorySerializer(instance=category, data=form, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
