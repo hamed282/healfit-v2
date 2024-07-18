@@ -70,6 +70,7 @@ class AddBlogTagSerializer(ModelSerializer):
 
 
 class CombinedBlogSerializer(serializers.Serializer):
+    category = serializers.SlugRelatedField(read_only=True, slug_field='category')
     cover_image = serializers.ImageField()
     cover_image_alt = serializers.CharField(max_length=32)
     banner = serializers.ImageField()
