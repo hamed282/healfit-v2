@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 from .forms import UserCreationForm, UserChangeForm
-from .models import User, AddressModel, RoleModel, RoleUserModel
+from .models import User, AddressModel, RoleModel, RoleUserModel, CurrentAddressModel
 
 
 class RoleUserInline(admin.TabularInline):
@@ -41,4 +41,5 @@ admin.site.register(User, UserAdmin)
 admin.site.register(AddressModel)
 admin.site.register(RoleModel)
 admin.site.register(RoleUserModel)
+admin.site.register(CurrentAddressModel)
 admin.site.unregister(Group)

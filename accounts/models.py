@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from .managers import UserManager
+from django.core.exceptions import ValidationError
 
 
 class RoleModel(models.Model):
@@ -64,3 +65,16 @@ class AddressModel(models.Model):
 
     def __str__(self):
         return f'{self.user}'
+
+
+class CurrentAddressModel(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    address = models.ForeignKey(AddressModel, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.user}'
+
+    def save(self, *args, **kwargs):
+        if self.address.user != self.user:
+            raise ValidationError("The address does not belong to the user.")
+        super(CurrentAddressModel, self).save(*args, **kwargs)

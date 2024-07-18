@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import User, AddressModel
+from .models import User, AddressModel, CurrentAddressModel
 from .serializers import (UserRegisterSerializer, UserLoginSerializer, ChangePasswordSerializer, UserAddressSerializer,
-                          UserInfoSerializer, UserInfoChangeSerializer)
+                          UserInfoSerializer, UserInfoChangeSerializer, CurrentAddressSerializer)
 from rest_framework import status
 from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth import authenticate
@@ -196,6 +196,22 @@ class UserAddressView(APIView):
                 return Response(data={'message': 'address deleted'}, status=status.HTTP_200_OK)
             else:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class CurrentAddressView(APIView):
+    def put(self, request, user_id):
+
+        current_address = get_object_or_404(CurrentAddressModel, user=user_id)
+        if current_address.user.id == request.user.id:
+            form = request.data
+
+            ser_data = CurrentAddressSerializer(instance=current_address, data=form, partial=True)
+            if ser_data.is_valid():
+                ser_data.save()
+                return Response(data=ser_data.data, status=status.HTTP_200_OK)
+            return Response(data=ser_data.errors, status=status.HTTP_401_UNAUTHORIZED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 

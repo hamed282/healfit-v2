@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, AddressModel
+from .models import User, AddressModel, CurrentAddressModel
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -19,9 +19,24 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 
 class UserAddressSerializer(serializers.ModelSerializer):
+    current_address = serializers.SerializerMethodField()
+
     class Meta:
         model = AddressModel
-        fields = ['id', 'address', 'additional_information', 'emirats', 'city', 'country', 'phone_number']
+        fields = ['id', 'address', 'additional_information', 'emirats', 'city', 'country', 'phone_number',
+                  'current_address']
+
+    def get_current_address(self, obj):
+        if CurrentAddressModel.objects.filter(address=obj).exists():
+            print(CurrentAddressModel.objects.filter(address=obj))
+            return True
+        return False
+
+
+class CurrentAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CurrentAddressModel
+        fields = '__all__'
 
 
 class UserInfoSerializer(serializers.ModelSerializer):
