@@ -70,7 +70,6 @@ class AddBlogTagSerializer(ModelSerializer):
 
 
 class CombinedBlogSerializer(serializers.Serializer):
-    category = serializers.SlugRelatedField(read_only=True, slug_field='category')
     cover_image = serializers.ImageField()
     cover_image_alt = serializers.CharField(max_length=32)
     banner = serializers.ImageField()
@@ -116,5 +115,6 @@ class CombinedBlogSerializer(serializers.Serializer):
 
     def to_representation(self, instance):
         blog_data = BlogModelSerializer(instance).data
+        category_data = BlogCategorySerializer(instance.category).data
         tag_data = AddBlogTagSerializer(instance.blog_tag).data if hasattr(instance, 'blog_tag') else None
-        return {**blog_data, 'tag': tag_data['tag'] if tag_data else None}
+        return {**blog_data, 'category': category_data, 'tag': tag_data['tag'] if tag_data else None}
