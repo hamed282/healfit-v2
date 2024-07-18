@@ -3,6 +3,7 @@ from rest_framework import serializers
 from accounts.models import User, RoleUserModel, RoleModel
 from blog.models import BlogTagModel, AddBlogTagModel, BlogCategoryModel, BlogModel
 from django.utils.text import slugify
+from django.shortcuts import get_object_or_404
 
 
 class UserSerializer(ModelSerializer):
@@ -97,7 +98,7 @@ class CombinedBlogSerializer(serializers.Serializer):
         tag = validated_data.pop('tag', None)
 
         category_name = validated_data.pop('category')
-        category, created = BlogCategoryModel.objects.get_or_create(category=category_name)
+        category = get_object_or_404(BlogCategoryModel, category=category_name)
         validated_data['category'] = category
 
         # Generate unique slug
