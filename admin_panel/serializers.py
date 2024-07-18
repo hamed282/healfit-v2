@@ -97,7 +97,7 @@ class CombinedBlogSerializer(serializers.Serializer):
         tag = validated_data.pop('tag', None)
 
         category_name = validated_data.pop('category')
-        category, created = BlogCategoryModel.objects.get_or_create(name=category_name)
+        category, created = BlogCategoryModel.objects.get_or_create(category=category_name)
         validated_data['category'] = category
 
         # Generate unique slug
