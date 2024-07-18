@@ -83,7 +83,8 @@ class CombinedBlogSerializer(serializers.Serializer):
     author = serializers.CharField(max_length=64)
     role = serializers.CharField(max_length=24)
     slug = serializers.SlugField()
-    category = serializers.PrimaryKeyRelatedField(queryset=BlogCategoryModel.objects.all())
+    # category = serializers.PrimaryKeyRelatedField(queryset=BlogCategoryModel.objects.all())
+    category = serializers.CharField(max_length=100)
     follow = serializers.BooleanField(default=False)
     index = serializers.BooleanField(default=False)
     canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
@@ -117,4 +118,4 @@ class CombinedBlogSerializer(serializers.Serializer):
         blog_data = BlogModelSerializer(instance).data
         category_data = BlogCategorySerializer(instance.category).data
         tag_data = AddBlogTagSerializer(instance.blog_tag).data if hasattr(instance, 'blog_tag') else None
-        return {**blog_data, 'category': category_data, 'tag': tag_data['tag'] if tag_data else None}
+        return {**blog_data, 'category': category_data['category'], 'tag': tag_data['tag'] if tag_data else None}
