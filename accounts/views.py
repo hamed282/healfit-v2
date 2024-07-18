@@ -205,14 +205,14 @@ class CurrentAddressView(APIView):
         """
                 parameters:
                 {
+                    user_id
                     address_id
                 }
                 """
         form = request.data
         ser_data = CurrentAddressSerializer(data=form)
         if ser_data.is_valid():
-            CurrentAddressModel.objects.create(user=request.user,
-                                               address=form['address'])
+            ser_data.save()
             return Response(data={'message': 'Address added'}, status=status.HTTP_201_CREATED)
         else:
             return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
