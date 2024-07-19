@@ -244,7 +244,12 @@ class BlogCategoryView(APIView):
 
 class BLogTagListView(APIView):
     def get(self, request):
-        blog_tag = BlogTagModel.objects.all()
+        search = self.request.query_params.get('search')
+        if search is None:
+            blog_tag = BlogTagModel.objects.all()
+            ser_data = BlogTagSerializer(instance=blog_tag, many=True)
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        blog_tag = BlogTagModel.objects.filter(tag__icontains=search)
         ser_data = BlogTagSerializer(instance=blog_tag, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 

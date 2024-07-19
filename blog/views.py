@@ -7,7 +7,7 @@ import math
 from rest_framework import status
 
 
-class BLogListView(APIView):
+class BlogListView(APIView):
     def get(self, request):
         limit = self.request.query_params.get('limit', None)
         page = self.request.query_params.get('page', None)
