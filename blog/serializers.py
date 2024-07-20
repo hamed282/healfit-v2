@@ -13,7 +13,7 @@ class BlogSerializer(ModelSerializer):
     def get_meta_tag(self, obj):
         try:
             tag = AddBlogTagModel.objects.get(blog=obj)
-            tag = tag.tag.tag
+            tag = tag.tag.id
         except:
             tag = None
 
