@@ -3,14 +3,14 @@ from .models import BlogModel, AddBlogTagModel, BlogCategoryModel
 
 
 class BlogSerializer(ModelSerializer):
-    meta_tag = SerializerMethodField()
+    tag = SerializerMethodField()
     category = SlugRelatedField(slug_field='category', queryset=BlogCategoryModel.objects.all(),)
 
     class Meta:
         model = BlogModel
         fields = '__all__'
 
-    def get_meta_tag(self, obj):
+    def get_tag(self, obj):
         try:
             tag = AddBlogTagModel.objects.get(blog=obj)
             tag = tag.tag.id
