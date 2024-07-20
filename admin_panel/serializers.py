@@ -119,6 +119,29 @@ class CombinedBlogSerializer(serializers.Serializer):
 
         return blog
 
+    def update(self, instance, validated_data):
+        # به روز رسانی مدل
+        tag = validated_data.pop('tag', None)
+        category_name = validated_data.pop('category', None)
+        if category_name:
+            category, created = BlogCategoryModel.objects.get_or_create(name=category_name)
+            validated_data['category'] = category
+        else:
+            validated_data['category'] = instance.category
+
+        # به روز رسانی فیلدهای BlogModel
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # به روز رسانی AddBlogTagModel اگر موجود باشد
+        if tag:
+            AddBlogTagModel.objects.update_or_create(blog=instance, defaults={'tag': tag})
+        elif hasattr(instance, 'blog_tag'):
+            instance.blog_tag.delete()
+
+        return instance
+
     def to_representation(self, instance):
         blog_data = BlogModelSerializer(instance).data
         category_data = BlogCategorySerializer(instance.category).data

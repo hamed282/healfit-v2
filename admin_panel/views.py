@@ -197,7 +197,7 @@ class BlogView(APIView):
         except:
             return Response(data={'message': 'Blog is not exist'})
 
-        ser_data = BlogSerializer(instance=blog, data=request.data, partial=True)
+        ser_data = CombinedBlogSerializer(instance=blog, data=request.data, partial=True)
 
         if ser_data.is_valid():
             ser_data.save()
