@@ -145,5 +145,6 @@ class CombinedBlogSerializer(serializers.Serializer):
     def to_representation(self, instance):
         blog_data = BlogModelSerializer(instance).data
         category_data = BlogCategorySerializer(instance.category).data
-        tag_data = AddBlogTagSerializer(instance.blog_tag).data if hasattr(instance, 'blog_tag') else None
-        return {**blog_data, 'category': category_data['category'], 'tag': tag_data['tag'] if tag_data else None}
+        # tag_data = AddBlogTagSerializer(instance.blog_tag).data if hasattr(instance, 'blog_tag') else None
+        # return {**blog_data, 'category': category_data['category'], 'tag': tag_data['tag'] if tag_data else None}
+        return {**blog_data, 'category': category_data['category']}
