@@ -124,7 +124,7 @@ class CombinedBlogSerializer(serializers.Serializer):
         tag = validated_data.pop('tag', None)
         category_name = validated_data.pop('category', None)
         if category_name:
-            category, created = BlogCategoryModel.objects.get_or_create(name=category_name)
+            category = BlogCategoryModel.objects.get(name=category_name)
             validated_data['category'] = category
         else:
             validated_data['category'] = instance.category
