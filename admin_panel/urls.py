@@ -32,4 +32,7 @@ urlpatterns = [
     path('blog/category/', views.BlogCategoryView.as_view(), name='category'),
     path('blog/category/<int:category_id>/', views.BlogCategoryView.as_view(), name='category_put'),
 
+    # Home
+    path('home/comment/', views.CommentHomeView.as_view(), name='comment'),
+
 ]

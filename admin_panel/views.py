@@ -14,6 +14,8 @@ from accounts.serializers import UserLoginSerializer
 from blog.serializers import BlogAllSerializer, BlogSerializer
 from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel
 from rest_framework.permissions import IsAuthenticated
+from home.models import CommentHomeModel
+from home.serializers import CommentHomeSerializer
 
 
 class LanguageView(APIView):
@@ -346,3 +348,10 @@ class AddBLogTagListView(APIView):
         add_tag.delete()
 
         return Response(data={'message': f'The Blog ID {blog_id} was deleted'})
+
+
+class CommentHomeView(APIView):
+    def get(self, request):
+        comments = CommentHomeModel.objects.all()
+        ser_data = CommentHomeSerializer(instance=comments, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)

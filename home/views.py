@@ -21,6 +21,6 @@ class VideoHomeView(APIView):
 
 class CommentHomeView(APIView):
     def get(self, request):
-        comment = CommentHomeModel.objects.all()
+        comment = CommentHomeModel.objects.filter(active=True)
         ser_data = CommentHomeSerializer(instance=comment, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
