@@ -30,7 +30,7 @@ class LanguageView(APIView):
 
 
 class UserView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
@@ -92,7 +92,7 @@ class UserView(APIView):
 
 
 class UserValueView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         page = self.request.query_params.get('page', None)
@@ -112,7 +112,7 @@ class UserValueView(APIView):
 
 
 class RoleView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         role = RoleModel.objects.all()
@@ -177,7 +177,7 @@ class LoginUserView(APIView):
 
 # Blog
 class BlogListView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         blogs = BlogModel.objects.all()
@@ -186,7 +186,7 @@ class BlogListView(APIView):
 
 
 class BlogView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, blog_id):
         blog = get_object_or_404(BlogModel, id=blog_id)
@@ -230,7 +230,7 @@ class BlogView(APIView):
 
 
 class BlogCategoryView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         category = BlogCategoryModel.objects.all()
@@ -256,7 +256,7 @@ class BlogCategoryView(APIView):
 
 
 class BLogTagListView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         search = self.request.query_params.get('search')
@@ -300,7 +300,7 @@ class BLogTagListView(APIView):
 
 
 class BLogTagItemView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, tag_id):
         tag = get_object_or_404(BlogTagModel, id=tag_id)
@@ -309,7 +309,7 @@ class BLogTagItemView(APIView):
 
 
 class AddBLogTagListView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         form = request.data
