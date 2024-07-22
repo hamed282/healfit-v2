@@ -122,6 +122,37 @@ class ProductListSerializer(serializers.ModelSerializer):
         return int(price - price * percent_discount / 100)
 
 
+class ProductAllSerializer(serializers.ModelSerializer):
+    gender = serializers.SlugRelatedField(slug_field='gender', read_only=True)
+    category = serializers.SerializerMethodField()
+    subcategory = serializers.SerializerMethodField()
+    off_price = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductModel
+        fields = ['gender', 'category', 'subcategory', 'product', 'cover_image', 'price', 'off_price',
+                  'percent_discount', 'group_id', 'slug', 'subtitle']
+
+    def get_category(self, obj):
+        categories = obj.category_product.all()
+        categories = [category.category.category for category in categories]
+
+        return categories
+
+    def get_subcategory(self, obj):
+        subcategories = obj.subcategory_product.all()
+        subcategories = [subcategory.subcategory.subcategory for subcategory in subcategories]
+
+        return subcategories
+
+    def get_off_price(self, obj):
+        price = obj.price
+        percent_discount = obj.percent_discount
+        if obj.percent_discount is None:
+            percent_discount = 0
+        return int(price - price * percent_discount / 100)
+
+
 class ProductSearchSerializer(serializers.ModelSerializer):
     off_price = serializers.SerializerMethodField()
 

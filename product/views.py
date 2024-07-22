@@ -5,7 +5,7 @@ from .models import (ProductGenderModel, ProductModel, SizeProductModel, ColorPr
                      AddImageGalleryModel, PopularProductModel)
 from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVariantShopSerializer,
                           ProductColorImageSerializer, ColorSizeProductSerializer, ProductListSerializer,
-                          ProductSearchSerializer, PopularProductSerializer)
+                          ProductSearchSerializer, PopularProductSerializer, ProductAllSerializer)
 from django.shortcuts import get_object_or_404
 from math import ceil
 from rest_framework import viewsets
@@ -104,21 +104,21 @@ class SizeOfColorView(APIView):
         return Response(data=sizes)
 
 
-class ProductListView(APIView):
+class ProductGenderListView(APIView):
     def get(self, request):
         """
         get parameter:
         1. page_number
         2. slug
+        3. limit
         """
 
-        page_number = int(self.request.query_params.get('page_number', None))
+        page_number = int(self.request.query_params.get('page_number', 1))
         gender_slug = self.request.query_params.get('slug', None)
+        per_page = self.request.query_params.get('limit', 16)
 
         gender = get_object_or_404(ProductGenderModel, slug=gender_slug)
         unisex = get_object_or_404(ProductGenderModel, slug='unisex')
-
-        per_page = 16
 
         products_count = len(ProductModel.objects.filter(gender__in=[gender, unisex]))
 
@@ -132,6 +132,30 @@ class ProductListView(APIView):
         category_title = gender.gender
 
         return Response(data={'data': ser_product_list.data, 'title': category_title, 'number_of_pages': number_of_pages})
+
+
+class ProductAllView(APIView):
+    def get(self, request):
+        """
+        get parameter:
+        1. page_number
+        3. limit
+        """
+
+        page_number = int(self.request.query_params.get('page_number', 1))
+        per_page = int(self.request.query_params.get('limit', 16))
+
+        products_count = len(ProductModel.objects.all())
+
+        number_of_pages = ceil(products_count/per_page)
+        if page_number is not None:
+            product_list = ProductModel.objects.all().order_by('priority')[per_page*(page_number-1):per_page*page_number]
+        else:
+            product_list = ProductModel.objects.all().order_by('priority')
+
+        ser_product_list = ProductAllSerializer(instance=product_list, many=True)
+
+        return Response(data={'data': ser_product_list.data, 'number_of_pages': number_of_pages})
 
 
 class SearchProductView(viewsets.ModelViewSet):

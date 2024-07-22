@@ -97,6 +97,62 @@ class ProductVariantModel(models.Model):
         return int(price - price * percent_discount / 100)
 
 
+class ProductCategoryModel(models.Model):
+    objects = None
+    category = models.CharField(max_length=50)
+    # category_title = models.CharField(max_length=50)
+    description = models.TextField()
+    slug = models.SlugField(max_length=100, unique=True)
+    # image = models.FileField(upload_to='images/category/')
+
+    class Meta:
+        verbose_name = 'Product Category'
+        verbose_name_plural = 'Product Category'
+
+    def save(self, **kwargs):
+        self.slug = slugify(self.category)
+        super(ProductCategoryModel, self).save(**kwargs)
+
+    def __str__(self):
+        return f'{self.slug}'
+
+
+class ProductSubCategoryModel(models.Model):
+    objects = None
+    subcategory = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=100, unique=True)
+
+    class Meta:
+        verbose_name = 'Product SubCategory'
+        verbose_name_plural = 'Product SubCategory'
+
+    def save(self, **kwargs):
+        self.slug = slugify(self.subcategory)
+        super(ProductSubCategoryModel, self).save(**kwargs)
+
+    def __str__(self):
+        return f'{self.slug}'
+
+
+class AddCategoryModel(models.Model):
+    objects = None
+    category = models.ForeignKey(ProductCategoryModel, on_delete=models.CASCADE)
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='category_product')
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.category}'
+
+
+class AddSubCategoryModel(models.Model):
+    objects = None
+    subcategory = models.ForeignKey(ProductSubCategoryModel, on_delete=models.CASCADE)
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='subcategory_product')
+
+    def __str__(self):
+        return f'{self.subcategory}'
+
+
 class ProductGenderModel(models.Model):
     objects = None
     gender = models.CharField(max_length=50)
