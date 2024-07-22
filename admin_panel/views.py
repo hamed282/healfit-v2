@@ -397,7 +397,7 @@ class CommentItemView(APIView):
 class BannerHomeView(APIView):
     def get(self, request):
         banner = BannerSliderModel.objects.all()
-        ser_data = CommentHomeSerializer(instance=banner, many=True)
+        ser_data = BannerSliderSerializer(instance=banner, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 
