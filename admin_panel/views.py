@@ -13,6 +13,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.serializers import UserLoginSerializer
 from blog.serializers import BlogAllSerializer, BlogSerializer
 from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel
+from rest_framework.permissions import IsAuthenticated
 
 
 class LanguageView(APIView):
@@ -29,6 +30,8 @@ class LanguageView(APIView):
 
 
 class UserView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
         ser_data = UserValueSerializer(instance=user)
@@ -89,6 +92,8 @@ class UserView(APIView):
 
 
 class UserValueView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         page = self.request.query_params.get('page', None)
 
@@ -107,6 +112,8 @@ class UserValueView(APIView):
 
 
 class RoleView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         role = RoleModel.objects.all()
         ser_data = RoleSerializer(instance=role, many=True)
@@ -170,6 +177,8 @@ class LoginUserView(APIView):
 
 # Blog
 class BlogListView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         blogs = BlogModel.objects.all()
         ser_data = BlogAllSerializer(instance=blogs, many=True)
@@ -219,6 +228,8 @@ class BlogView(APIView):
 
 
 class BlogCategoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         category = BlogCategoryModel.objects.all()
         ser_data = BlogCategorySerializer(instance=category, many=True)
@@ -243,6 +254,8 @@ class BlogCategoryView(APIView):
 
 
 class BLogTagListView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         search = self.request.query_params.get('search')
         if search is None:
@@ -285,6 +298,8 @@ class BLogTagListView(APIView):
 
 
 class BLogTagItemView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, tag_id):
         tag = get_object_or_404(BlogTagModel, id=tag_id)
         ser_data = BlogTagSerializer(instance=tag)
@@ -292,6 +307,8 @@ class BLogTagItemView(APIView):
 
 
 class AddBLogTagListView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         form = request.data
         ser_data = AddBlogTagSerializer(data=form)
