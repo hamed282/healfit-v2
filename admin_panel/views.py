@@ -14,8 +14,8 @@ from accounts.serializers import UserLoginSerializer
 from blog.serializers import BlogAllSerializer, BlogSerializer
 from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel
 from rest_framework.permissions import IsAuthenticated
-from home.models import CommentHomeModel
-from home.serializers import CommentHomeSerializer
+from home.models import CommentHomeModel, BannerSliderModel, VideoHomeModel
+from home.serializers import CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer
 
 
 class LanguageView(APIView):
@@ -392,3 +392,47 @@ class CommentItemView(APIView):
         comment.delete()
 
         return Response(data={'message': f'The Comment ID {comment_id} was deleted'})
+
+
+class BannerHomeView(APIView):
+    def get(self, request):
+        banner = BannerSliderModel.objects.all()
+        ser_data = CommentHomeSerializer(instance=banner, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class BannerItemView(APIView):
+    def get(self, request, banner_id):
+        banner = get_object_or_404(BannerSliderModel, id=banner_id)
+        ser_data = BannerSliderSerializer(instance=banner)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = BannerSliderSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, banner_id):
+        form = request.data
+        banner = get_object_or_404(BannerSliderModel, id=banner_id)
+        ser_data = BannerSliderSerializer(instance=banner, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, banner_id):
+        if banner_id is None:
+            return Response(data={'message': 'Input Banner ID'})
+
+        try:
+            banner = BannerSliderModel.objects.get(id=banner_id)
+        except:
+            return Response(data={'message': 'Banner is not exist'})
+
+        banner.delete()
+
+        return Response(data={'message': f'The Banner ID {banner_id} was deleted'})
