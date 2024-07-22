@@ -41,6 +41,8 @@ urlpatterns = [
     path('home/banner/item/', views.BannerItemView.as_view(), name='banner_item'),
     path('home/banner/item/<int:banner_id>/', views.BannerItemView.as_view(), name='banner_id'),
 
-    path('home/video/', views.VideoHomeView.as_view(), name='banner'),
+    path('home/video/', views.VideoHomeView.as_view(), name='video'),
+    path('home/video/item/', views.VideoHomeView.as_view(), name='video_item'),
+    path('home/video/item/<int:video_id>/', views.VideoHomeView.as_view(), name='video_id'),
 
 ]
