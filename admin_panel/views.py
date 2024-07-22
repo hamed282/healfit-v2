@@ -355,3 +355,40 @@ class CommentHomeView(APIView):
         comments = CommentHomeModel.objects.all()
         ser_data = CommentHomeSerializer(instance=comments, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class CommentItemView(APIView):
+    def get(self, request, comment_id):
+        comment = get_object_or_404(CommentHomeModel, id=comment_id)
+        ser_data = CommentHomeSerializer(instance=comment)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = CommentHomeSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, comment_id):
+        form = request.data
+        comment = get_object_or_404(CommentHomeModel, id=comment_id)
+        ser_data = CommentHomeSerializer(instance=comment, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, comment_id):
+        if comment_id is None:
+            return Response(data={'message': 'Input Comment ID'})
+
+        try:
+            comment = CommentHomeModel.objects.get(id=comment_id)
+        except:
+            return Response(data={'message': 'Comment is not exist'})
+
+        comment.delete()
+
+        return Response(data={'message': f'The Comment ID {comment_id} was deleted'})

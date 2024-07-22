@@ -34,5 +34,9 @@ urlpatterns = [
 
     # Home
     path('home/comment/', views.CommentHomeView.as_view(), name='comment'),
+    path('home/comment/item/', views.CommentItemView.as_view(), name='comment_item'),
+    path('home/comment/item/<int:comment_id>/', views.CommentItemView.as_view(), name='comment_item'),
+
+    path('home/banner/', views.CommentHomeView.as_view(), name='comment'),
 
 ]
