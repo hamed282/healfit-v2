@@ -436,3 +436,34 @@ class BannerItemView(APIView):
         banner.delete()
 
         return Response(data={'message': f'The Banner ID {banner_id} was deleted'})
+
+
+class VideoHomeView(APIView):
+    def get(self, request):
+        video = VideoHomeModel.objects.all()
+        ser_data = VideoHomeSerializer(instance=video, many=True)
+        return Response(data=ser_data.data)
+
+
+class VideoItemView(APIView):
+    def get(self, request, video_id):
+        video = get_object_or_404(VideoHomeModel, id=video_id)
+        ser_data = VideoHomeSerializer(instance=video)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = VideoHomeSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, video_id):
+        form = request.data
+        video = get_object_or_404(VideoHomeModel, id=video_id)
+        ser_data = VideoHomeSerializer(instance=video, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)

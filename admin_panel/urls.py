@@ -41,4 +41,6 @@ urlpatterns = [
     path('home/banner/item/', views.BannerItemView.as_view(), name='banner_item'),
     path('home/banner/item/<int:banner_id>/', views.BannerItemView.as_view(), name='banner_id'),
 
+    path('home/video/', views.VideoHomeView.as_view(), name='banner'),
+
 ]
