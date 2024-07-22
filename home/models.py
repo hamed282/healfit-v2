@@ -37,6 +37,8 @@ class VideoHomeModel(models.Model):
 class CommentHomeModel(models.Model):
     name = models.CharField(max_length=32)
     comment = models.TextField()
+    active = models.BooleanField(default=False)
+    created = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.name}'
