@@ -1,8 +1,8 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import BannerSliderModel
-from .serializers import BannerSliderSerializer
+from .models import BannerSliderModel, CommentHomeModel, VideoHomeModel
+from .serializers import BannerSliderSerializer, CommentHomeSerializer, VideoHomeSerializer
 
 
 class ImageSliderView(APIView):
@@ -12,4 +12,15 @@ class ImageSliderView(APIView):
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 
+class VideoHomeView(APIView):
+    def get(self, request):
+        video = VideoHomeModel.objects.all()
+        ser_data = VideoHomeSerializer(instance=video, many=True)
+        return Response(data=ser_data.data)
 
+
+class CommentHomeView(APIView):
+    def get(self, request):
+        comment = CommentHomeModel.objects.all()
+        ser_data = CommentHomeSerializer(instance=comment, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
