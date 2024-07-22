@@ -39,6 +39,6 @@ urlpatterns = [
 
     path('home/banner/', views.BannerHomeView.as_view(), name='banner'),
     path('home/banner/item/', views.BannerItemView.as_view(), name='banner_item'),
-    path('home/banner/item/<int:comment_id>/', views.BannerItemView.as_view(), name='banner_id'),
+    path('home/banner/item/<int:banner_id>/', views.BannerItemView.as_view(), name='banner_id'),
 
 ]
