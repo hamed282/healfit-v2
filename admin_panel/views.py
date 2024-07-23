@@ -463,6 +463,43 @@ class ProductCategoryView(APIView):
         ser_data = ProductCategorySerializer(instance=category, many=True)
 
         return Response(data=ser_data.data)
+
+
+class ProductCategoryItemView(APIView):
+    def get(self, request, category_id):
+        category = get_object_or_404(ProductCategoryModel, id=category_id)
+        ser_data = ProductCategorySerializer(instance=category)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = ProductCategorySerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, category_id):
+        form = request.data
+        category = get_object_or_404(ProductCategoryModel, id=category_id)
+        ser_data = ProductCategorySerializer(instance=category, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, category_id):
+        if category_id is None:
+            return Response(data={'message': 'Input Category ID'})
+
+        try:
+            category = ProductCategoryModel.objects.get(id=category_id)
+        except:
+            return Response(data={'message': 'Category is not exist'})
+
+        category.delete()
+
+        return Response(data={'message': f'The Category ID {category_id} was deleted'})
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
 #         video = get_object_or_404(VideoHomeModel, id=video_id)
