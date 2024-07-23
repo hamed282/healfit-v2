@@ -16,6 +16,8 @@ from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryMo
 from rest_framework.permissions import IsAuthenticated
 from home.models import CommentHomeModel, BannerSliderModel, VideoHomeModel
 from home.serializers import CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer
+from product.models import ProductCategoryModel, ProductSubCategoryModel
+from product.serializers import ProductCategorySerializer, ProductSubCategorySerializer
 
 
 class LanguageView(APIView):
@@ -454,6 +456,13 @@ class VideoHomeView(APIView):
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ProductCategoryView(APIView):
+
+    def get(self, request):
+        category = ProductCategoryModel.objects.all()
+        ser_data = ProductCategorySerializer(instance=category, many=True)
+
+        return Response(data=ser_data.data)
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
 #         video = get_object_or_404(VideoHomeModel, id=video_id)

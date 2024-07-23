@@ -45,4 +45,7 @@ urlpatterns = [
     # path('home/video/item/', views.VideoItemView.as_view(), name='video_item'),
     path('home/video/item/<int:video_id>/', views.VideoHomeView.as_view(), name='video_id'),
 
+    # Product
+    path('product/category/', views.ProductCategoryView.as_view(), name='product_category'),
+
 ]

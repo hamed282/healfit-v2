@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import ProductGenderModel, ProductModel, ProductVariantModel, AddImageGalleryModel, PopularProductModel
+from .models import (ProductGenderModel, ProductModel, ProductVariantModel, AddImageGalleryModel, PopularProductModel,
+                     ProductCategoryModel, ProductSubCategoryModel)
 
 
 class ProductGenderSerializer(serializers.ModelSerializer):
@@ -173,3 +174,18 @@ class PopularProductSerializer(serializers.ModelSerializer):
         model = PopularProductModel
         fields = ['popular']
         depth = 1
+
+
+class ProductCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductCategoryModel
+        fields = '__all__'
+
+
+class ProductSubCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductSubCategoryModel
+        fields = '__all__'
+
+
+

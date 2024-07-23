@@ -2,10 +2,11 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import (ProductGenderModel, ProductModel, SizeProductModel, ColorProductModel, ProductVariantModel,
-                     AddImageGalleryModel, PopularProductModel)
+                     AddImageGalleryModel, PopularProductModel, ProductCategoryModel, ProductSubCategoryModel)
 from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVariantShopSerializer,
                           ProductColorImageSerializer, ColorSizeProductSerializer, ProductListSerializer,
-                          ProductSearchSerializer, PopularProductSerializer, ProductAllSerializer)
+                          ProductSearchSerializer, PopularProductSerializer, ProductAllSerializer,
+                          ProductCategorySerializer, ProductSubCategorySerializer)
 from django.shortcuts import get_object_or_404
 from math import ceil
 from rest_framework import viewsets
