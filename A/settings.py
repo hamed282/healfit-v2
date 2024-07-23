@@ -200,7 +200,7 @@ SCOPE_UPDATE = os.getenv('SCOPE_UPDATE')
 SCOPE_BOOK_CONTACTS = os.getenv('SCOPE_BOOK_CONTACTS')
 SCOPE_BOOK_INVOICE = os.getenv('SCOPE_BOOK_INVOICE')
 SCOPE_BOOK_TAX = os.getenv('SCOPE_BOOK_TAX')
-SIOD = f'ZohoInventory.{os.getenv('ORGANIZATION_ID')}'
+SIOD = os.getenv('SIOD')
 
 
 # Google Login
