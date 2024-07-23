@@ -8,7 +8,7 @@ import os
 
 class ProductModel(models.Model):
     objects = None
-    gender = models.ForeignKey('ProductGenderModel', on_delete=models.CASCADE, related_name='gender_product')
+    gender = models.ForeignKey('ProductGenderModel', on_delete=models.CASCADE, related_name='gender_product', null=True, blank=True)
     product = models.CharField(max_length=100)
     cover_image = models.ImageField(upload_to='images/product/cover/', blank=True, null=True)
     size_table_image = models.ImageField(upload_to='images/product/size_table/', blank=True, null=True)

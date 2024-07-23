@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'rest_framework',
+    'django_celery_beat',
 
     # Installed App
     'accounts.apps.AccountsConfig',
@@ -187,6 +188,19 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+
+# Zoho Config
+ORGANIZATION_ID = os.getenv('ORGANIZATION_ID')
+CLIENT_ID = os.getenv('CLIENT_ID')
+CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+GRANT_TYPE = os.getenv('GRANT_TYPE')
+SCOPE_READING = os.getenv('SCOPE_READING')
+SCOPE_UPDATE = os.getenv('SCOPE_UPDATE')
+SCOPE_BOOK_CONTACTS = os.getenv('SCOPE_BOOK_CONTACTS')
+SCOPE_BOOK_INVOICE = os.getenv('SCOPE_BOOK_INVOICE')
+SCOPE_BOOK_TAX = os.getenv('SCOPE_BOOK_TAX')
+SIOD = f'ZohoInventory.{os.getenv('ORGANIZATION_ID')}'
 
 
 # Google Login
