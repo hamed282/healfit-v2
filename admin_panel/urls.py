@@ -47,7 +47,11 @@ urlpatterns = [
 
     # Product
     path('product/category/', views.ProductCategoryView.as_view(), name='product_category'),
-    path('product/category/item/', views.ProductCategoryItemView.as_view(), name='product_item'),
-    path('product/category/item/<int:category_id>/', views.ProductCategoryItemView.as_view(), name='product_id'),
+    path('product/category/item/', views.ProductCategoryItemView.as_view(), name='category_item'),
+    path('product/category/item/<int:category_id>/', views.ProductCategoryItemView.as_view(), name='category_id'),
+
+    path('product/subcategory/', views.ProductSubCategoryView.as_view(), name='product_subcategory'),
+    path('product/subcategory/item/', views.ProductSubCategoryItemView.as_view(), name='subcategory_item'),
+    path('product/subcategory/item/<int:category_id>/', views.ProductSubCategoryItemView.as_view(), name='subcategory_id'),
 
 ]
