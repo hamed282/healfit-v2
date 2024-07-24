@@ -11,6 +11,7 @@ class BlogCategoryModel(models.Model):
     meta_title = models.CharField(max_length=60)
     meta_description = models.CharField(max_length=150)
 
+
     def __str__(self):
         return f'{self.category}'
 
