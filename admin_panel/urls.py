@@ -18,6 +18,7 @@ urlpatterns = [
     path('blog/list/', views.BlogListView.as_view(), name='blog_list'),
     path('blog/<int:blog_id>/', views.BlogView.as_view(), name='blog_item_get'),
     path('blog/item/', views.BlogView.as_view(), name='blog_item'),
+    path('blog/image/', views.BlogImageView.as_view(), name='blog_image'),
 
     # Blog Tag
     path('blog/tag/', views.BLogTagListView.as_view(), name='tag_list'),

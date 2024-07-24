@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer, DateField, SerializerMethodField, SlugRelatedField
-from .models import BlogModel, AddBlogTagModel, BlogCategoryModel
+from .models import BlogModel, AddBlogTagModel, BlogCategoryModel, BlogImageModel
 
 
 class BlogSerializer(ModelSerializer):
@@ -39,4 +39,10 @@ class RelatedBlogSerializer(ModelSerializer):
 class MetaCategorySerializer(ModelSerializer):
     class Meta:
         model = BlogCategoryModel
+        fields = '__all__'
+
+
+class ImageBlogSerializer(ModelSerializer):
+    class Meta:
+        model = BlogImageModel
         fields = '__all__'

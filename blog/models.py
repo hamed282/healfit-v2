@@ -61,3 +61,8 @@ class AddBlogTagModel(models.Model):
 
     def __str__(self):
         return f'{self.tag}'
+
+
+class BlogImageModel(models.Model):
+    image = models.ImageField(upload_to='blog/blog/')
+    type = models.CharField(max_length=32)

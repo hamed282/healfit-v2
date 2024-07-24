@@ -11,8 +11,8 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.serializers import UserLoginSerializer
-from blog.serializers import BlogAllSerializer, BlogSerializer
-from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel
+from blog.serializers import BlogAllSerializer, BlogSerializer, ImageBlogSerializer
+from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel, BlogImageModel
 from rest_framework.permissions import IsAuthenticated
 from home.models import CommentHomeModel, BannerSliderModel, VideoHomeModel
 from home.serializers import CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer
@@ -107,7 +107,7 @@ class UserValueView(APIView):
 
         if page is not None:
             page = int(page)
-            product = User.objects.all()[per_page*(page-1):per_page*page]
+            product = User.objects.all()[per_page * (page - 1):per_page * page]
         else:
             product = User.objects.all()
 
@@ -546,6 +546,19 @@ class ProductSubCategoryItemView(APIView):
         subcategory.delete()
 
         return Response(data={'message': f'The Category ID {category_id} was deleted'})
+
+
+class BlogImageView(APIView):
+    def post(self, request):
+        form = request.data
+        ser_data = ImageBlogSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            response = {'data': {
+                'title': ser_data.data['image'], 'type': ser_data.data['type']}
+            }
+            return Response(data=response, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
 #         video = get_object_or_404(VideoHomeModel, id=video_id)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel
+from .models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel, BlogImageModel
 
 
 class TagInline(admin.TabularInline):
@@ -21,3 +21,4 @@ admin.site.register(BlogModel, BlogAdmin)
 admin.site.register(BlogTagModel, BlogTagAdmin)
 admin.site.register(BlogCategoryModel)
 admin.site.register(AddBlogTagModel)
+admin.site.register(BlogImageModel)
