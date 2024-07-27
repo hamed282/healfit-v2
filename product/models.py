@@ -13,7 +13,7 @@ class ProductModel(models.Model):
     cover_image = models.ImageField(upload_to='images/product/cover/', blank=True, null=True)
     size_table_image = models.ImageField(upload_to='images/product/size_table/', blank=True, null=True)
     description_image = models.ImageField(upload_to='images/product/description/', blank=True, null=True)
-    price = models.IntegerField()
+    price = models.CharField(max_length=8)
     percent_discount = models.IntegerField(null=True, blank=True)
     subtitle = models.CharField(max_length=256)
     application_fields = models.TextField()
@@ -140,8 +140,8 @@ class ProductSubCategoryModel(models.Model):
 
 class AddCategoryModel(models.Model):
     objects = None
-    category = models.ForeignKey(ProductCategoryModel, on_delete=models.CASCADE)
-    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='category_product')
+    category = models.ForeignKey(ProductCategoryModel, on_delete=models.CASCADE, related_name='category_product')
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

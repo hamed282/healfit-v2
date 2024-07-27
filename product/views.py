@@ -2,11 +2,12 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import (ProductGenderModel, ProductModel, SizeProductModel, ColorProductModel, ProductVariantModel,
-                     AddImageGalleryModel, PopularProductModel, ProductCategoryModel, ProductSubCategoryModel)
+                     AddImageGalleryModel, PopularProductModel, ProductCategoryModel, ProductSubCategoryModel,
+                     AddCategoryModel, AddSubCategoryModel)
 from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVariantShopSerializer,
                           ProductColorImageSerializer, ColorSizeProductSerializer, ProductListSerializer,
                           ProductSearchSerializer, PopularProductSerializer, ProductAllSerializer,
-                          ProductCategorySerializer, ProductSubCategorySerializer)
+                          ProductCategorySerializer, ProductSubCategorySerializer, ProductByCategorySerializer)
 from django.shortcuts import get_object_or_404
 from math import ceil
 from rest_framework import viewsets
@@ -175,3 +176,21 @@ class PopularProductView(APIView):
         return Response(data=ser_popular_product.data)
 
 
+class CategoryItemView(APIView):
+    def get(self, request, category_id):
+        page_number = int(self.request.query_params.get('page_number', 1))
+        per_page = int(self.request.query_params.get('limit', 16))
+
+        category = ProductCategoryModel.objects.get(id=category_id)
+        products = category.category_product.all()
+
+        products_count = len(products)
+        number_of_pages = ceil(products_count/per_page)
+
+        if page_number is not None:
+            product_list = products[per_page * (page_number - 1):per_page * page_number]
+        else:
+            product_list = products
+
+        ser_data = ProductByCategorySerializer(instance=product_list, many=True)
+        return Response(data={'data': ser_data.data, 'number_of_pages': number_of_pages}, status=status.HTTP_200_OK)

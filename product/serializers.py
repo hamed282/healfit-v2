@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (ProductGenderModel, ProductModel, ProductVariantModel, AddImageGalleryModel, PopularProductModel,
-                     ProductCategoryModel, ProductSubCategoryModel)
+                     ProductCategoryModel, ProductSubCategoryModel, AddCategoryModel, AddSubCategoryModel)
 
 
 class ProductGenderSerializer(serializers.ModelSerializer):
@@ -188,4 +188,31 @@ class ProductSubCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ProductByCategorySerializer(serializers.Serializer):
+    id = serializers.SerializerMethodField()
+    product = serializers.SerializerMethodField()
+    cover_image = serializers.SerializerMethodField()
+    off_price = serializers.SerializerMethodField()
+    slug = serializers.SerializerMethodField()
 
+    def get_id(self, obj):
+        return obj.product.id
+
+    def get_product(self, obj):
+        return obj.product.product
+
+    def get_cover_image(self, obj):
+        if obj.product.cover_image:
+            return obj.product.cover_image.url
+        return None
+
+    def get_off_price(self, obj):
+        product = obj.product
+        price = int(product.price)
+        percent_discount = product.percent_discount
+        if percent_discount is None:
+            percent_discount = 0
+        return int(price - price * percent_discount / 100)
+
+    def get_slug(self, obj):
+        return obj.product.slug

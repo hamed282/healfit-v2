@@ -70,4 +70,5 @@ admin.site.register(ProductModel, ProductAdmin)
 admin.site.register(SizeProductModel, SizeProductAdmin)
 admin.site.register(ProductVariantModel, ProductVariantAdmin)
 admin.site.register(ColorProductModel)
+admin.site.register(AddCategoryModel)
 
