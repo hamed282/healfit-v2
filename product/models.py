@@ -140,8 +140,8 @@ class ProductSubCategoryModel(models.Model):
 
 class AddCategoryModel(models.Model):
     objects = None
-    category = models.ForeignKey(ProductCategoryModel, on_delete=models.CASCADE, related_name='category_product')
-    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE)
+    category = models.ForeignKey(ProductCategoryModel, on_delete=models.CASCADE, related_name='cat_product')
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='category_product')
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

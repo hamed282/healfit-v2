@@ -182,7 +182,7 @@ class CategoryItemView(APIView):
         per_page = int(self.request.query_params.get('limit', 16))
 
         category = ProductCategoryModel.objects.get(id=category_id)
-        products = category.category_product.all()
+        products = category.cat_product.all()
 
         products_count = len(products)
         number_of_pages = ceil(products_count/per_page)
