@@ -194,3 +194,25 @@ class CategoryItemView(APIView):
 
         ser_data = ProductByCategorySerializer(instance=product_list, many=True)
         return Response(data={'data': ser_data.data, 'number_of_pages': number_of_pages}, status=status.HTTP_200_OK)
+
+
+class CategoryListView(APIView):
+    def get(self, request):
+        categories = ProductCategoryModel.objects.all()
+        ser_data = ProductCategorySerializer(instance=categories, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class CategoryFilterView(APIView):
+    def get(self, request, category_id):
+        category = ProductCategoryModel.objects.get(id=category_id)
+        ser_data = ProductCategorySerializer(instance=category)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class CategoryBySubcategoryView(APIView):
+    def get(self, request, category_id):
+        category = ProductCategoryModel.objects.get(id=category_id)
+        subcategories = ProductSubCategoryModel.objects.filter(category=category)
+        ser_data = ProductSubCategorySerializer(instance=subcategories, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
