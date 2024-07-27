@@ -710,8 +710,6 @@ class ColorValueView(APIView):
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request):
-        id_color = self.request.query_params.get('id_color', None)
-
         if id_color is None:
             return Response(data={'message': 'Input Color ID'})
 
