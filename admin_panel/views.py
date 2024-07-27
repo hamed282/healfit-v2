@@ -595,9 +595,7 @@ class ExtraGroupView(APIView):
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request):
-        id_extrag = self.request.query_params.get('id_extrag', None)
-
+    def delete(self, request, id_extrag):
         if id_extrag is None:
             return Response(data={'message': 'Input Extra Group ID'})
 
