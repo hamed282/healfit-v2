@@ -651,9 +651,7 @@ class SizeValueView(APIView):
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request):
-        id_size = self.request.query_params.get('id_size', None)
-
+    def delete(self, request, id_size):
         if id_size is None:
             return Response(data={'message': 'Input Size ID'})
 
