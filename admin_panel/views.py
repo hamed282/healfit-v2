@@ -564,10 +564,17 @@ class BlogImageView(APIView):
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ExtraGroupView(APIView):
+class ExtraItemView(APIView):
     def get(self, request):
         extr_group = ExtraGroupModel.objects.all()
         ser_data = ExtraGroupSerializer(instance=extr_group, many=True)
+        return Response(data=ser_data.data)
+
+
+class ExtraGroupView(APIView):
+    def get(self, request, id_extrag):
+        extra = get_object_or_404(ExtraGroupModel, id=id_extrag)
+        ser_data = ExtraGroupSerializer(instance=extra)
         return Response(data=ser_data.data)
 
     def post(self, request):
