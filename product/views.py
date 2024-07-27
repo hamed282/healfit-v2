@@ -216,3 +216,37 @@ class CategoryBySubcategoryView(APIView):
         subcategories = ProductSubCategoryModel.objects.filter(category=category)
         ser_data = ProductSubCategorySerializer(instance=subcategories, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class SubcategoryListView(APIView):
+    def get(self, request):
+        subcategories = ProductSubCategoryModel.objects.all()
+        ser_data = ProductSubCategorySerializer(instance=subcategories, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class SubcategoryItemView(APIView):
+    def get(self, request, subcategory_id):
+        page_number = int(self.request.query_params.get('page_number', 1))
+        per_page = int(self.request.query_params.get('limit', 16))
+
+        subcategory = ProductSubCategoryModel.objects.get(id=subcategory_id)
+        products = subcategory.subcategory_product.all()
+
+        products_count = len(products)
+        number_of_pages = ceil(products_count/per_page)
+
+        if page_number is not None:
+            product_list = products[per_page * (page_number - 1):per_page * page_number]
+        else:
+            product_list = products
+
+        ser_data = ProductByCategorySerializer(instance=product_list, many=True)
+        return Response(data={'data': ser_data.data, 'number_of_pages': number_of_pages}, status=status.HTTP_200_OK)
+
+
+class SubcategoryFilterView(APIView):
+    def get(self, request, subcategory_id):
+        subcategory = ProductSubCategoryModel.objects.get(id=subcategory_id)
+        ser_data = ProductSubCategorySerializer(instance=subcategory)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)

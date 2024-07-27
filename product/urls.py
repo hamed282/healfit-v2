@@ -6,8 +6,16 @@ urlpatterns = [
     path('gender_home/', views.ProductGenderView.as_view(), name='gender_home'),
     path('gender/', views.ProductGenderListView.as_view(), name='product_list'),
     path('all/', views.ProductAllView.as_view(), name='product_all'),
+
+    # Category
     path('categories/', views.CategoryListView.as_view(), name='category_list'),
     path('category/items/<int:category_id>/', views.CategoryItemView.as_view(), name='category_item'),
     path('category/<int:category_id>/', views.CategoryFilterView.as_view(), name='category'),
     path('category/subcategories/<int:category_id>/', views.CategoryBySubcategoryView.as_view(), name='category_subcategory'),
+
+    # Subcategory
+    path('subcategories/', views.SubcategoryListView.as_view(), name='subcategory_list'),
+    path('subcategory/items/<int:subcategory_id>/', views.SubcategoryItemView.as_view(), name='subcategory_item'),
+    path('subcategory/<int:subcategory_id>/', views.SubcategoryFilterView.as_view(), name='subcategory'),
+
 ]
