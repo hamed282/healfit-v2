@@ -57,6 +57,7 @@ urlpatterns = [
 
     # Extra
     path('extrag/', views.ExtraGroupView.as_view(), name='extrag'),
+    path('extrag/<int:id_extrag>/', views.ExtraGroupView.as_view(), name='extrag'),
 
     # Size
     path('size/<int:size_id>/', views.SizeItemView.as_view(), name='size_item'),

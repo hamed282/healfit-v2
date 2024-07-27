@@ -580,9 +580,7 @@ class ExtraGroupView(APIView):
             return Response(ser_data.data, status=status.HTTP_201_CREATED)
         return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request):
-        id_extrag = self.request.query_params.get('id_extrag', None)
-
+    def put(self, request, id_extrag):
         if id_extrag is None:
             return Response(data={'message': 'Input Extra Group ID'})
 
