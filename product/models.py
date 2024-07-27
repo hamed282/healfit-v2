@@ -3,7 +3,7 @@ from django.utils.text import slugify
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.db.models import Max
-import os
+from django.db.models import Q
 
 
 class ProductModel(models.Model):
@@ -55,6 +55,51 @@ class ProductModel(models.Model):
 
     def get_absolute_url(self):
         return f'/shop/{self.slug}'
+
+    # @classmethod
+    # def filter_products(cls, gender=None, color=None, size=None, category=None, available=None):
+    #     # شروع با queryset پایه
+    #     queryset = cls.objects.all()
+    #
+    #     # اعمال فیلترها در صورت ارائه
+    #     if gender:
+    #         queryset = queryset.filter(Q(gender__gender=gender) | Q(gender__gender='unisex'))
+    #     if color:
+    #         queryset = queryset.filter(product_color_size__color__color=color)
+    #     if size:
+    #         queryset = queryset.filter(product_color_size__size__size=size)
+    #     if category:
+    #         queryset = queryset.filter(cat_product__category__category=category)
+    #     if available is not None:
+    #         queryset = queryset.filter(product_color_size__quantity__gt=0 if available else 0)
+    #
+    #     # استفاده از distinct برای جلوگیری از تکرار
+    #     return queryset.distinct()
+    @classmethod
+    def filter_products(cls, gender=None, color=None, size=None, category=None, available=None):
+        # شروع با queryset پایه برای ProductVariantModel
+        variant_queryset = ProductVariantModel.objects.all()
+
+        # اعمال فیلترها در صورت ارائه
+        if color:
+            variant_queryset = variant_queryset.filter(color__color=color)
+        if size:
+            variant_queryset = variant_queryset.filter(size__size=size)
+        if available is not None:
+            variant_queryset = variant_queryset.filter(quantity__gt=0)
+
+        # فیلتر کردن محصولات بر اساس واریانت‌ها
+        product_ids = variant_queryset.values_list('product_id', flat=True)
+        queryset = cls.objects.filter(id__in=product_ids)
+
+        # اعمال فیلترهای بیشتر بر روی محصولات
+        if gender:
+            queryset = queryset.filter(Q(gender__gender=gender) | Q(gender__gender='unisex'))
+        if category:
+            queryset = queryset.filter(cat_product__category__category=category)
+
+        # استفاده از distinct برای جلوگیری از تکرار
+        return queryset.distinct()
 
 
 class ProductVariantModel(models.Model):

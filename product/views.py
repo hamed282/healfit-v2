@@ -146,14 +146,31 @@ class ProductAllView(APIView):
 
         page_number = int(self.request.query_params.get('page_number', 1))
         per_page = int(self.request.query_params.get('limit', 16))
+        gender = self.request.query_params.get('gender', None)
+        category = self.request.query_params.get('category', None)
+        size = self.request.query_params.get('size', None)
+        color = self.request.query_params.get('color', None)
+        available = self.request.query_params.get('available', None)
 
         products_count = len(ProductModel.objects.all())
 
+        if available is not None:
+            available = available.lower() in ['true', '1']
+
+        products = ProductModel.filter_products(
+            gender=gender,
+            color=color,
+            size=size,
+            category=category,
+            available=available
+        )
+
+
         number_of_pages = ceil(products_count/per_page)
         if page_number is not None:
-            product_list = ProductModel.objects.all().order_by('priority')[per_page*(page_number-1):per_page*page_number]
+            product_list = products.order_by('priority')[per_page*(page_number-1):per_page*page_number]
         else:
-            product_list = ProductModel.objects.all().order_by('priority')
+            product_list = products.order_by('priority')
 
         ser_product_list = ProductAllSerializer(instance=product_list, many=True)
 
