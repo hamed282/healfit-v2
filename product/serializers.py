@@ -67,7 +67,7 @@ class ProductVariantShopSerializer(serializers.ModelSerializer):
                   'quantity', 'size', 'color', 'item_id', 'slug', 'id']
 
     def get_off_price(self, obj):
-        price = obj.price
+        price = int(obj.price)
         percent_discount = obj.percent_discount
         if obj.percent_discount is None:
             percent_discount = 0
@@ -116,7 +116,7 @@ class ProductListSerializer(serializers.ModelSerializer):
         return subcategories
 
     def get_off_price(self, obj):
-        price = obj.price
+        price = int(obj.price)
         percent_discount = obj.percent_discount
         if obj.percent_discount is None:
             percent_discount = 0
@@ -135,19 +135,19 @@ class ProductAllSerializer(serializers.ModelSerializer):
                   'percent_discount', 'group_id', 'slug', 'subtitle']
 
     def get_category(self, obj):
-        categories = obj.category_product.all()
+        categories = obj.cat_product.all()
         categories = [category.category.category for category in categories]
 
         return categories
 
     def get_subcategory(self, obj):
-        subcategories = obj.subcategory_product.all()
+        subcategories = obj.sub_product.all()
         subcategories = [subcategory.subcategory.subcategory for subcategory in subcategories]
 
         return subcategories
 
     def get_off_price(self, obj):
-        price = obj.price
+        price = int(obj.price)
         percent_discount = obj.percent_discount
         if obj.percent_discount is None:
             percent_discount = 0
@@ -162,7 +162,7 @@ class ProductSearchSerializer(serializers.ModelSerializer):
         fields = ['product', 'price', 'off_price', 'slug', 'group_id', 'id']
 
     def get_off_price(self, obj):
-        price = obj.price
+        price = int(obj.price)
         percent_discount = obj.percent_discount
         if obj.percent_discount is None:
             percent_discount = 0
