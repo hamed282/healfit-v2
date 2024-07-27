@@ -3,7 +3,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from accounts.models import User, RoleModel, RoleUserModel
 from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, LoginUserSerializer, BlogTagSerializer,
-                          AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer)
+                          AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer,
+                          ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
+                          ColorValueSerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -16,7 +18,8 @@ from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryMo
 from rest_framework.permissions import IsAuthenticated
 from home.models import CommentHomeModel, BannerSliderModel, VideoHomeModel
 from home.serializers import CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer
-from product.models import ProductCategoryModel, ProductSubCategoryModel
+from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
+                            ColorProductModel)
 from product.serializers import ProductCategorySerializer, ProductSubCategorySerializer
 
 
@@ -559,6 +562,171 @@ class BlogImageView(APIView):
             }
             return Response(data=response, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ExtraGroupView(APIView):
+    def get(self, request):
+        extr_group = ExtraGroupModel.objects.all()
+        ser_data = ExtraGroupSerializer(instance=extr_group, many=True)
+        return Response(data=ser_data.data)
+
+    def post(self, request):
+        form = request.data
+
+        ser_data = ExtraGroupSerializer(data=form)
+
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request):
+        id_extrag = self.request.query_params.get('id_extrag', None)
+
+        if id_extrag is None:
+            return Response(data={'message': 'Input Extra Group ID'})
+
+        try:
+            extrag = ExtraGroupModel.objects.get(id=id_extrag)
+        except:
+            return Response(data={'message': 'Extra Group is not exist'})
+
+        ser_data = ExtraGroupSerializer(instance=extrag, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        id_extrag = self.request.query_params.get('id_extrag', None)
+
+        if id_extrag is None:
+            return Response(data={'message': 'Input Extra Group ID'})
+
+        try:
+            extrag = ExtraGroupModel.objects.get(id=id_extrag)
+        except:
+            return Response(data={'message': 'Extra Group is not exist'})
+
+        name = extrag.title
+        extrag.delete()
+        return Response(data={'message': f'The {name} Extra Group was deleted'})
+
+
+class SizeItemView(APIView):
+    def get(self, request, size_id):
+
+        size = get_object_or_404(SizeProductModel, id=size_id)
+        ser_data = SizeValueSerializer(instance=size)
+        return Response(data=ser_data.data)
+
+
+class SizeValueView(APIView):
+    def get(self, request):
+
+        size = SizeProductModel.objects.all()
+        ser_data = SizeValueSerializer(instance=size, many=True)
+        return Response(data=ser_data.data)
+
+    def post(self, request):
+        form = request.data
+
+        ser_data = SizeValueCUDSerializer(data=form)
+
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, id_size):
+        # id_size = request.data['id_size']
+
+        if id_size is None:
+            return Response(data={'message': 'Input Size ID'})
+
+        try:
+            size = SizeProductModel.objects.get(id=id_size)
+        except:
+            return Response(data={'message': 'Size is not exist'})
+
+        ser_data = SizeValueCUDSerializer(instance=size, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        id_size = self.request.query_params.get('id_size', None)
+
+        if id_size is None:
+            return Response(data={'message': 'Input Size ID'})
+
+        try:
+            size = SizeProductModel.objects.get(id=id_size)
+        except:
+            return Response(data={'message': 'Size is not exist'})
+
+        name = size.size
+        size.delete()
+        return Response(data={'message': f'The {name} Size was deleted'})
+
+
+class ColorItemView(APIView):
+    def get(self, request, color_id):
+
+        color = get_object_or_404(ColorProductModel, id=color_id)
+        ser_data = ColorValueSerializer(instance=color)
+        return Response(data=ser_data.data)
+
+
+class ColorValueView(APIView):
+    def get(self, request):
+
+        color = ColorProductModel.objects.all()
+        ser_data = ColorValueSerializer(instance=color, many=True)
+        return Response(data=ser_data.data)
+
+    def post(self, request):
+        form = request.data
+
+        ser_data = ColorValueCUDSerializer(data=form)
+
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, id_color):
+        # id_color = request.data['id_color']
+
+        if id_color is None:
+            return Response(data={'message': 'Input Color ID'})
+
+        try:
+            size = ColorProductModel.objects.get(id=id_color)
+        except:
+            return Response(data={'message': 'Color is not exist'})
+
+        ser_data = ColorValueCUDSerializer(instance=size, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        id_color = self.request.query_params.get('id_color', None)
+
+        if id_color is None:
+            return Response(data={'message': 'Input Color ID'})
+
+        try:
+            color = ColorProductModel.objects.get(id=id_color)
+        except:
+            return Response(data={'message': 'Color is not exist'})
+
+        name = color.color
+        color.delete()
+        return Response(data={'message': f'The {name} Color was deleted'})
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
 #         video = get_object_or_404(VideoHomeModel, id=video_id)

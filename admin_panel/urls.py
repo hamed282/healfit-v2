@@ -55,4 +55,16 @@ urlpatterns = [
     path('product/subcategory/item/', views.ProductSubCategoryItemView.as_view(), name='subcategory_item'),
     path('product/subcategory/item/<int:category_id>/', views.ProductSubCategoryItemView.as_view(), name='subcategory_id'),
 
+    # Extra
+    path('extrag/', views.ExtraGroupView.as_view(), name='extrag'),
+
+    # Size
+    path('size/<int:size_id>/', views.SizeItemView.as_view(), name='size_item'),
+    path('size/value/', views.SizeValueView.as_view(), name='size_value'),
+    path('size/value/<int:id_size>/', views.SizeValueView.as_view(), name='size_value_put'),
+
+    # Color
+    path('color/<int:color_id>/', views.ColorItemView.as_view(), name='color_item'),
+    path('color/value/', views.ColorValueView.as_view(), name='color_value'),
+    path('color/value/<int:id_color>/', views.ColorValueView.as_view(), name='color_value_put'),
 ]

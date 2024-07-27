@@ -4,6 +4,7 @@ from accounts.models import User, RoleUserModel, RoleModel
 from blog.models import BlogTagModel, AddBlogTagModel, BlogCategoryModel, BlogModel
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
+from product.models import ExtraGroupModel, SizeProductModel, ColorProductModel
 
 
 class UserSerializer(ModelSerializer):
@@ -147,3 +148,64 @@ class CombinedBlogSerializer(serializers.Serializer):
         category_data = BlogCategorySerializer(instance.category).data
         tag_data = AddBlogTagSerializer(instance.blog_tag).data if hasattr(instance, 'blog_tag') else None
         return {**blog_data, 'category': category_data['category'], 'tag': tag_data['tag'] if tag_data else None}
+
+
+class ExtraGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExtraGroupModel
+        fields = '__all__'
+
+
+class ColorValueSerializer(serializers.ModelSerializer):
+    value = serializers.SerializerMethodField()
+    type = serializers.SerializerMethodField()
+    title = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ColorProductModel
+        fields = ['id', 'value', 'type', 'title']
+
+    def get_value(self, obj):
+        value = obj.color_code
+        return value
+
+    def get_type(self, obj):
+        return 'color'
+
+    def get_title(self, obj):
+        title = obj.color
+        return title
+
+
+class ColorValueCUDSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ColorProductModel
+        fields = '__all__'
+
+
+class SizeValueSerializer(serializers.ModelSerializer):
+    value = serializers.SerializerMethodField()
+    type = serializers.SerializerMethodField()
+    priority = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SizeProductModel
+        fields = ['id', 'value', 'type', 'priority']
+
+    def get_value(self, obj):
+        value = obj.size
+        return value
+
+    def get_type(self, obj):
+        return 'text'
+
+    def get_priority(self, obj):
+        priority = obj.priority
+        return priority
+
+
+class SizeValueCUDSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SizeProductModel
+        fields = '__all__'
