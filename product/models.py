@@ -150,8 +150,8 @@ class AddCategoryModel(models.Model):
 
 class AddSubCategoryModel(models.Model):
     objects = None
-    subcategory = models.ForeignKey(ProductSubCategoryModel, on_delete=models.CASCADE, related_name='subcategory_product')
-    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE)
+    subcategory = models.ForeignKey(ProductSubCategoryModel, on_delete=models.CASCADE, related_name='sub_product')
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='subcategory_product')
 
     def __str__(self):
         return f'{self.subcategory}'

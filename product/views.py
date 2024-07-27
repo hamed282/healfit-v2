@@ -231,7 +231,7 @@ class SubcategoryItemView(APIView):
         per_page = int(self.request.query_params.get('limit', 16))
 
         subcategory = ProductSubCategoryModel.objects.get(id=subcategory_id)
-        products = subcategory.subcategory_product.all()
+        products = subcategory.sub_product.all()
 
         products_count = len(products)
         number_of_pages = ceil(products_count/per_page)
