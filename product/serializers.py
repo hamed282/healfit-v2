@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import (ProductGenderModel, ProductModel, ProductVariantModel, AddImageGalleryModel, PopularProductModel,
-                     ProductCategoryModel, ProductSubCategoryModel, AddCategoryModel, AddSubCategoryModel)
+                     ProductCategoryModel, ProductSubCategoryModel, AddProductTagModel, AddSubCategoryModel,
+                     ProductTagModel)
 
 
 class ProductGenderSerializer(serializers.ModelSerializer):
@@ -216,3 +217,29 @@ class ProductByCategorySerializer(serializers.Serializer):
 
     def get_slug(self, obj):
         return obj.product.slug
+
+
+class AdminProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductModel
+        fields = '__all__'
+
+
+class AddSubCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AddSubCategoryModel
+        fields = '__all__'
+
+
+class AddProductTagSerializer(serializers.ModelSerializer):
+    tag_name = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = AddProductTagModel
+        fields = ['product', 'tag_name']
+
+    def create(self, validated_data):
+        tag_name = validated_data.pop('tag_name')
+        tag, created = ProductTagModel.objects.get_or_create(tag=tag_name)
+        validated_data['tag'] = tag
+        return super().create(validated_data)

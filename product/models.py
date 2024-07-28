@@ -11,8 +11,11 @@ class ProductModel(models.Model):
     gender = models.ForeignKey('ProductGenderModel', on_delete=models.CASCADE, related_name='gender_product', null=True, blank=True)
     product = models.CharField(max_length=100)
     cover_image = models.ImageField(upload_to='images/product/cover/', blank=True, null=True)
+    cover_image_alt = models.CharField(max_length=32)
     size_table_image = models.ImageField(upload_to='images/product/size_table/', blank=True, null=True)
+    size_table_imagealt = models.CharField(max_length=32)
     description_image = models.ImageField(upload_to='images/product/description/', blank=True, null=True)
+    description_image_alt = models.CharField(max_length=32)
     price = models.CharField(max_length=8)
     percent_discount = models.IntegerField(null=True, blank=True)
     subtitle = models.CharField(max_length=256)
@@ -338,3 +341,23 @@ class ExtraGroupModel(models.Model):
     def __str__(self):
         return f"{self.title}"
 
+
+class ProductTagModel(models.Model):
+    objects = None
+    tag = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        verbose_name = 'Product Tag'
+        verbose_name_plural = 'Product Tag'
+
+    def __str__(self):
+        return f'{self.tag}'
+
+
+class AddProductTagModel(models.Model):
+    objects = None
+    tag = models.OneToOneField(ProductTagModel, on_delete=models.CASCADE, unique=True)
+    product = models.OneToOneField(ProductModel, on_delete=models.CASCADE, related_name='product_tag')
+
+    def __str__(self):
+        return f'{self.tag}'

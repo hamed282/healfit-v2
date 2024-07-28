@@ -74,5 +74,6 @@ urlpatterns = [
     # Product
     path('products/', views.ProductView.as_view(), name='product'),
     path('product/item/<int:product_id>/', views.ProductItemView.as_view(), name='product'),
+    path('product/item/', views.ProductItemView.as_view(), name='product'),
 
 ]

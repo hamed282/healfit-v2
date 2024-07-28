@@ -215,3 +215,85 @@ class AddImageGallerySerializer(serializers.ModelSerializer):
     class Meta:
         model = AddImageGalleryModel
         fields = '__all__'
+
+
+# class CombinedProductSerializer(serializers.Serializer):
+#     gender = serializers.IntegerField()
+#     product = serializers.CharField()
+#     description_image = serializers.ImageField()
+#     description_image_alt = serializers.CharField()
+#     size_table_image = serializers.ImageField()
+#     size_table_image_alt = serializers.CharField()
+#     cover_image = serializers.ImageField()
+#     cover_image_alt = serializers.CharField()
+#     price = serializers.CharField()
+#     percent_discount = serializers.IntegerField()
+#     subtitle = serializers.CharField()
+#     application_fields = serializers.CharField()
+#     description = serializers.CharField()
+#     group_id = serializers.CharField()
+#     priority = serializers.IntegerField()
+#     slug = serializers.SlugField()
+#
+#     category = serializers.CharField(max_length=100)
+#     follow = serializers.BooleanField(default=False)
+#     index = serializers.BooleanField(default=False)
+#     canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
+#     meta_title = serializers.CharField(max_length=60)
+#     meta_description = serializers.CharField(max_length=150)
+#     tag = serializers.PrimaryKeyRelatedField(queryset=BlogTagModel.objects.all(), required=False, allow_null=True)
+#
+#     def create(self, validated_data):
+#         # Extract tag data
+#         tag = validated_data.pop('tag', None)
+#
+#         category_name = validated_data.pop('category')
+#         category = get_object_or_404(, category=category_name)
+#         validated_data['category'] = category
+#
+#         # Generate unique slug
+#         original_slug = slugify(validated_data['slug'])
+#         unique_slug = original_slug
+#         num = 1
+#         while BlogModel.objects.filter(slug=unique_slug).exists():
+#             unique_slug = f'{original_slug}-{num}'
+#             num += 1
+#         validated_data['slug'] = unique_slug
+#
+#         # Create BlogModel instance
+#         blog = BlogModel.objects.create(**validated_data)
+#
+#         # Create AddBlogTagModel instance if tag is provided
+#         if tag:
+#             AddBlogTagModel.objects.create(blog=blog, tag=tag)
+#
+#         return blog
+#
+#     def update(self, instance, validated_data):
+#         # به روز رسانی مدل
+#         tag = validated_data.pop('tag', None)
+#         category_name = validated_data.pop('category', None)
+#         if category_name:
+#             category, created = BlogCategoryModel.objects.get_or_create(category=category_name)
+#             validated_data['category'] = category
+#         else:
+#             validated_data['category'] = instance.category
+#
+#         # به روز رسانی فیلدهای BlogModel
+#         for attr, value in validated_data.items():
+#             setattr(instance, attr, value)
+#         instance.save()
+#
+#         # به روز رسانی AddBlogTagModel اگر موجود باشد
+#         if tag:
+#             AddBlogTagModel.objects.update_or_create(blog=instance, defaults={'tag': tag})
+#         elif hasattr(instance, 'blog_tag'):
+#             instance.blog_tag.delete()
+#
+#         return instance
+#
+#     def to_representation(self, instance):
+#         blog_data = BlogModelSerializer(instance).data
+#         category_data = BlogCategorySerializer(instance.category).data
+#         tag_data = AddBlogTagSerializer(instance.blog_tag).data if hasattr(instance, 'blog_tag') else None
+#         return {**blog_data, 'category': category_data['category'], 'tag': tag_data['tag'] if tag_data else None}

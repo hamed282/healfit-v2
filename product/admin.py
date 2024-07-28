@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (ProductCategoryModel, ProductModel, PopularProductModel, SizeProductModel, ProductVariantModel,
                      ColorProductModel, ProductSubCategoryModel, AddSubCategoryModel, AddCategoryModel,
-                     ProductGenderModel, AddImageGalleryModel, ExtraGroupModel)
+                     ProductGenderModel, AddImageGalleryModel, ExtraGroupModel, ProductTagModel, AddProductTagModel)
 from django.utils.html import format_html
 
 
@@ -73,4 +73,6 @@ admin.site.register(ColorProductModel)
 admin.site.register(AddCategoryModel)
 admin.site.register(AddSubCategoryModel)
 admin.site.register(ExtraGroupModel)
+admin.site.register(ProductTagModel)
+admin.site.register(AddProductTagModel)
 
