@@ -76,4 +76,12 @@ urlpatterns = [
     path('product/item/<int:product_id>/', views.ProductItemView.as_view(), name='product'),
     path('product/item/', views.ProductItemView.as_view(), name='product'),
 
+    # Product Tag
+    path('product/tag/', views.ProductTagListView.as_view(), name='product_list'),
+    path('product/tag/<int:product_id>/', views.ProductTagListView.as_view(), name='product_create'),
+    path('product/tag/item/<int:product_id>/', views.ProductTagItemView.as_view(), name='product_item'),
+
+    # Add Product Tag
+    path('product/addtag/', views.AddProductTagListView.as_view(), name='addtag_post_product'),
+    path('product/addtag/<int:product_id>/', views.AddProductTagListView.as_view(), name='addtag_product'),
 ]

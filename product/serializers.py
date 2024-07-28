@@ -243,3 +243,10 @@ class AddProductTagSerializer(serializers.ModelSerializer):
         tag, created = ProductTagModel.objects.get_or_create(tag=tag_name)
         validated_data['tag'] = tag
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        tag_name = validated_data.pop('tag_name', None)
+        if tag_name:
+            tag, created = ProductTagModel.objects.get_or_create(tag=tag_name)
+            instance.tag = tag
+        return super().update(instance, validated_data)

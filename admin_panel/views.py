@@ -5,7 +5,7 @@ from accounts.models import User, RoleModel, RoleUserModel
 from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, LoginUserSerializer, BlogTagSerializer,
                           AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer,
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
-                          ColorValueSerializer, AddImageGallerySerializer)
+                          ColorValueSerializer, ProductTagSerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -19,7 +19,7 @@ from rest_framework.permissions import IsAuthenticated
 from home.models import CommentHomeModel, BannerSliderModel, VideoHomeModel
 from home.serializers import CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
-                            ColorProductModel, ProductModel)
+                            ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel)
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer, ProductSerializer,
                                  AddSubCategorySerializer, AddProductTagSerializer)
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -820,6 +820,101 @@ class ProductItemView(APIView):
         name = product.product
         product.delete()
         return Response(data={'message': f'The {name} Product was deleted'})
+
+
+class ProductTagListView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        search = self.request.query_params.get('search')
+        if search is None:
+            product_tag = ProductTagModel.objects.all()
+            ser_data = ProductTagSerializer(instance=product_tag, many=True)
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        product_tag = ProductTagModel.objects.filter(tag__icontains=search)
+        ser_data = ProductTagSerializer(instance=product_tag, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = ProductTagSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, product_id):
+        form = request.data
+        product_tag = ProductTagModel.objects.get(id=product_id)
+        ser_data = ProductTagSerializer(instance=product_tag, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, product_id):
+        if product_id is None:
+            return Response(data={'message': 'Input Tag ID'})
+
+        try:
+            tag_product = ProductTagModel.objects.get(id=product_id)
+        except:
+            return Response(data={'message': 'Tag is not exist'})
+
+        tag_product.delete()
+
+        return Response(data={'message': f'The Product ID {product_id} was deleted'})
+
+
+class ProductTagItemView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request, product_id):
+        product = get_object_or_404(ProductTagModel, id=product_id)
+        ser_data = ProductTagSerializer(instance=product)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class AddProductTagListView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        form = request.data
+        ser_data = AddProductTagSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, product_id):
+        try:
+            product = ProductModel.objects.get(id=product_id)
+        except ProductModel.DoesNotExist:
+            return Response(data={'message': 'Product does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            add_tag = AddProductTagModel.objects.get(product=product)
+        except AddProductTagModel.DoesNotExist:
+            return Response(data={'message': 'Product tag does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        ser_data = AddProductTagSerializer(instance=add_tag, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, product_id):
+        if product_id is None:
+            return Response(data={'message': 'Input Product ID'})
+
+        try:
+            add_tag = AddProductTagModel.objects.get(product=product_id)
+        except:
+            return Response(data={'message': 'Product is not exist'})
+
+        add_tag.delete()
+
+        return Response(data={'message': f'The Product ID {product_id} was deleted'})
 
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
