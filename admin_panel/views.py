@@ -5,7 +5,7 @@ from accounts.models import User, RoleModel, RoleUserModel
 from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, LoginUserSerializer, BlogTagSerializer,
                           AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer,
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
-                          ColorValueSerializer)
+                          ColorValueSerializer, AddImageGallerySerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -19,8 +19,8 @@ from rest_framework.permissions import IsAuthenticated
 from home.models import CommentHomeModel, BannerSliderModel, VideoHomeModel
 from home.serializers import CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
-                            ColorProductModel)
-from product.serializers import ProductCategorySerializer, ProductSubCategorySerializer
+                            ColorProductModel, ProductModel)
+from product.serializers import ProductCategorySerializer, ProductSubCategorySerializer, ProductSerializer
 
 
 class LanguageView(APIView):
@@ -727,6 +727,73 @@ class ColorValueView(APIView):
         name = color.color
         color.delete()
         return Response(data={'message': f'The {name} Color was deleted'})
+
+
+class ProductView(APIView):
+    def get(self, request):
+        per_page = self.request.query_params.get('limit', 10)
+        page = self.request.query_params.get('page', None)
+
+        product_count = len(ProductModel.objects.all())
+        number_of_pages = ceil(product_count / per_page)
+
+        if page is not None:
+            page = int(page)
+            product = ProductModel.objects.all()[per_page*(page-1):per_page*page]
+        else:
+            product = ProductModel.objects.all()
+
+        ser_data = ProductSerializer(instance=product, many=True)
+        return Response({'data': ser_data.data, 'number_of_pages': number_of_pages})
+
+
+class ProductItemView(APIView):
+    def get(self, request, product_id):
+        product = ProductModel.objects.get(id=product_id)
+        ser_data = ProductSerializer(instance=product)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    # def post(self, request):
+    #     form = request.data
+    #
+    #     ser_data = ColorValueCUDSerializer(data=form)
+    #
+    #     if ser_data.is_valid():
+    #         ser_data.save()
+    #         return Response(ser_data.data, status=status.HTTP_201_CREATED)
+    #     return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+    #
+    # def put(self, request, id_color):
+    #     # id_color = request.data['id_color']
+    #
+    #     if id_color is None:
+    #         return Response(data={'message': 'Input Color ID'})
+    #
+    #     try:
+    #         size = ColorProductModel.objects.get(id=id_color)
+    #     except:
+    #         return Response(data={'message': 'Color is not exist'})
+    #
+    #     ser_data = ColorValueCUDSerializer(instance=size, data=request.data, partial=True)
+    #     if ser_data.is_valid():
+    #         ser_data.save()
+    #         return Response(data=ser_data.data, status=status.HTTP_200_OK)
+    #     return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, product_id):
+
+        if product_id is None:
+            return Response(data={'message': 'Input Product ID'})
+
+        try:
+            product = ProductModel.objects.get(id=product_id)
+        except:
+            return Response(data={'message': 'Product is not exist'})
+
+        name = product.product
+        product.delete()
+        return Response(data={'message': f'The {name} Product was deleted'})
+
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
 #         video = get_object_or_404(VideoHomeModel, id=video_id)

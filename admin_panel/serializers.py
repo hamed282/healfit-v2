@@ -4,7 +4,7 @@ from accounts.models import User, RoleUserModel, RoleModel
 from blog.models import BlogTagModel, AddBlogTagModel, BlogCategoryModel, BlogModel
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
-from product.models import ExtraGroupModel, SizeProductModel, ColorProductModel
+from product.models import ExtraGroupModel, SizeProductModel, ColorProductModel, AddImageGalleryModel
 
 
 class UserSerializer(ModelSerializer):
@@ -208,4 +208,10 @@ class SizeValueCUDSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SizeProductModel
+        fields = '__all__'
+
+
+class AddImageGallerySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AddImageGalleryModel
         fields = '__all__'

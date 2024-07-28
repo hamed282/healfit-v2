@@ -24,12 +24,12 @@ class ProductSerializer(serializers.ModelSerializer):
                   'group_id', 'slug', 'created', 'updated', 'id', 'price']
 
     def get_category(self, obj):
-        categories = obj.category_product.all()
+        categories = obj.cat_product.all()
         categories = [category.category.category for category in categories]
         return categories
 
     def get_subcategory(self, obj):
-        subcategories = obj.subcategory_product.all()
+        subcategories = obj.sub_product.all()
         subcategories = [subcategory.subcategory.subcategory for subcategory in subcategories]
         return subcategories
 

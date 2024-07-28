@@ -46,11 +46,12 @@ urlpatterns = [
     # path('home/video/item/', views.VideoItemView.as_view(), name='video_item'),
     path('home/video/item/<int:video_id>/', views.VideoHomeView.as_view(), name='video_id'),
 
-    # Product
+    # Category
     path('product/category/', views.ProductCategoryView.as_view(), name='product_category'),
     path('product/category/item/', views.ProductCategoryItemView.as_view(), name='category_item'),
     path('product/category/item/<int:category_id>/', views.ProductCategoryItemView.as_view(), name='category_id'),
 
+    # Subcategory
     path('product/subcategory/', views.ProductSubCategoryView.as_view(), name='product_subcategory'),
     path('product/subcategory/item/', views.ProductSubCategoryItemView.as_view(), name='subcategory_item'),
     path('product/subcategory/item/<int:category_id>/', views.ProductSubCategoryItemView.as_view(), name='subcategory_id'),
@@ -69,4 +70,9 @@ urlpatterns = [
     path('color/<int:color_id>/', views.ColorItemView.as_view(), name='color_item'),
     path('color/value/', views.ColorValueView.as_view(), name='color_value'),
     path('color/value/<int:id_color>/', views.ColorValueView.as_view(), name='color_value_put'),
+
+    # Product
+    path('products/', views.ProductView.as_view(), name='product'),
+    path('product/item/<int:product_id>/', views.ProductItemView.as_view(), name='product'),
+
 ]
