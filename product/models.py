@@ -88,7 +88,7 @@ class ProductModel(models.Model):
             variant_queryset = variant_queryset.filter(color__color=color)
         if size:
             variant_queryset = variant_queryset.filter(size__size=size)
-        if available is not None:
+        if available is True:
             variant_queryset = variant_queryset.filter(quantity__gt=0)
 
         # فیلتر کردن محصولات بر اساس واریانت‌ها
