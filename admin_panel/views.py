@@ -5,7 +5,7 @@ from accounts.models import User, RoleModel, RoleUserModel
 from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, LoginUserSerializer, BlogTagSerializer,
                           AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer,
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
-                          ColorValueSerializer, ProductTagSerializer)
+                          ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -755,40 +755,12 @@ class ProductItemView(APIView):
         ser_data = ProductSerializer(instance=product)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
-    parser_classes = [MultiPartParser, FormParser]
-
-    def post(self, request):
-        product_serializer = ProductSerializer(data=request.data)
-        if product_serializer.is_valid():
-            product = product_serializer.save()
-        else:
-            return Response(product_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        subcategory_data = {
-            'subcategory': request.data.get('subcategory'),
-            'product': product.id
-        }
-        subcategory_serializer = AddSubCategorySerializer(data=subcategory_data)
-        if subcategory_serializer.is_valid():
-            subcategory_serializer.save()
-        else:
-            return Response(subcategory_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        tag_data = {
-            'tag_name': request.data.get('tag_name'),
-            'product': product.id
-        }
-        tag_serializer = AddProductTagSerializer(data=tag_data)
-        if tag_serializer.is_valid():
-            tag_serializer.save()
-        else:
-            return Response(tag_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response({
-            'product': product_serializer.data,
-            'subcategory': subcategory_serializer.data,
-            'tag': tag_serializer.data
-        }, status=status.HTTP_201_CREATED)
+    def post(self, request, *args, **kwargs):
+        serializer = CombinedProductSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # def put(self, request, id_color):
     #     # id_color = request.data['id_color']

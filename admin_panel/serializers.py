@@ -4,7 +4,9 @@ from accounts.models import User, RoleUserModel, RoleModel
 from blog.models import BlogTagModel, AddBlogTagModel, BlogCategoryModel, BlogModel
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
-from product.models import ExtraGroupModel, SizeProductModel, ColorProductModel, AddImageGalleryModel, ProductTagModel
+from product.models import (ExtraGroupModel, SizeProductModel, ColorProductModel, AddImageGalleryModel, ProductTagModel,
+                            ProductSubCategoryModel, ProductModel, AddProductTagModel, ProductGenderModel, AddSubCategoryModel)
+from product.serializers import ProductSerializer, ProductSubCategorySerializer, AddProductTagSerializer
 
 
 class UserSerializer(ModelSerializer):
@@ -221,83 +223,100 @@ class ProductTagSerializer(ModelSerializer):
     class Meta:
         model = ProductTagModel
         fields = '__all__'
-# class CombinedProductSerializer(serializers.Serializer):
-#     gender = serializers.IntegerField()
-#     product = serializers.CharField()
-#     description_image = serializers.ImageField()
-#     description_image_alt = serializers.CharField()
-#     size_table_image = serializers.ImageField()
-#     size_table_image_alt = serializers.CharField()
-#     cover_image = serializers.ImageField()
-#     cover_image_alt = serializers.CharField()
-#     price = serializers.CharField()
-#     percent_discount = serializers.IntegerField()
-#     subtitle = serializers.CharField()
-#     application_fields = serializers.CharField()
-#     description = serializers.CharField()
-#     group_id = serializers.CharField()
-#     priority = serializers.IntegerField()
-#     slug = serializers.SlugField()
-#
-#     category = serializers.CharField(max_length=100)
-#     follow = serializers.BooleanField(default=False)
-#     index = serializers.BooleanField(default=False)
-#     canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
-#     meta_title = serializers.CharField(max_length=60)
-#     meta_description = serializers.CharField(max_length=150)
-#     tag = serializers.PrimaryKeyRelatedField(queryset=BlogTagModel.objects.all(), required=False, allow_null=True)
-#
-#     def create(self, validated_data):
-#         # Extract tag data
-#         tag = validated_data.pop('tag', None)
-#
-#         category_name = validated_data.pop('category')
-#         category = get_object_or_404(, category=category_name)
-#         validated_data['category'] = category
-#
-#         # Generate unique slug
-#         original_slug = slugify(validated_data['slug'])
-#         unique_slug = original_slug
-#         num = 1
-#         while BlogModel.objects.filter(slug=unique_slug).exists():
-#             unique_slug = f'{original_slug}-{num}'
-#             num += 1
-#         validated_data['slug'] = unique_slug
-#
-#         # Create BlogModel instance
-#         blog = BlogModel.objects.create(**validated_data)
-#
-#         # Create AddBlogTagModel instance if tag is provided
-#         if tag:
-#             AddBlogTagModel.objects.create(blog=blog, tag=tag)
-#
-#         return blog
-#
-#     def update(self, instance, validated_data):
-#         # به روز رسانی مدل
-#         tag = validated_data.pop('tag', None)
-#         category_name = validated_data.pop('category', None)
-#         if category_name:
-#             category, created = BlogCategoryModel.objects.get_or_create(category=category_name)
-#             validated_data['category'] = category
-#         else:
-#             validated_data['category'] = instance.category
-#
-#         # به روز رسانی فیلدهای BlogModel
-#         for attr, value in validated_data.items():
-#             setattr(instance, attr, value)
-#         instance.save()
-#
-#         # به روز رسانی AddBlogTagModel اگر موجود باشد
-#         if tag:
-#             AddBlogTagModel.objects.update_or_create(blog=instance, defaults={'tag': tag})
-#         elif hasattr(instance, 'blog_tag'):
-#             instance.blog_tag.delete()
-#
-#         return instance
-#
-#     def to_representation(self, instance):
-#         blog_data = BlogModelSerializer(instance).data
-#         category_data = BlogCategorySerializer(instance.category).data
-#         tag_data = AddBlogTagSerializer(instance.blog_tag).data if hasattr(instance, 'blog_tag') else None
-#         return {**blog_data, 'category': category_data['category'], 'tag': tag_data['tag'] if tag_data else None}
+
+
+class CombinedProductSerializer(serializers.Serializer):
+    gender = serializers.PrimaryKeyRelatedField(queryset=ProductGenderModel.objects.all())
+    product = serializers.CharField()
+    description_image = serializers.ImageField()
+    description_image_alt = serializers.CharField()
+    size_table_image = serializers.ImageField()
+    size_table_image_alt = serializers.CharField()
+    cover_image = serializers.ImageField()
+    cover_image_alt = serializers.CharField()
+    price = serializers.CharField()
+    percent_discount = serializers.IntegerField()
+    subtitle = serializers.CharField()
+    application_fields = serializers.CharField()
+    description = serializers.CharField()
+    group_id = serializers.CharField()
+    priority = serializers.IntegerField()
+    slug = serializers.SlugField()
+
+    subcategory = serializers.CharField(max_length=100)
+    follow = serializers.BooleanField(default=False)
+    index = serializers.BooleanField(default=False)
+    canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
+    meta_title = serializers.CharField(max_length=60)
+    meta_description = serializers.CharField(max_length=150)
+    tag_name = serializers.CharField(max_length=50, required=False, allow_blank=True)
+
+    def create(self, validated_data):
+        # Extract and process tag data
+        tag_name = validated_data.pop('tag_name', None)
+        tag = None
+        if tag_name:
+            tag, created = ProductTagModel.objects.get_or_create(tag=tag_name)
+
+        subcategory_name = validated_data.pop('subcategory')
+        subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=subcategory_name)
+
+        # Generate unique slug
+        original_slug = slugify(validated_data['slug'])
+        unique_slug = original_slug
+
+        num = 1
+        while ProductModel.objects.filter(slug=unique_slug).exists():
+            unique_slug = f'{original_slug}-{num}'
+            num += 1
+        validated_data['slug'] = unique_slug
+
+        # Create ProductModel instance
+        product = ProductModel.objects.create(**validated_data)
+
+        # Create AddSubCategoryModel instance
+        AddSubCategoryModel.objects.create(product=product, subcategory=subcategory)
+
+        # Create AddProductTagModel instance if tag is provided
+        if tag:
+            AddProductTagModel.objects.create(product=product, tag=tag)
+
+        return product
+
+    def update(self, instance, validated_data):
+        # Update the ProductModel instance
+        tag_name = validated_data.pop('tag_name', None)
+        subcategory_name = validated_data.pop('subcategory', None)
+
+        if subcategory_name:
+            subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=subcategory_name)
+            instance.subcategory = subcategory
+
+        if tag_name:
+            tag, created = ProductTagModel.objects.get_or_create(tag=tag_name)
+        else:
+            tag = None
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+
+        # Update or delete AddProductTagModel instance
+        if tag:
+            AddProductTagModel.objects.update_or_create(product=instance, defaults={'tag': tag})
+        elif hasattr(instance, 'product_tag'):
+            instance.product_tag.delete()
+
+        return instance
+
+    def to_representation(self, instance):
+        product_data = ProductSerializer(instance).data
+        print(instance)
+        # subcategory_data = instance.subcategory.subcategory if instance.subcategory else None
+        tag_data = instance.product_tag.tag.tag if hasattr(instance, 'product_tag') else None
+        return {
+            **product_data,
+            # 'subcategory': subcategory_data,
+            'tag': tag_data
+        }

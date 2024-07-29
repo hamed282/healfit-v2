@@ -9,18 +9,18 @@ from django.db.models import Q
 class ProductModel(models.Model):
     objects = None
     gender = models.ForeignKey('ProductGenderModel', on_delete=models.CASCADE, related_name='gender_product', null=True, blank=True)
-    product = models.CharField(max_length=100)
+    product = models.CharField(max_length=100, unique=True)
     cover_image = models.ImageField(upload_to='images/product/cover/', blank=True, null=True)
     cover_image_alt = models.CharField(max_length=32)
     size_table_image = models.ImageField(upload_to='images/product/size_table/', blank=True, null=True)
-    size_table_imagealt = models.CharField(max_length=32)
+    size_table_image_alt = models.CharField(max_length=32)
     description_image = models.ImageField(upload_to='images/product/description/', blank=True, null=True)
     description_image_alt = models.CharField(max_length=32)
     price = models.CharField(max_length=8)
     percent_discount = models.IntegerField(null=True, blank=True)
     subtitle = models.CharField(max_length=256)
     application_fields = models.TextField()
-    descriptions = models.TextField()
+    description = models.TextField()
     group_id = models.CharField(max_length=100)
     priority = models.IntegerField(blank=True, null=True, default=1)
     slug = models.SlugField(max_length=100, unique=True)
@@ -40,11 +40,25 @@ class ProductModel(models.Model):
         verbose_name = 'Item Groups'
         verbose_name_plural = 'Item Groups'
 
-    def save(self, **kwargs):
-        self.slug = slugify(self.product)
+    def save(self, *args, **kwargs):
+        # تولید اولیه slug
+        original_slug = slugify(self.product)
+        unique_slug = original_slug
+
+        # بررسی و تولید slug یکتا
+        num = 1
+        while ProductModel.objects.filter(slug=unique_slug).exists():
+            unique_slug = f'{original_slug}-{num}'
+            num += 1
+
+        self.slug = unique_slug
+
+        # تنظیم مقدار پیش‌فرض برای priority اگر نیاز باشد
         if self.priority is None:
             self.priority = 1
-        super(ProductModel, self).save(**kwargs)
+
+        # فراخوانی متد save پایه
+        super(ProductModel, self).save(*args, **kwargs)
 
     def __str__(self) -> str:
         return str(self.product)
