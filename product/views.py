@@ -155,7 +155,7 @@ class ProductAllView(APIView):
         products_count = len(ProductModel.objects.all())
 
         if available is not None:
-            available = available.lower() in ['true', '1']
+            available = available.lower() in ['false', '0']
 
         products = ProductModel.filter_products(
             gender=gender,
