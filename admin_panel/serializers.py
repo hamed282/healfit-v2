@@ -258,7 +258,7 @@ class CombinedProductSerializer(serializers.Serializer):
         if tag_name:
             tag, created = ProductTagModel.objects.get_or_create(tag=tag_name)
 
-        subcategory_name = validated_data.pop('subcategory')
+        subcategory_name = validated_data.pop('subcategory', [])
         for sub in subcategory_name:
             print(sub)
             sub_cat = sub['subcategory']
