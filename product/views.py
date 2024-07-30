@@ -224,15 +224,15 @@ class CategoryListView(APIView):
 
 
 class CategoryFilterView(APIView):
-    def get(self, request, category_id):
-        category = ProductCategoryModel.objects.get(id=category_id)
+    def get(self, request, slug_category):
+        category = ProductCategoryModel.objects.get(slug=slug_category)
         ser_data = ProductCategorySerializer(instance=category)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 
 class CategoryBySubcategoryView(APIView):
-    def get(self, request, category_id):
-        category = ProductCategoryModel.objects.get(id=category_id)
+    def get(self, request, slug_category):
+        category = ProductCategoryModel.objects.get(slug=slug_category)
         subcategories = ProductSubCategoryModel.objects.filter(category=category)
         ser_data = ProductSubCategorySerializer(instance=subcategories, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
@@ -266,8 +266,8 @@ class SubcategoryItemView(APIView):
 
 
 class SubcategoryFilterView(APIView):
-    def get(self, request, subcategory_id):
-        subcategory = ProductSubCategoryModel.objects.get(id=subcategory_id)
+    def get(self, request, slug_subcategory):
+        subcategory = ProductSubCategoryModel.objects.get(slug=slug_subcategory)
         ser_data = ProductSubCategorySerializer(instance=subcategory)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
