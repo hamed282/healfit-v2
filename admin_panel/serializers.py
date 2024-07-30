@@ -259,6 +259,7 @@ class CombinedProductSerializer(serializers.Serializer):
             tag, created = ProductTagModel.objects.get_or_create(tag=tag_name)
 
         subcategory_name = validated_data.pop('subcategory', [])
+        print(subcategory_name)
         for sub in subcategory_name:
             print(sub)
             sub_cat = sub['subcategory']
