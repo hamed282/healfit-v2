@@ -148,6 +148,7 @@ class ProductAllView(APIView):
         per_page = int(self.request.query_params.get('limit', 16))
         gender = self.request.query_params.get('gender', None)
         category = self.request.query_params.get('category', None)
+        subcategory = self.request.query_params.get('subcategory', None)
         size = self.request.query_params.get('size', None)
         color = self.request.query_params.get('color', None)
         available = self.request.query_params.get('available', None)
@@ -164,9 +165,9 @@ class ProductAllView(APIView):
             color=color,
             size=size,
             category=category,
+            subcategory=subcategory,
             available=available
         )
-
 
         number_of_pages = ceil(products_count/per_page)
         if page_number is not None:

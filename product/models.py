@@ -93,7 +93,7 @@ class ProductModel(models.Model):
     #     # استفاده از distinct برای جلوگیری از تکرار
     #     return queryset.distinct()
     @classmethod
-    def filter_products(cls, gender=None, color=None, size=None, category=None, available=None):
+    def filter_products(cls, gender=None, color=None, size=None, category=None, subcategory=None, available=None):
         # شروع با queryset پایه برای ProductVariantModel
         variant_queryset = ProductVariantModel.objects.all()
 
@@ -113,6 +113,8 @@ class ProductModel(models.Model):
         if gender:
             queryset = queryset.filter(Q(gender__gender=gender) | Q(gender__gender='unisex'))
         if category:
+            queryset = queryset.filter(cat_product__category__category=category)
+        if subcategory:
             queryset = queryset.filter(cat_product__category__category=category)
 
         # استفاده از distinct برای جلوگیری از تکرار

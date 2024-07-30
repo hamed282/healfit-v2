@@ -177,15 +177,17 @@ class PopularProductSerializer(serializers.ModelSerializer):
         depth = 1
 
 
-class ProductCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductCategoryModel
-        fields = '__all__'
-
-
 class ProductSubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductSubCategoryModel
+        fields = '__all__'
+
+
+class ProductCategorySerializer(serializers.ModelSerializer):
+    subcategories = ProductSubCategorySerializer(many=True, read_only=True, source='productsubcategorymodel_set')
+
+    class Meta:
+        model = ProductCategoryModel
         fields = '__all__'
 
 
