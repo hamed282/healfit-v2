@@ -197,11 +197,11 @@ class PopularProductView(APIView):
 
 
 class CategoryItemView(APIView):
-    def get(self, request, category_id):
+    def get(self, request, category):
         page_number = int(self.request.query_params.get('page_number', 1))
         per_page = int(self.request.query_params.get('limit', 16))
 
-        category = ProductCategoryModel.objects.get(id=category_id)
+        category = ProductCategoryModel.objects.get(category=category)
         products = category.category_product.all()
 
         products_count = len(products)
@@ -246,11 +246,11 @@ class SubcategoryListView(APIView):
 
 
 class SubcategoryItemView(APIView):
-    def get(self, request, subcategory_id):
+    def get(self, request, subcategory):
         page_number = int(self.request.query_params.get('page_number', 1))
         per_page = int(self.request.query_params.get('limit', 16))
 
-        subcategory = ProductSubCategoryModel.objects.get(id=subcategory_id)
+        subcategory = ProductSubCategoryModel.objects.get(subcategory=subcategory)
         products = subcategory.subcategory_product.all()
 
         products_count = len(products)
@@ -269,4 +269,11 @@ class SubcategoryFilterView(APIView):
     def get(self, request, subcategory_id):
         subcategory = ProductSubCategoryModel.objects.get(id=subcategory_id)
         ser_data = ProductSubCategorySerializer(instance=subcategory)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class ProductItemView(APIView):
+    def get(self, request, product):
+        product = ProductModel.objects.get(product=product)
+        ser_data = ProductSerializer(instance=product)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
