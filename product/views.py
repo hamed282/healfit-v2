@@ -197,11 +197,11 @@ class PopularProductView(APIView):
 
 
 class CategoryItemView(APIView):
-    def get(self, request, category):
+    def get(self, request, slug_category):
         page_number = int(self.request.query_params.get('page_number', 1))
         per_page = int(self.request.query_params.get('limit', 16))
 
-        category = ProductCategoryModel.objects.get(category=category)
+        category = ProductCategoryModel.objects.get(slug=slug_category)
         products = category.category_product.all()
 
         products_count = len(products)
@@ -246,11 +246,11 @@ class SubcategoryListView(APIView):
 
 
 class SubcategoryItemView(APIView):
-    def get(self, request, subcategory):
+    def get(self, request, slug_subcategory):
         page_number = int(self.request.query_params.get('page_number', 1))
         per_page = int(self.request.query_params.get('limit', 16))
 
-        subcategory = ProductSubCategoryModel.objects.get(subcategory=subcategory)
+        subcategory = ProductSubCategoryModel.objects.get(slug=slug_subcategory)
         products = subcategory.subcategory_product.all()
 
         products_count = len(products)
@@ -273,7 +273,7 @@ class SubcategoryFilterView(APIView):
 
 
 class ProductItemView(APIView):
-    def get(self, request, product):
-        product = ProductModel.objects.get(product=product)
+    def get(self, request, slug_product):
+        product = ProductModel.objects.get(slug=slug_product)
         ser_data = ProductSerializer(instance=product)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
