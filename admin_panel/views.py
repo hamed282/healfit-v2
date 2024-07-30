@@ -733,7 +733,7 @@ class ColorValueView(APIView):
 
 class ProductView(APIView):
     def get(self, request):
-        per_page = self.request.query_params.get('limit', 10)
+        per_page = int(self.request.query_params.get('limit', 10))
         page = self.request.query_params.get('page', None)
 
         product_count = len(ProductModel.objects.all())

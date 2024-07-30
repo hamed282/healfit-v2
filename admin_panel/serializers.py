@@ -259,7 +259,9 @@ class CombinedProductSerializer(serializers.Serializer):
             tag, created = ProductTagModel.objects.get_or_create(tag=tag_name)
 
         subcategory_name = validated_data.pop('subcategory')
-        subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=subcategory_name)
+        for sub in subcategory_name:
+            sub_cat = sub['subcategory']
+            subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=sub_cat)
 
         # Generate unique slug
         original_slug = slugify(validated_data['slug'])
@@ -278,8 +280,12 @@ class CombinedProductSerializer(serializers.Serializer):
         AddSubCategoryModel.objects.create(product=product, subcategory=subcategory)
 
         # Create AddProductTagModel instance if tag is provided
-        if tag:
-            AddProductTagModel.objects.create(product=product, tag=tag)
+        try:
+            if tag:
+                AddProductTagModel.objects.create(product=product, tag=tag)
+        except:
+            # raise ValueError('Email must be')
+            pass
 
         return product
 
