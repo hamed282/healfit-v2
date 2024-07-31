@@ -756,7 +756,9 @@ class ProductItemView(APIView):
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
+        print("data: " + request.data)
         serializer = CombinedProductSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -258,21 +258,13 @@ class CombinedProductSerializer(serializers.Serializer):
         if tag_name:
             tag, created = ProductTagModel.objects.get_or_create(tag=tag_name)
 
-        subcategory_data = validated_data.pop('subcategory', [])
-
-        print(subcategory_data)
-        print(type(subcategory_data))
-        if not isinstance(subcategory_data, list):
-            raise serializers.ValidationError("Expected a list for subcategory data")
-
-        for sub in subcategory_data:
-            # بررسی نوع هر عنصر در subcategory_data
-            if not isinstance(sub, dict):
-                raise serializers.ValidationError("Expected a dictionary for each subcategory item")
-
-            if 'subcategory' not in sub:
-                raise serializers.ValidationError("Missing 'subcategory' key in subcategory item")
-
+        subcategory_name = validated_data.pop('subcategory', [])
+        print(subcategory_name)
+        print(type(subcategory_name))
+        print(validated_data)
+        print(type(validated_data))
+        for sub in subcategory_name:
+            print(sub)
             sub_cat = sub['subcategory']
             subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=sub_cat)
 
