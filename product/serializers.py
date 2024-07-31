@@ -148,7 +148,8 @@ class ProductAllSerializer(serializers.ModelSerializer):
         return subcategories
 
     def get_off_price(self, obj):
-        price = int(obj.price)
+        price = float(obj.price)
+        price = int(price)
         percent_discount = obj.percent_discount
         if obj.percent_discount is None:
             percent_discount = 0
