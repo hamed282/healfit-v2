@@ -5,7 +5,7 @@ from accounts.models import User, RoleModel, RoleUserModel
 from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, LoginUserSerializer, BlogTagSerializer,
                           AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer,
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
-                          ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer)
+                          ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -19,7 +19,7 @@ from rest_framework.permissions import IsAuthenticated
 from home.models import CommentHomeModel, BannerSliderModel, VideoHomeModel
 from home.serializers import CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
-                            ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel)
+                            ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel)
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer, ProductSerializer,
                                  AddSubCategorySerializer, AddProductTagSerializer)
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -889,6 +889,12 @@ class AddProductTagListView(APIView):
 
         return Response(data={'message': f'The Product ID {product_id} was deleted'})
 
+
+class GenderView(APIView):
+    def get(self, request):
+        genders = ProductGenderModel.objects.all()
+        ser_data = GenderSerializer(instance=genders, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
 #         video = get_object_or_404(VideoHomeModel, id=video_id)

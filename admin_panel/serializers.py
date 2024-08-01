@@ -5,7 +5,8 @@ from blog.models import BlogTagModel, AddBlogTagModel, BlogCategoryModel, BlogMo
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
 from product.models import (ExtraGroupModel, SizeProductModel, ColorProductModel, AddImageGalleryModel, ProductTagModel,
-                            ProductSubCategoryModel, ProductModel, AddProductTagModel, ProductGenderModel, AddSubCategoryModel)
+                            ProductSubCategoryModel, ProductModel, AddProductTagModel, ProductGenderModel,
+                            AddSubCategoryModel)
 from product.serializers import ProductSerializer, ProductSubCategorySerializer, AddProductTagSerializer
 
 
@@ -258,13 +259,6 @@ class CombinedProductSerializer(serializers.Serializer):
         if tag_name:
             tag, created = ProductTagModel.objects.get_or_create(tag=tag_name)
 
-        subcategory_name = validated_data.pop('subcategory', [])
-        subcategory_name = subcategory_name
-
-        subcategory_name = subcategory_name.split(',')
-        for sub in subcategory_name:
-            subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=sub)
-
         # Generate unique slug
         original_slug = slugify(validated_data['slug'])
         unique_slug = original_slug
@@ -278,8 +272,14 @@ class CombinedProductSerializer(serializers.Serializer):
         # Create ProductModel instance
         product = ProductModel.objects.create(**validated_data)
 
-        # Create AddSubCategoryModel instance
-        AddSubCategoryModel.objects.create(product=product, subcategory=subcategory)
+        subcategory_name = validated_data.pop('subcategory', [])
+        subcategory_name = subcategory_name
+
+        subcategory_name = subcategory_name.split(',')
+        for sub in subcategory_name:
+            subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=sub)
+            # Create AddSubCategoryModel instance
+            AddSubCategoryModel.objects.create(product=product, subcategory=subcategory)
 
         # Create AddProductTagModel instance if tag is provided
         try:
@@ -328,3 +328,9 @@ class CombinedProductSerializer(serializers.Serializer):
             # 'subcategory': subcategory_data,
             'tag': tag_data
         }
+
+
+class GenderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductGenderModel
+        fields = '__all__'
