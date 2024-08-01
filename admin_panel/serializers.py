@@ -260,8 +260,7 @@ class CombinedProductSerializer(serializers.Serializer):
 
         subcategory_name = validated_data.pop('subcategory', [])
         subcategory_name = subcategory_name
-        print(subcategory_name)
-        print(type(subcategory_name))
+
         subcategory_name = subcategory_name.split(',')
         for sub in subcategory_name:
             subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=sub)
