@@ -264,9 +264,7 @@ class CombinedProductSerializer(serializers.Serializer):
         print(type(subcategory_name))
         subcategory_name = subcategory_name.split(',')
         for sub in subcategory_name:
-            print(sub)
-            sub_cat = sub['subcategory']
-            subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=sub_cat)
+            subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=sub)
 
         # Generate unique slug
         original_slug = slugify(validated_data['slug'])
