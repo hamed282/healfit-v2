@@ -269,11 +269,10 @@ class CombinedProductSerializer(serializers.Serializer):
             num += 1
         validated_data['slug'] = unique_slug
 
-        # Create ProductModel instance
-        product = ProductModel.objects.create(**validated_data)
-
         subcategory_name = validated_data.pop('subcategory', [])
         subcategory_name = subcategory_name
+        # Create ProductModel instance
+        product = ProductModel.objects.create(**validated_data)
 
         subcategory_name = subcategory_name.split(',')
         for sub in subcategory_name:
