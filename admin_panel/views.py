@@ -5,7 +5,8 @@ from accounts.models import User, RoleModel, RoleUserModel
 from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, LoginUserSerializer, BlogTagSerializer,
                           AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer,
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
-                          ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer)
+                          ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
+                          ProductVariantSerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -898,6 +899,15 @@ class GenderView(APIView):
         genders = ProductGenderModel.objects.all()
         ser_data = GenderSerializer(instance=genders, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class ProductVariantView(APIView):
+    def post(self, request):
+        ser_data = ProductVariantSerializer(data=request.data)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
 #         video = get_object_or_404(VideoHomeModel, id=video_id)

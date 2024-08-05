@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from product.models import (ExtraGroupModel, SizeProductModel, ColorProductModel, AddImageGalleryModel, ProductTagModel,
                             ProductSubCategoryModel, ProductModel, AddProductTagModel, ProductGenderModel,
                             AddSubCategoryModel)
-from product.serializers import ProductSerializer, ProductSubCategorySerializer, AddProductTagSerializer
+from product.serializers import ProductSerializer, ProductVariantModel
 
 
 class UserSerializer(ModelSerializer):
@@ -333,3 +333,12 @@ class GenderSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductGenderModel
         fields = '__all__'
+
+
+class ProductVariantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductVariantModel
+        fields = '__all__'
+
+
+

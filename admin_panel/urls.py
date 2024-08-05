@@ -85,4 +85,8 @@ urlpatterns = [
     # Add Product Tag
     path('product/addtag/', views.AddProductTagListView.as_view(), name='addtag_post_product'),
     path('product/addtag/<int:product_id>/', views.AddProductTagListView.as_view(), name='addtag_product'),
+
+    # Variant Product
+    path('product/variant/', views.ProductVariantView.as_view(), name='variant_product'),
+
 ]
