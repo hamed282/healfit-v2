@@ -6,7 +6,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer,
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
-                          ProductVariantSerializer)
+                          ProductWithVariantsSerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -20,7 +20,8 @@ from rest_framework.permissions import IsAuthenticated
 from home.models import CommentHomeModel, BannerSliderModel, VideoHomeModel
 from home.serializers import CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
-                            ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel)
+                            ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
+                            ProductVariantModel)
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer, ProductSerializer,
                                  AddSubCategorySerializer, AddProductTagSerializer)
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -902,10 +903,27 @@ class GenderView(APIView):
 
 
 class ProductVariantView(APIView):
-    def post(self, request):
-        ser_data = ProductVariantSerializer(data=request.data)
+    def post(self, request, product_id):
+        form = request.data
+        # print(form.getlist('extras'))
+        # print(type(form))
+        ser_data = ProductWithVariantsSerializer(data=form)
+
         if ser_data.is_valid():
-            ser_data.save()
+
+            extras = ser_data.validated_data['extras']
+            print(extras)
+            for extra in extras:
+                ProductVariantModel.objects.create(product=ProductModel.objects.get(id=product_id),
+                                                   name=extra['name'],
+                                                   item_id=extra['item_id'],
+                                                   color=ColorProductModel.objects.get(id=extra['color']),
+                                                   size=SizeProductModel.objects.get(id=extra['size']),
+                                                   price=extra['price'],
+                                                   percent_discount=extra['percent_discount'],
+                                                   quantity=extra['quantity'],
+                                                   )
+
             return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 # class VideoItemView(APIView):

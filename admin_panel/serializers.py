@@ -335,10 +335,20 @@ class GenderSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ProductVariantSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductVariantModel
-        fields = '__all__'
+class ProductVariantSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    item_id = serializers.CharField()
+    color = serializers.IntegerField()
+    size = serializers.IntegerField()
+    percent_discount = serializers.IntegerField()
+    price = serializers.IntegerField()
+    quantity = serializers.IntegerField()
+    slug = serializers.SlugField(required=False)
+
+
+class ProductWithVariantsSerializer(serializers.Serializer):
+    extras = ProductVariantSerializer(many=True)
+
 
 
 
