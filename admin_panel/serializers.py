@@ -338,8 +338,8 @@ class GenderSerializer(serializers.ModelSerializer):
 class ProductVariantSerializer(serializers.Serializer):
     name = serializers.CharField()
     item_id = serializers.CharField()
-    color = serializers.IntegerField()
-    size = serializers.IntegerField()
+    color = serializers.CharField()
+    size = serializers.CharField()
     percent_discount = serializers.IntegerField()
     price = serializers.IntegerField()
     quantity = serializers.IntegerField()
