@@ -6,7 +6,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer,
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
-                          ProductWithVariantsSerializer)
+                          ProductWithVariantsSerializer, ProductImageGallerySerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -15,16 +15,15 @@ from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.serializers import UserLoginSerializer
 from blog.serializers import BlogAllSerializer, BlogSerializer, ImageBlogSerializer
-from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel, BlogImageModel
+from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel
 from rest_framework.permissions import IsAuthenticated
 from home.models import CommentHomeModel, BannerSliderModel, VideoHomeModel
 from home.serializers import CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
-                            ProductVariantModel)
+                            ProductVariantModel, AddImageGalleryModel)
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer, ProductSerializer,
-                                 AddSubCategorySerializer, AddProductTagSerializer)
-from rest_framework.parsers import MultiPartParser, FormParser
+                                 AddProductTagSerializer, ProductColorImageSerializer)
 
 
 class LanguageView(APIView):
@@ -904,15 +903,13 @@ class GenderView(APIView):
 
 class ProductVariantView(APIView):
     def post(self, request, product_id):
-        form = request.data
         # print(form.getlist('extras'))
         # print(type(form))
-        ser_data = ProductWithVariantsSerializer(data=form)
+        ser_data = ProductWithVariantsSerializer(data=request.data)
 
         if ser_data.is_valid():
 
             extras = ser_data.validated_data['extras']
-            print(extras)
             for extra in extras:
                 ProductVariantModel.objects.create(product=ProductModel.objects.get(id=product_id),
                                                    name=extra['name'],
@@ -926,6 +923,17 @@ class ProductVariantView(APIView):
 
             return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProductImageGallery(APIView):
+    def post(self, request):
+
+        for form in request.data['data']:
+            ser_data = ProductColorImageSerializer(data=form)
+            if ser_data.is_valid():
+                ser_data.save()
+        return Response(data='Done', status=status.HTTP_201_CREATED)
+
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
 #         video = get_object_or_404(VideoHomeModel, id=video_id)

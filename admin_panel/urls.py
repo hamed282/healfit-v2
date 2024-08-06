@@ -88,5 +88,6 @@ urlpatterns = [
 
     # Variant Product
     path('product/variant/<int:product_id>/', views.ProductVariantView.as_view(), name='variant_product'),
+    path('product/gallery/', views.ProductImageGallery.as_view(), name='image_gallery'),
 
 ]

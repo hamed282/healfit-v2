@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from product.models import (ExtraGroupModel, SizeProductModel, ColorProductModel, AddImageGalleryModel, ProductTagModel,
                             ProductSubCategoryModel, ProductModel, AddProductTagModel, ProductGenderModel,
                             AddSubCategoryModel)
-from product.serializers import ProductSerializer, ProductVariantModel
+from product.serializers import ProductSerializer
 
 
 class UserSerializer(ModelSerializer):
@@ -348,6 +348,15 @@ class ProductVariantSerializer(serializers.Serializer):
 
 class ProductWithVariantsSerializer(serializers.Serializer):
     extras = ProductVariantSerializer(many=True)
+
+
+class VariantImageSerializer(serializers.Serializer):
+    color = serializers.IntegerField()
+    image = serializers.CharField()
+
+
+class ProductImageGallerySerializer(serializers.Serializer):
+    data = VariantImageSerializer(many=True)
 
 
 
