@@ -932,7 +932,7 @@ class ProductImageGallery(APIView):
             print(data_list)
         else:
             data_list = request.data.get('data', [])
-            print('no data')
+            print(request.data)
 
         if isinstance(data_list, list):
             for form_data in data_list:
