@@ -927,13 +927,24 @@ class ProductVariantView(APIView):
 
 class ProductImageGallery(APIView):
     def post(self, request):
-        form = request.data
-        print(form.getlist('data'))
-        for form in request.data['data']:
-            ser_data = ProductColorImageSerializer(data=form)
-            if ser_data.is_valid():
-                ser_data.save()
-        return Response(data='Done', status=status.HTTP_201_CREATED)
+        if 'data' in request.data:
+            # اگر داده‌ها به صورت فرم ارسال شده‌اند
+            data_list = request.data.getlist('data')
+        else:
+            # اگر داده‌ها به صورت JSON ارسال شده‌اند
+            data_list = request.data.get('data', [])
+
+        # برای پردازش فرم‌های ارسال شده
+        if isinstance(data_list, list):
+            for form_data in data_list:
+                ser_data = ProductColorImageSerializer(data=form_data)
+                if ser_data.is_valid():
+                    ser_data.save()
+                else:
+                    return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data='Done', status=status.HTTP_201_CREATED)
+
+        return Response({"error": "Invalid data format"}, status=status.HTTP_400_BAD_REQUEST)
 
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
