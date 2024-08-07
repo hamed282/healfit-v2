@@ -927,7 +927,7 @@ class ProductVariantView(APIView):
 
 class ProductImageGallery(APIView):
     def post(self, request):
-
+        print(request.data)
         for form in request.data['data']:
             ser_data = ProductColorImageSerializer(data=form)
             if ser_data.is_valid():
