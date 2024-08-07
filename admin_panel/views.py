@@ -928,13 +928,10 @@ class ProductVariantView(APIView):
 class ProductImageGallery(APIView):
     def post(self, request):
         if 'data' in request.data:
-            # اگر داده‌ها به صورت فرم ارسال شده‌اند
             data_list = request.data.getlist('data')
         else:
-            # اگر داده‌ها به صورت JSON ارسال شده‌اند
             data_list = request.data.get('data', [])
 
-        # برای پردازش فرم‌های ارسال شده
         if isinstance(data_list, list):
             for form_data in data_list:
                 ser_data = ProductColorImageSerializer(data=form_data)

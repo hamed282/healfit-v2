@@ -78,7 +78,7 @@ class ProductVariantShopSerializer(serializers.ModelSerializer):
 class ProductColorImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = AddImageGalleryModel
-        fields = ['image']
+        fields = '__all__'
 
 
 class ColorSizeProductSerializer(serializers.ModelSerializer):
