@@ -963,6 +963,21 @@ class ProductImageGallery(APIView):
 
         return Response(data='Done', status=status.HTTP_201_CREATED)
 
+
+class VariantDataView(APIView):
+    def get(self, request, product_id):
+        product = get_object_or_404(ProductModel, id=product_id)
+        ser_data = ProductSerializer(instance=product)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class VariantImageView(APIView):
+    def get(self, request, product_id):
+        product = get_object_or_404(ProductModel, id=product_id)
+        gallery = AddImageGalleryModel.objects.filter(product=product)
+        ser_data = ProductColorImageSerializer(instance=gallery, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
 #         video = get_object_or_404(VideoHomeModel, id=video_id)
