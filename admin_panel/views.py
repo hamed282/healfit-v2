@@ -938,16 +938,22 @@ class ProductImageGallery(APIView):
             if product_key not in request.POST:
                 break
 
-            data_list.append({
-                'product': request.POST.get(product_key),
-                'color': request.POST.get(color_key),
-                'image': request.FILES.get(image_key),
-            })
+            product_values = request.POST.getlist(product_key)
+            color_values = request.POST.getlist(color_key)
+            image_files = request.FILES.getlist(image_key)
+
+            for product, color, image in zip(product_values, color_values, image_files):
+                data_list.append({
+                    'product': product,
+                    'color': color,
+                    'image': image,
+                })
+
             index += 1
-        print(request.data)
+
         if not data_list:
             return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
-        print(data_list)
+
         for form_data in data_list:
             ser_data = ProductColorImageSerializer(data=form_data)
             if ser_data.is_valid():
