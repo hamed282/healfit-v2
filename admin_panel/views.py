@@ -927,25 +927,35 @@ class ProductVariantView(APIView):
 
 class ProductImageGallery(APIView):
     def post(self, request):
-        if 'data' in request.data:
-            data_list = request.data.getlist('data')
-            print(data_list)
-        else:
-            data_list = request.data.get('data', [])
-            print(request.data)
+        data_list = []
+        index = 0
 
-        if isinstance(data_list, list):
-            for form_data in data_list:
-                print(form_data)
-                ser_data = ProductColorImageSerializer(data=form_data)
-                if ser_data.is_valid():
-                    print(form_data)
-                    ser_data.save()
-                else:
-                    return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-            return Response(data='Done', status=status.HTTP_201_CREATED)
+        while True:
+            product_key = f'data[{index}][product]'
+            color_key = f'data[{index}][color]'
+            image_key = f'data[{index}][image]'
 
-        return Response({"error": "Invalid data format"}, status=status.HTTP_400_BAD_REQUEST)
+            if product_key not in request.POST:
+                break
+
+            data_list.append({
+                'product': request.POST.get(product_key),
+                'color': request.POST.get(color_key),
+                'image': request.FILES.get(image_key),
+            })
+            index += 1
+
+        if not data_list:
+            return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
+
+        for form_data in data_list:
+            ser_data = ProductColorImageSerializer(data=form_data)
+            if ser_data.is_valid():
+                ser_data.save()
+            else:
+                return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(data='Done', status=status.HTTP_201_CREATED)
 
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
