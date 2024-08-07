@@ -929,8 +929,10 @@ class ProductImageGallery(APIView):
     def post(self, request):
         if 'data' in request.data:
             data_list = request.data.getlist('data')
+            print(data_list)
         else:
             data_list = request.data.get('data', [])
+            print('no data')
 
         if isinstance(data_list, list):
             for form_data in data_list:
