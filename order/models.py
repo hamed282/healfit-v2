@@ -1,0 +1,70 @@
+from django.db import models
+from accounts.models import User
+from product.models import ProductVariantModel, ColorProductModel, SizeProductModel
+from accounts.models import AddressModel
+
+
+class OrderModel(models.Model):
+    objects = None
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_order')
+    address = models.ForeignKey(AddressModel, on_delete=models.CASCADE, related_name='address_order')
+    sent = models.BooleanField(default=False)
+    ref_id = models.CharField(max_length=200, blank=True, null=True)
+    cart_id = models.CharField(max_length=64, blank=True, null=True)
+    trace = models.CharField(max_length=200, blank=True, null=True)
+    error_message = models.TextField(blank=True, null=True)
+    error_note = models.TextField(blank=True, null=True)
+
+    paid = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('paid', '-updated')
+
+        verbose_name = 'Order'
+        verbose_name_plural = 'Orders'
+
+    def __str__(self):
+        return f'{self.user} - Order ID: {self.id}'
+
+    def get_total_price(self):
+        return sum(item.get_cost() for item in self.items.all())
+
+
+class OrderItemModel(models.Model):
+    objects = None
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_order_item')
+    order = models.ForeignKey(OrderModel, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(ProductVariantModel, on_delete=models.CASCADE, related_name='order_product')
+    item_id = models.CharField(max_length=200)
+    color = models.ForeignKey(ColorProductModel, on_delete=models.CASCADE, related_name='order_color')
+    size = models.ForeignKey(SizeProductModel, on_delete=models.CASCADE, related_name='order_size')
+    price = models.IntegerField()
+    quantity = models.IntegerField(default=1)
+    trace = models.CharField(max_length=200)
+    completed = models.BooleanField(default=False)
+    created = models.DateField(auto_now_add=True)
+
+    # class Meta:
+    #     verbose_name = ''
+    #     verbose_name_plural = ''
+
+    def __str__(self):
+        return str(self.id)
+
+    def get_cost(self):
+        return self.price * self.quantity
+
+
+class UserProductModel(models.Model):
+    objects = None
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rel_user')
+    product = models.ForeignKey(ProductVariantModel, on_delete=models.CASCADE, related_name='rel_product')
+    order = models.ForeignKey(OrderModel, on_delete=models.CASCADE, related_name='rel_order')
+    price = models.CharField(max_length=20)
+    quantity = models.IntegerField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.order}'

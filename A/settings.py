@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_celery_beat',
     # 'storages',
+    'order',
 
     # Installed App
     'accounts.apps.AccountsConfig',
