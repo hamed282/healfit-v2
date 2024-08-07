@@ -936,6 +936,7 @@ class ProductImageGallery(APIView):
             for form_data in data_list:
                 ser_data = ProductColorImageSerializer(data=form_data)
                 if ser_data.is_valid():
+                    print(form_data)
                     ser_data.save()
                 else:
                     return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
