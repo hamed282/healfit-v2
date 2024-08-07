@@ -934,6 +934,7 @@ class ProductImageGallery(APIView):
 
         if isinstance(data_list, list):
             for form_data in data_list:
+                print(form_data)
                 ser_data = ProductColorImageSerializer(data=form_data)
                 if ser_data.is_valid():
                     print(form_data)
