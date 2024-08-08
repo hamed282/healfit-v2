@@ -899,7 +899,8 @@ class GenderView(APIView):
 
 class ProductVariantView(APIView):
     def get(self, request, product_id):
-        variant = get_object_or_404(ProductVariantModel, id=product_id)
+        product = ProductModel.objects.get(id=product_id)
+        variant = ProductVariantModel.objects.filter(product=product)
         ser_data = ProductVariantSerializer(instance=variant, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
