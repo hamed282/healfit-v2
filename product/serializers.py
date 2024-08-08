@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import (ProductGenderModel, ProductModel, ProductVariantModel, AddImageGalleryModel, PopularProductModel,
                      ProductCategoryModel, ProductSubCategoryModel, AddProductTagModel, AddSubCategoryModel,
                      ProductTagModel)
-
+from django.shortcuts import get_object_or_404
 
 class ProductGenderSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,12 +17,19 @@ class ProductSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     subcategory = serializers.SerializerMethodField()
     gender = serializers.SlugRelatedField(read_only=True, slug_field='gender')
+    tag = serializers.SerializerMethodField()
 
     class Meta:
         model = ProductModel
-        fields = ['product', 'percent_discount', 'colors', 'all_size', 'size', 'cover_image', 'size_table_image',
-                  'description_image', 'application_fields', 'description', 'category', 'subcategory', 'gender',
-                  'group_id', 'slug', 'created', 'updated', 'id', 'price']
+        fields = '__all__'
+
+    def get_tag(self, product):
+        try:
+            tag = AddProductTagModel.objects.get(product=product)
+            tag = tag.tag.tag
+        except:
+            tag = None
+        return tag
 
     def get_category(self, obj):
         categories = obj.cat_product.all()

@@ -9,20 +9,6 @@ class ProductGenderAdmin(admin.ModelAdmin):
     readonly_fields = ["slug"]
 
 
-class ProductCategoryAdmin(admin.ModelAdmin):
-    readonly_fields = ["slug"]
-
-
-class ProductSubCategoryAdmin(admin.ModelAdmin):
-    readonly_fields = ["slug"]
-
-
-class ProductImageGalleryAdmin(admin.ModelAdmin):
-    def image_tag(self, obj):
-        return format_html('<img src="{}" style="max-width:200px; max-height:200px"/>'.format(obj.image.url))
-    list_display = ['product', 'color', 'image_tag']
-
-
 class CategoryInline(admin.TabularInline):
     model = AddCategoryModel
     # raw_id_fields = ('product',)
@@ -35,16 +21,37 @@ class SubCategoryInline(admin.TabularInline):
     extra = 1
 
 
+class ProductCategoryAdmin(admin.ModelAdmin):
+    readonly_fields = ["slug"]
+    inlines = (CategoryInline, )
+
+
+class ProductSubCategoryAdmin(admin.ModelAdmin):
+    readonly_fields = ["slug"]
+    inlines = (SubCategoryInline, )
+
+
+class ProductImageGalleryAdmin(admin.ModelAdmin):
+    def image_tag(self, obj):
+        return format_html('<img src="{}" style="max-width:200px; max-height:200px"/>'.format(obj.image.url))
+    list_display = ['product', 'color', 'image_tag']
+
+
 class ImageGalleryInline(admin.TabularInline):
     model = AddImageGalleryModel
     # raw_id_fields = ('product',)
     extra = 1
 
 
+class TagInline(admin.TabularInline):
+    model = AddProductTagModel
+    extra = 1
+
+
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['id', 'product', 'priority']
     readonly_fields = ["slug"]
-    inlines = (ImageGalleryInline, CategoryInline, SubCategoryInline)
+    inlines = (ImageGalleryInline, CategoryInline, SubCategoryInline, TagInline)
 
 
 class ProductVariantAdmin(admin.ModelAdmin):
@@ -61,6 +68,11 @@ class CategoryTagAdmin(admin.ModelAdmin):
     list_display = ['tag']
 
 
+class ProductTagAdmin(admin.ModelAdmin):
+    # readonly_fields = ["slug"]
+    list_display = ['tag']
+
+
 admin.site.register(ProductCategoryModel, ProductCategoryAdmin)
 admin.site.register(ProductGenderModel, ProductGenderAdmin)
 admin.site.register(ProductSubCategoryModel, ProductSubCategoryAdmin)
@@ -73,6 +85,6 @@ admin.site.register(ColorProductModel)
 admin.site.register(AddCategoryModel)
 admin.site.register(AddSubCategoryModel)
 admin.site.register(ExtraGroupModel)
-admin.site.register(ProductTagModel)
+admin.site.register(ProductTagModel, ProductTagAdmin)
 admin.site.register(AddProductTagModel)
 
