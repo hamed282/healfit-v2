@@ -984,25 +984,23 @@ class ProductImageGallery(APIView):
 
         return Response(data='Done', status=status.HTTP_201_CREATED)
 
-    def put(self, request):
+    def put(self, request, product_id):
         data_list = []
         index = 0
 
         while True:
-            product_key = f'data[{index}][product]'
             color_key = f'data[{index}][color]'
             image_key = f'data[{index}][image]'
 
-            if product_key not in request.POST:
+            if color_key not in request.POST:
                 break
 
-            product_values = request.POST.getlist(product_key)
             color_values = request.POST.getlist(color_key)
             image_files = request.FILES.getlist(image_key)
 
-            for product, color, image in zip(product_values, color_values, image_files):
+            for color, image in zip(color_values, image_files):
                 data_list.append({
-                    'product': product,
+                    'product': product_id,
                     'color': color,
                     'image': image,
                 })
@@ -1013,14 +1011,15 @@ class ProductImageGallery(APIView):
             return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
 
         for form_data in data_list:
-            product = form_data['product']
-            color = form_data['color']
-            image = form_data['image']
+            product = form_data.get('product')
+            color = form_data.get('color')
 
-            try:
-                instance = AddImageGalleryModel.objects.get(product=product, color=color)
+            # Assuming you have a unique constraint on product and color combination
+            instance = AddImageGalleryModel.objects.filter(product=product, color=color).first()
+
+            if instance:
                 ser_data = ProductColorImageSerializer(instance, data=form_data)
-            except AddImageGalleryModel.DoesNotExist:
+            else:
                 ser_data = ProductColorImageSerializer(data=form_data)
 
             if ser_data.is_valid():
