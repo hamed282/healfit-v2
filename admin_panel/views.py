@@ -937,8 +937,8 @@ class ProductVariantView(APIView):
                                                              item_id=extra['item_id']).first()
                 if variant:
                     variant.name = extra['name']
-                    variant.color = ColorProductModel.objects.get(id=extra['color'])
-                    variant.size = SizeProductModel.objects.get(id=extra['size'])
+                    variant.color_id = extra['color']  # Assigning the ID directly
+                    variant.size_id = extra['size']  # Assigning the ID directly
                     variant.price = extra['price']
                     variant.percent_discount = extra['percent_discount']
                     variant.quantity = extra['quantity']
