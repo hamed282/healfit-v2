@@ -767,22 +767,18 @@ class ProductItemView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # def put(self, request, id_color):
-    #     # id_color = request.data['id_color']
-    #
-    #     if id_color is None:
-    #         return Response(data={'message': 'Input Color ID'})
-    #
-    #     try:
-    #         size = ColorProductModel.objects.get(id=id_color)
-    #     except:
-    #         return Response(data={'message': 'Color is not exist'})
-    #
-    #     ser_data = ColorValueCUDSerializer(instance=size, data=request.data, partial=True)
-    #     if ser_data.is_valid():
-    #         ser_data.save()
-    #         return Response(data=ser_data.data, status=status.HTTP_200_OK)
-    #     return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request, product_id):
+        try:
+            product = ProductModel.objects.get(id=product_id)
+        except ProductModel.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CombinedProductSerializer(instance=product, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, product_id):
 
@@ -984,6 +980,23 @@ class ProductImageGallery(APIView):
 
         return Response(data='Done', status=status.HTTP_201_CREATED)
 
+
+
+
+class VariantDataView(APIView):
+    def get(self, request, product_id):
+        product = get_object_or_404(ProductModel, id=product_id)
+        ser_data = ProductSerializer(instance=product)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class VariantImageView(APIView):
+    def get(self, request, product_id):
+        product = get_object_or_404(ProductModel, id=product_id)
+        gallery = AddImageGalleryModel.objects.filter(product=product)
+        ser_data = ProductColorImageSerializer(instance=gallery, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
     def put(self, request, product_id):
         data_list = []
         index = 0
@@ -1028,21 +1041,6 @@ class ProductImageGallery(APIView):
                 return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(data='Done', status=status.HTTP_200_OK)
-
-
-class VariantDataView(APIView):
-    def get(self, request, product_id):
-        product = get_object_or_404(ProductModel, id=product_id)
-        ser_data = ProductSerializer(instance=product)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-
-class VariantImageView(APIView):
-    def get(self, request, product_id):
-        product = get_object_or_404(ProductModel, id=product_id)
-        gallery = AddImageGalleryModel.objects.filter(product=product)
-        ser_data = ProductColorImageSerializer(instance=gallery, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
