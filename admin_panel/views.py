@@ -924,6 +924,27 @@ class ProductVariantView(APIView):
             return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self, request, product_id):
+        ser_data = ProductWithVariantsSerializer(data=request.data)
+
+        if ser_data.is_valid():
+
+            extras = ser_data.validated_data['extras']
+            for extra in extras:
+                variant = ProductVariantModel.objects.filter(product=ProductModel.objects.get(id=product_id),
+                                                             item_id=extra['item_id']).first()
+                if variant:
+                    variant.name = extra['name']
+                    variant.color = ColorProductModel.objects.get(id=extra['color'])
+                    variant.size = SizeProductModel.objects.get(id=extra['size'])
+                    variant.price = extra['price']
+                    variant.percent_discount = extra['percent_discount']
+                    variant.quantity = extra['quantity']
+                    variant.save()
+
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ProductImageGallery(APIView):
     def post(self, request):
@@ -962,6 +983,52 @@ class ProductImageGallery(APIView):
                 return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(data='Done', status=status.HTTP_201_CREATED)
+
+    def put(self, request):
+        data_list = []
+        index = 0
+
+        while True:
+            product_key = f'data[{index}][product]'
+            color_key = f'data[{index}][color]'
+            image_key = f'data[{index}][image]'
+
+            if product_key not in request.POST:
+                break
+
+            product_values = request.POST.getlist(product_key)
+            color_values = request.POST.getlist(color_key)
+            image_files = request.FILES.getlist(image_key)
+
+            for product, color, image in zip(product_values, color_values, image_files):
+                data_list.append({
+                    'product': product,
+                    'color': color,
+                    'image': image,
+                })
+
+            index += 1
+
+        if not data_list:
+            return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
+
+        for form_data in data_list:
+            product = form_data['product']
+            color = form_data['color']
+            image = form_data['image']
+
+            try:
+                instance = AddImageGalleryModel.objects.get(product=product, color=color)
+                ser_data = ProductColorImageSerializer(instance, data=form_data)
+            except AddImageGalleryModel.DoesNotExist:
+                ser_data = ProductColorImageSerializer(data=form_data)
+
+            if ser_data.is_valid():
+                ser_data.save()
+            else:
+                return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(data='Done', status=status.HTTP_200_OK)
 
 
 class VariantDataView(APIView):
