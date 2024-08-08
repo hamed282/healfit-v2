@@ -23,7 +23,7 @@ from product.models import (ProductCategoryModel, ProductSubCategoryModel, Extra
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel)
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer, ProductSerializer,
-                                 AddProductTagSerializer, ProductColorImageSerializer)
+                                 AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer)
 
 
 class LanguageView(APIView):
@@ -981,12 +981,10 @@ class ProductImageGallery(APIView):
         return Response(data='Done', status=status.HTTP_201_CREATED)
 
 
-
-
 class VariantDataView(APIView):
     def get(self, request, product_id):
         product = get_object_or_404(ProductModel, id=product_id)
-        ser_data = ProductSerializer(instance=product)
+        ser_data = ProductAdminSerializer(instance=product)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 

@@ -63,6 +63,59 @@ class ProductSerializer(serializers.ModelSerializer):
         return size
 
 
+class ProductAdminSerializer(serializers.ModelSerializer):
+    colors = serializers.SerializerMethodField()
+    all_size = serializers.SerializerMethodField()
+    size = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
+    subcategory = serializers.SerializerMethodField()
+    gender = serializers.SlugRelatedField(read_only=True, slug_field='id')
+    tag = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductModel
+        fields = '__all__'
+
+    def get_tag(self, product):
+        try:
+            tag = AddProductTagModel.objects.get(product=product)
+            tag = tag.tag.tag
+        except:
+            tag = None
+        return tag
+
+    def get_category(self, obj):
+        categories = obj.cat_product.all()
+        categories = [category.category.category for category in categories]
+        return categories
+
+    def get_subcategory(self, obj):
+        subcategories = obj.sub_product.all()
+        subcategories = [subcategory.subcategory.subcategory for subcategory in subcategories]
+        return subcategories
+
+    def get_colors(self, obj):
+        product = ProductVariantModel.objects.filter(product=obj)
+
+        colors = set([f'{str(p.color.color)} - {str(p.color.color_code)}' for p in product])
+        all_colors = [{'color': color.split(" - ")[0], 'code': color.split(" - ")[1]} for color in colors]
+        return all_colors
+
+    def get_all_size(self, obj):
+        product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
+        size = set([f'{str(p.size)} - {str(p.size.priority)}' for p in product])
+        sizes = sorted(size, key=lambda x: int(x.split(" - ")[1]))
+        all_size = [size.split(" - ")[0] for size in sizes]
+        return all_size
+
+    def get_size(self, obj):
+        product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
+        size = set([f'{str(p.size)} - {str(p.size.priority)}' for p in product if p.quantity > 0])
+        sizes = sorted(size, key=lambda x: int(x.split(" - ")[1]))
+        size = [size.split(" - ")[0] for size in sizes]
+        return size
+
+
 class ProductVariantShopSerializer(serializers.ModelSerializer):
     product = serializers.SlugRelatedField(read_only=True, slug_field='product')
     size = serializers.SlugRelatedField(read_only=True, slug_field='size')
