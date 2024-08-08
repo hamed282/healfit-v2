@@ -6,7 +6,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer,
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
-                          ProductWithVariantsSerializer, ProductImageGallerySerializer)
+                          ProductWithVariantsSerializer, ProductVariantSerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -898,6 +898,11 @@ class GenderView(APIView):
 
 
 class ProductVariantView(APIView):
+    def get(self, request, product_id):
+        variant = get_object_or_404(ProductVariantModel, id=product_id)
+        ser_data = ProductVariantSerializer(instance=variant, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
     def post(self, request, product_id):
         # print(form.getlist('extras'))
         # print(type(form))
