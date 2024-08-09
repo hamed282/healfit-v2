@@ -344,7 +344,6 @@ class ProductVariantSerializer(serializers.Serializer):
     price = serializers.IntegerField()
     quantity = serializers.IntegerField()
     slug = serializers.SlugField(required=False)
-    id = serializers.IntegerField()
 
 
 class ProductWithVariantsSerializer(serializers.Serializer):
