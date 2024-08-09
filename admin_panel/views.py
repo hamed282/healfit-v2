@@ -928,7 +928,6 @@ class ProductVariantView(APIView):
 
     def put(self, request, product_id):
         ser_data = ProductWithVariantsSerializer(data=request.data)
-        print(ser_data)
         if ser_data.is_valid():
 
             extras = ser_data.validated_data['extras']

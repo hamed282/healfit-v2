@@ -124,8 +124,8 @@ class ProductModel(models.Model):
 class ProductVariantModel(models.Model):
     objects = None
     product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='product_color_size')
-    name = models.CharField(max_length=200)
-    item_id = models.CharField(max_length=100, verbose_name='Product ID')
+    name = models.CharField(max_length=200, unique=True)
+    item_id = models.CharField(max_length=100, verbose_name='Product ID', unique=True)
     color = models.ForeignKey('ColorProductModel', on_delete=models.CASCADE, related_name='color_product')
     size = models.ForeignKey('SizeProductModel', on_delete=models.CASCADE, related_name='size_product')
     price = models.IntegerField()
