@@ -928,13 +928,15 @@ class ProductVariantView(APIView):
 
     def put(self, request, product_id):
         ser_data = ProductWithVariantsSerializer(data=request.data)
-
+        print(ser_data)
         if ser_data.is_valid():
 
             extras = ser_data.validated_data['extras']
+            print(extras)
             for extra in extras:
                 variant = ProductVariantModel.objects.get(product=ProductModel.objects.get(id=product_id),
                                                           item_id=extra['item_id'])
+                print(extra)
                 if variant:
                     variant.name = extra['name']
                     variant.item_id = extra['item_id']
