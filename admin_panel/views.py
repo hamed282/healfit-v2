@@ -933,10 +933,11 @@ class ProductVariantView(APIView):
 
             extras = ser_data.validated_data['extras']
             for extra in extras:
-                variant = ProductVariantModel.objects.filter(product=ProductModel.objects.get(id=product_id),
-                                                             item_id=extra['item_id']).first()
+                variant = ProductVariantModel.objects.get(product=ProductModel.objects.get(id=product_id),
+                                                          item_id=extra['item_id'])
                 if variant:
                     variant.name = extra['name']
+                    variant.item_id = extra['item_id']
                     variant.color_id = extra['color']  # Assigning the ID directly
                     variant.size_id = extra['size']  # Assigning the ID directly
                     variant.price = extra['price']
