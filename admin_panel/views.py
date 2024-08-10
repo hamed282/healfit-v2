@@ -954,6 +954,7 @@ class ProductImageGallery(APIView):
     def post(self, request):
         query_dict = request.data
         data = defaultdict(dict)
+        print(query_dict)
 
         for key, value in query_dict.items():
             # Split the key into parts
