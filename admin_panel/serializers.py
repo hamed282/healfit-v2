@@ -360,6 +360,7 @@ class ProductImageGallerySerializer(serializers.Serializer):
 
 
 class AdminProductGallerySerializer(serializers.Serializer):
-    data = ProductColorImageSerializer(many=True)
+    update = ProductColorImageSerializer(many=True)
+    create = ProductColorImageSerializer(many=True)
 
 
