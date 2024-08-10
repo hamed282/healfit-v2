@@ -955,7 +955,7 @@ class ProductImageGallery(APIView):
         query_dict = request.data
         data = defaultdict(dict)
         print(query_dict)
-        print('-'*100)
+        print('-' * 100)
 
         for key, value in query_dict.items():
             # Split the key into parts
@@ -964,11 +964,6 @@ class ProductImageGallery(APIView):
             field = parts[2]
 
             # Assign the value to the appropriate place in the dictionary
-            if isinstance(value, list):
-                data[index][field] = value[0]
-            else:
-                data[index][field] = value
-
             if field in ['product', 'color']:
                 # Convert the value to an integer
                 data[index][field] = int(value[0])
