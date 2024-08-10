@@ -1001,7 +1001,10 @@ class ProductImageGallery(APIView):
             field = parts[2]
 
             # Assign the value to the appropriate place in the dictionary
-            data[index][field] = value[0]
+            if isinstance(value, list):
+                data[index][field] = value[0]
+            else:
+                data[index][field] = value
 
         # Convert defaultdict to a list of dictionaries
         result = [data[i] for i in sorted(data.keys())]
