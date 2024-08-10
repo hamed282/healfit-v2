@@ -990,7 +990,7 @@ class ProductImageGallery(APIView):
         ser_data = AdminProductGallerySerializer(data=request.data)
 
         # if ser_data.is_valid():
-        data = ser_data.validated_data
+        data = ser_data
         print(data)
         for d in data['update']:
             gallery = AddImageGalleryModel.objects.get(id=d['product'])
