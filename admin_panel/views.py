@@ -975,11 +975,10 @@ class ProductImageGallery(APIView):
             color_key = f'data[{index}][color]'
             image_key = f'data[{index}][image]'
 
-            # if product_key not in request.POST:
-            #     break
+            if product_key not in request.POST:
+                break
             print('-'*100)
-            product_values = request.POST.getlist(product_key)
-            print(product_values)
+            product_values = request.POST.get(product_key)
             color_values = request.POST.getlist(color_key)
             image_files = request.FILES.getlist(image_key)
 
