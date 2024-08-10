@@ -25,6 +25,7 @@ from product.models import (ProductCategoryModel, ProductSubCategoryModel, Extra
                             ProductVariantModel, AddImageGalleryModel)
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer, ProductSerializer,
                                  AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer)
+from collections import defaultdict
 
 
 class LanguageView(APIView):
@@ -966,40 +967,55 @@ class ProductImageGallery(APIView):
         #
         #     return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
         # return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-        data_list = []
-        index = 0
-        print(request.data)
-        print(request.POST)
-        while True:
-            product_key = f'data[{index}][product]'
-            color_key = f'data[{index}][color]'
-            image_key = f'data[{index}][image]'
+        # data_list = []
+        # index = 0
+        # print(request.data)
+        # print(request.POST)
+        # while True:
+        #     product_key = f'data[{index}][product]'
+        #     color_key = f'data[{index}][color]'
+        #     image_key = f'data[{index}][image]'
+        #
+        #     # if product_key not in request.POST:
+        #     #     break
+        #     print('-'*100)
+        #     product_values = request.POST.get(product_key)
+        #     color_values = request.POST.getlist(color_key)
+        #     image_files = request.FILES.getlist(image_key)
+        #
+        #     for product, color, image in zip(product_values, color_values, image_files):
+        #         data_list.append({
+        #             'product': product,
+        #             'color': color,
+        #             'image': image,
+        #         })
+        #
+        #     index += 1
+        query_dict = request.data
+        data = defaultdict(dict)
 
-            if product_key not in request.POST:
-                break
-            print('-'*100)
-            product_values = request.POST.get(product_key)
-            color_values = request.POST.getlist(color_key)
-            image_files = request.FILES.getlist(image_key)
+        for key, value in query_dict.items():
+            # Split the key into parts
+            parts = key.split('.')
+            index = int(parts[1])
+            field = parts[2]
 
-            for product, color, image in zip(product_values, color_values, image_files):
-                data_list.append({
-                    'product': product,
-                    'color': color,
-                    'image': image,
-                })
+            # Assign the value to the appropriate place in the dictionary
+            data[index][field] = value[0]
 
-            index += 1
+        # Convert defaultdict to a list of dictionaries
+        result = [data[i] for i in sorted(data.keys())]
+        print(result)
 
-        if not data_list:
-            return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
-
-        for form_data in data_list:
-            ser_data = ProductColorImageSerializer(data=form_data)
-            if ser_data.is_valid():
-                ser_data.save()
-            else:
-                return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        # if not data_list:
+        #     return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
+        #
+        # for form_data in data_list:
+        #     ser_data = ProductColorImageSerializer(data=form_data)
+        #     if ser_data.is_valid():
+        #         ser_data.save()
+        #     else:
+        #         return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(data='Done', status=status.HTTP_201_CREATED)
     def put(self, request):
