@@ -989,23 +989,23 @@ class ProductImageGallery(APIView):
     def put(self, request):
         ser_data = AdminProductGallerySerializer(data=request.data)
 
-        if ser_data.is_valid():
-            data = ser_data.validated_data
-            print(data)
-            for d in data['update']:
-                gallery = AddImageGalleryModel.objects.get(id=d['product'])
-                print(d)
+        # if ser_data.is_valid():
+        data = ser_data.validated_data
+        print(data)
+        for d in data['update']:
+            gallery = AddImageGalleryModel.objects.get(id=d['product'])
+            print(d)
 
-                gallery.image = d['image']
-                gallery.save()
+            gallery.image = d['image']
+            gallery.save()
 
-            for d in data['create']:
-                print(d)
-                AddImageGalleryModel.objects.create(product=ProductModel.objects.get(id=d['product']),
-                                                    image=d['image'])
+        for d in data['create']:
+            print(d)
+            AddImageGalleryModel.objects.create(product=ProductModel.objects.get(id=d['product']),
+                                                image=d['image'])
 
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        # return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class VariantDataView(APIView):
