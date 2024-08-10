@@ -952,7 +952,7 @@ class ProductVariantView(APIView):
 
 class ProductImageGallery(APIView):
     def post(self, request):
-        query_dict = request.data
+        query_dict = dict(request.data)
         data = defaultdict(dict)
         print(query_dict)
         print('-' * 100)
