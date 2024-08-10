@@ -956,7 +956,6 @@ class ProductImageGallery(APIView):
         data = defaultdict(dict)
         print(query_dict)
         print('-'*100)
-        print(data)
 
         for key, value in query_dict.items():
             # Split the key into parts
