@@ -6,7 +6,8 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer,
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
-                          ProductWithVariantsSerializer, ProductVariantSerializer, AdminProductGallerySerializer)
+                          ProductWithVariantsSerializer, ProductVariantSerializer, AdminProductGallerySerializer,
+                          ProductWithGallerySerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -950,41 +951,21 @@ class ProductVariantView(APIView):
 
 class ProductImageGallery(APIView):
     def post(self, request):
-        data_list = []
-        index = 0
+        ser_data = ProductWithGallerySerializer(data=request.data)
+        print(ser_data)
 
-        while True:
-            product_key = f'data[{index}][product]'
-            color_key = f'data[{index}][color]'
-            image_key = f'data[{index}][image]'
+        if ser_data.is_valid():
+            data = ser_data.validated_data['data']
+            print(data)
 
-            if product_key not in request.POST:
-                break
+            for d in data:
+                print(d)
+                AddImageGalleryModel.objects.create(product=ProductModel.objects.get(id=d['product']),
+                                                    image=d['image'],
+                                                    color=d['color'])
 
-            product_values = request.POST.getlist(product_key)
-            color_values = request.POST.getlist(color_key)
-            image_files = request.FILES.getlist(image_key)
-
-            for product, color, image in zip(product_values, color_values, image_files):
-                data_list.append({
-                    'product': product,
-                    'color': color,
-                    'image': image,
-                })
-
-            index += 1
-
-        if not data_list:
-            return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
-
-        for form_data in data_list:
-            ser_data = ProductColorImageSerializer(data=form_data)
-            if ser_data.is_valid():
-                ser_data.save()
-            else:
-                return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(data='Done', status=status.HTTP_201_CREATED)
+            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):
         ser_data = AdminProductGallerySerializer(data=request.data)

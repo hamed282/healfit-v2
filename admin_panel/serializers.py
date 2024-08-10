@@ -364,3 +364,5 @@ class AdminProductGallerySerializer(serializers.Serializer):
     create = ProductColorImageSerializer(many=True)
 
 
+class ProductWithGallerySerializer(serializers.Serializer):
+    data = ProductColorImageSerializer(many=True)
