@@ -6,7 +6,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer,
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
-                          ProductWithVariantsSerializer, ProductVariantSerializer)
+                          ProductWithVariantsSerializer, ProductVariantSerializer, AdminProductGallerySerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -931,11 +931,9 @@ class ProductVariantView(APIView):
         if ser_data.is_valid():
 
             extras = ser_data.validated_data['extras']
-            print(extras)
             for extra in extras:
                 variant = ProductVariantModel.objects.get(product=ProductModel.objects.get(id=product_id),
                                                           item_id=extra['item_id'])
-                print(extra)
                 if variant:
                     variant.name = extra['name']
                     variant.item_id = extra['item_id']
@@ -1004,49 +1002,21 @@ class VariantImageView(APIView):
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
     def put(self, request, product_id):
-        data_list = []
-        index = 0
+        ser_data = AdminProductGallerySerializer(data=request.data)
 
-        while True:
-            color_key = f'data[{index}][color]'
-            image_key = f'data[{index}][image]'
+        if ser_data.is_valid():
+            data = ser_data.validated_data['data']
+            print(data)
+            for d in data:
+                gallery = AddImageGalleryModel.objects.get(id=product_id)
+                print(d)
 
-            if color_key not in request.POST:
-                break
+                # gallery.color = d['color']
+                # gallery.image = d['image']
+                # gallery.save()
 
-            color_values = request.POST.getlist(color_key)
-            image_files = request.FILES.getlist(image_key)
-
-            for color, image in zip(color_values, image_files):
-                data_list.append({
-                    'product': product_id,
-                    'color': color,
-                    'image': image,
-                })
-
-            index += 1
-
-        if not data_list:
-            return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
-
-        for form_data in data_list:
-            product = form_data.get('product')
-            color = form_data.get('color')
-
-            # Assuming you have a unique constraint on product and color combination
-            instance = AddImageGalleryModel.objects.filter(product=product, color=color).first()
-
-            if instance:
-                ser_data = ProductColorImageSerializer(instance, data=form_data)
-            else:
-                ser_data = ProductColorImageSerializer(data=form_data)
-
-            if ser_data.is_valid():
-                ser_data.save()
-            else:
-                return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(data='Done', status=status.HTTP_200_OK)
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):

@@ -33,7 +33,10 @@ class ProductSubCategoryAdmin(admin.ModelAdmin):
 
 class ProductImageGalleryAdmin(admin.ModelAdmin):
     def image_tag(self, obj):
-        return format_html('<img src="{}" style="max-width:200px; max-height:200px"/>'.format(obj.image.url))
+        if obj.image and hasattr(obj.image, 'url'):
+            return format_html('<img src="{}" style="max-width:200px; max-height:200px"/>'.format(obj.image.url))
+        else:
+            return "No Image Available"
     list_display = ['product', 'color', 'image_tag']
 
 
