@@ -1006,19 +1006,26 @@ class ProductImageGallery(APIView):
             else:
                 data[index][field] = value
 
-        # Convert defaultdict to a list of dictionaries
-        result = [data[i] for i in sorted(data.keys())]
-        print(result)
+            if field in ['product', 'color']:
+                # Convert the value to an integer
+                data[index][field] = int(value[0])
+            else:
+                # Handle images or other types of data
+                data[index][field] = value[0] if isinstance(value, list) else value
 
-        # if not data_list:
-        #     return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
-        #
-        # for form_data in data_list:
-        #     ser_data = ProductColorImageSerializer(data=form_data)
-        #     if ser_data.is_valid():
-        #         ser_data.save()
-        #     else:
-        #         return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Convert defaultdict to a list of dictionaries
+        data_list = [data[i] for i in sorted(data.keys())]
+        print(data_list)
+
+        if not data_list:
+            return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
+
+        for form_data in data_list:
+            ser_data = ProductColorImageSerializer(data=form_data)
+            if ser_data.is_valid():
+                ser_data.save()
+            else:
+                return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(data='Done', status=status.HTTP_201_CREATED)
     def put(self, request):
