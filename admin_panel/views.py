@@ -968,7 +968,8 @@ class ProductImageGallery(APIView):
         # return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
         data_list = []
         index = 0
-
+        print(request.data)
+        print(request.POST)
         while True:
             product_key = f'data[{index}][product]'
             color_key = f'data[{index}][color]'
@@ -1001,7 +1002,6 @@ class ProductImageGallery(APIView):
                 return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(data='Done', status=status.HTTP_201_CREATED)
-
     def put(self, request):
         ser_data = AdminProductGallerySerializer(data=request.data)
         print(ser_data)
