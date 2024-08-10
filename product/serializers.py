@@ -44,15 +44,15 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_colors(self, obj):
         product = ProductVariantModel.objects.filter(product=obj)
 
-        colors = set([f'{str(p.color.color)} - {str(p.color.color_code)}' for p in product])
-        all_colors = [{'color': color.split(" - ")[0], 'code': color.split(" - ")[1]} for color in colors]
+        colors = set([f'{str(p.color.color)} - {str(p.color.color_code)} - {str(p.color.id)}' for p in product])
+        all_colors = [{'color': color.split(" - ")[0], 'code': color.split(" - ")[1], 'id': color.split(" - ")[2]} for color in colors]
         return all_colors
 
     def get_all_size(self, obj):
         product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
-        size = set([f'{str(p.size)} - {str(p.size.priority)}' for p in product])
+        size = set([f'{str(p.size)} - {str(p.size.priority)} - {str(p.size.id)}' for p in product])
         sizes = sorted(size, key=lambda x: int(x.split(" - ")[1]))
-        all_size = [size.split(" - ")[0] for size in sizes]
+        all_size = [{'size': size.split(" - ")[0], 'id': size.split(" - ")[1]} for size in sizes]
         return all_size
 
     def get_size(self, obj):
