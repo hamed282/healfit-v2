@@ -986,6 +986,23 @@ class ProductImageGallery(APIView):
 
         return Response(data='Done', status=status.HTTP_201_CREATED)
 
+    def put(self, request):
+        ser_data = AdminProductGallerySerializer(data=request.data)
+
+        if ser_data.is_valid():
+            data = ser_data.validated_data['data']
+            print(data)
+            for d in data:
+                gallery = AddImageGalleryModel.objects.get(id=d['product'])
+                print(d)
+
+                gallery.color = d['color']
+                gallery.image = d['image']
+                gallery.save()
+
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class VariantDataView(APIView):
     def get(self, request, product_id):
@@ -1001,22 +1018,7 @@ class VariantImageView(APIView):
         ser_data = ProductColorImageSerializer(instance=gallery, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
-    def put(self, request, product_id):
-        ser_data = AdminProductGallerySerializer(data=request.data)
 
-        if ser_data.is_valid():
-            data = ser_data.validated_data['data']
-            print(data)
-            for d in data:
-                gallery = AddImageGalleryModel.objects.get(id=product_id)
-                print(d)
-
-                # gallery.color = d['color']
-                # gallery.image = d['image']
-                # gallery.save()
-
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
