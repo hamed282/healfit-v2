@@ -988,7 +988,7 @@ class ProductImageGallery(APIView):
 
     def put(self, request):
         ser_data = AdminProductGallerySerializer(data=request.data)
-
+        print(ser_data)
         if ser_data.is_valid():
             data = ser_data.validated_data
             print(data)
