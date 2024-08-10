@@ -996,7 +996,6 @@ class ProductImageGallery(APIView):
                 gallery = AddImageGalleryModel.objects.get(id=d['product'])
                 print(d)
 
-                gallery.color = d['color']
                 gallery.image = d['image']
                 gallery.save()
 
