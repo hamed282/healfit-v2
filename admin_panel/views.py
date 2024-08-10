@@ -977,7 +977,7 @@ class ProductImageGallery(APIView):
 
             if product_key not in request.POST:
                 break
-
+            print('-'*100)
             product_values = request.POST.getlist(product_key)
             color_values = request.POST.getlist(color_key)
             image_files = request.FILES.getlist(image_key)
