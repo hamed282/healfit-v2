@@ -7,7 +7,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
                           ProductWithVariantsSerializer, ProductVariantSerializer, AdminProductGallerySerializer,
-                          ProductWithGallerySerializer)
+                          ColorImageExtraSerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -1024,6 +1024,23 @@ class VariantImageView(APIView):
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 
+class ColorImageView(APIView):
+    def post(self, request, product_id):
+        ser_data = ColorImageExtraSerializer(data=request.data)
+        if ser_data.is_valid():
+            extras = ser_data.validated_data['data']
+            product = ProductModel.objects.get(id=product_id)
+            for extra in extras:
+
+                ProductVariantModel.objects.create(product=product,
+                                                   color=ColorProductModel.objects.get(color=extra['color']),
+                                                   size=SizeProductModel.objects.get(size=extra['size']),
+                                                   price=0,
+                                                   quantity=0,
+                                                   name=f'{product}-{extra['color']}-{extra['size']}')
+
+            return Response(data={'message': 'Create'}, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):

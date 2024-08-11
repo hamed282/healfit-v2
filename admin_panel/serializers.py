@@ -366,3 +366,12 @@ class AdminProductGallerySerializer(serializers.Serializer):
 
 class ProductWithGallerySerializer(serializers.Serializer):
     data = ProductColorImageSerializer(many=True)
+
+
+class ColorImageSerializer(serializers.Serializer):
+    color = serializers.CharField()
+    size = serializers.CharField()
+
+
+class ColorImageExtraSerializer(serializers.Serializer):
+    data = ColorImageSerializer(many=True)

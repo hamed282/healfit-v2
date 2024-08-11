@@ -91,5 +91,6 @@ urlpatterns = [
     path('product/gallery/', views.ProductImageGallery.as_view(), name='image_gallery'),
     path('product/data/<int:product_id>/', views.VariantDataView.as_view(), name='variant_data'),
     path('product/gallery/<int:product_id>/', views.VariantImageView.as_view(), name='gallery_data'),
+    path('product/colorimage/<int:product_id>/', views.ColorImageView.as_view(), name='color_image'),
 
 ]
