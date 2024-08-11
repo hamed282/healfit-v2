@@ -1028,6 +1028,7 @@ class VariantImageView(APIView):
         if not data_list:
             return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
         AddImageGalleryModel.objects.filter(product_id=product_id).delete()
+        print('-'*100)
         for form_data in data_list:
             ser_data = ProductColorImageSerializer(data=form_data)
             if ser_data.is_valid():
