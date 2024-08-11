@@ -931,14 +931,15 @@ class ProductVariantView(APIView):
 class VariantPutView(APIView):
     def put(self, request):
         ser_data = ProductWithVariantsSerializer(data=request.data)
+        print(ser_data)
         if ser_data.is_valid():
 
             extras = ser_data.validated_data['extras']
-
+            print(extras)
             for extra in extras:
-
+                print(extra)
                 variant = ProductVariantModel.objects.get(id=(extra['id']))
-
+                print('-'*100)
                 if variant:
                     variant.name = extra['name']
                     variant.item_id = extra['item_id']
@@ -948,7 +949,7 @@ class VariantPutView(APIView):
                     variant.percent_discount = extra['percent_discount']
                     variant.quantity = extra['quantity']
                     variant.save()
-
+                print('*'*100)
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
