@@ -1004,8 +1004,6 @@ class VariantImageView(APIView):
     def put(self, request, product_id):
         query_dict = dict(request.data)
         data = defaultdict(dict)
-        print(query_dict)
-        print('-' * 100)
 
         for key, value in query_dict.items():
             # Split the key into parts
@@ -1030,10 +1028,14 @@ class VariantImageView(APIView):
         AddImageGalleryModel.objects.filter(product_id=product_id).delete()
         print('-'*100)
         for form_data in data_list:
+            print('#' * 100)
             ser_data = ProductColorImageSerializer(data=form_data)
             if ser_data.is_valid():
+                print('!' * 100)
                 ser_data.save()
+                print('?' * 100)
             else:
+                print('*' * 100)
                 return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(data='Done', status=status.HTTP_201_CREATED)
