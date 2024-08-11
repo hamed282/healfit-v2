@@ -6,7 +6,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer,
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
-                          ProductWithVariantsSerializer, ProductVariantSerializer, AdminProductGallerySerializer,)
+                          ProductWithVariantsSerializer, ProductVariantSerializer)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -927,14 +927,18 @@ class ProductVariantView(APIView):
             return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request, product_id):
+
+class VariantPutView(APIView):
+    def put(self, request):
         ser_data = ProductWithVariantsSerializer(data=request.data)
         if ser_data.is_valid():
 
             extras = ser_data.validated_data['extras']
+
             for extra in extras:
-                variant = ProductVariantModel.objects.get(product=ProductModel.objects.get(id=product_id),
-                                                          item_id=extra['item_id'])
+
+                variant = ProductVariantModel.objects.get(id=(extra['id']))
+
                 if variant:
                     variant.name = extra['name']
                     variant.item_id = extra['item_id']
@@ -947,7 +951,6 @@ class ProductVariantView(APIView):
 
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class ProductImageGallery(APIView):
     def post(self, request):

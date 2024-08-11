@@ -344,10 +344,26 @@ class ProductVariantSerializer(serializers.Serializer):
     price = serializers.IntegerField()
     quantity = serializers.IntegerField()
     slug = serializers.SlugField(required=False)
+    id = serializers.IntegerField()
 
 
 class ProductWithVariantsSerializer(serializers.Serializer):
     extras = ProductVariantSerializer(many=True)
+
+
+# class ProductVariantPutSerializer(serializers.Serializer):
+#     name = serializers.CharField()
+#     item_id = serializers.CharField()
+#     color = serializers.PrimaryKeyRelatedField(queryset=ColorProductModel.objects.all())
+#     size = serializers.PrimaryKeyRelatedField(queryset=SizeProductModel.objects.all())
+#     percent_discount = serializers.IntegerField()
+#     price = serializers.IntegerField()
+#     quantity = serializers.IntegerField()
+#     slug = serializers.SlugField(required=False)
+#
+#
+# class ProductWithVariantsPutSerializer(serializers.Serializer):
+#     extras = ProductVariantPutSerializer(many=True)
 
 
 class VariantImageSerializer(serializers.Serializer):
