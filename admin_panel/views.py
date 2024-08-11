@@ -986,27 +986,6 @@ class ProductImageGallery(APIView):
 
         return Response(data='Done', status=status.HTTP_201_CREATED)
 
-    def put(self, request):
-        ser_data = AdminProductGallerySerializer(data=request.data)
-        print(ser_data)
-        if ser_data.is_valid():
-            data = ser_data.validated_data
-            print(data)
-            for d in data['update']:
-                gallery = AddImageGalleryModel.objects.get(id=d['product'])
-                print(d)
-
-                gallery.image = d['image']
-                gallery.save()
-
-            for d in data['create']:
-                print(d)
-                AddImageGalleryModel.objects.create(product=ProductModel.objects.get(id=d['product']),
-                                                    image=d['image'])
-
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class VariantDataView(APIView):
     def get(self, request, product_id):
@@ -1021,6 +1000,42 @@ class VariantImageView(APIView):
         gallery = AddImageGalleryModel.objects.filter(product=product)
         ser_data = ProductColorImageSerializer(instance=gallery, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, product_id):
+        query_dict = dict(request.data)
+        data = defaultdict(dict)
+        print(query_dict)
+        print('-' * 100)
+
+        for key, value in query_dict.items():
+            # Split the key into parts
+            parts = key.split('.')
+            index = int(parts[1])
+            field = parts[2]
+
+            # Assign the value to the appropriate place in the dictionary
+            if field in ['product', 'color']:
+                # Convert the value to an integer
+                data[index][field] = int(value[0])
+            else:
+                # Handle images or other types of data
+                data[index][field] = value[0] if isinstance(value, list) else value
+
+        # Convert defaultdict to a list of dictionaries
+        data_list = [data[i] for i in sorted(data.keys())]
+        print(data_list)
+
+        if not data_list:
+            return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
+        AddImageGalleryModel.objects.filter(product_id=product_id).delete()
+        for form_data in data_list:
+            ser_data = ProductColorImageSerializer(data=form_data)
+            if ser_data.is_valid():
+                ser_data.save()
+            else:
+                return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(data='Done', status=status.HTTP_201_CREATED)
 
 
 class ColorImageView(APIView):
