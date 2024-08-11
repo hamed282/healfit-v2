@@ -1031,13 +1031,14 @@ class ColorImageView(APIView):
             extras = ser_data.validated_data['data']
             product = ProductModel.objects.get(id=product_id)
             for extra in extras:
-
+                color = extra['color']
+                size = extra['size']
                 ProductVariantModel.objects.create(product=product,
                                                    color=ColorProductModel.objects.get(color=extra['color']),
                                                    size=SizeProductModel.objects.get(size=extra['size']),
                                                    price=0,
                                                    quantity=0,
-                                                   name=f'{product}-{extra['color']}-{extra['size']}')
+                                                   name=f'{product}-{color}-{size}')
 
             return Response(data={'message': 'Create'}, status=status.HTTP_201_CREATED)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
