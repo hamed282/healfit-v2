@@ -6,8 +6,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer,
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
-                          ProductWithVariantsSerializer, ProductVariantSerializer, AdminProductGallerySerializer,
-                          ColorImageExtraSerializer)
+                          ProductWithVariantsSerializer, ProductVariantSerializer, AdminProductGallerySerializer,)
 from accounts.serializers import UserRegisterSerializer
 from rest_framework import status
 from math import ceil
@@ -1026,22 +1025,24 @@ class VariantImageView(APIView):
 
 class ColorImageView(APIView):
     def post(self, request, product_id):
-        ser_data = ColorImageExtraSerializer(data=request.data)
-        if ser_data.is_valid():
-            extras = ser_data.validated_data['data']
-            product = ProductModel.objects.get(id=product_id)
-            for extra in extras:
-                color = extra['color']
-                size = extra['size']
-                ProductVariantModel.objects.create(product=product,
-                                                   color=ColorProductModel.objects.get(color=extra['color']),
-                                                   size=SizeProductModel.objects.get(size=extra['size']),
-                                                   price=0,
-                                                   quantity=0,
-                                                   name=f'{product}-{color}-{size}')
 
-            return Response(data={'message': 'Create'}, status=status.HTTP_201_CREATED)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        product = ProductModel.objects.get(id=product_id)
+        sizes = request.data['sizes']
+        colors = request.data['colors']
+        for color in colors:
+            for size in sizes:
+                if not ProductVariantModel.objects.filter(product=product,
+                                                          color=ColorProductModel.objects.get(color=color),
+                                                          size=SizeProductModel.objects.get(size=size),
+                                                          ).exists():
+                    ProductVariantModel.objects.create(product=product,
+                                                       color=ColorProductModel.objects.get(color=color),
+                                                       size=SizeProductModel.objects.get(size=size),
+                                                       price=0,
+                                                       quantity=0,
+                                                       name=f'{product}-{color}-{size}')
+        return Response(data={'message': 'Create'}, status=status.HTTP_201_CREATED)
+
 
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
