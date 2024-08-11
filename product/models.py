@@ -328,7 +328,7 @@ class AddImageGalleryModel(models.Model):
     objects = None
     product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='image_gallery_product')
     color = models.ForeignKey('ColorProductModel', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='images/product/gallery/', blank=True, null=True)
+    image = models.FileField(upload_to='images/product/gallery/', blank=True, null=True)
 
     class Meta:
         verbose_name = 'Product Image Gallery'
