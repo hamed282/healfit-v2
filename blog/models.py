@@ -1,4 +1,5 @@
 from django.db import models
+from upload_path import get_cover_blog_upload_path, get_title_blog_upload_path, get_banner_blog_upload_path
 
 
 class BlogCategoryModel(models.Model):
@@ -28,12 +29,12 @@ class BlogTagModel(models.Model):
 
 
 class BlogModel(models.Model):
-    cover_image = models.ImageField(upload_to='blog/cover/')
+    cover_image = models.ImageField(upload_to=get_cover_blog_upload_path)
     cover_image_alt = models.CharField(max_length=32)
-    banner = models.ImageField(upload_to='blog/banner/')
+    banner = models.ImageField(upload_to=get_banner_blog_upload_path)
     banner_alt = models.CharField(max_length=32)
     title = models.CharField(max_length=250)
-    title_image = models.ImageField(upload_to='blog/title/')
+    title_image = models.ImageField(upload_to=get_title_blog_upload_path)
     title_image_alt = models.CharField(max_length=32)
     short_description = models.TextField(max_length=60)
     description = models.TextField()

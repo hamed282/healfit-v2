@@ -4,17 +4,19 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.db.models import Max
 from django.db.models import Q
+from upload_path import (get_cover_image_upload_path, get_gallery_upload_path, get_description_image_upload_path,
+                         get_size_table_upload_path)
 
 
 class ProductModel(models.Model):
     objects = None
     gender = models.ForeignKey('ProductGenderModel', on_delete=models.CASCADE, related_name='gender_product', null=True, blank=True)
     product = models.CharField(max_length=100, unique=True)
-    cover_image = models.ImageField(upload_to='images/product/cover/', blank=True, null=True)
+    cover_image = models.ImageField(upload_to=get_cover_image_upload_path, blank=True, null=True)
     cover_image_alt = models.CharField(max_length=32)
-    size_table_image = models.ImageField(upload_to='images/product/size_table/', blank=True, null=True)
+    size_table_image = models.ImageField(upload_to=get_size_table_upload_path, blank=True, null=True)
     size_table_image_alt = models.CharField(max_length=32)
-    description_image = models.ImageField(upload_to='images/product/description/', blank=True, null=True)
+    description_image = models.ImageField(upload_to=get_description_image_upload_path, blank=True, null=True)
     description_image_alt = models.CharField(max_length=32)
     price = models.CharField(max_length=8)
     percent_discount = models.IntegerField(null=True, blank=True)
@@ -328,7 +330,7 @@ class AddImageGalleryModel(models.Model):
     objects = None
     product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='image_gallery_product')
     color = models.ForeignKey('ColorProductModel', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='images/product/gallery/', blank=True, null=True)
+    image = models.ImageField(upload_to=get_gallery_upload_path, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Product Image Gallery'

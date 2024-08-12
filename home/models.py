@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 class BannerSliderModel(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
-    banner = models.ImageField(upload_to='images/slide/', verbose_name='image (1455*505 px)')
+    banner = models.ImageField(upload_to='settings/banner-slide/', verbose_name='image (1455*505 px)')
     active = models.BooleanField(default=False)
     created = models.DateField(auto_now_add=True)
 
