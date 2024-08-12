@@ -229,7 +229,7 @@ class ProductGenderModel(models.Model):
     gender_title = models.CharField(max_length=50)
     description = models.TextField()
     slug = models.SlugField(max_length=100, unique=True)
-    image = models.FileField(upload_to='images/gender/')
+    image = models.FileField(upload_to=)
 
     class Meta:
         verbose_name = 'Product Gender'

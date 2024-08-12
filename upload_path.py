@@ -54,3 +54,9 @@ def get_subcategory_upload_path(instance, filename):
     subcategory_name = instance.subcategory
 
     return os.path.join('subcategory', subcategory_name, filename)
+
+
+def get_gender_upload_path(instance, filename):
+    gender_name = instance.gender
+
+    return os.path.join('gender', gender_name, filename)
