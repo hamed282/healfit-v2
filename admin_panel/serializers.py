@@ -229,11 +229,11 @@ class ProductTagSerializer(ModelSerializer):
 class CombinedProductSerializer(serializers.Serializer):
     gender = serializers.PrimaryKeyRelatedField(queryset=ProductGenderModel.objects.all())
     product = serializers.CharField()
-    description_image = serializers.ImageField()
+    description_image = serializers.ImageField(required=False, allow_null=True)
     description_image_alt = serializers.CharField()
-    size_table_image = serializers.ImageField()
+    size_table_image = serializers.ImageField(required=False, allow_null=True)
     size_table_image_alt = serializers.CharField()
-    cover_image = serializers.ImageField()
+    cover_image = serializers.ImageField(required=False, allow_null=True)
     cover_image_alt = serializers.CharField()
     price = serializers.CharField()
     percent_discount = serializers.IntegerField()
@@ -243,6 +243,7 @@ class CombinedProductSerializer(serializers.Serializer):
     group_id = serializers.CharField()
     priority = serializers.IntegerField()
     slug = serializers.SlugField()
+
 
     subcategory = serializers.CharField(max_length=100)
     follow = serializers.BooleanField(default=False)
