@@ -897,6 +897,41 @@ class GenderView(APIView):
         ser_data = GenderSerializer(instance=genders, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
+    def post(self, request):
+        form = request.data
+        ser_data = GenderSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GenderItemView(APIView):
+    def put(self, request, gender_id):
+        try:
+            gender = ProductGenderModel.objects.get(id=gender_id)
+        except ProductModel.DoesNotExist:
+            return Response(data={'message': 'Gender does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        ser_data = GenderSerializer(instance=gender, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, gender_id):
+        if gender_id is None:
+            return Response(data={'message': 'Input Gender ID'})
+
+        try:
+            gender = ProductGenderModel.objects.get(id=gender_id)
+        except:
+            return Response(data={'message': 'Gender is not exist'})
+
+        gender.delete()
+
+        return Response(data={'message': f'The Gender ID {gender_id} was deleted'}, status=status.HTTP_200_OK)
+
 
 class ProductVariantView(APIView):
     def get(self, request, product_id):
