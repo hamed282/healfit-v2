@@ -230,18 +230,15 @@ class ProductGenderModel(models.Model):
     gender_title = models.CharField(max_length=50)
     description = models.TextField()
     slug = models.SlugField(max_length=100, unique=True)
-    image = models.FileField(upload_to=get_gender_upload_path)
+    image = models.FileField(upload_to='gender/')
 
     class Meta:
         verbose_name = 'Product Gender'
         verbose_name_plural = 'Product Gender'
 
-    def save(self, *args, **kwargs):
-        if isinstance(self.gender, str):
-            self.slug = slugify(self.gender)
-        else:
-            self.slug = slugify(str(self.gender))
-        super().save(*args, **kwargs)
+    def save(self, **kwargs):
+        self.slug = slugify(str(self.gender))
+        super(ProductGenderModel, self).save(**kwargs)
 
     def __str__(self):
         return f'{self.gender}'
