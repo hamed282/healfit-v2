@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from django.db.models import Max
 from django.db.models import Q
 from upload_path import (get_cover_image_upload_path, get_gallery_upload_path, get_description_image_upload_path,
-                         get_size_table_upload_path)
+                         get_size_table_upload_path, get_category_upload_path, get_subcategory_upload_path)
 
 
 class ProductModel(models.Model):
@@ -169,7 +169,7 @@ class ProductCategoryModel(models.Model):
     category_title = models.CharField(max_length=50)
     description = models.TextField()
     slug = models.SlugField(max_length=100, unique=True)
-    image = models.FileField(upload_to='images/category/')
+    image = models.FileField(upload_to=get_category_upload_path)
 
     class Meta:
         verbose_name = 'Product Category'
@@ -189,7 +189,7 @@ class ProductSubCategoryModel(models.Model):
     subcategory = models.CharField(max_length=50)
     subcategory_title = models.CharField(max_length=50)
     description = models.TextField()
-    image = models.FileField(upload_to='images/subcategory/')
+    image = models.FileField(upload_to=get_subcategory_upload_path)
     slug = models.SlugField(max_length=100, unique=True)
 
     class Meta:

@@ -42,3 +42,15 @@ def get_title_blog_upload_path(instance, filename):
     blog_name = instance.title
 
     return os.path.join('blog', blog_name, 'title', filename)
+
+
+def get_category_upload_path(instance, filename):
+    category_name = instance.category
+
+    return os.path.join('category', category_name, filename)
+
+
+def get_subcategory_upload_path(instance, filename):
+    category_name = instance.category
+
+    return os.path.join('subcategory', subcategory_name, filename)
