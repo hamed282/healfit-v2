@@ -51,6 +51,6 @@ def get_category_upload_path(instance, filename):
 
 
 def get_subcategory_upload_path(instance, filename):
-    category_name = instance.category
+    subcategory_name = instance.category
 
     return os.path.join('subcategory', subcategory_name, filename)
