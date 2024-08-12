@@ -237,7 +237,7 @@ class ProductGenderModel(models.Model):
         verbose_name_plural = 'Product Gender'
 
     def save(self, **kwargs):
-        self.slug = slugify(self.gender)
+        self.slug = slugify(str(self.gender))
         super(ProductGenderModel, self).save(**kwargs)
 
     def __str__(self):
