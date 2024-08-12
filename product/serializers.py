@@ -21,6 +21,10 @@ class ProductSerializer(serializers.ModelSerializer):
     price = serializers.IntegerField()
     group_id = serializers.IntegerField()
 
+    cover_image = serializers.ImageField(required=False, allow_null=True)
+    size_table_image = serializers.ImageField(required=False, allow_null=True)
+    description_image = serializers.ImageField(required=False, allow_null=True)
+
     class Meta:
         model = ProductModel
         fields = '__all__'
