@@ -16,8 +16,10 @@ class ProductSerializer(serializers.ModelSerializer):
     size = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
     subcategory = serializers.SerializerMethodField()
-    gender = serializers.SlugRelatedField(read_only=True, slug_field='gender')
+    gender = serializers.SlugRelatedField(read_only=True, slug_field='id')
     tag = serializers.SerializerMethodField()
+    price = serializers.IntegerField()
+    group_id = serializers.IntegerField()
 
     class Meta:
         model = ProductModel
