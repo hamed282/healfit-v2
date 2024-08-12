@@ -5,7 +5,8 @@ from django.dispatch import receiver
 from django.db.models import Max
 from django.db.models import Q
 from upload_path import (get_cover_image_upload_path, get_gallery_upload_path, get_description_image_upload_path,
-                         get_size_table_upload_path, get_category_upload_path, get_subcategory_upload_path)
+                         get_size_table_upload_path, get_category_upload_path, get_subcategory_upload_path,
+                         get_gender_upload_path)
 
 
 class ProductModel(models.Model):
@@ -229,7 +230,7 @@ class ProductGenderModel(models.Model):
     gender_title = models.CharField(max_length=50)
     description = models.TextField()
     slug = models.SlugField(max_length=100, unique=True)
-    image = models.FileField(upload_to=)
+    image = models.FileField(upload_to=get_gender_upload_path)
 
     class Meta:
         verbose_name = 'Product Gender'
