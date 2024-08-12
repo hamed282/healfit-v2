@@ -773,10 +773,11 @@ class ProductItemView(APIView):
             product = ProductModel.objects.get(id=product_id)
         except ProductModel.DoesNotExist:
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
-
+        print(product)
         serializer = CombinedProductSerializer(instance=product, data=request.data, partial=True)
-
+        print(serializer)
         if serializer.is_valid():
+            print('-'*100)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

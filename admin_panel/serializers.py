@@ -244,7 +244,6 @@ class CombinedProductSerializer(serializers.Serializer):
     priority = serializers.IntegerField()
     slug = serializers.SlugField()
 
-
     subcategory = serializers.CharField(max_length=100)
     follow = serializers.BooleanField(default=False)
     index = serializers.BooleanField(default=False)
