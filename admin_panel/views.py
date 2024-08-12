@@ -953,6 +953,7 @@ class VariantPutView(APIView):
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class ProductImageGallery(APIView):
     def post(self, request):
         query_dict = dict(request.data)
