@@ -24,7 +24,8 @@ from product.models import (ProductCategoryModel, ProductSubCategoryModel, Extra
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel)
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer, ProductSerializer,
-                                 AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer)
+                                 AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer,
+                                 ProductColorImageListSerializer)
 from collections import defaultdict
 from order.models import OrderModel, OrderItemModel
 
@@ -1045,44 +1046,32 @@ class VariantImageView(APIView):
         ser_data = ProductColorImageSerializer(instance=gallery, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
-    def put(self, request, product_id):
-        query_dict = dict(request.data)
-        data = defaultdict(dict)
+    def put(self, request):
+        # دریافت داده‌های لیستی از تصاویر
+        data = request.data
+        serializer = ProductColorImageListSerializer(data=data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        for key, value in query_dict.items():
-            # Split the key into parts
-            parts = key.split('.')
-            index = int(parts[1])
-            field = parts[2]
+        # پردازش هر تصویر در لیست
+        images_data = serializer.validated_data['images']
+        results = []
 
-            # Assign the value to the appropriate place in the dictionary
-            if field in ['product', 'color']:
-                # Convert the value to an integer
-                data[index][field] = int(value[0])
-            else:
-                # Handle images or other types of data
-                data[index][field] = value[0] if isinstance(value, list) else value
+        for data in images_data:
+            product = data.get('product')
+            color = data.get('color')
+            image = data.get('image')
 
-        # Convert defaultdict to a list of dictionaries
-        data_list = [data[i] for i in sorted(data.keys())]
-        print(data_list)
+            # استفاده از `update_or_create` برای مدیریت تصاویر
+            obj, created = AddImageGalleryModel.objects.update_or_create(
+                product_id=product,
+                color_id=color,
+                defaults={'image': image},
+            )
 
-        if not data_list:
-            return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
-        AddImageGalleryModel.objects.filter(product_id=product_id).delete()
-        print('-'*100)
-        for form_data in data_list:
-            print('#' * 100)
-            ser_data = ProductColorImageSerializer(data=form_data)
-            if ser_data.is_valid():
-                print('!' * 100)
-                ser_data.save()
-                print('?' * 100)
-            else:
-                print('*' * 100)
-                return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+            results.append(ProductColorImageSerializer(obj).data)
 
-        return Response(data='Done', status=status.HTTP_201_CREATED)
+        return Response(results, status=status.HTTP_200_OK)
 
 
 class ColorImageView(APIView):

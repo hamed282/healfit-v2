@@ -147,6 +147,10 @@ class ProductColorImageSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ProductColorImageListSerializer(serializers.Serializer):
+    images = ProductColorImageSerializer(many=True)
+
+
 class ColorSizeProductSerializer(serializers.ModelSerializer):
     color = serializers.SlugRelatedField(read_only=True, slug_field='color')
     color_code = serializers.SerializerMethodField()
