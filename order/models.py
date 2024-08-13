@@ -4,11 +4,18 @@ from product.models import ProductVariantModel, ColorProductModel, SizeProductMo
 from accounts.models import AddressModel
 
 
+class OrderStatusModel(models.Model):
+    status = models.CharField(max_length=16)
+
+    def __str__(self):
+        return f'{self.status}'
+
+
 class OrderModel(models.Model):
     objects = None
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_order')
     address = models.ForeignKey(AddressModel, on_delete=models.CASCADE, related_name='address_order')
-    sent = models.BooleanField(default=False)
+    status = models.ForeignKey(OrderStatusModel, on_delete=models.CASCADE, related_name='status_order')
     ref_id = models.CharField(max_length=200, blank=True, null=True)
     cart_id = models.CharField(max_length=64, blank=True, null=True)
     trace = models.CharField(max_length=200, blank=True, null=True)
@@ -17,10 +24,9 @@ class OrderModel(models.Model):
 
     paid = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ('paid', '-updated')
+        ordering = ('paid', '-created')
 
         verbose_name = 'Order'
         verbose_name_plural = 'Orders'

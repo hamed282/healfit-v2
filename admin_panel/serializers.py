@@ -8,6 +8,7 @@ from product.models import (ExtraGroupModel, SizeProductModel, ColorProductModel
                             ProductSubCategoryModel, ProductModel, AddProductTagModel, ProductGenderModel,
                             AddSubCategoryModel)
 from product.serializers import ProductSerializer, ProductColorImageSerializer
+from order.models import OrderItemModel, OrderModel, OrderStatusModel
 
 
 class UserSerializer(ModelSerializer):
@@ -384,3 +385,95 @@ class ProductWithGallerySerializer(serializers.Serializer):
     data = ProductColorImageSerializer(many=True)
 
 
+class OrderSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(read_only=True, slug_field='first_name')
+    status = serializers.SlugRelatedField(read_only=True, slug_field='status')
+    number_of_products = serializers.SerializerMethodField()
+    amount = serializers.SerializerMethodField()
+    created = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+
+    class Meta:
+        model = OrderModel
+        fields = ['id', 'user', 'status', 'paid', 'created', 'amount', 'number_of_products']
+
+    def get_amount(self, obj):
+        items = OrderItemModel.objects.filter(order=obj)
+        total_price = 0
+        for item in items:
+            price = item.price
+            total_price += price
+        return total_price
+
+    def get_number_of_products(self, obj):
+        items = len(OrderItemModel.objects.filter(order=obj))
+        return items
+
+
+class OrderDetailSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(read_only=True, slug_field='first_name')
+    status = serializers.SlugRelatedField(slug_field='status', queryset=OrderStatusModel.objects.all())
+    address = serializers.SlugRelatedField(read_only=True, slug_field='address')
+    number_of_products = serializers.SerializerMethodField()
+    amount = serializers.SerializerMethodField()
+    created = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+
+    class Meta:
+        model = OrderModel
+        fields = '__all__'
+
+    def get_amount(self, obj):
+        items = OrderItemModel.objects.filter(order=obj)
+        total_price = 0
+        for item in items:
+            price = item.price
+            total_price += price
+        return total_price
+
+    def get_number_of_products(self, obj):
+        items = len(OrderItemModel.objects.filter(order=obj))
+        return items
+
+    def to_internal_value(self, data):
+        # ایجاد یک نسخه کپی از داده‌ها
+        mutable_data = data.copy()
+
+        status_value = mutable_data.get('status')
+
+        # سعی می‌کنیم فیلد status را از طریق مقدار slug_field پیدا کنیم
+        if status_value:
+            try:
+                status_instance = OrderStatusModel.objects.get(status=status_value)
+                mutable_data['status'] = status_instance
+            except OrderStatusModel.DoesNotExist:
+                raise serializers.ValidationError({"status": "Status with this value does not exist."})
+
+        return super().to_internal_value(mutable_data)
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    size = serializers.SlugRelatedField(slug_field='size', read_only=True)
+    color = serializers.SlugRelatedField(slug_field='color', read_only=True)
+    product = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    image = serializers.SerializerMethodField()
+    total_price = serializers.SerializerMethodField()
+
+    class Meta:
+        model = OrderItemModel
+        fields = ['id', 'product', 'image', 'price', 'size', 'color', 'quantity', 'total_price']
+
+    def get_image(self, obj):
+        product = obj.product.product
+        image = product.cover_image
+        if image == '':
+            image = 'None'
+        else:
+            image = image.url
+        return image
+
+    def get_total_price(self, obj):
+        total_price = obj.price * obj.quantity
+        return total_price
+
+    # def get_total_price(self, obj):
+    #     total_price = obj.order.get_total_price()
+    #     return total_price

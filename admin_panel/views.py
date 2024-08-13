@@ -6,8 +6,9 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           AddBlogTagSerializer, AddRoleSerializer, BlogCategorySerializer, CombinedBlogSerializer,
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
-                          ProductWithVariantsSerializer, ProductVariantSerializer)
-from accounts.serializers import UserRegisterSerializer
+                          ProductWithVariantsSerializer, ProductVariantSerializer, OrderSerializer,
+                          OrderDetailSerializer, OrderItemSerializer)
+from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
 from django.contrib.auth import authenticate
@@ -25,6 +26,7 @@ from product.models import (ProductCategoryModel, ProductSubCategoryModel, Extra
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer, ProductSerializer,
                                  AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer)
 from collections import defaultdict
+from order.models import OrderModel, OrderItemModel
 
 
 class LanguageView(APIView):
@@ -1103,6 +1105,52 @@ class ColorImageView(APIView):
                                                        name=f'{product}-{color}-{size}')
         return Response(data={'message': 'Create'}, status=status.HTTP_201_CREATED)
 
+
+class OrderPaidView(APIView):
+    def get(self, request):
+        order = OrderModel.objects.filter(paid=True)
+        ser_data = OrderSerializer(instance=order, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class OrderUnpaidView(APIView):
+    def get(self, request):
+        order = OrderModel.objects.filter(paid=False)
+        ser_data = OrderSerializer(instance=order, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class OrderDetailView(APIView):
+    def get(self, request, order_id):
+        order = OrderModel.objects.get(id=order_id)
+        ser_data = OrderDetailSerializer(instance=order)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, order_id):
+        try:
+            order = OrderModel.objects.get(id=order_id)
+        except ProductModel.DoesNotExist:
+            return Response(data={'message': 'Order does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        ser_data = OrderDetailSerializer(instance=order, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OrderCustomerView(APIView):
+    def get(self, request, order_id):
+        user = OrderModel.objects.get(id=order_id).user
+        ser_data = UserInfoSerializer(instance=user)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class OrderItemsView(APIView):
+    def get(self, request, order_id):
+        items = OrderItemModel.objects.filter(order=order_id)
+        ser_data = OrderItemSerializer(instance=items, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):
