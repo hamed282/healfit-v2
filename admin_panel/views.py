@@ -1032,32 +1032,47 @@ class ProductImageGallery(APIView):
         return Response(data='Done', status=status.HTTP_201_CREATED)
 
     def put(self, request):
-        # دریافت داده‌های لیستی از تصاویر
-        data = request.data
-        print(data)
-        serializer = ProductColorImageListSerializer(data=data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        def put(self, request):
+            # استخراج داده‌ها و فایل‌های بارگذاری شده
+            images_data = request.data.get('images', [])
+            print(images_data)
+            # پردازش داده‌ها به صورت دیکشنری
+            processed_images_data = []
+            for i, image_data in enumerate(images_data):
+                product = image_data.get('product')
+                color = image_data.get('color')
+                image = request.FILES.get(f'images.{i}.image')
 
-        # پردازش هر تصویر در لیست
-        images_data = serializer.validated_data['images']
-        results = []
-        print(images_data)
-        for data in images_data:
-            product = data.get('product')
-            color = data.get('color')
-            image = data.get('image')
+                # اضافه کردن داده‌ها به لیست
+                processed_images_data.append({
+                    'product': product,
+                    'color': color,
+                    'image': image
+                })
 
-            # استفاده از `update_or_create` برای مدیریت تصاویر
-            obj, created = AddImageGalleryModel.objects.update_or_create(
-                product_id=product,
-                color_id=color,
-                defaults={'image': image},
-            )
+            # اعتبارسنجی داده‌ها
+            serializer = ProductColorImageListSerializer(data={'images': processed_images_data})
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            results.append(ProductColorImageSerializer(obj).data)
+            # پردازش و ذخیره تصاویر
+            results = []
+            print(serializer.validated_data['images'])
+            for data in serializer.validated_data['images']:
+                product_id = data.get('product')
+                color_id = data.get('color')
+                image = data.get('image')
 
-        return Response(results, status=status.HTTP_200_OK)
+                # استفاده از `update_or_create` برای مدیریت تصاویر
+                obj, created = AddImageGalleryModel.objects.update_or_create(
+                    product_id=product_id,
+                    color_id=color_id,
+                    defaults={'image': image},
+                )
+
+                results.append(ProductColorImageSerializer(obj).data)
+
+            return Response(results, status=status.HTTP_200_OK)
 
 
 class VariantDataView(APIView):
