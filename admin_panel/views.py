@@ -1049,6 +1049,7 @@ class VariantImageView(APIView):
     def put(self, request):
         # دریافت داده‌های لیستی از تصاویر
         data = request.data
+        print(data)
         serializer = ProductColorImageListSerializer(data=data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -1056,7 +1057,7 @@ class VariantImageView(APIView):
         # پردازش هر تصویر در لیست
         images_data = serializer.validated_data['images']
         results = []
-
+        print(images_data)
         for data in images_data:
             product = data.get('product')
             color = data.get('color')
