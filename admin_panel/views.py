@@ -1000,6 +1000,7 @@ class ProductImageGallery(APIView):
         for key, value in query_dict.items():
             # Split the key into parts
             parts = key.split('.')
+            print(parts)
             index = int(parts[1])
             field = parts[2]
 
