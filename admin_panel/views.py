@@ -1031,21 +1031,6 @@ class ProductImageGallery(APIView):
 
         return Response(data='Done', status=status.HTTP_201_CREATED)
 
-
-class VariantDataView(APIView):
-    def get(self, request, product_id):
-        product = get_object_or_404(ProductModel, id=product_id)
-        ser_data = ProductAdminSerializer(instance=product)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-
-class VariantImageView(APIView):
-    def get(self, request, product_id):
-        product = get_object_or_404(ProductModel, id=product_id)
-        gallery = AddImageGalleryModel.objects.filter(product=product)
-        ser_data = ProductColorImageSerializer(instance=gallery, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
     def put(self, request):
         # دریافت داده‌های لیستی از تصاویر
         data = request.data
@@ -1073,6 +1058,21 @@ class VariantImageView(APIView):
             results.append(ProductColorImageSerializer(obj).data)
 
         return Response(results, status=status.HTTP_200_OK)
+
+
+class VariantDataView(APIView):
+    def get(self, request, product_id):
+        product = get_object_or_404(ProductModel, id=product_id)
+        ser_data = ProductAdminSerializer(instance=product)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class VariantImageView(APIView):
+    def get(self, request, product_id):
+        product = get_object_or_404(ProductModel, id=product_id)
+        gallery = AddImageGalleryModel.objects.filter(product=product)
+        ser_data = ProductColorImageSerializer(instance=gallery, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 
 class ColorImageView(APIView):
