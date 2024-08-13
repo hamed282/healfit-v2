@@ -7,7 +7,6 @@ from django.db.models import Q
 from upload_path import (get_cover_image_upload_path, get_gallery_upload_path, get_description_image_upload_path,
                          get_size_table_upload_path, get_category_upload_path, get_subcategory_upload_path,
                          get_gender_upload_path)
-import os
 
 
 class ProductModel(models.Model):
@@ -337,13 +336,6 @@ class AddImageGalleryModel(models.Model):
     class Meta:
         verbose_name = 'Product Image Gallery'
         verbose_name_plural = 'Product Image Gallery'
-
-    def save(self, *args, **kwargs):
-        if len(self.image.name) > 100:
-            # Cut the filename while preserving the extension
-            filename, ext = os.path.splitext(self.image.name)
-            self.image.name = slugify(filename[:97]) + ext
-        super(AddImageGalleryModel, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.product}'
