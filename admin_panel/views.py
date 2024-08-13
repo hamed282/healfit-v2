@@ -1031,41 +1031,55 @@ class ProductImageGallery(APIView):
 
         return Response(data='Done', status=status.HTTP_201_CREATED)
 
+
+        # AddImageGalleryModel.objects.filter(product_id=product_id).delete()
+        # print('-'*100)
+        # for form_data in data_list:
+        #     print('#' * 100)
+        #     ser_data = ProductColorImageSerializer(data=form_data)
+        #     if ser_data.is_valid():
+        #         print('!' * 100)
+        #         ser_data.save()
+        #         print('?' * 100)
+        #     else:
+        #         print('*' * 100)
+        #         return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        #
+        # return Response(data='Done', status=status.HTTP_201_CREATED)
     def put(self, request):
-        # استخراج داده‌ها و فایل‌های بارگذاری شده
-        images_data = request.data.get('images', [])
-        print(images_data)
-        # پردازش داده‌ها به صورت دیکشنری
-        processed_images_data = []
-        for i, image_data in enumerate(images_data):
-            product = image_data.get('product')
-            color = image_data.get('color')
-            image = request.FILES.get(f'images.{i}.image')
+        query_dict = dict(request.data)
+        data = defaultdict(dict)
 
-            # اضافه کردن داده‌ها به لیست
-            processed_images_data.append({
-                'product': product,
-                'color': color,
-                'image': image
-            })
+        for key, value in query_dict.items():
+            # Split the key into parts
+            parts = key.split('.')
+            index = int(parts[1])
+            field = parts[2]
 
-        # اعتبارسنجی داده‌ها
-        serializer = ProductColorImageListSerializer(data={'images': processed_images_data})
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # Assign the value to the appropriate place in the dictionary
+            if field in ['product', 'color']:
+                # Convert the value to an integer
+                data[index][field] = int(value[0])
+            else:
+                # Handle images or other types of data
+                data[index][field] = value[0] if isinstance(value, list) else value
 
-        # پردازش و ذخیره تصاویر
+        # Convert defaultdict to a list of dictionaries
+        images_data = [data[i] for i in sorted(data.keys())]
+
+        if not images_data:
+            return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
         results = []
-        print(serializer.validated_data['images'])
-        for data in serializer.validated_data['images']:
-            product_id = data.get('product')
-            color_id = data.get('color')
+        print(images_data)
+        for data in images_data:
+            product = data.get('product')
+            color = data.get('color')
             image = data.get('image')
 
             # استفاده از `update_or_create` برای مدیریت تصاویر
             obj, created = AddImageGalleryModel.objects.update_or_create(
-                product_id=product_id,
-                color_id=color_id,
+                product_id=product,
+                color_id=color,
                 defaults={'image': image},
             )
 
