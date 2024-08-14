@@ -1071,6 +1071,7 @@ class ProductImageGallery(APIView):
             return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
         results = []
         print(images_data)
+        id_gallery_list = []
         for data in images_data:
             id_gallery = data.get('id')
             product_id = data.get('product')
@@ -1078,8 +1079,14 @@ class ProductImageGallery(APIView):
             image = data.get('image')
 
             if id_gallery == 0:
-                pass
-        gallery = AddImageGalleryModel.objects.filter(product_id=product_id).exclude(id__in=id_gallery)
+                new_gallery = AddImageGalleryModel.objects.create(product=product_id,
+                                                                  color=color,
+                                                                  image=image)
+                id_gallery_list.append(new_gallery.id)
+            else:
+                id_gallery_list.append(id_gallery)
+        gallery = AddImageGalleryModel.objects.filter(product_id=product_id).exclude(id__in=id_gallery_list)
+        gallery.delete()
 
             # obj, created = AddImageGalleryModel.objects.update_or_create(
             #     product_id=product,
