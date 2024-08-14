@@ -6,7 +6,7 @@ from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
 from product.models import (ExtraGroupModel, SizeProductModel, ColorProductModel, AddImageGalleryModel, ProductTagModel,
                             ProductSubCategoryModel, ProductModel, AddProductTagModel, ProductGenderModel,
-                            AddSubCategoryModel)
+                            AddSubCategoryModel, ProductVariantModel)
 from product.serializers import ProductSerializer, ProductColorImageSerializer
 from order.models import OrderItemModel, OrderModel, OrderStatusModel
 
@@ -351,6 +351,11 @@ class ProductVariantSerializer(serializers.Serializer):
 class ProductWithVariantsSerializer(serializers.Serializer):
     extras = ProductVariantSerializer(many=True)
 
+
+class ColorImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductVariantModel
+        fields = ['id', 'color']
 
 # class ProductVariantPutSerializer(serializers.Serializer):
 #     name = serializers.CharField()

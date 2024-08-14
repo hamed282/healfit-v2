@@ -7,7 +7,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
                           ProductWithVariantsSerializer, ProductVariantSerializer, OrderSerializer,
-                          OrderDetailSerializer, OrderItemSerializer)
+                          OrderDetailSerializer, OrderItemSerializer, ColorImageSerializer)
 from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
@@ -1102,6 +1102,12 @@ class VariantImageView(APIView):
 
 
 class ColorImageView(APIView):
+    def get(self, request, product_id):
+        product = ProductModel.objects.get(id=product_id)
+        variant = ProductVariantModel.objects.filter(product=product)
+        ser_data = ColorImageSerializer(instance=variant, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
     def post(self, request, product_id):
 
         product = ProductModel.objects.get(id=product_id)
