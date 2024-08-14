@@ -400,7 +400,7 @@ class OrderSerializer(serializers.ModelSerializer):
         items = OrderItemModel.objects.filter(order=obj)
         total_price = 0
         for item in items:
-            price = item.price
+            price = item.price*item.quantity
             total_price += price
         return total_price
 
