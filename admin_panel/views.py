@@ -1079,11 +1079,14 @@ class ProductImageGallery(APIView):
             image = data.get('image')
 
             if id_gallery == 0:
+                print(data)
                 new_gallery = AddImageGalleryModel.objects.create(product=product_id,
                                                                   color=color,
                                                                   image=image)
+                print(new_gallery.id)
                 id_gallery_list.append(new_gallery.id)
             else:
+                print(data)
                 id_gallery_list.append(id_gallery)
         gallery = AddImageGalleryModel.objects.filter(product_id=product_id).exclude(id__in=id_gallery_list)
         gallery.delete()
