@@ -49,3 +49,17 @@ class CommentHomeModel(models.Model):
 class ContentHomeModel(models.Model):
     home_about_title = models.TextField()
     home_about_description = models.TextField()
+
+    class Meta:
+        verbose_name = 'Content'
+        verbose_name_plural = 'Content'
+
+    def __str__(self):
+        return f'Content'
+
+    def clean(self):
+        if not self.pk and ContentHomeModel.objects.exists():
+            # This below line will render error by breaking page, you will see
+            raise ValidationError(
+                "There can be only one Video you can not add another"
+            )

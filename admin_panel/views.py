@@ -18,8 +18,8 @@ from accounts.serializers import UserLoginSerializer
 from blog.serializers import BlogAllSerializer, BlogSerializer, ImageBlogSerializer
 from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel
 from rest_framework.permissions import IsAuthenticated
-from home.models import CommentHomeModel, BannerSliderModel, VideoHomeModel
-from home.serializers import CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer
+from home.models import CommentHomeModel, BannerSliderModel, VideoHomeModel, ContentHomeModel
+from home.serializers import CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer, ContentHomeSerializer
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel)
@@ -1167,6 +1167,22 @@ class OrderItemsView(APIView):
         items = OrderItemModel.objects.filter(order=order_id)
         ser_data = OrderItemSerializer(instance=items, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class HomeContentView(APIView):
+    def get(self, request):
+        content = ContentHomeModel.objects.all()
+        ser_data = ContentHomeSerializer(instance=content, many=True)
+        return Response(data=ser_data.data)
+
+    def put(self, request, content_id):
+        form = request.data
+        content = get_object_or_404(ContentHomeModel, id=content_id)
+        ser_data = ContentHomeSerializer(instance=content, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # class VideoItemView(APIView):
 #     def get(self, request, video_id):

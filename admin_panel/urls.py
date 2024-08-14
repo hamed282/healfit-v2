@@ -43,8 +43,12 @@ urlpatterns = [
     path('home/banner/item/<int:banner_id>/', views.BannerItemView.as_view(), name='banner_id'),
 
     path('home/video/', views.VideoHomeView.as_view(), name='video'),
-    # path('home/video/item/', views.VideoItemView.as_view(), name='video_item'),
     path('home/video/item/<int:video_id>/', views.VideoHomeView.as_view(), name='video_id'),
+
+    path('home/content/', views.HomeContentView.as_view(), name='content'),
+    path('home/content/<int:content_id>/', views.HomeContentView.as_view(), name='video_id'),
+
+
 
     # Category
     path('product/category/', views.ProductCategoryView.as_view(), name='product_category'),
