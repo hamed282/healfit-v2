@@ -1069,7 +1069,6 @@ class ProductImageGallery(APIView):
 
         if not images_data:
             return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
-        results = []
         print(images_data)
         id_gallery_list = []
         for data in images_data:
@@ -1080,7 +1079,7 @@ class ProductImageGallery(APIView):
 
             if id_gallery == 0:
                 print(data)
-                new_gallery = AddImageGalleryModel.objects.create(product=product_id,
+                new_gallery = AddImageGalleryModel.objects.create(product=ProductModel.objects.get(id=product_id),
                                                                   color=color,
                                                                   image=image)
                 print(new_gallery.id)
@@ -1099,7 +1098,7 @@ class ProductImageGallery(APIView):
             #
             # results.append(ProductColorImageSerializer(obj).data)
 
-        return Response(results, status=status.HTTP_200_OK)
+        return Response(data={'message': 'Done'}, status=status.HTTP_200_OK)
 
 
 class VariantDataView(APIView):
