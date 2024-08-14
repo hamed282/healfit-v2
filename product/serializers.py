@@ -142,8 +142,6 @@ class ProductVariantShopSerializer(serializers.ModelSerializer):
 
 
 class ProductColorImageSerializer(serializers.ModelSerializer):
-    color = serializers.SlugRelatedField(read_only=True, slug_field='color')
-
     class Meta:
         model = AddImageGalleryModel
         fields = '__all__'
