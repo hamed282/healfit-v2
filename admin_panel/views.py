@@ -1104,9 +1104,13 @@ class VariantImageView(APIView):
 class ColorImageView(APIView):
     def get(self, request, product_id):
         product = ProductModel.objects.get(id=product_id)
-        variant = ProductVariantModel.objects.filter(product=product)
-        ser_data = ColorImageSerializer(instance=variant, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        variants = ProductVariantModel.objects.filter(product=product)
+
+        colors = set([f'{str(p.color.color)} - {str(p.color.color_code)} - {str(p.color.id)}' for p in variants])
+        all_colors = [{'color': color.split(" - ")[0], 'code': color.split(" - ")[1], 'id': color.split(" - ")[2]} for
+                      color in colors]
+
+        return Response(data=all_colors, status=status.HTTP_200_OK)
 
     def post(self, request, product_id):
 
