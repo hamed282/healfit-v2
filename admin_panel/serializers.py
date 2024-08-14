@@ -353,6 +353,8 @@ class ProductWithVariantsSerializer(serializers.Serializer):
 
 
 class ColorImageSerializer(serializers.ModelSerializer):
+    color = serializers.SlugRelatedField(read_only=True, slug_field='color')
+
     class Meta:
         model = ProductVariantModel
         fields = ['id', 'color']
