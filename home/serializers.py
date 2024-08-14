@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import BannerSliderModel, VideoHomeModel, CommentHomeModel
+from .models import BannerSliderModel, VideoHomeModel, CommentHomeModel, ContentHomeModel
 
 
 class BannerSliderSerializer(serializers.ModelSerializer):
@@ -19,3 +19,8 @@ class VideoHomeSerializer(serializers.ModelSerializer):
         model = VideoHomeModel
         fields = '__all__'
 
+
+class ContentHomeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContentHomeModel
+        fields = '__all__'

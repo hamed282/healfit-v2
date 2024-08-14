@@ -1072,18 +1072,22 @@ class ProductImageGallery(APIView):
         results = []
         print(images_data)
         for data in images_data:
-            product = data.get('product')
+            id_gallery = data.get('id')
+            product_id = data.get('product')
             color = data.get('color')
             image = data.get('image')
 
-            # استفاده از `update_or_create` برای مدیریت تصاویر
-            obj, created = AddImageGalleryModel.objects.update_or_create(
-                product_id=product,
-                color_id=color,
-                defaults={'image': image},
-            )
+            if id_gallery == 0:
+                pass
+        gallery = AddImageGalleryModel.objects.filter(product_id=product_id).exclude(id__in=id_gallery)
 
-            results.append(ProductColorImageSerializer(obj).data)
+            # obj, created = AddImageGalleryModel.objects.update_or_create(
+            #     product_id=product,
+            #     color_id=color,
+            #     defaults={'image': image},
+            # )
+            #
+            # results.append(ProductColorImageSerializer(obj).data)
 
         return Response(results, status=status.HTTP_200_OK)
 

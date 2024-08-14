@@ -45,3 +45,7 @@ class CommentHomeModel(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+
+class ContentHomeModel(models.Model):
+    home_about_title = models.TextField()
+    home_about_description = models.TextField()

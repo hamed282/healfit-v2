@@ -6,5 +6,5 @@ urlpatterns = [
     path('image_slider/', views.ImageSliderView.as_view(), name='image_slider'),
     path('video/', views.VideoHomeView.as_view(), name='video'),
     path('comment/', views.CommentHomeView.as_view(), name='comment'),
-
+    path('content/', views.HomeContentView.as_view(), name='content'),
 ]
