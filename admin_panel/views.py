@@ -1057,7 +1057,7 @@ class ProductImageGallery(APIView):
             field = parts[2]
 
             # Assign the value to the appropriate place in the dictionary
-            if field in ['product', 'color']:
+            if field in ['product', 'color', 'id']:
                 # Convert the value to an integer
                 data[index][field] = int(value[0])
             else:
