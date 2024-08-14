@@ -1080,7 +1080,7 @@ class ProductImageGallery(APIView):
             if id_gallery == 0:
                 print(data)
                 new_gallery = AddImageGalleryModel.objects.create(product=ProductModel.objects.get(id=product_id),
-                                                                  color=color,
+                                                                  color=ColorProductModel.objects.get(id=color),
                                                                   image=image)
                 print(new_gallery.id)
                 id_gallery_list.append(new_gallery.id)
