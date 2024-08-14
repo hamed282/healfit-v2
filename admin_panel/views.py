@@ -1049,7 +1049,7 @@ class ProductImageGallery(APIView):
     def put(self, request):
         query_dict = dict(request.data)
         data = defaultdict(dict)
-
+        print(data)
         for key, value in query_dict.items():
             # Split the key into parts
             parts = key.split('.')
