@@ -4,6 +4,7 @@ from .models import (ProductGenderModel, ProductModel, ProductVariantModel, AddI
                      ProductTagModel)
 from django.shortcuts import get_object_or_404
 
+
 class ProductGenderSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductGenderModel
