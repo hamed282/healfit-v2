@@ -7,6 +7,7 @@ from django.db.models import Q
 from upload_path import (get_cover_image_upload_path, get_gallery_upload_path, get_description_image_upload_path,
                          get_size_table_upload_path, get_category_upload_path, get_subcategory_upload_path,
                          get_gender_upload_path, get_video_product_upload_path)
+from accounts.models import User
 
 
 class ProductModel(models.Model):
@@ -385,3 +386,9 @@ class AddProductTagModel(models.Model):
 
     def __str__(self):
         return f'{self.tag}'
+
+
+class FavUserModel(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.OneToOneField(ProductModel, on_delete=models.CASCADE)
+    fav = models.BooleanField(default=False)

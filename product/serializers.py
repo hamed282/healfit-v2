@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (ProductGenderModel, ProductModel, ProductVariantModel, AddImageGalleryModel, PopularProductModel,
                      ProductCategoryModel, ProductSubCategoryModel, AddProductTagModel, AddSubCategoryModel,
-                     ProductTagModel)
+                     ProductTagModel, FavUserModel)
 from django.shortcuts import get_object_or_404
 
 
@@ -200,11 +200,22 @@ class ProductAllSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     subcategory = serializers.SerializerMethodField()
     off_price = serializers.SerializerMethodField()
+    fav = serializers.SerializerMethodField()
 
     class Meta:
         model = ProductModel
         fields = ['gender', 'category', 'subcategory', 'product', 'cover_image', 'price', 'off_price',
-                  'percent_discount', 'group_id', 'slug', 'subtitle']
+                  'percent_discount', 'group_id', 'slug', 'subtitle', 'fav']
+
+    def get_fav(self, obj):
+        request = self.context.get('request', None)
+
+        if request and request.user.is_authenticated:
+            fav = FavUserModel.objects.filter(user=request.user, product=obj).exists()
+        else:
+            fav = False
+
+        return fav
 
     def get_category(self, obj):
         categories = obj.cat_product.all()
