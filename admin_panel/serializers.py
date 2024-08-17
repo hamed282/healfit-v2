@@ -236,6 +236,7 @@ class CombinedProductSerializer(serializers.Serializer):
     size_table_image_alt = serializers.CharField()
     cover_image = serializers.ImageField(required=False, allow_null=True)
     cover_image_alt = serializers.CharField()
+    video = serializers.FileField(required=False, allow_null=True)
     price = serializers.CharField()
     percent_discount = serializers.IntegerField()
     subtitle = serializers.CharField()
