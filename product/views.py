@@ -142,7 +142,7 @@ class ProductAllView(APIView):
         """
         get parameter:
         1. page_number
-        3. limit
+        2. limit
         """
 
         page_number = int(self.request.query_params.get('page_number', 1))
@@ -150,29 +150,39 @@ class ProductAllView(APIView):
         gender = self.request.query_params.get('gender', None)
         category = self.request.query_params.get('category', None)
         subcategory = self.request.query_params.get('subcategory', None)
+
         size = self.request.query_params.get('size', None)
+        if size:
+            size = size.split(',')
+
         color = self.request.query_params.get('color', None)
+        if color:
+            color = color.split(',')
+
         available = self.request.query_params.get('available', None)
-
-        products_count = len(ProductModel.objects.all())
-
-        # if available is not None:
         try:
             available = available.lower() in ['true', '1']
         except:
             available = False
+
         products = ProductModel.filter_products(
             gender=gender,
-            color=color,
-            size=size,
             category=category,
             subcategory=subcategory,
             available=available
         )
 
-        number_of_pages = ceil(products_count/per_page)
+        if size:
+            products = products.filter(size__in=size)
+
+        if color:
+            products = products.filter(color__in=color)
+
+        products_count = products.count()
+        number_of_pages = ceil(products_count / per_page)
+
         if page_number is not None:
-            product_list = products.order_by('priority')[per_page*(page_number-1):per_page*page_number]
+            product_list = products.order_by('priority')[per_page * (page_number - 1):per_page * page_number]
         else:
             product_list = products.order_by('priority')
 
