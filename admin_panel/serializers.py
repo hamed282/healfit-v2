@@ -242,9 +242,13 @@ class CombinedProductSerializer(serializers.Serializer):
     subtitle = serializers.CharField()
     application_fields = serializers.CharField()
     description = serializers.CharField()
+    details = serializers.CharField()
+    size_guide = serializers.CharField()
     group_id = serializers.CharField()
     priority = serializers.IntegerField()
     slug = serializers.SlugField()
+
+
 
     subcategory = serializers.CharField(max_length=100)
     follow = serializers.BooleanField(default=False)
