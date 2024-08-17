@@ -236,7 +236,7 @@ class CombinedProductSerializer(serializers.Serializer):
     size_table_image_alt = serializers.CharField()
     cover_image = serializers.ImageField(required=False, allow_null=True)
     cover_image_alt = serializers.CharField()
-    # video = serializers.FileField(required=False, allow_null=True)
+    video = serializers.FileField(required=False, allow_null=True)
     price = serializers.CharField()
     percent_discount = serializers.IntegerField()
     subtitle = serializers.CharField()
@@ -247,8 +247,6 @@ class CombinedProductSerializer(serializers.Serializer):
     group_id = serializers.CharField()
     priority = serializers.IntegerField()
     slug = serializers.SlugField()
-
-
 
     subcategory = serializers.CharField(max_length=100)
     follow = serializers.BooleanField(default=False)
