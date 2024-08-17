@@ -335,3 +335,9 @@ class AddProductTagSerializer(serializers.ModelSerializer):
             tag, created = ProductTagModel.objects.get_or_create(tag=tag_name)
             instance.tag = tag
         return super().update(instance, validated_data)
+
+
+class FavProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FavUserModel
+        fields = '__all__'

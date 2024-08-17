@@ -3,11 +3,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import (ProductGenderModel, ProductModel, SizeProductModel, ColorProductModel, ProductVariantModel,
                      AddImageGalleryModel, PopularProductModel, ProductCategoryModel, ProductSubCategoryModel,
-                     AddCategoryModel, AddSubCategoryModel)
+                     FavUserModel)
 from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVariantShopSerializer,
                           ProductColorImageSerializer, ColorSizeProductSerializer, ProductListSerializer,
                           ProductSearchSerializer, PopularProductSerializer, ProductAllSerializer,
-                          ProductCategorySerializer, ProductSubCategorySerializer, ProductByCategorySerializer)
+                          ProductCategorySerializer, ProductSubCategorySerializer, ProductByCategorySerializer,
+                          FavProductSerializer)
 from django.shortcuts import get_object_or_404
 from math import ceil
 from rest_framework import viewsets
@@ -277,3 +278,22 @@ class ProductItemView(APIView):
         product = ProductModel.objects.get(slug=slug_product)
         ser_data = ProductSerializer(instance=product)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class FavProductView(APIView):
+    def post(self, request):
+        form = request.data
+        ser_data = FavProductSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, product_id):
+        product = FavUserModel.objects.get(product=ProductModel.objects.get(id=product_id), user=request.user)
+
+        ser_data = FavProductSerializer(instance=product, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)

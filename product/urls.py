@@ -6,6 +6,8 @@ urlpatterns = [
     path('gender_home/', views.ProductGenderView.as_view(), name='gender_home'),
     path('gender/', views.ProductGenderListView.as_view(), name='product_list'),
     path('all/', views.ProductAllView.as_view(), name='product_all'),
+    path('fav/', views.FavProductView.as_view(), name='fav_product'),
+    path('fav/<int:product_id>/', views.FavProductView.as_view(), name='fav_product'),
 
     # Category
     path('categories/', views.CategoryListView.as_view(), name='category_list'),
