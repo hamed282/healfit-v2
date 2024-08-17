@@ -229,7 +229,8 @@ class ProductTagSerializer(ModelSerializer):
 
 class CombinedProductSerializer(serializers.Serializer):
     gender = serializers.PrimaryKeyRelatedField(queryset=ProductGenderModel.objects.all())
-    product = serializers.CharField()
+    product = serializers.CharField(required=False, allow_null=True)
+    name_product = serializers.CharField()
     description_image = serializers.ImageField(required=False, allow_null=True)
     description_image_alt = serializers.CharField()
     size_table_image = serializers.ImageField(required=False, allow_null=True)
@@ -254,6 +255,7 @@ class CombinedProductSerializer(serializers.Serializer):
     canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
     meta_title = serializers.CharField(max_length=60)
     meta_description = serializers.CharField(max_length=150)
+    schema_markup = serializers.CharField(max_length=150)
     tag_name = serializers.CharField(max_length=50, required=False, allow_blank=True)
 
     def create(self, validated_data):
