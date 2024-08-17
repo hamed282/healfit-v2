@@ -50,6 +50,7 @@ class BlogModel(models.Model):
     canonical = models.CharField(max_length=256, null=True, blank=True)
     meta_title = models.CharField(max_length=60)
     meta_description = models.CharField(max_length=150)
+    schema_markup = models.TextField()
 
     created = models.DateField(auto_now_add=True)
     updated = models.DateField(auto_now=True)

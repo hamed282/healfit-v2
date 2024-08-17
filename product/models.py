@@ -37,6 +37,7 @@ class ProductModel(models.Model):
     canonical = models.CharField(max_length=256, null=True, blank=True)
     meta_title = models.CharField(max_length=60)
     meta_description = models.CharField(max_length=150)
+    schema_markup = models.TextField()
 
     # Date Time Fields
     created = models.DateTimeField(auto_now_add=True)

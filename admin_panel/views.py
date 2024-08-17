@@ -7,7 +7,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
                           ProductWithVariantsSerializer, ProductVariantSerializer, OrderSerializer,
-                          OrderDetailSerializer, OrderItemSerializer, ColorImageSerializer)
+                          OrderDetailSerializer, OrderItemSerializer)
 from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
@@ -27,7 +27,7 @@ from product.serializers import (ProductCategorySerializer, ProductSubCategorySe
                                  AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer,
                                  ProductColorImageListSerializer)
 from collections import defaultdict
-from order.models import OrderModel, OrderItemModel
+from order.models import OrderModel, OrderItemModel, OrderStatusModel
 
 
 class LanguageView(APIView):
@@ -1135,8 +1135,15 @@ class ColorImageView(APIView):
 class OrderFilterView(APIView):
     def get(self, request):
         status_order = self.request.query_params.get('status')
-        order = OrderModel.objects.filter(status=status_order)
-        ser_data = OrderSerializer(instance=order, many=True)
+
+        try:
+            order_status = OrderStatusModel.objects.get(status=status_order)
+
+            orders = OrderModel.objects.filter(status=order_status)
+        except OrderStatusModel.DoesNotExist:
+            return Response({"error": "Invalid status value"}, status=400)
+
+        ser_data = OrderSerializer(instance=orders, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 
