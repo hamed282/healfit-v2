@@ -60,3 +60,9 @@ def get_gender_upload_path(instance, filename):
     gender_name = instance.gender
 
     return os.path.join('gender', gender_name, filename)
+
+
+def get_video_product_upload_path(instance, filename):
+    product_name = instance.product
+
+    return os.path.join('product', product_name, 'video', filename)

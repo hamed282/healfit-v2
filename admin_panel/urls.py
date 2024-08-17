@@ -100,6 +100,7 @@ urlpatterns = [
     path('product/colorimage/<int:product_id>/', views.ColorImageView.as_view(), name='color_image'),
 
     # orders
+    path('order/', views.OrderFilterView.as_view(), name='order_paid'),
     path('order/paid/', views.OrderPaidView.as_view(), name='order_paid'),
     path('order/unpaid/', views.OrderUnpaidView.as_view(), name='order_unpaid'),
     path('order/details/<int:order_id>/', views.OrderDetailView.as_view(), name='order_detail'),

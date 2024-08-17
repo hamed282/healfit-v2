@@ -6,7 +6,7 @@ from django.db.models import Max
 from django.db.models import Q
 from upload_path import (get_cover_image_upload_path, get_gallery_upload_path, get_description_image_upload_path,
                          get_size_table_upload_path, get_category_upload_path, get_subcategory_upload_path,
-                         get_gender_upload_path)
+                         get_gender_upload_path, get_video_product_upload_path)
 
 
 class ProductModel(models.Model):
@@ -26,7 +26,7 @@ class ProductModel(models.Model):
     description = models.TextField()
     details = models.TextField()
     size_guide = models.TextField()
-    video = models.FileField()
+    video = models.FileField(upload_to=get_video_product_upload_path, blank=True, null=True)
     group_id = models.CharField(max_length=100)
     priority = models.IntegerField(blank=True, null=True, default=1)
     slug = models.SlugField(max_length=100, unique=True)

@@ -1132,6 +1132,14 @@ class ColorImageView(APIView):
         return Response(data={'message': 'Create'}, status=status.HTTP_201_CREATED)
 
 
+class OrderFilterView(APIView):
+    def get(self, request):
+        status_order = self.request.query_params.get('status')
+        order = OrderModel.objects.filter(status=status_order)
+        ser_data = OrderSerializer(instance=order, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
 class OrderPaidView(APIView):
     def get(self, request):
         order = OrderModel.objects.filter(paid=True)
