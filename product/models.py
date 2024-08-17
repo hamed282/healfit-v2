@@ -14,7 +14,7 @@ class ProductModel(models.Model):
     objects = None
     gender = models.ForeignKey('ProductGenderModel', on_delete=models.CASCADE, related_name='gender_product', null=True, blank=True)
     product = models.CharField(max_length=100, unique=True)
-    name_product = models.CharField(max_length=100)
+    name_product = models.CharField(max_length=100, blank=True, null=True)
     cover_image = models.ImageField(upload_to=get_cover_image_upload_path, blank=True, null=True)
     cover_image_alt = models.CharField(max_length=32)
     size_table_image = models.ImageField(upload_to=get_size_table_upload_path, blank=True, null=True)
