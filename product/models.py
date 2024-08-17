@@ -28,7 +28,7 @@ class ProductModel(models.Model):
     description = models.TextField()
     details = models.TextField(blank=True, null=True)
     size_guide = models.TextField(blank=True, null=True)
-    video = models.FileField(upload_to=get_video_product_upload_path, blank=True, null=True)
+    # video = models.FileField(upload_to=get_video_product_upload_path, blank=True, null=True)
     group_id = models.CharField(max_length=100)
     priority = models.IntegerField(blank=True, null=True, default=1)
     slug = models.SlugField(max_length=100, unique=True)
