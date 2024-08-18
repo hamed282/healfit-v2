@@ -24,8 +24,7 @@ from product.models import (ProductCategoryModel, ProductSubCategoryModel, Extra
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel)
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer, ProductSerializer,
-                                 AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer,
-                                 ProductColorImageListSerializer)
+                                 AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer)
 from collections import defaultdict
 from order.models import OrderModel, OrderItemModel, OrderStatusModel
 
@@ -363,6 +362,8 @@ class AddBLogTagListView(APIView):
 
 
 class CommentHomeView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         comments = CommentHomeModel.objects.all()
         ser_data = CommentHomeSerializer(instance=comments, many=True)
@@ -370,6 +371,8 @@ class CommentHomeView(APIView):
 
 
 class CommentItemView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, comment_id):
         comment = get_object_or_404(CommentHomeModel, id=comment_id)
         ser_data = CommentHomeSerializer(instance=comment)
@@ -407,6 +410,8 @@ class CommentItemView(APIView):
 
 
 class BannerHomeView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         banner = BannerSliderModel.objects.all()
         ser_data = BannerSliderSerializer(instance=banner, many=True)
@@ -414,6 +419,8 @@ class BannerHomeView(APIView):
 
 
 class BannerItemView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, banner_id):
         banner = get_object_or_404(BannerSliderModel, id=banner_id)
         ser_data = BannerSliderSerializer(instance=banner)
@@ -451,6 +458,8 @@ class BannerItemView(APIView):
 
 
 class VideoHomeView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         video = VideoHomeModel.objects.all()
         ser_data = VideoHomeSerializer(instance=video, many=True)
@@ -467,6 +476,7 @@ class VideoHomeView(APIView):
 
 
 class ProductCategoryView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         category = ProductCategoryModel.objects.all()
@@ -476,6 +486,8 @@ class ProductCategoryView(APIView):
 
 
 class ProductCategoryItemView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, category_id):
         category = get_object_or_404(ProductCategoryModel, id=category_id)
         ser_data = ProductCategorySerializer(instance=category)
@@ -513,6 +525,7 @@ class ProductCategoryItemView(APIView):
 
 
 class ProductSubCategoryView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         subcategory = ProductSubCategoryModel.objects.all()
@@ -522,6 +535,8 @@ class ProductSubCategoryView(APIView):
 
 
 class ProductSubCategoryItemView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, category_id):
         subcategory = get_object_or_404(ProductSubCategoryModel, id=category_id)
         ser_data = ProductSubCategorySerializer(instance=subcategory)
@@ -559,6 +574,8 @@ class ProductSubCategoryItemView(APIView):
 
 
 class BlogImageView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         form = request.data
         ser_data = ImageBlogSerializer(data=form)
@@ -572,6 +589,8 @@ class BlogImageView(APIView):
 
 
 class ExtraItemView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         extr_group = ExtraGroupModel.objects.all()
         ser_data = ExtraGroupSerializer(instance=extr_group, many=True)
@@ -579,6 +598,8 @@ class ExtraItemView(APIView):
 
 
 class ExtraGroupView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, id_extrag):
         extra = get_object_or_404(ExtraGroupModel, id=id_extrag)
         ser_data = ExtraGroupSerializer(instance=extra)
@@ -624,6 +645,8 @@ class ExtraGroupView(APIView):
 
 
 class SizeItemView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, size_id):
 
         size = get_object_or_404(SizeProductModel, id=size_id)
@@ -632,6 +655,8 @@ class SizeItemView(APIView):
 
 
 class SizeValueView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
 
         size = SizeProductModel.objects.all()
@@ -680,6 +705,8 @@ class SizeValueView(APIView):
 
 
 class ColorItemView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, color_id):
 
         color = get_object_or_404(ColorProductModel, id=color_id)
@@ -688,6 +715,8 @@ class ColorItemView(APIView):
 
 
 class ColorValueView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
 
         color = ColorProductModel.objects.all()
@@ -737,6 +766,8 @@ class ColorValueView(APIView):
 
 
 class ProductView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         products = ProductModel.objects.all()
         ser_data = ProductSerializer(instance=products, many=True)
@@ -758,6 +789,8 @@ class ProductView(APIView):
 
 
 class ProductItemView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, product_id):
         product = ProductModel.objects.get(id=product_id)
         ser_data = ProductSerializer(instance=product)
@@ -803,7 +836,7 @@ class ProductItemView(APIView):
 
 
 class ProductTagListView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         search = self.request.query_params.get('search')
@@ -847,7 +880,7 @@ class ProductTagListView(APIView):
 
 
 class ProductTagItemView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, product_id):
         product = get_object_or_404(ProductTagModel, id=product_id)
@@ -856,7 +889,7 @@ class ProductTagItemView(APIView):
 
 
 class AddProductTagListView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         form = request.data
@@ -898,6 +931,8 @@ class AddProductTagListView(APIView):
 
 
 class GenderView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         genders = ProductGenderModel.objects.all()
         ser_data = GenderSerializer(instance=genders, many=True)
@@ -913,6 +948,8 @@ class GenderView(APIView):
 
 
 class GenderItemView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def put(self, request, gender_id):
         try:
             gender = ProductGenderModel.objects.get(id=gender_id)
@@ -940,6 +977,8 @@ class GenderItemView(APIView):
 
 
 class ProductVariantView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, product_id):
         product = ProductModel.objects.get(id=product_id)
         variant = ProductVariantModel.objects.filter(product=product)
@@ -970,6 +1009,8 @@ class ProductVariantView(APIView):
 
 
 class VariantPutView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def put(self, request):
         ser_data = ProductWithVariantsSerializer(data=request.data)
         print(ser_data)
@@ -996,6 +1037,8 @@ class VariantPutView(APIView):
 
 
 class ProductImageGallery(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         query_dict = dict(request.data)
         data = defaultdict(dict)
@@ -1089,6 +1132,8 @@ class ProductImageGallery(APIView):
 
 
 class VariantDataView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, product_id):
         product = get_object_or_404(ProductModel, id=product_id)
         ser_data = ProductAdminSerializer(instance=product)
@@ -1096,6 +1141,8 @@ class VariantDataView(APIView):
 
 
 class VariantImageView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, product_id):
         product = get_object_or_404(ProductModel, id=product_id)
         gallery = AddImageGalleryModel.objects.filter(product=product)
@@ -1104,6 +1151,8 @@ class VariantImageView(APIView):
 
 
 class ColorImageView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, product_id):
         product = ProductModel.objects.get(id=product_id)
         variants = ProductVariantModel.objects.filter(product=product)
@@ -1135,6 +1184,8 @@ class ColorImageView(APIView):
 
 
 class OrderFilterView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         status_order = self.request.query_params.get('status')
 
@@ -1150,6 +1201,8 @@ class OrderFilterView(APIView):
 
 
 class OrderPaidView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         order = OrderModel.objects.filter(paid=True)
         ser_data = OrderSerializer(instance=order, many=True)
@@ -1157,6 +1210,8 @@ class OrderPaidView(APIView):
 
 
 class OrderUnpaidView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         order = OrderModel.objects.filter(paid=False)
         ser_data = OrderSerializer(instance=order, many=True)
@@ -1164,6 +1219,8 @@ class OrderUnpaidView(APIView):
 
 
 class OrderDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, order_id):
         order = OrderModel.objects.get(id=order_id)
         ser_data = OrderDetailSerializer(instance=order)
@@ -1183,6 +1240,8 @@ class OrderDetailView(APIView):
 
 
 class OrderCustomerView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, order_id):
         user = OrderModel.objects.get(id=order_id).user
         ser_data = UserInfoSerializer(instance=user)
@@ -1190,6 +1249,8 @@ class OrderCustomerView(APIView):
 
 
 class OrderItemsView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, order_id):
         items = OrderItemModel.objects.filter(order=order_id)
         ser_data = OrderItemSerializer(instance=items, many=True)
@@ -1197,6 +1258,8 @@ class OrderItemsView(APIView):
 
 
 class HomeContentView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         content = ContentHomeModel.objects.all()
         ser_data = ContentHomeSerializer(instance=content, many=True)
