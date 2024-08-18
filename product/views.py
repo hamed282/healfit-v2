@@ -145,7 +145,7 @@ class ProductAllView(APIView):
         1. page_number
         3. limit
         """
-
+        print(f'user: {request.user}')
         page_number = int(self.request.query_params.get('page_number', 1))
         per_page = int(self.request.query_params.get('limit', 16))
         gender = self.request.query_params.get('gender', None)
@@ -165,7 +165,6 @@ class ProductAllView(APIView):
 
         products_count = len(ProductModel.objects.all())
 
-        print(size)
         # if available is not None:
         try:
             available = available.lower() in ['true', '1']
