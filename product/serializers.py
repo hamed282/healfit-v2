@@ -204,7 +204,7 @@ class ProductAllSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductModel
-        fields = ['gender', 'category', 'subcategory', 'product', 'cover_image', 'price', 'off_price',
+        fields = ['id', 'gender', 'category', 'subcategory', 'product', 'cover_image', 'price', 'off_price',
                   'percent_discount', 'group_id', 'slug', 'subtitle', 'fav']
 
     def get_fav(self, obj):

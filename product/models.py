@@ -108,9 +108,9 @@ class ProductModel(models.Model):
 
         # اعمال فیلترها در صورت ارائه
         if color:
-            variant_queryset = variant_queryset.filter(color__color=color)
+            variant_queryset = variant_queryset.filter(color__color__in=color)
         if size:
-            variant_queryset = variant_queryset.filter(size__size=size)
+            variant_queryset = variant_queryset.filter(size__size__in=size)
         if available is True:
             variant_queryset = variant_queryset.filter(quantity__gt=0)
 

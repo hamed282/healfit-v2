@@ -143,7 +143,7 @@ class ProductAllView(APIView):
         """
         get parameter:
         1. page_number
-        2. limit
+        3. limit
         """
 
         page_number = int(self.request.query_params.get('page_number', 1))
@@ -151,6 +151,9 @@ class ProductAllView(APIView):
         gender = self.request.query_params.get('gender', None)
         category = self.request.query_params.get('category', None)
         subcategory = self.request.query_params.get('subcategory', None)
+        # size = self.request.query_params.get('size', None)
+        # color = self.request.query_params.get('color', None)
+        available = self.request.query_params.get('available', None)
 
         size = self.request.query_params.get('size', None)
         if size:
@@ -160,28 +163,30 @@ class ProductAllView(APIView):
         if color:
             color = color.split(',')
 
-        available = self.request.query_params.get('available', None)
+        products_count = len(ProductModel.objects.all())
+
+        print(size)
+        # if available is not None:
         try:
             available = available.lower() in ['true', '1']
         except:
             available = False
-
         products = ProductModel.filter_products(
             gender=gender,
+            color=color,
+            size=size,
             category=category,
             subcategory=subcategory,
             available=available
         )
 
-        if size:
-            products = products.filter(size__in=size)
+        # if size:
+        #     products = products.filter(size__in=size)
+        # print(color)
+        # if color:
+        #     products = products.filter(color__in=color)
 
-        if color:
-            products = products.filter(color__in=color)
-
-        products_count = products.count()
         number_of_pages = ceil(products_count / per_page)
-
         if page_number is not None:
             product_list = products.order_by('priority')[per_page * (page_number - 1):per_page * page_number]
         else:
