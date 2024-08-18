@@ -191,7 +191,7 @@ class ProductAllView(APIView):
         else:
             product_list = products.order_by('priority')
 
-        ser_product_list = ProductAllSerializer(instance=product_list, many=True)
+        ser_product_list = ProductAllSerializer(instance=product_list, many=True, context={'request': request})
 
         return Response(data={'data': ser_product_list.data, 'number_of_pages': number_of_pages})
 
