@@ -310,11 +310,14 @@ class FavProductView(APIView):
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request, product_id):
-        product = FavUserModel.objects.get(product=ProductModel.objects.get(id=product_id), user=request.user)
+    def delete(self, request, product_id):
+        if product_id is None:
+            return Response(data={'message': 'Input product ID'})
+        try:
+            product = FavUserModel.objects.get(product=ProductModel.objects.get(id=product_id), user=request.user)
+        except:
+            return Response(data={'message': 'product is not exist'})
 
-        ser_data = FavProductSerializer(instance=product, data=request.data, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        product.delete()
+
+        return Response(data={'message': f'The fav product ID {product} was deleted'}, status=status.HTTP_200_OK)
