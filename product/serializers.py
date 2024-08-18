@@ -340,4 +340,8 @@ class AddProductTagSerializer(serializers.ModelSerializer):
 class FavProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = FavUserModel
-        fields = '__all__'
+        exclude = ['user']
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        return FavUserModel.objects.create(user=user, **validated_data)

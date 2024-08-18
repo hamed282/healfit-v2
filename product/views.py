@@ -14,6 +14,7 @@ from math import ceil
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from rest_framework.permissions import IsAuthenticated
 
 
 class ProductGenderView(APIView):
@@ -291,13 +292,19 @@ class ProductItemView(APIView):
 
 
 class FavProductView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, product_id):
+        fav = FavUserModel.objects.get(product=ProductModel.objects.get(id=product_id), user=request.user)
+        ser_data = FavProductSerializer(instance=fav)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
     def post(self, request):
-        form = request.data
-        ser_data = FavProductSerializer(data=form)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = FavProductSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, product_id):
         product = FavUserModel.objects.get(product=ProductModel.objects.get(id=product_id), user=request.user)
