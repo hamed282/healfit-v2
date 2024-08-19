@@ -19,7 +19,7 @@ class ProductSerializer(serializers.ModelSerializer):
     subcategory = serializers.SerializerMethodField()
     gender = serializers.SlugRelatedField(read_only=True, slug_field='id')
     tag = serializers.SerializerMethodField()
-    price = serializers.IntegerField()
+    price = serializers.FloatField()
     group_id = serializers.IntegerField()
 
     cover_image = serializers.ImageField(required=False, allow_null=True)
