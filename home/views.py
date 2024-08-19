@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import BannerSliderModel, CommentHomeModel, VideoHomeModel, ContentHomeModel
 from .serializers import BannerSliderSerializer, CommentHomeSerializer, VideoHomeSerializer, ContentHomeSerializer
-
+from product.tasks import zoho_product_update
 
 class ImageSliderView(APIView):
     def get(self, request):
