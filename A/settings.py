@@ -29,8 +29,8 @@ if DEBUG:
     # CORS_ORIGIN_ALLOW_ALL = True
 
 else:
-    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
-
+    # ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
+    ALLOWED_HOSTS = ['*']
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
