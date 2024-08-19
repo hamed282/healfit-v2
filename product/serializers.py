@@ -338,6 +338,8 @@ class AddProductTagSerializer(serializers.ModelSerializer):
 
 
 class FavProductSerializer(serializers.ModelSerializer):
+    # product = serializers.SerializerMethodField(read_only=True, slug_field='product')
+
     class Meta:
         model = FavUserModel
         exclude = ['user']

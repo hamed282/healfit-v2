@@ -7,7 +7,8 @@ urlpatterns = [
     path('gender/', views.ProductGenderListView.as_view(), name='product_list'),
     path('all/', views.ProductAllView.as_view(), name='product_all'),
     path('fav/', views.FavProductView.as_view(), name='fav_product'),
-    path('fav/<int:product_id>/', views.FavProductView.as_view(), name='fav_product'),
+    path('fav/<int:product_id>/', views.FavProductView.as_view(), name='fav_item'),
+    path('user/fav/', views.UserFavView.as_view(), name='fav_user'),
 
     # Category
     path('categories/', views.CategoryListView.as_view(), name='category_list'),
