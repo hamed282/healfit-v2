@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 # Debug Mode
-DEBUG = False #os.getenv('DEBUG')
+DEBUG = True #os.getenv('DEBUG')
 
 if DEBUG:
     ALLOWED_HOSTS = ['*']
