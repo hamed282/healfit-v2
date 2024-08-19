@@ -5,6 +5,7 @@ from .models import BannerSliderModel, CommentHomeModel, VideoHomeModel, Content
 from .serializers import BannerSliderSerializer, CommentHomeSerializer, VideoHomeSerializer, ContentHomeSerializer
 from product.tasks import zoho_product_update
 
+
 class ImageSliderView(APIView):
     def get(self, request):
         banner_slider = BannerSliderModel.objects.all()
