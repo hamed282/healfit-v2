@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 # Debug Mode
-DEBUG = True  #os.getenv('DEBUG')
+DEBUG = False  #os.getenv('DEBUG')
 
 if DEBUG:
     ALLOWED_HOSTS = ['*']
@@ -25,16 +25,16 @@ if DEBUG:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.getenv('NAME'),
-            'USER': os.getenv('USER'),
-            'PASSWORD': os.getenv('PASSWORD'),
-            'HOST': os.getenv('HOST'),
-            'PORT': os.getenv('PORT'),
-        }
-    }
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.mysql',
+    #         'NAME': os.getenv('NAME'),
+    #         'USER': os.getenv('USER'),
+    #         'PASSWORD': os.getenv('PASSWORD'),
+    #         'HOST': os.getenv('HOST'),
+    #         'PORT': os.getenv('PORT'),
+    #     }
+    # }
 
 
     # CORS_ORIGIN_ALLOW_ALL = True

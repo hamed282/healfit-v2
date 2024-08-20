@@ -39,7 +39,8 @@ def zoho_product_update():
 
                 else:
                     # print(item)
-                    ProductModel.objects.create(product=product, group_id=group_id, price=item['items'][0]['rate'])  # price=item['price']
+                    ProductModel.objects.create(product=product, name_product=product, group_id=group_id,
+                                                price=item['items'][0]['rate'])  # price=item['price']
                 i += 1
             except:
                 continue
@@ -104,4 +105,4 @@ def zoho_product_update():
 
         has_more_page = response_items['page_context']['has_more_page']
 
-zoho_product_update()
+# zoho_product_update()
