@@ -22,6 +22,9 @@ class ProductSerializer(serializers.ModelSerializer):
     price = serializers.FloatField()
     group_id = serializers.IntegerField()
     name_product = serializers.CharField(required=False, allow_null=True)
+    video = serializers.FileField(required=False, allow_null=True)
+    percent_discount = serializers.IntegerField(required=False, allow_null=True)
+    schema_markup = serializers.CharField(required=False, allow_null=True)
 
     cover_image = serializers.ImageField(required=False, allow_null=True)
     size_table_image = serializers.ImageField(required=False, allow_null=True)
