@@ -105,4 +105,4 @@ def zoho_product_update():
 
         has_more_page = response_items['page_context']['has_more_page']
 
-# zoho_product_update()
+zoho_product_update()
