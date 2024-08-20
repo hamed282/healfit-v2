@@ -238,18 +238,18 @@ class CombinedProductSerializer(serializers.Serializer):
     cover_image = serializers.ImageField(required=False, allow_null=True)
     cover_image_alt = serializers.CharField(required=False, allow_null=True)
     video = serializers.FileField(required=False, allow_null=True)
-    price = serializers.CharField()
-    percent_discount = serializers.IntegerField()
+    price = serializers.CharField(required=False, allow_null=True)
+    percent_discount = serializers.IntegerField(required=False, allow_null=True)
     subtitle = serializers.CharField(required=False, allow_null=True)
     application_fields = serializers.CharField(required=False, allow_null=True)
     description = serializers.CharField(required=False, allow_null=True)
     details = serializers.CharField(required=False, allow_null=True)
     size_guide = serializers.CharField(required=False, allow_null=True)
-    group_id = serializers.CharField()
-    priority = serializers.IntegerField()
+    group_id = serializers.CharField(required=False, allow_null=True)
+    priority = serializers.IntegerField(required=False, allow_null=True)
     slug = serializers.SlugField()
 
-    subcategory = serializers.CharField(max_length=100)
+    subcategory = serializers.CharField(max_length=100, required=False, allow_null=True)
     follow = serializers.BooleanField(default=False)
     index = serializers.BooleanField(default=False)
     canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
@@ -259,6 +259,7 @@ class CombinedProductSerializer(serializers.Serializer):
     tag_name = serializers.CharField(max_length=50, required=False, allow_blank=True)
 
     def create(self, validated_data):
+        print('*'*100)
         # Extract and process tag data
         tag_name = validated_data.pop('tag_name', None)
         tag = None
@@ -279,7 +280,6 @@ class CombinedProductSerializer(serializers.Serializer):
         subcategory_name = subcategory_name
         # Create ProductModel instance
         product = ProductModel.objects.create(**validated_data)
-
         subcategory_name = subcategory_name.split(',')
         for sub in subcategory_name:
             subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=sub)
@@ -300,10 +300,19 @@ class CombinedProductSerializer(serializers.Serializer):
         # Update the ProductModel instance
         tag_name = validated_data.pop('tag_name', None)
         subcategory_name = validated_data.pop('subcategory', None)
+        product_name = validated_data.pop('product', None)
 
-        if subcategory_name:
-            subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=subcategory_name)
-            instance.subcategory = subcategory
+        product = ProductModel.objects.get(product=product_name)
+        subcategory_name = subcategory_name.split(',')
+        if len(subcategory_name) > 0:
+            add_sub = AddSubCategoryModel.objects.filter(product=product)
+
+            add_sub.delete()
+            for sub in subcategory_name:
+
+                subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=sub)
+                # Create AddSubCategoryModel instance
+                AddSubCategoryModel.objects.create(product=product, subcategory=subcategory)
 
         if tag_name:
             tag, created = ProductTagModel.objects.get_or_create(tag=tag_name)
