@@ -21,6 +21,7 @@ class ProductSerializer(serializers.ModelSerializer):
     tag = serializers.SerializerMethodField()
     price = serializers.FloatField()
     group_id = serializers.IntegerField()
+    name_product = serializers.CharField(required=False, allow_null=True)
 
     cover_image = serializers.ImageField(required=False, allow_null=True)
     size_table_image = serializers.ImageField(required=False, allow_null=True)
