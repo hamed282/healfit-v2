@@ -3,7 +3,7 @@ from .models import BlogModel, AddBlogTagModel, BlogCategoryModel, BlogImageMode
 
 
 class BlogSerializer(serializers.ModelSerializer):
-    tag = serializers.SerializerMethodField(required=False, allow_blank=True)
+    tag = serializers.SerializerMethodField()
     category = serializers.SlugRelatedField(slug_field='category', queryset=BlogCategoryModel.objects.all(),)
     canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
     meta_title = serializers.CharField(max_length=60, required=False, allow_null=True)
