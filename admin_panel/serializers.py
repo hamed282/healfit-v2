@@ -228,7 +228,7 @@ class ProductTagSerializer(ModelSerializer):
 
 
 class CombinedProductSerializer(serializers.Serializer):
-    gender = serializers.PrimaryKeyRelatedField(queryset=ProductGenderModel.objects.all())
+    gender = serializers.PrimaryKeyRelatedField(queryset=ProductGenderModel.objects.all(), required=False, allow_null=True)
     product = serializers.CharField(required=False, allow_null=True)
     name_product = serializers.CharField(required=False, allow_null=True)
     description_image = serializers.ImageField(required=False, allow_null=True)
@@ -247,7 +247,7 @@ class CombinedProductSerializer(serializers.Serializer):
     size_guide = serializers.CharField(required=False, allow_null=True)
     group_id = serializers.CharField(required=False, allow_null=True)
     priority = serializers.IntegerField(required=False, allow_null=True)
-    slug = serializers.SlugField()
+    slug = serializers.SlugField(required=False, allow_null=True)
 
     subcategory = serializers.CharField(required=False, allow_null=True)
     follow = serializers.BooleanField(default=False)
@@ -280,7 +280,11 @@ class CombinedProductSerializer(serializers.Serializer):
         subcategory_name = subcategory_name
         # Create ProductModel instance
         product = ProductModel.objects.create(**validated_data)
-        subcategory_name = subcategory_name.split(',')
+
+        if subcategory_name is not None:
+            subcategory_name = subcategory_name.split(',')
+        else:
+            subcategory_name = []
         for sub in subcategory_name:
             subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=sub)
             # Create AddSubCategoryModel instance
