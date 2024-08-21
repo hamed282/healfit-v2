@@ -812,7 +812,8 @@ class ProductItemView(APIView):
         except ProductModel.DoesNotExist:
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
         print(product)
-        serializer = CombinedProductSerializer(instance=product, data=request.data, partial=True)
+        serializer = CombinedProductSerializer(instance=product, data=request.data, partial=True,
+                                               context={'product_id': product_id})
         print(serializer)
         if serializer.is_valid():
             print('-'*100)

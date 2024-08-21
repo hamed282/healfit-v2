@@ -300,9 +300,9 @@ class CombinedProductSerializer(serializers.Serializer):
         # Update the ProductModel instance
         tag_name = validated_data.pop('tag_name', None)
         subcategory_name = validated_data.pop('subcategory', None)
-        product_name = validated_data.pop('product', None)
+        product_id = self.context.get('product_id', None)
 
-        product = ProductModel.objects.get(product=product_name)
+        product = ProductModel.objects.get(id=product_id)
         subcategory_name = subcategory_name.split(',')
         if len(subcategory_name) > 0:
             add_sub = AddSubCategoryModel.objects.filter(product=product)
