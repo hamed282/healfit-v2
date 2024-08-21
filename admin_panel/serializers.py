@@ -303,7 +303,10 @@ class CombinedProductSerializer(serializers.Serializer):
         product_id = self.context.get('product_id', None)
 
         product = ProductModel.objects.get(id=product_id)
-        subcategory_name = subcategory_name.split(',')
+        if subcategory_name is not None:
+            subcategory_name = subcategory_name.split(',')
+        else:
+            subcategory_name = []
         if len(subcategory_name) > 0:
             add_sub = AddSubCategoryModel.objects.filter(product=product)
 
