@@ -48,9 +48,9 @@ class BlogModel(models.Model):
     follow = models.BooleanField(default=False)
     index = models.BooleanField(default=False)
     canonical = models.CharField(max_length=256, null=True, blank=True)
-    meta_title = models.CharField(max_length=60)
-    meta_description = models.CharField(max_length=150)
-    schema_markup = models.TextField()
+    meta_title = models.CharField(max_length=60, null=True, blank=True)
+    meta_description = models.CharField(max_length=150, null=True, blank=True)
+    schema_markup = models.TextField(null=True, blank=True)
 
     created = models.DateField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
