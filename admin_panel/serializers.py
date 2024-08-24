@@ -90,13 +90,13 @@ class CombinedBlogSerializer(serializers.Serializer):
     role = serializers.CharField(max_length=24)
     slug = serializers.SlugField()
     # category = serializers.PrimaryKeyRelatedField(queryset=BlogCategoryModel.objects.all())
-    category = serializers.CharField(max_length=100)
+    category = serializers.CharField(max_length=100, required=False, allow_blank=True)
     follow = serializers.BooleanField(default=False)
     index = serializers.BooleanField(default=False)
     canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
-    meta_title = serializers.CharField(max_length=60)
+    meta_title = serializers.CharField(max_length=60, required=False, allow_blank=True)
     schema_markup = serializers.CharField(required=False, allow_blank=True)
-    meta_description = serializers.CharField(max_length=150)
+    meta_description = serializers.CharField(max_length=150, required=False, allow_blank=True)
     tag = serializers.PrimaryKeyRelatedField(queryset=BlogTagModel.objects.all(), required=False, allow_null=True)
 
     def create(self, validated_data):
