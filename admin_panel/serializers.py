@@ -58,6 +58,10 @@ class BlogTagSerializer(ModelSerializer):
 
 
 class BlogCategorySerializer(ModelSerializer):
+    canonical = serializers.CharField(required=False, allow_null=True)
+    meta_title = serializers.CharField(required=False, allow_null=True)
+    meta_description = serializers.CharField(required=False, allow_null=True)
+
     class Meta:
         model = BlogCategoryModel
         fields = '__all__'
@@ -83,11 +87,11 @@ class CombinedBlogSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=250)
     title_image = serializers.ImageField()
     title_image_alt = serializers.CharField(max_length=32)
-    short_description = serializers.CharField(max_length=60)
+    short_description = serializers.CharField(max_length=160)
     description = serializers.CharField()
     body = serializers.CharField()
     author = serializers.CharField(max_length=64)
-    role = serializers.CharField(max_length=24)
+    role = serializers.CharField(max_length=60)
     slug = serializers.SlugField()
     # category = serializers.PrimaryKeyRelatedField(queryset=BlogCategoryModel.objects.all())
     category = serializers.CharField(max_length=100, required=False, allow_blank=True)
