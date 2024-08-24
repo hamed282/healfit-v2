@@ -95,6 +95,7 @@ class CombinedBlogSerializer(serializers.Serializer):
     index = serializers.BooleanField(default=False)
     canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
     meta_title = serializers.CharField(max_length=60)
+    schema_markup = serializers.CharField(required=False, allow_blank=True)
     meta_description = serializers.CharField(max_length=150)
     tag = serializers.PrimaryKeyRelatedField(queryset=BlogTagModel.objects.all(), required=False, allow_null=True)
 
@@ -324,7 +325,16 @@ class CombinedProductSerializer(serializers.Serializer):
             tag, created = ProductTagModel.objects.get_or_create(tag=tag_name)
         else:
             tag = None
-
+        if 'video' in validated_data and validated_data['video'] is None:
+            print(product)
+            product.video = None
+            product.save()
+            validated_data.pop('video', None)
+            # video = product.video
+            # print(video)
+            # product.video = None
+            # product.save()
+            print(2)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
@@ -340,7 +350,6 @@ class CombinedProductSerializer(serializers.Serializer):
 
     def to_representation(self, instance):
         product_data = ProductSerializer(instance).data
-        print(instance)
         # subcategory_data = instance.subcategory.subcategory if instance.subcategory else None
         tag_data = instance.product_tag.tag.tag if hasattr(instance, 'product_tag') else None
         return {

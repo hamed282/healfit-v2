@@ -797,11 +797,8 @@ class ProductItemView(APIView):
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
-        print(request.data)
         serializer = CombinedProductSerializer(data=request.data)
-        print(serializer)
         if serializer.is_valid():
-            print(serializer.validated_data)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -811,12 +808,11 @@ class ProductItemView(APIView):
             product = ProductModel.objects.get(id=product_id)
         except ProductModel.DoesNotExist:
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
-        print(product)
+
         serializer = CombinedProductSerializer(instance=product, data=request.data, partial=True,
                                                context={'product_id': product_id})
-        print(serializer)
+
         if serializer.is_valid():
-            print('-'*100)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
