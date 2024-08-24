@@ -813,6 +813,10 @@ class ProductItemView(APIView):
                                                context={'product_id': product_id})
 
         if serializer.is_valid():
+            if 'video' in serializer.validated_data and serializer.validated_data['video'] is None:
+                product.video = None
+                product.save()
+                serializer.validated_data.pop('video', None)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
