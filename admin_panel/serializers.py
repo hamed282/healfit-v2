@@ -326,15 +326,8 @@ class CombinedProductSerializer(serializers.Serializer):
         else:
             tag = None
         if 'video' in validated_data and validated_data['video'] is None:
-            print(product)
             product.video = None
-            product.save()
-            validated_data.pop('video', None)
-            # video = product.video
-            # print(video)
-            # product.video = None
-            # product.save()
-            print(2)
+
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
