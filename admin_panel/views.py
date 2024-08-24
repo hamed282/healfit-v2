@@ -812,7 +812,7 @@ class ProductItemView(APIView):
         form = request.data.copy()
         print(form)
 
-        if 'video' in form and form['video'] in [None, '']:
+        if 'video' in form and form['video'] in [None, 'null']:
             product.video = None
             product.save()
             form.pop('video')
