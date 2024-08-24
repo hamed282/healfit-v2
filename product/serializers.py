@@ -18,6 +18,7 @@ class ProductSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     subcategory = serializers.SerializerMethodField()
     gender = serializers.SlugRelatedField(read_only=True, slug_field='id')
+    gender_data = serializers.SerializerMethodField()
     tag = serializers.SerializerMethodField()
     price = serializers.FloatField()
     group_id = serializers.IntegerField()
@@ -33,6 +34,15 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductModel
         fields = '__all__'
+
+    def get_gender_data(self, obj):
+        if obj.gender is not None:
+            gender_name = obj.gender.gender
+            gender_slug = obj.gender.slug
+        else:
+            gender_name = None
+            gender_slug = None
+        return {'gender_name': gender_name, 'gender_slug': gender_slug}
 
     def get_tag(self, product):
         try:
@@ -208,7 +218,7 @@ class ProductAllSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductModel
-        fields = ['id', 'gender', 'category', 'subcategory', 'product', 'cover_image', 'price', 'off_price',
+        fields = ['id', 'name_product', 'gender', 'category', 'subcategory', 'product', 'cover_image', 'price', 'off_price',
                   'percent_discount', 'group_id', 'slug', 'subtitle', 'fav']
 
     def get_fav(self, obj):
