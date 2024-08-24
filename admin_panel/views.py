@@ -809,14 +809,19 @@ class ProductItemView(APIView):
         except ProductModel.DoesNotExist:
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = CombinedProductSerializer(instance=product, data=request.data, partial=True,
+        form = request.data.copy()
+
+        if 'video' in form and form['video'] in [None, '']:
+            print('ttt')
+            product.video = None
+            product.save()
+            form.pop('video')
+        print(form)
+
+        serializer = CombinedProductSerializer(instance=product, data=form, partial=True,
                                                context={'product_id': product_id})
 
         if serializer.is_valid():
-            if 'video' in serializer.validated_data and serializer.validated_data['video'] is None:
-                product.video = None
-                product.save()
-                serializer.validated_data.pop('video', None)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
