@@ -35,6 +35,12 @@ class ProductSerializer(serializers.ModelSerializer):
         model = ProductModel
         fields = '__all__'
 
+    def validate_video(self, value):
+        if value is None:
+            return None
+
+        return value
+
     def get_gender_data(self, obj):
         if obj.gender is not None:
             gender_name = obj.gender.gender
