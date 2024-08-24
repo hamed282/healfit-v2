@@ -254,8 +254,8 @@ class CombinedProductSerializer(serializers.Serializer):
     index = serializers.BooleanField(default=False)
     canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
     meta_title = serializers.CharField(max_length=60, required=False, allow_null=True)
-    meta_description = serializers.CharField(max_length=150, required=False, allow_null=True)
-    schema_markup = serializers.CharField(max_length=150, required=False, allow_null=True)
+    meta_description = serializers.CharField(max_length=160, required=False, allow_null=True)
+    schema_markup = serializers.CharField(required=False, allow_null=True)
     tag_name = serializers.CharField(max_length=50, required=False, allow_blank=True)
 
     def create(self, validated_data):
