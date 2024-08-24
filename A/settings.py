@@ -33,10 +33,6 @@ if DEBUG:
             'PASSWORD': os.getenv('PASSWORD'),
             'HOST': os.getenv('HOST'),
             'PORT': os.getenv('PORT'),
-            'OPTIONS': {
-                'charset': 'utf8mb4',
-                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            },
         }
     }
 
