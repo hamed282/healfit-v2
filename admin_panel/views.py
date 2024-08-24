@@ -810,13 +810,12 @@ class ProductItemView(APIView):
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
         form = request.data.copy()
+        print(form)
 
         if 'video' in form and form['video'] in [None, '']:
-            print('ttt')
             product.video = None
             product.save()
             form.pop('video')
-        print(form)
 
         serializer = CombinedProductSerializer(instance=product, data=form, partial=True,
                                                context={'product_id': product_id})
