@@ -64,3 +64,8 @@ class ContentHomeModel(models.Model):
             raise ValidationError(
                 "There can be only one Video you can not add another"
             )
+
+
+class BannerShopModel(models.Model):
+    image = models.ImageField(upload_to='banner_shop/images/')
+    link = models.CharField(max_length=512, null=True, blank=True)
