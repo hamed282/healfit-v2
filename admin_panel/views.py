@@ -1313,6 +1313,17 @@ class BannerShopItemView(APIView):
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, banner_id):
+        if banner_id is None:
+            return Response(data={'message': 'Input Banner ID'})
 
+        try:
+            banner = BannerShopModel.objects.get(id=banner_id)
+        except:
+            return Response(data={'message': 'Banner is not exist'})
+
+        banner.delete()
+
+        return Response(data={'message': f'The Banner ID {banner_id} was deleted'})
 
 
