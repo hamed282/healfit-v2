@@ -58,9 +58,9 @@ class BlogTagSerializer(ModelSerializer):
 
 
 class BlogCategorySerializer(ModelSerializer):
-    canonical = serializers.CharField(required=False, allow_null=True)
-    meta_title = serializers.CharField(required=False, allow_null=True)
-    meta_description = serializers.CharField(required=False, allow_null=True)
+    canonical = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+    meta_title = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+    meta_description = serializers.CharField(required=False, allow_null=True, allow_blank=True)
 
     class Meta:
         model = BlogCategoryModel
@@ -100,7 +100,7 @@ class CombinedBlogSerializer(serializers.Serializer):
     canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
     meta_title = serializers.CharField(max_length=60, required=False, allow_blank=True)
     schema_markup = serializers.CharField(required=False, allow_blank=True)
-    meta_description = serializers.CharField(max_length=150, required=False, allow_blank=True)
+    meta_description = serializers.CharField(max_length=160, required=False, allow_blank=True)
     tag = serializers.PrimaryKeyRelatedField(queryset=BlogTagModel.objects.all(), required=False, allow_null=True)
 
     def create(self, validated_data):
