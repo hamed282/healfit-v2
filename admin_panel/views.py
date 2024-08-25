@@ -18,8 +18,9 @@ from accounts.serializers import UserLoginSerializer
 from blog.serializers import BlogAllSerializer, BlogSerializer, ImageBlogSerializer
 from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel
 from rest_framework.permissions import IsAuthenticated
-from home.models import CommentHomeModel, BannerSliderModel, VideoHomeModel, ContentHomeModel
-from home.serializers import CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer, ContentHomeSerializer
+from home.models import CommentHomeModel, BannerSliderModel, VideoHomeModel, ContentHomeModel, BannerShopModel
+from home.serializers import (CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer, ContentHomeSerializer,
+                              BannerShopSerializer)
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel)
@@ -1279,25 +1280,39 @@ class HomeContentView(APIView):
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# class VideoItemView(APIView):
-#     def get(self, request, video_id):
-#         video = get_object_or_404(VideoHomeModel, id=video_id)
-#         ser_data = VideoHomeSerializer(instance=video)
-#         return Response(data=ser_data.data, status=status.HTTP_200_OK)
-#
-#     def post(self, request):
-#         form = request.data
-#         ser_data = VideoHomeSerializer(data=form)
-#         if ser_data.is_valid():
-#             ser_data.save()
-#             return Response(data=ser_data.data, status=status.HTTP_200_OK)
-#         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-#
-#     def put(self, request, video_id):
-#         form = request.data
-#         video = get_object_or_404(VideoHomeModel, id=video_id)
-#         ser_data = VideoHomeSerializer(instance=video, data=form, partial=True)
-#         if ser_data.is_valid():
-#             ser_data.save()
-#             return Response(data=ser_data.data, status=status.HTTP_200_OK)
-#         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class BannerShopView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        banner = BannerShopModel.objects.all()[:3]
+        ser_data = BannerShopSerializer(instance=banner, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = BannerShopSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BannerShopItemView(APIView):
+    def get(self, request, banner_id):
+        banner = BannerShopModel.objects.get(id=banner_id)
+        ser_data = BannerShopSerializer(instance=banner)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, banner_id):
+        form = request.data
+        banner = get_object_or_404(BannerShopModel, id=banner_id)
+        ser_data = BannerShopSerializer(instance=banner, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+

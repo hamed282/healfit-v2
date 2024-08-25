@@ -69,3 +69,11 @@ class ContentHomeModel(models.Model):
 class BannerShopModel(models.Model):
     image = models.ImageField(upload_to='banner_shop/images/')
     link = models.CharField(max_length=512, null=True, blank=True)
+
+    def clean(self):
+        if BannerShopModel.objects.count() >= 3 and not self.pk:
+            raise ValidationError('Only 3 banners are allowed.')
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super(BannerShopModel, self).save(*args, **kwargs)
