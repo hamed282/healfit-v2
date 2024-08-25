@@ -9,8 +9,8 @@ class BlogCategoryModel(models.Model):
     follow = models.BooleanField(default=False)
     index = models.BooleanField(default=False)
     canonical = models.CharField(max_length=256, null=True, blank=True)
-    meta_title = models.CharField(max_length=60)
-    meta_description = models.CharField(max_length=150)
+    meta_title = models.CharField(max_length=60, null=True, blank=True)
+    meta_description = models.CharField(max_length=150, null=True, blank=True)
 
     def __str__(self):
         return f'{self.category}'

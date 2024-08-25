@@ -107,7 +107,7 @@ class CombinedBlogSerializer(serializers.Serializer):
         # Extract tag data
         tag = validated_data.pop('tag', None)
 
-        category_name = validated_data.pop('category')
+        category_name = validated_data.pop('category', None)
         category = get_object_or_404(BlogCategoryModel, category=category_name)
         validated_data['category'] = category
 
@@ -130,9 +130,11 @@ class CombinedBlogSerializer(serializers.Serializer):
         return blog
 
     def update(self, instance, validated_data):
-        # به روز رسانی مدل
+        print(validated_data)
         tag = validated_data.pop('tag', None)
         category_name = validated_data.pop('category', None)
+        print('tag',tag)
+        print('cat',category_name)
         if category_name:
             category, created = BlogCategoryModel.objects.get_or_create(category=category_name)
             validated_data['category'] = category
