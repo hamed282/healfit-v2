@@ -283,9 +283,14 @@ class PopularProductSerializer(serializers.ModelSerializer):
 
 
 class ProductSubCategorySerializer(serializers.ModelSerializer):
+    category_name = serializers.SerializerMethodField()
+
     class Meta:
         model = ProductSubCategoryModel
         fields = '__all__'
+
+    def get_category_name(self, obj):
+        return obj.category.category
 
 
 class ProductCategorySerializer(serializers.ModelSerializer):
