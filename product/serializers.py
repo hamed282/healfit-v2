@@ -21,6 +21,7 @@ class ProductSerializer(serializers.ModelSerializer):
     gender_data = serializers.SerializerMethodField()
     tag = serializers.SerializerMethodField()
     price = serializers.FloatField()
+    off_price = serializers.SerializerMethodField()
     group_id = serializers.IntegerField()
     name_product = serializers.CharField(required=False, allow_null=True)
     video = serializers.FileField(required=False, allow_null=True)
@@ -34,6 +35,13 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductModel
         fields = '__all__'
+
+    def get_off_price(self, obj):
+        price = int(obj.price)
+        percent_discount = obj.percent_discount
+        if obj.percent_discount is None:
+            percent_discount = 0
+        return int(price - price * percent_discount / 100)
 
     def get_gender_data(self, obj):
         if obj.gender is not None:
