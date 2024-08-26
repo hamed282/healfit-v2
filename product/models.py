@@ -54,7 +54,6 @@ class ProductModel(models.Model):
         original_slug = slugify(self.product)
         unique_slug = original_slug
 
-        # بررسی و تولید slug یکتا
         num = 1
         while ProductModel.objects.filter(slug=unique_slug).exists():
             unique_slug = f'{original_slug}-{num}'
@@ -62,11 +61,9 @@ class ProductModel(models.Model):
 
         self.slug = unique_slug
 
-        # تنظیم مقدار پیش‌فرض برای priority اگر نیاز باشد
         if self.priority is None:
             self.priority = 1
 
-        # فراخوانی متد save پایه
         super(ProductModel, self).save(*args, **kwargs)
 
     def __str__(self) -> str:

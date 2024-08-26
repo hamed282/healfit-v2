@@ -290,7 +290,7 @@ class ProductSubCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_category_name(self, obj):
-        return obj.category.category
+        return obj.category.category_title
 
 
 class ProductCategorySerializer(serializers.ModelSerializer):
