@@ -850,11 +850,14 @@ class ProductTagListView(APIView):
 
     def get(self, request):
         search = self.request.query_params.get('search')
+
+        used_tags = AddProductTagModel.objects.values('tag')
+
         if search is None:
-            product_tag = ProductTagModel.objects.all()
-            ser_data = ProductTagSerializer(instance=product_tag, many=True)
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        product_tag = ProductTagModel.objects.filter(tag__icontains=search)
+            product_tag = ProductTagModel.objects.exclude(id__in=Subquery(used_tags))
+        else:
+            product_tag = ProductTagModel.objects.filter(tag__icontains=search).exclude(id__in=Subquery(used_tags))
+
         ser_data = ProductTagSerializer(instance=product_tag, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
