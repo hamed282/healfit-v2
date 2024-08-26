@@ -995,12 +995,12 @@ class ProductVariantView(APIView):
         # print(form.getlist('extras'))
         # print(type(form))
         ser_data = ProductWithVariantsSerializer(data=request.data)
-
+        product = ProductModel.objects.get(id=product_id)
         if ser_data.is_valid():
 
             extras = ser_data.validated_data['extras']
             for extra in extras:
-                ProductVariantModel.objects.create(product=ProductModel.objects.get(id=product_id),
+                ProductVariantModel.objects.create(product=product,
                                                    name=extra['name'],
                                                    item_id=extra['item_id'],
                                                    color=extra['color'],
@@ -1184,6 +1184,7 @@ class ColorImageView(APIView):
                                                        color=ColorProductModel.objects.get(color=color),
                                                        size=SizeProductModel.objects.get(size=size),
                                                        price=0,
+                                                       percent_discount=product.percent_discount,
                                                        quantity=0,
                                                        name=f'{product}-{color}-{size}')
         return Response(data={'message': 'Create'}, status=status.HTTP_201_CREATED)
