@@ -28,6 +28,7 @@ from product.serializers import (ProductCategorySerializer, ProductSubCategorySe
                                  AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer)
 from collections import defaultdict
 from order.models import OrderModel, OrderItemModel, OrderStatusModel
+from django.db.models import Subquery
 
 
 class LanguageView(APIView):
@@ -274,11 +275,14 @@ class BLogTagListView(APIView):
 
     def get(self, request):
         search = self.request.query_params.get('search')
+
+        used_tags = AddBlogTagModel.objects.values('tag')
+
         if search is None:
-            blog_tag = BlogTagModel.objects.all()
-            ser_data = BlogTagSerializer(instance=blog_tag, many=True)
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        blog_tag = BlogTagModel.objects.filter(tag__icontains=search)
+            blog_tag = BlogTagModel.objects.exclude(id__in=Subquery(used_tags))
+        else:
+            blog_tag = BlogTagModel.objects.filter(tag__icontains=search).exclude(id__in=Subquery(used_tags))
+
         ser_data = BlogTagSerializer(instance=blog_tag, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
