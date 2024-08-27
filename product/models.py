@@ -121,7 +121,7 @@ class ProductModel(models.Model):
         if category:
             queryset = queryset.filter(cat_product__category__category=category)
         if subcategory:
-            queryset = queryset.filter(cat_product__category__category=category)
+            queryset = queryset.filter(sub_product__subcategory__subcategory=subcategory)
 
         # استفاده از distinct برای جلوگیری از تکرار
         return queryset.distinct()
