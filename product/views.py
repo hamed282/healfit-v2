@@ -163,9 +163,6 @@ class ProductAllView(APIView):
         if color:
             color = color.split(',')
 
-        products_count = len(ProductModel.objects.all())
-
-        # if available is not None:
         try:
             available = available.lower() in ['true', '1']
         except:
@@ -185,11 +182,13 @@ class ProductAllView(APIView):
         # if color:
         #     products = products.filter(color__in=color)
 
-        number_of_pages = ceil(products_count / per_page)
         if page_number is not None:
             product_list = products.order_by('priority')[per_page * (page_number - 1):per_page * page_number]
         else:
             product_list = products.order_by('priority')
+
+        products_count = len(product_list)
+        number_of_pages = ceil(products_count / per_page)
 
         ser_product_list = ProductAllSerializer(instance=product_list, many=True, context={'request': request})
 
