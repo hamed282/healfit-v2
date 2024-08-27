@@ -78,7 +78,7 @@ class SEOHomeModel(models.Model):
         return f'SEO Fields'
 
     def clean(self):
-        if not self.pk and VideoHomeModel.objects.exists():
+        if not self.pk and SEOHomeModel.objects.exists():
             # This below line will render error by breaking page, you will see
             raise ValidationError(
                 "There can be only one SEO Fields you can not add another"
@@ -93,7 +93,7 @@ class LogoModel(models.Model):
         return f'Logo and Fav Icon'
 
     def clean(self):
-        if not self.pk and VideoHomeModel.objects.exists():
+        if not self.pk and LogoModel.objects.exists():
             # This below line will render error by breaking page, you will see
             raise ValidationError(
                 "There can be only one Logo you can not add another"
