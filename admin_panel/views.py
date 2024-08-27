@@ -18,9 +18,10 @@ from accounts.serializers import UserLoginSerializer
 from blog.serializers import BlogAllSerializer, BlogSerializer, ImageBlogSerializer
 from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel
 from rest_framework.permissions import IsAuthenticated
-from home.models import CommentHomeModel, BannerSliderModel, VideoHomeModel, ContentHomeModel, BannerShopModel
+from home.models import (CommentHomeModel, BannerSliderModel, VideoHomeModel, ContentHomeModel, BannerShopModel,
+                         SEOHomeModel, LogoModel)
 from home.serializers import (CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer, ContentHomeSerializer,
-                              BannerShopSerializer)
+                              BannerShopSerializer, LogoHomeSerializer, SEOHomeSerializer)
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel)
@@ -1311,6 +1312,8 @@ class BannerShopView(APIView):
 
 
 class BannerShopItemView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, banner_id):
         banner = BannerShopModel.objects.get(id=banner_id)
         ser_data = BannerShopSerializer(instance=banner)
@@ -1339,3 +1342,37 @@ class BannerShopItemView(APIView):
         return Response(data={'message': f'The Banner ID {banner_id} was deleted'})
 
 
+class LogoHomeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        logo = LogoModel.objects.all()
+        ser_data = LogoHomeSerializer(instance=logo, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, logo_id):
+        form = request.data
+        logo = get_object_or_404(LogoModel, id=logo_id)
+        ser_data = LogoHomeSerializer(instance=logo, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SEOHomeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        seo = SEOHomeModel.objects.all()
+        ser_data = SEOHomeSerializer(instance=seo, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, seo_id):
+        form = request.data
+        seo = get_object_or_404(SEOHomeModel, id=seo_id)
+        ser_data = SEOHomeSerializer(instance=seo, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)

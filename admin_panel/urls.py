@@ -52,6 +52,11 @@ urlpatterns = [
     path('home/banner_shop/', views.BannerShopView.as_view(), name='banner_shop'),
     path('home/banner_shop/<int:banner_id>/', views.BannerShopItemView.as_view(), name='banner_item'),
 
+    path('home/logo/', views.LogoHomeView.as_view(), name='logo'),
+    path('home/logo/<int:logo_id>/', views.LogoHomeView.as_view(), name='logo'),
+    path('home/seo/', views.SEOHomeView.as_view(), name='seo'),
+    path('home/seo/<int:seo_id>/', views.SEOHomeView.as_view(), name='seo'),
+
 
     # Category
     path('product/category/', views.ProductCategoryView.as_view(), name='product_category'),

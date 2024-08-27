@@ -1,9 +1,10 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import BannerSliderModel, CommentHomeModel, VideoHomeModel, ContentHomeModel, BannerShopModel
+from .models import (BannerSliderModel, CommentHomeModel, VideoHomeModel, ContentHomeModel, BannerShopModel, LogoModel,
+                     SEOHomeModel)
 from .serializers import (BannerSliderSerializer, CommentHomeSerializer, VideoHomeSerializer, ContentHomeSerializer,
-                          BannerShopSerializer)
+                          BannerShopSerializer, SEOHomeSerializer, LogoHomeSerializer)
 
 
 class ImageSliderView(APIView):
@@ -38,4 +39,18 @@ class BannerShopView(APIView):
     def get(self, request):
         banners = BannerShopModel.objects.all()
         ser_data = BannerShopSerializer(instance=banners, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class LogoHomeView(APIView):
+    def get(self, request):
+        logo = LogoModel.objects.all()
+        ser_data = LogoHomeSerializer(instance=logo, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class SEOHomeView(APIView):
+    def get(self, request):
+        seo = SEOHomeModel.objects.all()
+        ser_data = SEOHomeSerializer(instance=seo, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)

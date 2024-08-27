@@ -66,6 +66,40 @@ class ContentHomeModel(models.Model):
             )
 
 
+class SEOHomeModel(models.Model):
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=150, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'SEO Fields'
+
+    def clean(self):
+        if not self.pk and VideoHomeModel.objects.exists():
+            # This below line will render error by breaking page, you will see
+            raise ValidationError(
+                "There can be only one SEO Fields you can not add another"
+            )
+
+
+class LogoModel(models.Model):
+    logo = models.FileField(upload_to='settings/logo/')
+    fav = models.FileField(upload_to='settings/fav/')
+
+    def __str__(self):
+        return f'Logo and Fav Icon'
+
+    def clean(self):
+        if not self.pk and VideoHomeModel.objects.exists():
+            # This below line will render error by breaking page, you will see
+            raise ValidationError(
+                "There can be only one Logo you can not add another"
+            )
+
+
 class BannerShopModel(models.Model):
     image = models.ImageField(upload_to='banner_shop/images/')
     link = models.CharField(max_length=512, null=True, blank=True)
