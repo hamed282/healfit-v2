@@ -6,7 +6,7 @@ from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
 from product.models import (ExtraGroupModel, SizeProductModel, ColorProductModel, AddImageGalleryModel, ProductTagModel,
                             ProductSubCategoryModel, ProductModel, AddProductTagModel, ProductGenderModel,
-                            AddSubCategoryModel, ProductVariantModel)
+                            AddSubCategoryModel, ProductVariantModel, AddCategoryModel, ProductCategoryModel)
 from product.serializers import ProductSerializer, ProductColorImageSerializer
 from order.models import OrderItemModel, OrderModel, OrderStatusModel
 
@@ -295,6 +295,10 @@ class CombinedProductSerializer(serializers.Serializer):
             subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=sub)
             # Create AddSubCategoryModel instance
             AddSubCategoryModel.objects.create(product=product, subcategory=subcategory)
+
+            category = subcategory.category
+            if not AddCategoryModel.objects.filter(product=product, category=category).exists():
+                AddCategoryModel.objects.create(product=product, category=category)
 
         # Create AddProductTagModel instance if tag is provided
         try:
