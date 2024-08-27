@@ -802,11 +802,7 @@ class ProductItemView(APIView):
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
-        form = request.data.copy()
-
-        if 'video' in form and form['video'] in [None, 'null']:
-            form.pop('video')
-        serializer = CombinedProductSerializer(data=form)
+        serializer = CombinedProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
