@@ -51,15 +51,16 @@ class ProductModel(models.Model):
 
     def save(self, *args, **kwargs):
         # تولید اولیه slug
-        original_slug = slugify(self.product)
-        unique_slug = original_slug
+        if self.slug is None:
+            original_slug = slugify(self.product)
+            unique_slug = original_slug
 
-        num = 1
-        while ProductModel.objects.filter(slug=unique_slug).exists():
-            unique_slug = f'{original_slug}-{num}'
-            num += 1
+            num = 1
+            while ProductModel.objects.filter(slug=unique_slug).exists():
+                unique_slug = f'{original_slug}-{num}'
+                num += 1
 
-        self.slug = unique_slug
+            self.slug = unique_slug
 
         if self.priority is None:
             self.priority = 1

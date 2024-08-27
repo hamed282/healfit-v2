@@ -274,14 +274,11 @@ class CombinedProductSerializer(serializers.Serializer):
             tag, created = ProductTagModel.objects.get_or_create(tag=tag_name)
 
         # Generate unique slug
-        original_slug = slugify(validated_data['slug'])
-        unique_slug = original_slug
-
-        num = 1
-        while ProductModel.objects.filter(slug=unique_slug).exists():
-            unique_slug = f'{original_slug}-{num}'
-            num += 1
-        validated_data['slug'] = unique_slug
+        slug = validated_data['slug']
+        if slug is None:
+            validated_data['slug'] = None
+        else:
+            validated_data['slug'] = slug
 
         subcategory_name = validated_data.pop('subcategory', None)
         # Create ProductModel instance
