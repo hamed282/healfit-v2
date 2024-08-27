@@ -79,25 +79,6 @@ class ProductModel(models.Model):
     def get_absolute_url(self):
         return f'/shop/{self.slug}'
 
-    # @classmethod
-    # def filter_products(cls, gender=None, color=None, size=None, category=None, available=None):
-    #     # شروع با queryset پایه
-    #     queryset = cls.objects.all()
-    #
-    #     # اعمال فیلترها در صورت ارائه
-    #     if gender:
-    #         queryset = queryset.filter(Q(gender__gender=gender) | Q(gender__gender='unisex'))
-    #     if color:
-    #         queryset = queryset.filter(product_color_size__color__color=color)
-    #     if size:
-    #         queryset = queryset.filter(product_color_size__size__size=size)
-    #     if category:
-    #         queryset = queryset.filter(cat_product__category__category=category)
-    #     if available is not None:
-    #         queryset = queryset.filter(product_color_size__quantity__gt=0 if available else 0)
-    #
-    #     # استفاده از distinct برای جلوگیری از تکرار
-    #     return queryset.distinct()
     @classmethod
     def filter_products(cls, gender=None, color=None, size=None, category=None, subcategory=None, available=None):
         # شروع با queryset پایه برای ProductVariantModel
