@@ -1138,14 +1138,6 @@ class ProductImageGallery(APIView):
         gallery = AddImageGalleryModel.objects.filter(product_id=product_id).exclude(id__in=id_gallery_list)
         gallery.delete()
 
-            # obj, created = AddImageGalleryModel.objects.update_or_create(
-            #     product_id=product,
-            #     color_id=color,
-            #     defaults={'image': image},
-            # )
-            #
-            # results.append(ProductColorImageSerializer(obj).data)
-
         return Response(data={'message': 'Done'}, status=status.HTTP_200_OK)
 
 
@@ -1182,7 +1174,7 @@ class ColorImageView(APIView):
         return Response(data=all_colors, status=status.HTTP_200_OK)
 
     def post(self, request, product_id):
-
+        print(request.data)
         product = ProductModel.objects.get(id=product_id)
         sizes = request.data['sizes']
         colors = request.data['colors']
