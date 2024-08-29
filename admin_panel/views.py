@@ -1174,10 +1174,39 @@ class ColorImageView(APIView):
         return Response(data=all_colors, status=status.HTTP_200_OK)
 
     def post(self, request, product_id):
-        print('test', request.data)
         product = ProductModel.objects.get(id=product_id)
         sizes = request.data['sizes']
         colors = request.data['colors']
+
+        for color in colors:
+            for size in sizes:
+
+                # variant = ProductVariantModel.objects.get(product=product,
+                #                                           color=ColorProductModel.objects.get(color=color),
+                #                                           size=SizeProductModel.objects.get(size=size),
+                #                                           )
+                # variant.delete()
+
+                if not ProductVariantModel.objects.filter(product=product,
+                                                          color=ColorProductModel.objects.get(color=color),
+                                                          size=SizeProductModel.objects.get(size=size),
+                                                          ).exists():
+                    ProductVariantModel.objects.create(product=product,
+                                                       color=ColorProductModel.objects.get(color=color),
+                                                       size=SizeProductModel.objects.get(size=size),
+                                                       price=0,
+                                                       percent_discount=product.percent_discount,
+                                                       quantity=0,
+                                                       name=f'{product}-{color}-{size}')
+
+
+        return Response(data={'message': 'Create'}, status=status.HTTP_201_CREATED)
+
+    def put(self, request, product_id):
+        product = ProductModel.objects.get(id=product_id)
+        sizes = request.data['sizes']
+        colors = request.data['colors']
+
         for color in colors:
             for size in sizes:
                 if not ProductVariantModel.objects.filter(product=product,
@@ -1191,7 +1220,15 @@ class ColorImageView(APIView):
                                                        percent_discount=product.percent_discount,
                                                        quantity=0,
                                                        name=f'{product}-{color}-{size}')
-        return Response(data={'message': 'Create'}, status=status.HTTP_201_CREATED)
+
+        variants = ProductVariantModel.objects.filter(product_id=product_id).exclude(
+                                                      color__color__in=colors,
+                                                      size__size__in=sizes
+                                                      )
+        print('variant', variants)
+        variants.delete()
+
+        return Response(data={'message': 'Done'}, status=status.HTTP_200_OK)
 
 
 class OrderFilterView(APIView):
