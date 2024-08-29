@@ -240,4 +240,23 @@ AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
 AWS_S3_SIGNATURE_VERSION = os.getenv('AWS_S3_SIGNATURE_VERSION')
 
 
+# TELR Settings
+TELR_API_REQUEST = f"https://secure.telr.com/gateway/order.json"
+TELR_API_VERIFY = f"https://secure.telr.com/gateway/order.json"
+TEST = "0"
+FRAMED = 0
+SOTRE_ID = 29934
+AUTHKEY = 'BnCdX#DGW2P@HHxk'
+CURRENCY = "AED"
+AUTHORIZED_URL = "https://healfit.ae/success-pay"  # "https://rest.healfit.ae/api/order/authorised/"
+DECLINED_URL = "https://healfit.ae/unsuccess-pay"  # "https://rest.healfit.ae/api/order/declined/"
+CANCELLED_URL = "https://healfit.ae/cancel-pay-pay"  # "https://rest.healfit.ae/api/order/cancelled/"
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.healfit.ae'
+EMAIL_HOST_USER = 'no-reply@healfit.ae'
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = 'Ljho,cP4tD#@'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
