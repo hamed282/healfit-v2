@@ -3,13 +3,12 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 import requests
-from .models import OrderModel, OrderItemModel
+from .models import OrderModel, OrderItemModel, OrderStatusModel
 from product.models import ProductModel, ColorProductModel, SizeProductModel, ProductVariantModel
 from order.models import UserProductModel
 from accounts.models import AddressModel
 from django.shortcuts import get_object_or_404
 from .serializers import OrderUserSerializer
-# from utils import zoho_item_quantity_update
 
 
 class OrderPayView(APIView):
@@ -36,7 +35,9 @@ class OrderPayView(APIView):
 
         if len(forms) > 0:
             address = get_object_or_404(AddressModel, id=data['address_id'])
-            order = OrderModel.objects.create(user=request.user, address=address)
+
+            order = OrderModel.objects.create(user=request.user, address=address,
+                                              status=OrderStatusModel.objects.get(status='New'))
 
             for form in forms:
                 color = get_object_or_404(ColorProductModel, color=form['color'])
