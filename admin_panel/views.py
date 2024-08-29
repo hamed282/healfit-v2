@@ -1180,35 +1180,6 @@ class ColorImageView(APIView):
 
         for color in colors:
             for size in sizes:
-
-                # variant = ProductVariantModel.objects.get(product=product,
-                #                                           color=ColorProductModel.objects.get(color=color),
-                #                                           size=SizeProductModel.objects.get(size=size),
-                #                                           )
-                # variant.delete()
-
-                if not ProductVariantModel.objects.filter(product=product,
-                                                          color=ColorProductModel.objects.get(color=color),
-                                                          size=SizeProductModel.objects.get(size=size),
-                                                          ).exists():
-                    ProductVariantModel.objects.create(product=product,
-                                                       color=ColorProductModel.objects.get(color=color),
-                                                       size=SizeProductModel.objects.get(size=size),
-                                                       price=0,
-                                                       percent_discount=product.percent_discount,
-                                                       quantity=0,
-                                                       name=f'{product}-{color}-{size}')
-
-
-        return Response(data={'message': 'Create'}, status=status.HTTP_201_CREATED)
-
-    def put(self, request, product_id):
-        product = ProductModel.objects.get(id=product_id)
-        sizes = request.data['sizes']
-        colors = request.data['colors']
-
-        for color in colors:
-            for size in sizes:
                 if not ProductVariantModel.objects.filter(product=product,
                                                           color=ColorProductModel.objects.get(color=color),
                                                           size=SizeProductModel.objects.get(size=size),
@@ -1228,7 +1199,35 @@ class ColorImageView(APIView):
         print('variant', variants)
         variants.delete()
 
-        return Response(data={'message': 'Done'}, status=status.HTTP_200_OK)
+        return Response(data={'message': 'Create'}, status=status.HTTP_201_CREATED)
+
+    # def put(self, request, product_id):
+    #     product = ProductModel.objects.get(id=product_id)
+    #     sizes = request.data['sizes']
+    #     colors = request.data['colors']
+    #
+    #     for color in colors:
+    #         for size in sizes:
+    #             if not ProductVariantModel.objects.filter(product=product,
+    #                                                       color=ColorProductModel.objects.get(color=color),
+    #                                                       size=SizeProductModel.objects.get(size=size),
+    #                                                       ).exists():
+    #                 ProductVariantModel.objects.create(product=product,
+    #                                                    color=ColorProductModel.objects.get(color=color),
+    #                                                    size=SizeProductModel.objects.get(size=size),
+    #                                                    price=0,
+    #                                                    percent_discount=product.percent_discount,
+    #                                                    quantity=0,
+    #                                                    name=f'{product}-{color}-{size}')
+    #
+    #     variants = ProductVariantModel.objects.filter(product_id=product_id).exclude(
+    #                                                   color__color__in=colors,
+    #                                                   size__size__in=sizes
+    #                                                   )
+    #     print('variant', variants)
+    #     variants.delete()
+    #
+    #     return Response(data={'message': 'Done'}, status=status.HTTP_200_OK)
 
 
 class OrderFilterView(APIView):
