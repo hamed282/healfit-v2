@@ -145,14 +145,11 @@ class ProductAllView(APIView):
         1. page_number
         3. limit
         """
-        print(f'user: {request.user}')
         page_number = int(self.request.query_params.get('page_number', 1))
         per_page = int(self.request.query_params.get('limit', 16))
         gender = self.request.query_params.get('gender', None)
         category = self.request.query_params.get('category', None)
         subcategory = self.request.query_params.get('subcategory', None)
-        # size = self.request.query_params.get('size', None)
-        # color = self.request.query_params.get('color', None)
         available = self.request.query_params.get('available', None)
 
         size = self.request.query_params.get('size', None)
@@ -176,19 +173,13 @@ class ProductAllView(APIView):
             available=available
         )
 
-        # if size:
-        #     products = products.filter(size__in=size)
-        # print(color)
-        # if color:
-        #     products = products.filter(color__in=color)
+        products_count = len(products)
+        number_of_pages = ceil(products_count / per_page)
 
         if page_number is not None:
             product_list = products.order_by('priority')[per_page * (page_number - 1):per_page * page_number]
         else:
             product_list = products.order_by('priority')
-
-        products_count = len(product_list)
-        number_of_pages = ceil(products_count / per_page)
 
         ser_product_list = ProductAllSerializer(instance=product_list, many=True, context={'request': request})
 
