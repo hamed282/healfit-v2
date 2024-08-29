@@ -1174,7 +1174,7 @@ class ColorImageView(APIView):
         return Response(data=all_colors, status=status.HTTP_200_OK)
 
     def post(self, request, product_id):
-        print(request.data)
+        print('test', request.data)
         product = ProductModel.objects.get(id=product_id)
         sizes = request.data['sizes']
         colors = request.data['colors']
