@@ -87,6 +87,7 @@ class SEOHomeModel(models.Model):
 
 class LogoModel(models.Model):
     logo = models.FileField(upload_to='settings/logo/')
+    logo_alt = models.CharField(max_length=64)
     fav = models.FileField(upload_to='settings/fav/')
 
     def __str__(self):
