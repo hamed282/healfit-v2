@@ -321,9 +321,11 @@ class CombinedProductSerializer(serializers.Serializer):
         # Update the ProductModel instance
         tag_name = validated_data.pop('tag_name', None)
         subcategory_name = validated_data.pop('subcategory', None)
+        category_name = validated_data.pop('category', None)
         product_id = self.context.get('product_id', None)
 
         product = ProductModel.objects.get(id=product_id)
+        
         if subcategory_name is not None:
             subcategory_name = subcategory_name.split(',')
         else:
@@ -337,6 +339,20 @@ class CombinedProductSerializer(serializers.Serializer):
                 subcategory = get_object_or_404(ProductSubCategoryModel, subcategory=sub)
                 # Create AddSubCategoryModel instance
                 AddSubCategoryModel.objects.create(product=product, subcategory=subcategory)
+
+        if category_name is not None:
+            category_name = category_name.split(',')
+        else:
+            category_name = []
+        if len(category_name) > 0:
+            add_cat = AddCategoryModel.objects.filter(product=product)
+
+            add_cat.delete()
+            for cat in category_name:
+
+                category = get_object_or_404(ProductCategoryModel, category=cat)
+                # Create AddSubCategoryModel instance
+                AddCategoryModel.objects.create(product=product, category=category)
 
         if tag_name:
             tag, created = ProductTagModel.objects.get_or_create(tag=tag_name)
