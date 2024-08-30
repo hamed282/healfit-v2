@@ -267,8 +267,6 @@ class CombinedProductSerializer(serializers.Serializer):
     tag_name = serializers.CharField(max_length=50, required=False, allow_blank=True)
 
     def create(self, validated_data):
-        print('*'*100)
-        print(validated_data)
         # Extract and process tag data
         tag_name = validated_data.pop('tag_name', None)
         tag = None
@@ -283,7 +281,8 @@ class CombinedProductSerializer(serializers.Serializer):
             validated_data['slug'] = slug
 
         subcategory_name = validated_data.pop('subcategory', None)
-        print('subcategory', subcategory_name)
+        category_name = validated_data.pop('category', None)
+
         # Create ProductModel instance
         product = ProductModel.objects.create(**validated_data)
 
@@ -299,10 +298,6 @@ class CombinedProductSerializer(serializers.Serializer):
             # category = subcategory.category
             # if not AddCategoryModel.objects.filter(product=product, category=category).exists():
             #     AddCategoryModel.objects.create(product=product, category=category)
-
-        category_name = validated_data.pop('category', None)
-        print('category', category_name)
-        print('second validation:', validated_data)
 
         if category_name is not None:
             category_name = category_name.split(',')
