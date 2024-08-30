@@ -188,7 +188,7 @@ class ProductAllView(APIView):
 
 class SearchProductView(viewsets.ModelViewSet):
     queryset = ProductModel.objects.all()
-    serializer_class = ProductSearchSerializer
+    serializer_class = ProductAllSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['product']
     ordering_fields = '__all__'
