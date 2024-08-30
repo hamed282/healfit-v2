@@ -297,6 +297,16 @@ class CombinedProductSerializer(serializers.Serializer):
             # if not AddCategoryModel.objects.filter(product=product, category=category).exists():
             #     AddCategoryModel.objects.create(product=product, category=category)
 
+        category_name = validated_data.pop('category', None)
+        if category_name is not None:
+            category_name = category_name.split(',')
+        else:
+            category_name = []
+        for cat in category_name:
+            category = get_object_or_404(ProductCategoryModel, category=cat)
+            # Create AddSubCategoryModel instance
+            AddCategoryModel.objects.create(product=product, subcategory=category)
+
         # Create AddProductTagModel instance if tag is provided
         try:
             if tag:
