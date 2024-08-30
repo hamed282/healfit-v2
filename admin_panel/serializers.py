@@ -302,6 +302,8 @@ class CombinedProductSerializer(serializers.Serializer):
 
         category_name = validated_data.pop('category', None)
         print('category', category_name)
+        print('second validation:', validated_data)
+
         if category_name is not None:
             category_name = category_name.split(',')
         else:
