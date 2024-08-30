@@ -293,9 +293,9 @@ class CombinedProductSerializer(serializers.Serializer):
             # Create AddSubCategoryModel instance
             AddSubCategoryModel.objects.create(product=product, subcategory=subcategory)
 
-            category = subcategory.category
-            if not AddCategoryModel.objects.filter(product=product, category=category).exists():
-                AddCategoryModel.objects.create(product=product, category=category)
+            # category = subcategory.category
+            # if not AddCategoryModel.objects.filter(product=product, category=category).exists():
+            #     AddCategoryModel.objects.create(product=product, category=category)
 
         # Create AddProductTagModel instance if tag is provided
         try:
