@@ -267,7 +267,6 @@ class CombinedProductSerializer(serializers.Serializer):
     tag_name = serializers.CharField(max_length=50, required=False, allow_blank=True)
 
     def create(self, validated_data):
-        print(validated_data)
         # Extract and process tag data
         tag_name = validated_data.pop('tag_name', None)
         tag = None
@@ -283,7 +282,6 @@ class CombinedProductSerializer(serializers.Serializer):
 
         subcategory_name = validated_data.pop('subcategory', None)
         category_name = validated_data.pop('category', None)
-        print(validated_data)
         # Create ProductModel instance
         product = ProductModel.objects.create(**validated_data)
 
@@ -307,7 +305,7 @@ class CombinedProductSerializer(serializers.Serializer):
         for cat in category_name:
             category = get_object_or_404(ProductCategoryModel, category=cat)
             # Create AddSubCategoryModel instance
-            AddCategoryModel.objects.create(product=product, subcategory=category)
+            AddCategoryModel.objects.create(product=product, category=category)
 
         # Create AddProductTagModel instance if tag is provided
         try:
