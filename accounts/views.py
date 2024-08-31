@@ -65,6 +65,11 @@ class UserRegisterView(APIView):
 
 
 class UserLoginView(APIView):
+    def setup(self, request, *args, **kwargs):
+        next_url = request.GET.get('next')
+        request.session['next'] = next_url
+
+        return super().setup(request, *args, **kwargs)
 
     @staticmethod
     def post(request):
@@ -83,8 +88,14 @@ class UserLoginView(APIView):
                     if user.is_active:
                         token_access = AccessToken.for_user(user)
                         token_refresh = RefreshToken.for_user(user)
-                        return Response(data={'access': str(token_access), 'refresh': str(token_refresh)},
-                                        status=status.HTTP_200_OK)
+
+                        if request.session['next']:
+                            redirect = request.session['next']
+                        else:
+                            redirect = None
+
+                        return Response(data={'access': str(token_access), 'refresh': str(token_refresh),
+                                              'redirect': redirect}, status=status.HTTP_200_OK)
                     return Response(data='user is not active', status=status.HTTP_400_BAD_REQUEST)
                 else:
                     return Response(data='user invalid', status=status.HTTP_400_BAD_REQUEST)
