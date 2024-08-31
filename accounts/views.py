@@ -65,6 +65,11 @@ class UserRegisterView(APIView):
 
 
 class UserLoginView(APIView):
+    def setup(self, request, *args, **kwargs):
+        next_url = request.GET.get('next')
+        request.session['next'] = next_url
+
+        return super().setup(request, *args, **kwargs)
 
     @staticmethod
     def post(request):
