@@ -257,7 +257,7 @@ class UserInfoView(APIView):
         3. emai
         4. phone_number
         """
-        user_info = get_object_or_404(User, id=request.user)
+        user_info = request.user
         if user_info.id == request.user.id:
             form = request.data
 
