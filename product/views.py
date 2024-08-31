@@ -294,11 +294,14 @@ class FavProductView(APIView):
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        serializer = FavProductSerializer(data=request.data, context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        form = request.data
+        try:
+            FavUserModel.objects.create(user=request.user,
+                                        product=ProductModel.objects.get(id=form['product']),
+                                        fav=form['fav'])
+        except:
+            return Response(data={'message': 'Done'}, status=status.HTTP_201_CREATED)
+        return Response(data={'message': 'Error'}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, product_id):
         if product_id is None:

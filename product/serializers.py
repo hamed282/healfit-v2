@@ -375,11 +375,3 @@ class FavProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = FavUserModel
         exclude = ['user']
-
-    def create(self, validated_data):
-        user = self.context['request'].user
-        return FavUserModel.objects.create(user=user, **validated_data)
-
-
-# class FavUserSerializer(serializers.Serializer):
-#     product = ProductSerializer(many=True)
