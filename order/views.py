@@ -16,21 +16,6 @@ class OrderPayView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        """
-        parameters:
-        1. product_id
-        2. quantity
-        3. address_id
-
-        sample json:
-        {
-        "product": [
-                    {"product_id": "1", "quantity": "2", "color": "black", "size": "X"} ,
-                     {"product_id": "1", "quantity": "2", "color": "black", "size": "X"}
-                   ],
-        "address_id": "6"
-        }
-        """
         forms = request.data['product']
         data = request.data
 
@@ -91,6 +76,15 @@ class OrderPayView(APIView):
                     order.ref_id = response['order']['ref']
                     order.cart_id = cart_id
                     order.save()
+
+                    subject = 'New Order (Unpaid invoice) Received from healfit.ae'
+                    message_provider = f'New Order Received \n' \
+                                       f'Customer Name: {order.user} \n' \
+                                       f'Cart Id: {order.cart_id}'
+                    email_from = settings.EMAIL_HOST_USER
+
+                    send_mail(subject, message_provider, email_from, ['hamed@healfit.ae'])
+
                     return Response({'redirect to : ': url}, status=200)
                 else:
                     return Response({'Error code: ': str(response['error'])}, status=400)
