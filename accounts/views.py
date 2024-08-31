@@ -66,8 +66,9 @@ class UserRegisterView(APIView):
 
 class UserLoginView(APIView):
     def setup(self, request, *args, **kwargs):
-        next_url = request.GET.get('next')
-        request.session['next'] = next_url
+        full_url = request.build_absolute_uri()
+
+        request.session['full_url'] = full_url
 
         return super().setup(request, *args, **kwargs)
 
