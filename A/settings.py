@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 # Debug Mode
-DEBUG = True  #os.getenv('DEBUG')
+DEBUG = False  #os.getenv('DEBUG')
 
 if DEBUG:
     ALLOWED_HOSTS = ['*']
@@ -45,10 +45,15 @@ if DEBUG:
             },
         }
     }
+    CORS_ORIGIN_ALLOW_ALL = True
+
 
 else:
-    # ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
-    ALLOWED_HOSTS = ['*']
+    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
+
+    DEFAULT_CHARSET = 'utf-8'
+    FILE_CHARSET = 'utf-8'
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -57,12 +62,14 @@ else:
             'PASSWORD': os.getenv('PASSWORD'),
             'HOST': os.getenv('HOST'),
             'PORT': os.getenv('PORT'),
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+            },
         }
     }
 
-    # CSRF_TRUSTED_ORIGINS = ['https://*.api.healfit.ae', 'https://*.127.0.0.1']
+    CSRF_TRUSTED_ORIGINS = ['https://*.api.healfit.ae', 'https://*.127.0.0.1']
 
-CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 INSTALLED_APPS = [
