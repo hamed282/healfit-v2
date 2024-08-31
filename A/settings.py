@@ -49,8 +49,8 @@ if DEBUG:
 
 
 else:
-    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
-    # ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'api.healfit.ae', 'www.api.healfit.ae', 'healfit.ae']
+    # ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'api.healfit.ae', 'www.api.healfit.ae', 'healfit.ae']
 
     DEFAULT_CHARSET = 'utf-8'
     FILE_CHARSET = 'utf-8'
