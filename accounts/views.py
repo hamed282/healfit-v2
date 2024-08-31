@@ -90,7 +90,7 @@ class UserLoginView(APIView):
                         token_refresh = RefreshToken.for_user(user)
 
                         if request.session['next']:
-                            redirect = request.session['next']
+                            redirect = request.session.get('next', '/')
                         else:
                             redirect = None
 
