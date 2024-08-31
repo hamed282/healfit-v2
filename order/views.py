@@ -9,6 +9,7 @@ from order.models import UserProductModel
 from accounts.models import AddressModel
 from django.shortcuts import get_object_or_404
 from .serializers import OrderUserSerializer
+from django.core.mail import send_mail
 
 
 class OrderPayView(APIView):
@@ -97,69 +98,6 @@ class OrderPayView(APIView):
                 return Response({'details': str(response.json()['errors'])})
 
 
-# class OrderPayVerifyView(APIView):
-#
-#     def get(self, request):
-#         if request.GET.get('Status') == 'OK':
-#             print('-' * 100)
-#             cart_id = request.GET.get('cartid')
-#             print(cart_id)
-#             try:
-#                 order = OrderModel.objects.get(cart_id=cart_id)
-#             except:
-#                 return Response({'details': 'Cart ID not found'}, status=status.HTTP_401_UNAUTHORIZED)
-#
-#             payload = {
-#                 "method": "check",
-#                 "store": settings.SOTRE_ID,
-#                 "authkey": settings.AUTHKEY,
-#                 "order": {"ref": order.ref_id}
-#             }
-#             headers = {
-#                 "accept": "application/json",
-#                 "Content-Type": "application/json"
-#             }
-#             response = requests.post(settings.TELR_API_VERIFY, json=payload, headers=headers)
-#
-#             if response.status_code == 200:
-#                 response = response.json()
-#                 if 'order' in response:
-#                     order.trace = response['trace']
-#
-#                     order.error_message = 'No Detail'
-#                     order.error_note = 'No Detail'
-#                     order.paid = True
-#                     order.save()
-#                     order_items = order.items.all()
-#
-#                     # quantity =
-#
-#                     for item in order_items:
-#                         product = item.product
-#                         price = product.get_off_price()
-#                         quantity = item.quantity
-#
-#                         UserProductModel.objects.create(user=request.user, product=product, order=order,
-#                                                         quantity=quantity, price=price)
-#
-#                     return Response({'details': 'Transaction success'}, status=status.HTTP_200_OK)
-#
-#                 else:
-#                     order.paid = False
-#                     order.trace = response['trace']
-#                     order.error_message = response['error']['message']
-#                     order.error_note = response['error']['note']
-#
-#                     order.save()
-#                     return Response({'Error code: ': str(response['error'])}, status=400)
-#
-#             else:
-#                 return Response({'details': 'Transaction failed or canceled by user'}, status=status.HTTP_406_NOT_ACCEPTABLE)
-#
-#         else:
-#             return Response({'details': 'Transaction failed or canceled by user'}, status=status.HTTP_406_NOT_ACCEPTABLE)
-
-
 class OrderPayAuthorisedView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -231,8 +169,16 @@ class OrderPayAuthorisedView(APIView):
                 UserProductModel.objects.create(user=user, product=product_variant, order=order,
                                                 quantity=quantity, price=price)
 
+            subject = 'New Order Received from healfit.ae'
+            message_provider = f'New Order Received \n' \
+                               f'Customer Name: {order.user} \n' \
+                               f'Cart Id: {order.cart_id}'
+            email_from = settings.EMAIL_HOST_USER
+
+            send_mail(subject, message_provider, email_from, ['hamed@healfit.ae'])
+
             # return HttpResponseRedirect(redirect_to='https://gogle.com')
-            return Response(data={'message': 'success', 'cart_id': order.cart_id, 'trace':response['trace']})
+            return Response(data={'message': 'success', 'cart_id': order.cart_id, 'trace': response['trace']})
 
         else:
             order.paid = False
