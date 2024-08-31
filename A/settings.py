@@ -49,7 +49,8 @@ if DEBUG:
 
 
 else:
-    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
+    # ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
+    ALLOWED_HOSTS = ['*']
 
     DEFAULT_CHARSET = 'utf-8'
     FILE_CHARSET = 'utf-8'
