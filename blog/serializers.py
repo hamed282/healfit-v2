@@ -7,8 +7,8 @@ class BlogSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(slug_field='category', queryset=BlogCategoryModel.objects.all(),)
     canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
     meta_title = serializers.CharField(max_length=60, required=False, allow_null=True)
-    meta_description = serializers.CharField(max_length=150, required=False, allow_null=True)
-    schema_markup = serializers.CharField(max_length=150, required=False, allow_null=True)
+    meta_description = serializers.CharField(max_length=160, required=False, allow_null=True)
+    schema_markup = serializers.CharField(required=False, allow_null=True)
 
     class Meta:
         model = BlogModel

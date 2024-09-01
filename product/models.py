@@ -38,7 +38,7 @@ class ProductModel(models.Model):
     index = models.BooleanField(default=False)
     canonical = models.CharField(max_length=256, null=True, blank=True)
     meta_title = models.CharField(max_length=60, blank=True, null=True)
-    meta_description = models.CharField(max_length=150, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
     schema_markup = models.TextField(null=True, blank=True)
 
     # Date Time Fields
