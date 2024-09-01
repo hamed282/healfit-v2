@@ -25,7 +25,7 @@ class BlogSerializer(serializers.ModelSerializer):
 
 
 class BlogAllSerializer(serializers.ModelSerializer):
-    created = serializers.DateField(format='%Y-%m-%d')
+    created = serializers.DateField(format='%d %b %Y')
 
     class Meta:
         model = BlogModel
@@ -33,7 +33,7 @@ class BlogAllSerializer(serializers.ModelSerializer):
 
 
 class RelatedBlogSerializer(serializers.ModelSerializer):
-    created = serializers.DateField(format='%Y-%m-%d') # %d %b %Y
+    created = serializers.DateField(format='%d %b %Y')
 
     class Meta:
         model = BlogModel
