@@ -54,7 +54,7 @@ class AddressModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_address')
     address = models.TextField()
     additional_information = models.TextField(null=True, blank=True)
-    emirats = models.CharField(max_length=100)
+    emirats = models.CharField(max_length=100, null=True, blank=True)
     phone_number = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
