@@ -15,6 +15,7 @@ urlpatterns = [
 
     path('address/', views.UserAddressView.as_view(), name='user_address'),
     path('address/<int:address_id>/', views.UserAddressView.as_view(), name='user_address'),
+    path('address/item/<int:address_id>/', views.UserAddressItemView.as_view(), name='user_address'),
     path('currentaddress/<int:user_id>/', views.CurrentAddressView.as_view(), name='cureent_address'),
     path('currentaddress/', views.CurrentAddressView.as_view(), name='current_address_create'),
 

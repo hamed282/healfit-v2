@@ -139,6 +139,15 @@ class UserLogout(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+class UserAddressItemView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, address_id):
+        addresses = AddressModel.objects.get(user=request.user, id=address_id)
+        ser_addresses = UserAddressSerializer(instance=addresses)
+        return Response(data=ser_addresses.data)
+
+
 class UserAddressView(APIView):
     permission_classes = [IsAuthenticated]
 
