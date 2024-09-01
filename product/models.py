@@ -157,6 +157,14 @@ class ProductCategoryModel(models.Model):
     slug = models.SlugField(max_length=100, unique=True)
     image = models.FileField(upload_to=get_category_upload_path)
 
+    # SEO Fields
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
+
     class Meta:
         verbose_name = 'Product Category'
         verbose_name_plural = 'Product Category'
@@ -177,6 +185,14 @@ class ProductSubCategoryModel(models.Model):
     description = models.TextField()
     image = models.FileField(upload_to=get_subcategory_upload_path)
     slug = models.SlugField(max_length=100, unique=True)
+
+    # SEO Fields
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
 
     class Meta:
         verbose_name = 'Product SubCategory'
