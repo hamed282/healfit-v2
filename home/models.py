@@ -7,6 +7,7 @@ class BannerSliderModel(models.Model):
     description = models.TextField()
     banner = models.ImageField(upload_to='settings/banner-slide/', verbose_name='image (1455*505 px)')
     banner_alt = models.CharField(max_length=64)
+    link = models.CharField(max_length=512, null=True, blank=True)
     active = models.BooleanField(default=False)
     created = models.DateField(auto_now_add=True)
 
