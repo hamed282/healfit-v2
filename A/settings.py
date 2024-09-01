@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 # Debug Mode
-DEBUG = True  #os.getenv('DEBUG')
+DEBUG = True
 
 if DEBUG:
     ALLOWED_HOSTS = ['*']
@@ -49,7 +49,6 @@ if DEBUG:
 
 
 else:
-    # ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
     ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'api.healfit.ae', 'www.api.healfit.ae', 'healfit.ae']
 
     DEFAULT_CHARSET = 'utf-8'
@@ -147,7 +146,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = os.getenv('TIME_ZONE')
+TIME_ZONE = 'Asia/Dubai'
 USE_I18N = True
 USE_TZ = True
 
