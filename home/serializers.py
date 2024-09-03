@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (BannerSliderModel, VideoHomeModel, CommentHomeModel, ContentHomeModel, BannerShopModel,
-                     SEOHomeModel, LogoModel)
+                     SEOHomeModel, LogoModel, NewsLetterModel)
 
 
 class BannerSliderSerializer(serializers.ModelSerializer):
@@ -42,4 +42,10 @@ class LogoHomeSerializer(serializers.ModelSerializer):
 class SEOHomeSerializer(serializers.ModelSerializer):
     class Meta:
         model = SEOHomeModel
+        fields = '__all__'
+
+
+class NewsLetterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewsLetterModel
         fields = '__all__'

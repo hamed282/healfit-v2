@@ -57,6 +57,8 @@ urlpatterns = [
     path('home/seo/', views.SEOHomeView.as_view(), name='seo'),
     path('home/seo/<int:seo_id>/', views.SEOHomeView.as_view(), name='seo'),
 
+    path('newsletter/', views.NewsLetterView.as_view(), name='newsletter'),
+    path('newsletter/<int:newsletter_id>/', views.NewsLetterView.as_view(), name='newsletter'),
 
     # Category
     path('product/category/', views.ProductCategoryView.as_view(), name='product_category'),

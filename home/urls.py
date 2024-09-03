@@ -10,4 +10,5 @@ urlpatterns = [
     path('banner_shop/', views.BannerShopView.as_view(), name='banner_shop'),
     path('logo/', views.LogoHomeView.as_view(), name='logo'),
     path('seo/', views.SEOHomeView.as_view(), name='seo'),
+    path('newsletter/', views.NewsLetterView.as_view(), name='newsletter'),
 ]

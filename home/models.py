@@ -113,3 +113,15 @@ class BannerShopModel(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
         super(BannerShopModel, self).save(*args, **kwargs)
+
+
+class NewsLetterModel(models.Model):
+    email = models.EmailField(unique=True)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f'{self.email}'
+
+    class Meta:
+        verbose_name = 'NewsLetter'
+        verbose_name_plural = 'NewsLetter'

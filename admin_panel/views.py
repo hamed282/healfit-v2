@@ -19,9 +19,9 @@ from blog.serializers import BlogAllSerializer, BlogSerializer, ImageBlogSeriali
 from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel
 from rest_framework.permissions import IsAuthenticated
 from home.models import (CommentHomeModel, BannerSliderModel, VideoHomeModel, ContentHomeModel, BannerShopModel,
-                         SEOHomeModel, LogoModel)
+                         SEOHomeModel, LogoModel, NewsLetterModel)
 from home.serializers import (CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer, ContentHomeSerializer,
-                              BannerShopSerializer, LogoHomeSerializer, SEOHomeSerializer)
+                              BannerShopSerializer, LogoHomeSerializer, SEOHomeSerializer, NewsLetterSerializer)
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel)
@@ -1372,6 +1372,34 @@ class SEOHomeView(APIView):
         form = request.data
         seo = get_object_or_404(SEOHomeModel, id=seo_id)
         ser_data = SEOHomeSerializer(instance=seo, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class NewsLetterView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        newsletter = NewsLetterModel.objects.all()
+        ser_data = NewsLetterSerializer(instance=newsletter, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+
+        ser_data = NewsLetterSerializer(data=form)
+
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, newsletter_id):
+        form = request.data
+        newsletter = get_object_or_404(NewsLetterModel, id=newsletter_id)
+        ser_data = NewsLetterSerializer(instance=newsletter, data=form, partial=True)
         if ser_data.is_valid():
             ser_data.save()
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
