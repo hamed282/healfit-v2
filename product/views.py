@@ -314,6 +314,8 @@ class FavProductView(APIView):
 
 
 class UserFavView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         product_fav = FavUserModel.objects.filter(user=request.user)
         ser_data = UserFavSerializer(instance=product_fav, many=True)
