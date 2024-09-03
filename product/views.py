@@ -6,7 +6,7 @@ from .models import (ProductGenderModel, ProductModel, SizeProductModel, ColorPr
                      FavUserModel)
 from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVariantShopSerializer,
                           ProductColorImageSerializer, ColorSizeProductSerializer, ProductListSerializer,
-                          ProductSearchSerializer, PopularProductSerializer, ProductAllSerializer,
+                          UserFavSerializer, PopularProductSerializer, ProductAllSerializer,
                           ProductCategorySerializer, ProductSubCategorySerializer, ProductByCategorySerializer,
                           FavProductSerializer)
 from django.shortcuts import get_object_or_404
@@ -316,6 +316,5 @@ class FavProductView(APIView):
 class UserFavView(APIView):
     def get(self, request):
         product_fav = FavUserModel.objects.filter(user=request.user)
-        print(product_fav)
-        ser_data = FavProductSerializer(instance=product_fav, many=True)
+        ser_data = UserFavSerializer(instance=product_fav, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)

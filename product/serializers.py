@@ -382,3 +382,11 @@ class FavProductSerializer(serializers.ModelSerializer):
         return FavUserModel.objects.create(user=user,
                                            product=ProductModel.objects.get(id=product),
                                            **validated_data)
+
+
+class UserFavSerializer(serializers.ModelSerializer):
+    user_fav = ProductAllSerializer(source='product', read_only=True)
+
+    class Meta:
+        model = FavUserModel
+        fields = ['user_fav']
