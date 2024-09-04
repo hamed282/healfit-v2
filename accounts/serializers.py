@@ -43,8 +43,7 @@ class CurrentAddressSerializer(serializers.ModelSerializer):
 class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'phone_number', 'company_name', 'trn_number',
-                  'prefix_number']
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone_number', 'company_name', 'trn_number']
 
 
 class UserInfoChangeSerializer(serializers.ModelSerializer):
