@@ -68,7 +68,7 @@ class OrderPayView(APIView):
 
             headers = {'Content-Type': 'application/json', 'accept': 'application/json'}
             response = requests.post(settings.TELR_API_REQUEST, json=payload, headers=headers, timeout=10)
-            print('response:', response)
+            print('response pay:', response)
             if response.status_code == 200:
                 response = response.json()
 
@@ -119,6 +119,7 @@ class OrderPayAuthorisedView(APIView):
 
         response = requests.post(settings.TELR_API_VERIFY, json=payload, headers=headers)
         response = response.json()
+        print('response auth:', response)
 
         if 'order' in response:
             order.trace = response['trace']
@@ -210,6 +211,7 @@ class OrderPayDeclinedView(APIView):
         }
         response = requests.post(settings.TELR_API_VERIFY, json=payload, headers=headers)
         response = response.json()
+        print('response dec:', response)
 
         order.paid = False
         order.trace = response['trace']
@@ -243,6 +245,7 @@ class OrderPayCancelledView(APIView):
         }
         response = requests.post(settings.TELR_API_VERIFY, json=payload, headers=headers)
         response = response.json()
+        print('response cancel:', response)
 
         order.paid = False
         order.trace = response['trace']
