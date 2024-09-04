@@ -27,7 +27,6 @@ def zoho_product_update():
             try:
                 product = item['group_name'].strip()
                 group_id = item['group_id']
-                print(i, product)
 
                 product_exists = ProductModel.objects.filter(product=product)
 
@@ -38,7 +37,6 @@ def zoho_product_update():
                     # pass
 
                 else:
-                    # print(item)
                     ProductModel.objects.create(product=product, group_id=group_id, price=item['items'][0]['rate'])  # price=item['price']
                 i += 1
             except:
@@ -48,7 +46,6 @@ def zoho_product_update():
     has_more_page = True
     page = 0
     i = 1
-    print('Update Zoho')
     while has_more_page:
         page += 1
         url_items = f'https://www.zohoapis.com/inventory/v1/items?organization_id={organization_id}&page={page}&per_page={per_page}'
@@ -81,7 +78,6 @@ def zoho_product_update():
                 quantity = item['stock_on_hand']
                 item_id = item['item_id']
                 price = item['rate']
-                print(i, name)
                 product_variant = ProductVariantModel.objects.filter(name=name)
                 if product_variant.exists():
                     product_obj = product_variant.get(name=name)

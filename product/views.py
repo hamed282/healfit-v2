@@ -104,7 +104,6 @@ class SizeOfColorView(APIView):
         sizes = []
         for product in products:
             sizes.append(product.size.size)
-        print(sizes)
         return Response(data=sizes)
 
 

@@ -132,7 +132,6 @@ class UserLogout(APIView):
             refresh_token = request.data["refresh_token"]
 
             token = RefreshToken(refresh_token)
-            print(token)
             token.blacklist()
             return Response(data='Logout successfully', status=status.HTTP_200_OK)
         except:

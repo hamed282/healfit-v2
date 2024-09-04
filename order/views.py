@@ -68,7 +68,7 @@ class OrderPayView(APIView):
 
             headers = {'Content-Type': 'application/json', 'accept': 'application/json'}
             response = requests.post(settings.TELR_API_REQUEST, json=payload, headers=headers, timeout=10)
-            print(response)
+            print('response:', response)
             if response.status_code == 200:
                 response = response.json()
 

@@ -54,7 +54,6 @@ def zoho_invoice_quantity_update(first_name,
             response_item = response_item.json()
 
             customer_id = response_item['contact']['contact_id']
-            print(response_item['contact']['contact_id'])
             payload = {"contact_id": customer_id,
                        # 'salutation': 'Mr.',
                        "first_name": first_name,
@@ -64,11 +63,9 @@ def zoho_invoice_quantity_update(first_name,
             response_item = requests.post(url=url_contact_person, headers=headers, json=payload)
             response_item = response_item.json()
 
-            print(response_item)
             user = User.objects.get(email=email)
             user.zoho_customer_id = customer_id
             user.save()
-            print('not customer id')
         except:
             headers = {
                 'Authorization': f"Zoho-oauthtoken {oauth}",
@@ -93,7 +90,6 @@ def zoho_invoice_quantity_update(first_name,
             response_item = response_item.json()
 
             customer_id = response_item['contact']['contact_id']
-            print(response_item['contact']['contact_id'])
             payload = {"contact_id": customer_id,
                        # 'salutation': 'Mr.',
                        "first_name": first_name,
@@ -103,21 +99,16 @@ def zoho_invoice_quantity_update(first_name,
             response_item = requests.post(url=url_contact_person, headers=headers, json=payload)
             response_item = response_item.json()
 
-            print(response_item)
             user = User.objects.get(email=email)
             user.zoho_customer_id = customer_id
             user.save()
-            print('not customer id 2')
 
     else:
         customer_id = customer_id
         response_item = {'code': 0}
-        print(customer_id)
     ###################################
 
     if response_item['code'] == 0:
-        print('*'*100)
-        # print(response_item['contact']['contact_id'])
         # customer_id = response_item['contact']['contact_id']
         url_invoice = f'https://www.zohoapis.com/books/v3/invoices?organization_id={organization_id}'
 
@@ -151,8 +142,6 @@ def zoho_invoice_quantity_update(first_name,
 
         response_item = requests.post(url=url_invoice, headers=headers, json=payload)
         response_item = response_item.json()
-        print('!'*100)
-        print(response_item)
         return response_item
     else:
         return response_item

@@ -130,11 +130,8 @@ class CombinedBlogSerializer(serializers.Serializer):
         return blog
 
     def update(self, instance, validated_data):
-        print(validated_data)
         tag = validated_data.pop('tag', None)
         category_name = validated_data.pop('category', None)
-        print('tag',tag)
-        print('cat',category_name)
         if category_name:
             category, created = BlogCategoryModel.objects.get_or_create(category=category_name)
             validated_data['category'] = category
@@ -359,7 +356,6 @@ class CombinedProductSerializer(serializers.Serializer):
         else:
             tag = None
 
-        print(validated_data)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 

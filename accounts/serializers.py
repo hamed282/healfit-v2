@@ -29,7 +29,6 @@ class UserAddressSerializer(serializers.ModelSerializer):
 
     def get_current_address(self, obj):
         if CurrentAddressModel.objects.filter(address=obj).exists():
-            print(CurrentAddressModel.objects.filter(address=obj))
             return True
         return False
 

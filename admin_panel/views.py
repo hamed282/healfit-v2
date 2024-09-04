@@ -820,7 +820,6 @@ class ProductItemView(APIView):
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
         form = request.data.copy()
-        print(form)
 
         if 'video' in form and form['video'] in [None, 'null']:
             product.video = None
@@ -1004,8 +1003,6 @@ class ProductVariantView(APIView):
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
     def post(self, request, product_id):
-        # print(form.getlist('extras'))
-        # print(type(form))
         ser_data = ProductWithVariantsSerializer(data=request.data)
         product = ProductModel.objects.get(id=product_id)
         if ser_data.is_valid():
@@ -1031,15 +1028,11 @@ class VariantPutView(APIView):
 
     def put(self, request):
         ser_data = ProductWithVariantsSerializer(data=request.data)
-        print(ser_data)
         if ser_data.is_valid():
 
             extras = ser_data.validated_data['extras']
-            print(extras)
             for extra in extras:
-                print(extra)
                 variant = ProductVariantModel.objects.get(id=(extra['id']))
-                print('-'*100)
                 if variant:
                     variant.name = extra['name']
                     variant.item_id = extra['item_id']
@@ -1049,7 +1042,6 @@ class VariantPutView(APIView):
                     variant.percent_discount = extra['percent_discount']
                     variant.quantity = extra['quantity']
                     variant.save()
-                print('*'*100)
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -1060,13 +1052,10 @@ class ProductImageGallery(APIView):
     def post(self, request):
         query_dict = dict(request.data)
         data = defaultdict(dict)
-        print(query_dict)
-        print('-' * 100)
 
         for key, value in query_dict.items():
             # Split the key into parts
             parts = key.split('.')
-            print(parts)
             index = int(parts[1])
             field = parts[2]
 
@@ -1080,7 +1069,6 @@ class ProductImageGallery(APIView):
 
         # Convert defaultdict to a list of dictionaries
         data_list = [data[i] for i in sorted(data.keys())]
-        print(data_list)
 
         if not data_list:
             return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
@@ -1097,7 +1085,7 @@ class ProductImageGallery(APIView):
     def put(self, request):
         query_dict = dict(request.data)
         data = defaultdict(dict)
-        print(data)
+
         for key, value in query_dict.items():
             # Split the key into parts
             parts = key.split('.')
@@ -1117,7 +1105,6 @@ class ProductImageGallery(APIView):
 
         if not images_data:
             return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
-        print(images_data)
         id_gallery_list = []
         for data in images_data:
             id_gallery = data.get('id')
@@ -1126,14 +1113,11 @@ class ProductImageGallery(APIView):
             image = data.get('image')
 
             if id_gallery == 0:
-                print(data)
                 new_gallery = AddImageGalleryModel.objects.create(product=ProductModel.objects.get(id=product_id),
                                                                   color=ColorProductModel.objects.get(id=color),
                                                                   image=image)
-                print(new_gallery.id)
                 id_gallery_list.append(new_gallery.id)
             else:
-                print(data)
                 id_gallery_list.append(id_gallery)
         gallery = AddImageGalleryModel.objects.filter(product_id=product_id).exclude(id__in=id_gallery_list)
         gallery.delete()
@@ -1196,7 +1180,6 @@ class ColorImageView(APIView):
                                                       color__color__in=colors,
                                                       size__size__in=sizes
                                                       )
-        print('variant', variants)
         variants.delete()
 
         return Response(data={'message': 'Create'}, status=status.HTTP_201_CREATED)
