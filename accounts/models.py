@@ -55,6 +55,7 @@ class AddressModel(models.Model):
     address = models.TextField()
     additional_information = models.TextField(null=True, blank=True)
     emirats = models.CharField(max_length=100, null=True, blank=True)
+    prefix_number = models.CharField(max_length=8)
     phone_number = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
