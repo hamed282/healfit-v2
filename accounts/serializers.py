@@ -5,8 +5,7 @@ from .models import User, AddressModel, CurrentAddressModel
 class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'phone_number', 'company_name', 'trn_number', 'password',
-                  'prefix_number']
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'company_name', 'trn_number', 'password']
 
 
 class UserLoginSerializer(serializers.Serializer):
