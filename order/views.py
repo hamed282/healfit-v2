@@ -178,7 +178,7 @@ class OrderPayAuthorisedView(APIView):
             email_from = settings.EMAIL_HOST_USER
             send_mail(subject, message_provider, email_from, ['hamed@healfit.ae'])
 
-            subject = f'Order Confirmation [Transaction Reference #{order.transaction_ref}]'
+            subject = f'Order Confirmation Transaction Reference #{order.transaction_ref}'
             message_provider = f'Dear {order.user}, \n' \
                                f'Thank you for shopping with Healfit! We’re excited to confirm that your order has been successfully placed. Below is a summary of your recent purchase: \n' \
                                f'Order Details: \n' \
@@ -190,7 +190,7 @@ class OrderPayAuthorisedView(APIView):
                                f'Thank you for choosing Healfit. We look forward to assisting you in your recovery journey! \n' \
                                f'Best regards, \n' \
                                f'The Healfit Team \n' \
-                               f'Email: [info@healfit.ae]'
+                               f'Email: info@healfit.ae'
             email_from = settings.EMAIL_HOST_USER
             send_mail(subject, message_provider, email_from, [order.user.email])
 

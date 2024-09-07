@@ -17,7 +17,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.serializers import UserLoginSerializer
 from blog.serializers import BlogAllSerializer, BlogSerializer, ImageBlogSerializer
 from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser
 from home.models import (CommentHomeModel, BannerSliderModel, VideoHomeModel, ContentHomeModel, BannerShopModel,
                          SEOHomeModel, LogoModel, NewsLetterModel)
 from home.serializers import (CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer, ContentHomeSerializer,
@@ -30,6 +30,7 @@ from product.serializers import (ProductCategorySerializer, ProductSubCategorySe
 from collections import defaultdict
 from order.models import OrderModel, OrderItemModel, OrderStatusModel
 from django.db.models import Subquery
+from permissions import BlogPermission
 
 
 class LanguageView(APIView):
@@ -46,7 +47,7 @@ class LanguageView(APIView):
 
 
 class UserView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
@@ -108,7 +109,7 @@ class UserView(APIView):
 
 
 class UserValueView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         page = self.request.query_params.get('page', None)
@@ -128,7 +129,7 @@ class UserValueView(APIView):
 
 
 class RoleView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         role = RoleModel.objects.all()
@@ -193,7 +194,7 @@ class LoginUserView(APIView):
 
 # Blog
 class BlogListView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         blogs = BlogModel.objects.all()
@@ -202,7 +203,7 @@ class BlogListView(APIView):
 
 
 class BlogView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, blog_id):
         blog = get_object_or_404(BlogModel, id=blog_id)
@@ -246,7 +247,7 @@ class BlogView(APIView):
 
 
 class BlogCategoryView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         category = BlogCategoryModel.objects.all()
@@ -272,7 +273,7 @@ class BlogCategoryView(APIView):
 
 
 class BLogTagListView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         search = self.request.query_params.get('search')
@@ -319,7 +320,7 @@ class BLogTagListView(APIView):
 
 
 class BLogTagItemView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, tag_id):
         tag = get_object_or_404(BlogTagModel, id=tag_id)
@@ -328,7 +329,7 @@ class BLogTagItemView(APIView):
 
 
 class AddBLogTagListView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def post(self, request):
         form = request.data
@@ -368,7 +369,7 @@ class AddBLogTagListView(APIView):
 
 
 class CommentHomeView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         comments = CommentHomeModel.objects.all()
@@ -377,7 +378,7 @@ class CommentHomeView(APIView):
 
 
 class CommentItemView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, comment_id):
         comment = get_object_or_404(CommentHomeModel, id=comment_id)
@@ -416,7 +417,7 @@ class CommentItemView(APIView):
 
 
 class BannerHomeView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         banner = BannerSliderModel.objects.all()
@@ -425,7 +426,7 @@ class BannerHomeView(APIView):
 
 
 class BannerItemView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, banner_id):
         banner = get_object_or_404(BannerSliderModel, id=banner_id)
@@ -464,7 +465,7 @@ class BannerItemView(APIView):
 
 
 class VideoHomeView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         video = VideoHomeModel.objects.all()
@@ -482,7 +483,7 @@ class VideoHomeView(APIView):
 
 
 class ProductCategoryView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         category = ProductCategoryModel.objects.all()
@@ -492,7 +493,7 @@ class ProductCategoryView(APIView):
 
 
 class ProductCategoryItemView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, category_id):
         category = get_object_or_404(ProductCategoryModel, id=category_id)
@@ -531,7 +532,7 @@ class ProductCategoryItemView(APIView):
 
 
 class ProductSubCategoryView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         subcategory = ProductSubCategoryModel.objects.all()
@@ -541,7 +542,7 @@ class ProductSubCategoryView(APIView):
 
 
 class ProductSubCategoryItemView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, category_id):
         subcategory = get_object_or_404(ProductSubCategoryModel, id=category_id)
@@ -580,7 +581,7 @@ class ProductSubCategoryItemView(APIView):
 
 
 class BlogImageView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def post(self, request):
         form = request.data
@@ -595,7 +596,7 @@ class BlogImageView(APIView):
 
 
 class ExtraItemView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         extr_group = ExtraGroupModel.objects.all()
@@ -604,7 +605,7 @@ class ExtraItemView(APIView):
 
 
 class ExtraGroupView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, id_extrag):
         extra = get_object_or_404(ExtraGroupModel, id=id_extrag)
@@ -651,7 +652,7 @@ class ExtraGroupView(APIView):
 
 
 class SizeItemView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, size_id):
 
@@ -661,7 +662,7 @@ class SizeItemView(APIView):
 
 
 class SizeValueView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
 
@@ -711,7 +712,7 @@ class SizeValueView(APIView):
 
 
 class ColorItemView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, color_id):
 
@@ -721,7 +722,7 @@ class ColorItemView(APIView):
 
 
 class ColorValueView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
 
@@ -772,7 +773,7 @@ class ColorValueView(APIView):
 
 
 class ProductView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         products = ProductModel.objects.all()
@@ -795,7 +796,7 @@ class ProductView(APIView):
 
 
 class ProductItemView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, product_id):
         product = ProductModel.objects.get(id=product_id)
@@ -850,7 +851,7 @@ class ProductItemView(APIView):
 
 
 class ProductTagListView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         search = self.request.query_params.get('search')
@@ -897,7 +898,7 @@ class ProductTagListView(APIView):
 
 
 class ProductTagItemView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, product_id):
         product = get_object_or_404(ProductTagModel, id=product_id)
@@ -906,7 +907,7 @@ class ProductTagItemView(APIView):
 
 
 class AddProductTagListView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def post(self, request):
         form = request.data
@@ -948,7 +949,7 @@ class AddProductTagListView(APIView):
 
 
 class GenderView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         genders = ProductGenderModel.objects.all()
@@ -965,7 +966,7 @@ class GenderView(APIView):
 
 
 class GenderItemView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def put(self, request, gender_id):
         try:
@@ -994,7 +995,7 @@ class GenderItemView(APIView):
 
 
 class ProductVariantView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, product_id):
         product = ProductModel.objects.get(id=product_id)
@@ -1024,7 +1025,7 @@ class ProductVariantView(APIView):
 
 
 class VariantPutView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def put(self, request):
         ser_data = ProductWithVariantsSerializer(data=request.data)
@@ -1047,7 +1048,7 @@ class VariantPutView(APIView):
 
 
 class ProductImageGallery(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def post(self, request):
         query_dict = dict(request.data)
@@ -1126,7 +1127,7 @@ class ProductImageGallery(APIView):
 
 
 class VariantDataView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, product_id):
         product = get_object_or_404(ProductModel, id=product_id)
@@ -1135,7 +1136,7 @@ class VariantDataView(APIView):
 
 
 class VariantImageView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, product_id):
         product = get_object_or_404(ProductModel, id=product_id)
@@ -1145,7 +1146,7 @@ class VariantImageView(APIView):
 
 
 class ColorImageView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, product_id):
         product = ProductModel.objects.get(id=product_id)
@@ -1186,7 +1187,7 @@ class ColorImageView(APIView):
 
 
 class OrderFilterView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         status_order = self.request.query_params.get('status')
@@ -1203,7 +1204,7 @@ class OrderFilterView(APIView):
 
 
 class OrderPaidView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         order = OrderModel.objects.filter(paid=True)
@@ -1212,7 +1213,7 @@ class OrderPaidView(APIView):
 
 
 class OrderUnpaidView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         order = OrderModel.objects.filter(paid=False)
@@ -1221,7 +1222,7 @@ class OrderUnpaidView(APIView):
 
 
 class OrderDetailView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, order_id):
         order = OrderModel.objects.get(id=order_id)
@@ -1242,7 +1243,7 @@ class OrderDetailView(APIView):
 
 
 class OrderCustomerView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, order_id):
         user = OrderModel.objects.get(id=order_id).user
@@ -1251,7 +1252,7 @@ class OrderCustomerView(APIView):
 
 
 class OrderItemsView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, order_id):
         items = OrderItemModel.objects.filter(order=order_id)
@@ -1260,7 +1261,7 @@ class OrderItemsView(APIView):
 
 
 class HomeContentView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         content = ContentHomeModel.objects.all()
@@ -1278,7 +1279,7 @@ class HomeContentView(APIView):
 
 
 class BannerShopView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         banner = BannerShopModel.objects.all()[:3]
@@ -1295,7 +1296,7 @@ class BannerShopView(APIView):
 
 
 class BannerShopItemView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request, banner_id):
         banner = BannerShopModel.objects.get(id=banner_id)
@@ -1326,7 +1327,7 @@ class BannerShopItemView(APIView):
 
 
 class LogoHomeView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         logo = LogoModel.objects.all()
@@ -1344,7 +1345,7 @@ class LogoHomeView(APIView):
 
 
 class SEOHomeView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         seo = SEOHomeModel.objects.all()
@@ -1362,7 +1363,7 @@ class SEOHomeView(APIView):
 
 
 class NewsLetterView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         newsletter = NewsLetterModel.objects.all()
