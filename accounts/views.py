@@ -281,8 +281,9 @@ class UserInfoView(APIView):
 class GoogleLoginView(APIView):
 
     def post(self, request):
-
+        print(request.data)
         code = request.data.get('code')
+        print('code:', code)
         decoded_code = urllib.parse.unquote(code)
         token_url = "https://oauth2.googleapis.com/token"
         token_data = {
