@@ -252,7 +252,7 @@ AWS_S3_SIGNATURE_VERSION = os.getenv('AWS_S3_SIGNATURE_VERSION')
 # TELR Settings
 TELR_API_REQUEST = f"https://secure.telr.com/gateway/order.json"
 TELR_API_VERIFY = f"https://secure.telr.com/gateway/order.json"
-TEST = "۱"
+TEST = "1"
 FRAMED = 0
 SOTRE_ID = 29934
 AUTHKEY = 'BnCdX#DGW2P@HHxk'
