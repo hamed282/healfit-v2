@@ -309,7 +309,10 @@ class GoogleLoginView(APIView):
         email = user_info.get('email')
         first_name = user_info.get('given_name')
         last_name = user_info.get('family_name')
-        user, created = User.objects.get_or_create(email=email, first_name=first_name, last_name=last_name)
+        try:
+            user, created = User.objects.get_or_create(email=email, first_name=first_name, last_name=last_name)
+        except:
+            user = User.objects.get(email=email)
         refresh = RefreshToken.for_user(user)
         tokens = {
             'refresh': str(refresh),
