@@ -17,6 +17,7 @@ class OrderModel(models.Model):
     address = models.ForeignKey(AddressModel, on_delete=models.CASCADE, related_name='address_order')
     status = models.ForeignKey(OrderStatusModel, on_delete=models.CASCADE, related_name='status_order')
     ref_id = models.CharField(max_length=200, blank=True, null=True)
+    transaction_ref = models.CharField(max_length=200, blank=True, null=True)
     cart_id = models.CharField(max_length=64, blank=True, null=True)
     trace = models.CharField(max_length=200, blank=True, null=True)
     error_message = models.TextField(blank=True, null=True)

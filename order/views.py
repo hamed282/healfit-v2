@@ -122,7 +122,11 @@ class OrderPayAuthorisedView(APIView):
         print('response auth:', response)
 
         if 'order' in response:
+
+            print('response auth order:', response['order']['transaction']['ref'])
+
             order.trace = response['trace']
+            order.transaction_ref = response['order']['transaction']['ref']
 
             order.error_message = 'No Detail'
             order.error_note = 'No Detail'
@@ -215,6 +219,7 @@ class OrderPayDeclinedView(APIView):
 
         order.paid = False
         order.trace = response['trace']
+        order.transaction_ref = response['order']['transaction']['ref']
         order.error_message = 'Declined'
         order.save()
 
@@ -249,6 +254,7 @@ class OrderPayCancelledView(APIView):
 
         order.paid = False
         order.trace = response['trace']
+        order.transaction_ref = response['order']['transaction']['ref']
         order.error_message = 'canceled'
         order.save()
 
