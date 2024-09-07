@@ -68,7 +68,6 @@ class OrderPayView(APIView):
 
             headers = {'Content-Type': 'application/json', 'accept': 'application/json'}
             response = requests.post(settings.TELR_API_REQUEST, json=payload, headers=headers, timeout=10)
-            print('response pay:', response)
             if response.status_code == 200:
                 response = response.json()
 
@@ -119,6 +118,7 @@ class OrderPayAuthorisedView(APIView):
 
         response = requests.post(settings.TELR_API_VERIFY, json=payload, headers=headers)
         response = response.json()
+        print('-'*100)
         print('response auth:', response)
 
         if 'order' in response:
