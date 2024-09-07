@@ -233,9 +233,9 @@ SIOD = os.getenv('SIOD')
 
 
 # Google Login
-GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
-GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
-GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI')
+GOOGLE_CLIENT_ID = '404588717147-739as16dm0mu3n6u3un0d45f99qefmov.apps.googleusercontent.com' # os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = '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' # os.getenv('GOOGLE_CLIENT_SECRET')
+GOOGLE_REDIRECT_URI = 'https://healfit.ae/login/' # os.getenv('GOOGLE_REDIRECT_URI')
 
 
 # AWS Storages
