@@ -238,6 +238,13 @@ GOOGLE_CLIENT_SECRET = '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' # os.getenv('GOOGLE
 GOOGLE_REDIRECT_URI = 'https://healfit.ae/login/' # os.getenv('GOOGLE_REDIRECT_URI')
 
 
+# Apple Login
+APPLE_KEY_ID = ''
+APPLE_CLIENT_ID = ''
+APPLE_TEAM_ID = ''
+APPLE_PRIVATE_KEY = ''
+
+
 # AWS Storages
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_S3_ACCESS_KEY_ID = os.getenv('ACCESS_KEY')
@@ -252,7 +259,7 @@ AWS_S3_SIGNATURE_VERSION = os.getenv('AWS_S3_SIGNATURE_VERSION')
 # TELR Settings
 TELR_API_REQUEST = f"https://secure.telr.com/gateway/order.json"
 TELR_API_VERIFY = f"https://secure.telr.com/gateway/order.json"
-TEST = "0"
+TEST = "1"
 FRAMED = 0
 SOTRE_ID = 29934
 AUTHKEY = 'BnCdX#DGW2P@HHxk'
