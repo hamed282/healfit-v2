@@ -385,5 +385,10 @@ class AddProductTagModel(models.Model):
 
 class FavUserModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.OneToOneField(ProductModel, on_delete=models.CASCADE)
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE)
     fav = models.BooleanField(default=False)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'product'], name='unique_user_product')
+        ]

@@ -54,7 +54,7 @@ class TagInline(admin.TabularInline):
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['id', 'product', 'priority']
-    readonly_fields = ["slug"]
+    # readonly_fields = ["slug"]
     inlines = (ImageGalleryInline, CategoryInline, SubCategoryInline, TagInline)
 
 
