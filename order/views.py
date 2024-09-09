@@ -64,6 +64,16 @@ class OrderPayView(APIView):
                     "declined": settings.DECLINED_URL,
                     "cancelled": settings.CANCELLED_URL,
                 },
+                "customer": {
+                    "email": "xx1@mail.com",
+                    "phone": "0912",
+
+                    "address": {
+                        "line1": "xx5",
+                        "city": "qaz",
+                        "country": "andorra",
+                    },
+                },
             }
 
             headers = {'Content-Type': 'application/json', 'accept': 'application/json'}
