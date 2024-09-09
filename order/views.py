@@ -70,7 +70,7 @@ class OrderPayView(APIView):
 
                     "address": {
                         "line1": "xx5",
-                       # "city": "qaz",
+                       "city": "qaz",
                         "country": "andorra",
                     },
                 },
