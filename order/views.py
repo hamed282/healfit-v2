@@ -65,13 +65,13 @@ class OrderPayView(APIView):
                     "cancelled": settings.CANCELLED_URL,
                 },
                 "customer": {
-                    "email": "xx1@mail.com",
-                    "phone": "0912",
+                    "email": f"{request.user.email}",
+                    "phone": f"{address.phone_number}",
 
                     "address": {
-                        "line1": "xx5",
-                        "city": "qaz",
-                        "country": "andorra",
+                        "line1": f"{address.address}",
+                        "city": f"{address.city}",
+                        # "country": f"{address.prefix_number}",
                     },
                 },
             }
