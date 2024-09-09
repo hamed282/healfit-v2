@@ -77,6 +77,10 @@ class ProductTagAdmin(admin.ModelAdmin):
     list_display = ['tag']
 
 
+class FavUserAdmin(admin.ModelAdmin):
+    list_display = ['user', 'product']
+
+
 admin.site.register(ProductCategoryModel, ProductCategoryAdmin)
 admin.site.register(ProductGenderModel, ProductGenderAdmin)
 admin.site.register(ProductSubCategoryModel, ProductSubCategoryAdmin)
@@ -91,4 +95,4 @@ admin.site.register(AddSubCategoryModel)
 admin.site.register(ExtraGroupModel)
 admin.site.register(ProductTagModel, ProductTagAdmin)
 admin.site.register(AddProductTagModel)
-admin.site.register(FavUserModel)
+admin.site.register(FavUserModel, FavUserAdmin)
