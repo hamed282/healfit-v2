@@ -16,3 +16,4 @@ class OrderAdmin(admin.ModelAdmin):
 
 
 admin.site.register(OrderStatusModel)
+admin.site.register(OrderItemModel)
