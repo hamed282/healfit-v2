@@ -87,14 +87,14 @@ class OrderPayView(APIView):
                     order.cart_id = cart_id
                     order.save()
 
-                    subject = 'New Order (Unpaid invoice) Received from healfit.ae'
-                    message_provider = f'New Order Received \n' \
-                                       f'Customer Name: {order.user} \n' \
-                                       f'Transaction Reference: {order.transaction_ref} \n' \
-                                       f'Cart Id: {order.cart_id}'
-                    email_from = settings.EMAIL_HOST_USER
-
-                    send_mail(subject, message_provider, email_from, ['hamed@healfit.ae'])
+                    # subject = 'New Order (Unpaid invoice) Received from healfit.ae'
+                    # message_provider = f'New Order Received \n' \
+                    #                    f'Customer Name: {order.user} \n' \
+                    #                    f'Transaction Reference: {order.transaction_ref} \n' \
+                    #                    f'Cart Id: {order.cart_id}'
+                    # email_from = settings.EMAIL_HOST_USER
+                    #
+                    # send_mail(subject, message_provider, email_from, ['hamed@healfit.ae'])
 
                     return Response({'redirect to : ': url}, status=200)
                 else:
