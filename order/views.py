@@ -71,7 +71,7 @@ class OrderPayView(APIView):
                     "address": {
                         "line1": f"{address.address}",
                         # "city": f"{address.city}",
-                        "country": f"AM",
+                        "country": f"CO",
                     },
                 },
             }
