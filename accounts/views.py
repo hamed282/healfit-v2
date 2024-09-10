@@ -173,7 +173,7 @@ class UserAddressView(APIView):
             AddressModel.objects.create(user=request.user,
                                         address=form['address'],
                                         additional_information=form['additional_information'],
-                                        emirats=form['emirats'],
+                                        # emirats=form['emirats'],
                                         city=form['city'],
                                         country=form['country'],
                                         phone_number=form['phone_number'])
