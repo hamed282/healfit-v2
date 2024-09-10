@@ -317,5 +317,5 @@ class UserFavView(APIView):
 
     def get(self, request):
         product_fav = FavUserModel.objects.filter(user=request.user)
-        ser_data = UserFavSerializer(instance=product_fav, many=True)
+        ser_data = UserFavSerializer(instance=product_fav, many=True, context={'request': request})
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
