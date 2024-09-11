@@ -6,7 +6,7 @@ from datetime import datetime
 
 class HomeSitemap(Sitemap):
     changefreq = 'daily'
-    priority = 0.9
+    priority = 1.0
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -23,8 +23,8 @@ class HomeSitemap(Sitemap):
 
 
 class ProductWomenSitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.9
+    changefreq = 'weekly'
+    priority = 0.8
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -41,8 +41,8 @@ class ProductWomenSitemap(Sitemap):
 
 
 class ProductMenSitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.9
+    changefreq = 'weekly'
+    priority = 0.8
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -60,7 +60,7 @@ class ProductMenSitemap(Sitemap):
 
 class ShopSitemap(Sitemap):
     changefreq = 'daily'
-    priority = 0.9
+    priority = 0.8
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -78,7 +78,7 @@ class ShopSitemap(Sitemap):
 
 class ProductSitemap(Sitemap):
     changefreq = 'daily'
-    priority = 0.9
+    priority = 0.7
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -92,8 +92,8 @@ class ProductSitemap(Sitemap):
 
 
 class ProductCategorySitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.9
+    changefreq = 'weekly'
+    priority = 0.8
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -107,8 +107,8 @@ class ProductCategorySitemap(Sitemap):
 
 
 class ProductSubcategorySitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.9
+    changefreq = 'weekly'
+    priority = 0.8
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -123,7 +123,7 @@ class ProductSubcategorySitemap(Sitemap):
 
 class BlogSitemap(Sitemap):
     changefreq = 'daily'
-    priority = 0.9
+    priority = 0.7
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -138,7 +138,7 @@ class BlogSitemap(Sitemap):
 
 class BlogAllSitemap(Sitemap):
     changefreq = 'daily'
-    priority = 0.9
+    priority = 0.7
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -155,8 +155,8 @@ class BlogAllSitemap(Sitemap):
 
 
 class AboutSitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.9
+    changefreq = 'weekly'
+    priority = 0.6
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -173,8 +173,8 @@ class AboutSitemap(Sitemap):
 
 
 class ContactSitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.9
+    changefreq = 'weekly'
+    priority = 0.4
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -191,8 +191,8 @@ class ContactSitemap(Sitemap):
 
 
 class PrivacySitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.9
+    changefreq = 'weekly'
+    priority = 0.5
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -209,8 +209,8 @@ class PrivacySitemap(Sitemap):
 
 
 class ConditionSitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.9
+    changefreq = 'weekly'
+    priority = 0.4
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -227,8 +227,8 @@ class ConditionSitemap(Sitemap):
 
 
 class ShippingDeliverySitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.9
+    changefreq = 'weekly'
+    priority = 0.6
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -245,8 +245,8 @@ class ShippingDeliverySitemap(Sitemap):
 
 
 class CustomerCareSitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.9
+    changefreq = 'weekly'
+    priority = 0.8
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -263,8 +263,8 @@ class CustomerCareSitemap(Sitemap):
 
 
 class WholesaleInquirySitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.9
+    changefreq = 'weekly'
+    priority = 0.5
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -281,8 +281,8 @@ class WholesaleInquirySitemap(Sitemap):
 
 
 class ReturnRefundSitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.9
+    changefreq = 'weekly'
+    priority = 0.6
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -299,8 +299,8 @@ class ReturnRefundSitemap(Sitemap):
 
 
 class CareerSitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.9
+    changefreq = 'weekly'
+    priority = 0.4
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -317,8 +317,8 @@ class CareerSitemap(Sitemap):
 
 
 class SitemapSitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.9
+    changefreq = 'weekly'
+    priority = 0.5
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
