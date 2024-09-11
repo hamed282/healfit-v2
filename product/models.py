@@ -165,6 +165,10 @@ class ProductCategoryModel(models.Model):
     meta_description = models.CharField(max_length=160, blank=True, null=True)
     schema_markup = models.TextField(null=True, blank=True)
 
+    # Date Time Fields
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
     class Meta:
         verbose_name = 'Product Category'
         verbose_name_plural = 'Product Category'
@@ -175,6 +179,9 @@ class ProductCategoryModel(models.Model):
 
     def __str__(self):
         return f'{self.slug}'
+
+    def get_absolute_url(self):
+        return f'/category/{self.slug}'
 
 
 class ProductSubCategoryModel(models.Model):
@@ -194,6 +201,10 @@ class ProductSubCategoryModel(models.Model):
     meta_description = models.CharField(max_length=160, blank=True, null=True)
     schema_markup = models.TextField(null=True, blank=True)
 
+    # Date Time Fields
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
     class Meta:
         verbose_name = 'Product SubCategory'
         verbose_name_plural = 'Product SubCategory'
@@ -204,6 +215,9 @@ class ProductSubCategoryModel(models.Model):
 
     def __str__(self):
         return f'{self.slug}'
+
+    def get_absolute_url(self):
+        return f'/category/{self.category}/{self.slug}'
 
 
 class AddCategoryModel(models.Model):
@@ -392,3 +406,8 @@ class FavUserModel(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['user', 'product'], name='unique_user_product')
         ]
+
+
+class Site(models.Model):
+    domain = models.CharField(max_length=256)
+    name = models.CharField(max_length=256)

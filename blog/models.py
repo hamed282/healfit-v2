@@ -55,6 +55,9 @@ class BlogModel(models.Model):
     created = models.DateField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
 
+    def get_absolute_url(self):
+        return f'/blog/{self.slug}'
+
 
 class AddBlogTagModel(models.Model):
     objects = None

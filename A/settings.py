@@ -84,8 +84,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_celery_beat',
     'storages',
-    'order',
     'django_filters',
+    'django.contrib.sitemaps',
 
     # Installed App
     'accounts.apps.AccountsConfig',
@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'product.apps.ProductConfig',
     'home.apps.HomeConfig',
+    'order.apps.OrderConfig',
 ]
 
 MIDDLEWARE = [
