@@ -174,7 +174,7 @@ class AboutSitemap(Sitemap):
 
 class ContactSitemap(Sitemap):
     changefreq = 'weekly'
-    priority = 0.4
+    priority = 0.6
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
@@ -246,7 +246,7 @@ class ShippingDeliverySitemap(Sitemap):
 
 class CustomerCareSitemap(Sitemap):
     changefreq = 'weekly'
-    priority = 0.8
+    priority = 0.7
 
     def get_urls(self, site=None, **kwargs):
         site = Site(domain='healfit.ae', name='healfit.ae')
