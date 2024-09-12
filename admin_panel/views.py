@@ -652,7 +652,7 @@ class NewsLetterView(APIView):
 
 # Product Section
 class ProductCategoryView(APIView):
-    permission_classes = [IsAdminUser, IsProductAdmin]
+    permission_classes = [IsAdminUser, IsProductAdmin | IsSEOAdmin]
 
     def get(self, request):
         category = ProductCategoryModel.objects.all()
@@ -663,6 +663,11 @@ class ProductCategoryView(APIView):
 
 class ProductCategoryItemView(APIView):
     permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin, IsSEOAdmin)]
+        return super().get_permissions()
 
     def get(self, request, category_id):
         category = get_object_or_404(ProductCategoryModel, id=category_id)
@@ -701,7 +706,7 @@ class ProductCategoryItemView(APIView):
 
 
 class ProductSubCategoryView(APIView):
-    permission_classes = [IsAdminUser, IsProductAdmin]
+    permission_classes = [IsAdminUser, IsProductAdmin | IsSEOAdmin]
 
     def get(self, request):
         subcategory = ProductSubCategoryModel.objects.all()
@@ -712,6 +717,11 @@ class ProductSubCategoryView(APIView):
 
 class ProductSubCategoryItemView(APIView):
     permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin, IsSEOAdmin)]
+        return super().get_permissions()
 
     def get(self, request, category_id):
         subcategory = get_object_or_404(ProductSubCategoryModel, id=category_id)
@@ -750,7 +760,7 @@ class ProductSubCategoryItemView(APIView):
 
 
 class ExtraItemView(APIView):
-    permission_classes = [IsAdminUser, IsProductAdmin]
+    permission_classes = [IsAdminUser, IsProductAdmin | IsSEOAdmin]
 
     def get(self, request):
         extr_group = ExtraGroupModel.objects.all()
@@ -760,6 +770,11 @@ class ExtraItemView(APIView):
 
 class ExtraGroupView(APIView):
     permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin, IsSEOAdmin)]
+        return super().get_permissions()
 
     def get(self, request, id_extrag):
         extra = get_object_or_404(ExtraGroupModel, id=id_extrag)
@@ -806,7 +821,7 @@ class ExtraGroupView(APIView):
 
 
 class SizeItemView(APIView):
-    permission_classes = [IsAdminUser, IsProductAdmin]
+    permission_classes = [IsAdminUser, IsProductAdmin | IsSEOAdmin]
 
     def get(self, request, size_id):
 
@@ -817,6 +832,11 @@ class SizeItemView(APIView):
 
 class SizeValueView(APIView):
     permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin, IsSEOAdmin)]
+        return super().get_permissions()
 
     def get(self, request):
 
@@ -866,7 +886,7 @@ class SizeValueView(APIView):
 
 
 class ColorItemView(APIView):
-    permission_classes = [IsAdminUser, IsProductAdmin]
+    permission_classes = [IsAdminUser, IsProductAdmin | IsSEOAdmin]
 
     def get(self, request, color_id):
 
@@ -878,6 +898,10 @@ class ColorItemView(APIView):
 class ColorValueView(APIView):
     permission_classes = [IsAdminUser, IsProductAdmin]
 
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin, IsSEOAdmin)]
+        return super().get_permissions()
     def get(self, request):
 
         color = ColorProductModel.objects.all()
@@ -927,7 +951,7 @@ class ColorValueView(APIView):
 
 
 class ProductView(APIView):
-    permission_classes = [IsAdminUser, IsProductAdmin]
+    permission_classes = [IsAdminUser, IsProductAdmin | IsSEOAdmin]
 
     def get(self, request):
         products = ProductModel.objects.all()
@@ -951,6 +975,11 @@ class ProductView(APIView):
 
 class ProductItemView(APIView):
     permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin, IsSEOAdmin)]
+        return super().get_permissions()
 
     def get(self, request, product_id):
         product = ProductModel.objects.get(id=product_id)
@@ -1005,7 +1034,7 @@ class ProductItemView(APIView):
 
 
 class ProductTagListView(APIView):
-    permission_classes = [IsAdminUser, IsProductAdmin]
+    permission_classes = [IsAdminUser, IsProductAdmin | IsSEOAdmin]
 
     def get(self, request):
         search = self.request.query_params.get('search')
@@ -1052,7 +1081,7 @@ class ProductTagListView(APIView):
 
 
 class ProductTagItemView(APIView):
-    permission_classes = [IsAdminUser, IsProductAdmin]
+    permission_classes = [IsAdminUser, IsProductAdmin | IsSEOAdmin]
 
     def get(self, request, product_id):
         product = get_object_or_404(ProductTagModel, id=product_id)
@@ -1061,7 +1090,7 @@ class ProductTagItemView(APIView):
 
 
 class AddProductTagListView(APIView):
-    permission_classes = [IsAdminUser, IsProductAdmin]
+    permission_classes = [IsAdminUser, IsProductAdmin | IsSEOAdmin]
 
     def post(self, request):
         form = request.data
@@ -1104,6 +1133,11 @@ class AddProductTagListView(APIView):
 
 class GenderView(APIView):
     permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['GET']:
+            return [OrPermission(IsProductAdmin, IsSEOAdmin)]
+        return super().get_permissions()
 
     def get(self, request):
         genders = ProductGenderModel.objects.all()
@@ -1151,6 +1185,11 @@ class GenderItemView(APIView):
 class ProductVariantView(APIView):
     permission_classes = [IsAdminUser, IsProductAdmin]
 
+    def get_permissions(self):
+        if self.request.method in ['GET']:
+            return [OrPermission(IsProductAdmin, IsSEOAdmin)]
+        return super().get_permissions()
+
     def get(self, request, product_id):
         product = ProductModel.objects.get(id=product_id)
         variant = ProductVariantModel.objects.filter(product=product)
@@ -1180,6 +1219,11 @@ class ProductVariantView(APIView):
 
 class VariantPutView(APIView):
     permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT']:
+            return [OrPermission(IsProductAdmin, IsSEOAdmin)]
+        return super().get_permissions()
 
     def put(self, request):
         ser_data = ProductWithVariantsSerializer(data=request.data)
@@ -1281,7 +1325,7 @@ class ProductImageGallery(APIView):
 
 
 class VariantDataView(APIView):
-    permission_classes = [IsAdminUser, IsProductAdmin]
+    permission_classes = [IsAdminUser, IsProductAdmin | IsSEOAdmin]
 
     def get(self, request, product_id):
         product = get_object_or_404(ProductModel, id=product_id)
@@ -1290,7 +1334,7 @@ class VariantDataView(APIView):
 
 
 class VariantImageView(APIView):
-    permission_classes = [IsAdminUser, IsProductAdmin]
+    permission_classes = [IsAdminUser, IsProductAdmin | IsSEOAdmin]
 
     def get(self, request, product_id):
         product = get_object_or_404(ProductModel, id=product_id)
