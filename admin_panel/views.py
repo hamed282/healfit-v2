@@ -30,9 +30,10 @@ from product.serializers import (ProductCategorySerializer, ProductSubCategorySe
 from collections import defaultdict
 from order.models import OrderModel, OrderItemModel, OrderStatusModel
 from django.db.models import Subquery
-from permissions import IsBlogAdmin
+from permissions import IsBlogAdmin, IsProductAdmin
 
 
+# Account Section
 class LanguageView(APIView):
     def get(self, request):
         data = [{
@@ -192,7 +193,7 @@ class LoginUserView(APIView):
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Blog
+# Blog Section
 class BlogListView(APIView):
     permission_classes = [IsAdminUser, IsBlogAdmin]
 
@@ -368,6 +369,22 @@ class AddBLogTagListView(APIView):
         return Response(data={'message': f'The Blog ID {blog_id} was deleted'})
 
 
+class BlogImageView(APIView):
+    permission_classes = [IsAdminUser, IsBlogAdmin]
+
+    def post(self, request):
+        form = request.data
+        ser_data = ImageBlogSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            response = {'data': {
+                'title': ser_data.data['image'], 'type': ser_data.data['type']}
+            }
+            return Response(data=response, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Home Section
 class CommentHomeView(APIView):
     permission_classes = [IsAdminUser]
 
@@ -480,784 +497,6 @@ class VideoHomeView(APIView):
             ser_data.save()
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ProductCategoryView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request):
-        category = ProductCategoryModel.objects.all()
-        ser_data = ProductCategorySerializer(instance=category, many=True)
-
-        return Response(data=ser_data.data)
-
-
-class ProductCategoryItemView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request, category_id):
-        category = get_object_or_404(ProductCategoryModel, id=category_id)
-        ser_data = ProductCategorySerializer(instance=category)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        form = request.data
-        ser_data = ProductCategorySerializer(data=form)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, category_id):
-        form = request.data
-        category = get_object_or_404(ProductCategoryModel, id=category_id)
-        ser_data = ProductCategorySerializer(instance=category, data=form, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, category_id):
-        if category_id is None:
-            return Response(data={'message': 'Input Category ID'})
-
-        try:
-            category = ProductCategoryModel.objects.get(id=category_id)
-        except:
-            return Response(data={'message': 'Category is not exist'})
-
-        category.delete()
-
-        return Response(data={'message': f'The Category ID {category_id} was deleted'})
-
-
-class ProductSubCategoryView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request):
-        subcategory = ProductSubCategoryModel.objects.all()
-        ser_data = ProductSubCategorySerializer(instance=subcategory, many=True)
-
-        return Response(data=ser_data.data)
-
-
-class ProductSubCategoryItemView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request, category_id):
-        subcategory = get_object_or_404(ProductSubCategoryModel, id=category_id)
-        ser_data = ProductSubCategorySerializer(instance=subcategory)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        form = request.data
-        ser_data = ProductSubCategorySerializer(data=form)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, category_id):
-        form = request.data
-        subcategory = get_object_or_404(ProductSubCategoryModel, id=category_id)
-        ser_data = ProductSubCategorySerializer(instance=subcategory, data=form, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, category_id):
-        if category_id is None:
-            return Response(data={'message': 'Input Category ID'})
-
-        try:
-            subcategory = ProductSubCategoryModel.objects.get(id=category_id)
-        except:
-            return Response(data={'message': 'Category is not exist'})
-
-        subcategory.delete()
-
-        return Response(data={'message': f'The Category ID {category_id} was deleted'})
-
-
-class BlogImageView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def post(self, request):
-        form = request.data
-        ser_data = ImageBlogSerializer(data=form)
-        if ser_data.is_valid():
-            ser_data.save()
-            response = {'data': {
-                'title': ser_data.data['image'], 'type': ser_data.data['type']}
-            }
-            return Response(data=response, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ExtraItemView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request):
-        extr_group = ExtraGroupModel.objects.all()
-        ser_data = ExtraGroupSerializer(instance=extr_group, many=True)
-        return Response(data=ser_data.data)
-
-
-class ExtraGroupView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request, id_extrag):
-        extra = get_object_or_404(ExtraGroupModel, id=id_extrag)
-        ser_data = ExtraGroupSerializer(instance=extra)
-        return Response(data=ser_data.data)
-
-    def post(self, request):
-        form = request.data
-
-        ser_data = ExtraGroupSerializer(data=form)
-
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(ser_data.data, status=status.HTTP_201_CREATED)
-        return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, id_extrag):
-        if id_extrag is None:
-            return Response(data={'message': 'Input Extra Group ID'})
-
-        try:
-            extrag = ExtraGroupModel.objects.get(id=id_extrag)
-        except:
-            return Response(data={'message': 'Extra Group is not exist'})
-
-        ser_data = ExtraGroupSerializer(instance=extrag, data=request.data, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, id_extrag):
-        if id_extrag is None:
-            return Response(data={'message': 'Input Extra Group ID'})
-
-        try:
-            extrag = ExtraGroupModel.objects.get(id=id_extrag)
-        except:
-            return Response(data={'message': 'Extra Group is not exist'})
-
-        name = extrag.title
-        extrag.delete()
-        return Response(data={'message': f'The {name} Extra Group was deleted'})
-
-
-class SizeItemView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request, size_id):
-
-        size = get_object_or_404(SizeProductModel, id=size_id)
-        ser_data = SizeValueSerializer(instance=size)
-        return Response(data=ser_data.data)
-
-
-class SizeValueView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request):
-
-        size = SizeProductModel.objects.all()
-        ser_data = SizeValueSerializer(instance=size, many=True)
-        return Response(data=ser_data.data)
-
-    def post(self, request):
-        form = request.data
-
-        ser_data = SizeValueCUDSerializer(data=form)
-
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(ser_data.data, status=status.HTTP_201_CREATED)
-        return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, id_size):
-        # id_size = request.data['id_size']
-
-        if id_size is None:
-            return Response(data={'message': 'Input Size ID'})
-
-        try:
-            size = SizeProductModel.objects.get(id=id_size)
-        except:
-            return Response(data={'message': 'Size is not exist'})
-
-        ser_data = SizeValueCUDSerializer(instance=size, data=request.data, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, id_size):
-        if id_size is None:
-            return Response(data={'message': 'Input Size ID'})
-
-        try:
-            size = SizeProductModel.objects.get(id=id_size)
-        except:
-            return Response(data={'message': 'Size is not exist'})
-
-        name = size.size
-        size.delete()
-        return Response(data={'message': f'The {name} Size was deleted'})
-
-
-class ColorItemView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request, color_id):
-
-        color = get_object_or_404(ColorProductModel, id=color_id)
-        ser_data = ColorValueSerializer(instance=color)
-        return Response(data=ser_data.data)
-
-
-class ColorValueView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request):
-
-        color = ColorProductModel.objects.all()
-        ser_data = ColorValueSerializer(instance=color, many=True)
-        return Response(data=ser_data.data)
-
-    def post(self, request):
-        form = request.data
-
-        ser_data = ColorValueCUDSerializer(data=form)
-
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(ser_data.data, status=status.HTTP_201_CREATED)
-        return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, id_color):
-        # id_color = request.data['id_color']
-
-        if id_color is None:
-            return Response(data={'message': 'Input Color ID'})
-
-        try:
-            size = ColorProductModel.objects.get(id=id_color)
-        except:
-            return Response(data={'message': 'Color is not exist'})
-
-        ser_data = ColorValueCUDSerializer(instance=size, data=request.data, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, id_color):
-
-        if id_color is None:
-            return Response(data={'message': 'Input Color ID'})
-
-        try:
-            color = ColorProductModel.objects.get(id=id_color)
-        except:
-            return Response(data={'message': 'Color is not exist'})
-
-        name = color.color
-        color.delete()
-        return Response(data={'message': f'The {name} Color was deleted'})
-
-
-class ProductView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request):
-        products = ProductModel.objects.all()
-        ser_data = ProductSerializer(instance=products, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        # per_page = int(self.request.query_params.get('limit', 10))
-        # page = self.request.query_params.get('page', None)
-        #
-        # product_count = len(ProductModel.objects.all())
-        # number_of_pages = ceil(product_count / per_page)
-        #
-        # if page is not None:
-        #     page = int(page)
-        #     product = ProductModel.objects.all()[per_page*(page-1):per_page*page]
-        # else:
-        #     product = ProductModel.objects.all()
-        #
-        # ser_data = ProductSerializer(instance=product, many=True)
-        # return Response({'data': ser_data.data, 'number_of_pages': number_of_pages})
-
-
-class ProductItemView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request, product_id):
-        product = ProductModel.objects.get(id=product_id)
-        ser_data = ProductSerializer(instance=product)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-    def post(self, request, *args, **kwargs):
-        form = request.data.copy()
-
-        if 'video' in form and form['video'] in [None, 'null']:
-            form.pop('video')
-        serializer = CombinedProductSerializer(data=form)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, product_id):
-        try:
-            product = ProductModel.objects.get(id=product_id)
-        except ProductModel.DoesNotExist:
-            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        form = request.data.copy()
-
-        if 'video' in form and form['video'] in [None, 'null']:
-            product.video = None
-            product.save()
-            form.pop('video')
-
-        serializer = CombinedProductSerializer(instance=product, data=form, partial=True,
-                                               context={'product_id': product_id})
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, product_id):
-
-        if product_id is None:
-            return Response(data={'message': 'Input Product ID'})
-
-        try:
-            product = ProductModel.objects.get(id=product_id)
-        except:
-            return Response(data={'message': 'Product is not exist'})
-
-        name = product.product
-        product.delete()
-        return Response(data={'message': f'The {name} Product was deleted'})
-
-
-class ProductTagListView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request):
-        search = self.request.query_params.get('search')
-
-        used_tags = AddProductTagModel.objects.values('tag')
-
-        if search is None:
-            product_tag = ProductTagModel.objects.exclude(id__in=Subquery(used_tags))
-        else:
-            product_tag = ProductTagModel.objects.filter(tag__icontains=search).exclude(id__in=Subquery(used_tags))
-
-        ser_data = ProductTagSerializer(instance=product_tag, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        form = request.data
-        ser_data = ProductTagSerializer(data=form)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, product_id):
-        form = request.data
-        product_tag = ProductTagModel.objects.get(id=product_id)
-        ser_data = ProductTagSerializer(instance=product_tag, data=form, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, product_id):
-        if product_id is None:
-            return Response(data={'message': 'Input Tag ID'})
-
-        try:
-            tag_product = ProductTagModel.objects.get(id=product_id)
-        except:
-            return Response(data={'message': 'Tag is not exist'})
-
-        tag_product.delete()
-
-        return Response(data={'message': f'The Product ID {product_id} was deleted'})
-
-
-class ProductTagItemView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request, product_id):
-        product = get_object_or_404(ProductTagModel, id=product_id)
-        ser_data = ProductTagSerializer(instance=product)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-
-class AddProductTagListView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def post(self, request):
-        form = request.data
-        ser_data = AddProductTagSerializer(data=form)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, product_id):
-        try:
-            product = ProductModel.objects.get(id=product_id)
-        except ProductModel.DoesNotExist:
-            return Response(data={'message': 'Product does not exist'}, status=status.HTTP_404_NOT_FOUND)
-
-        try:
-            add_tag = AddProductTagModel.objects.get(product=product)
-        except AddProductTagModel.DoesNotExist:
-            return Response(data={'message': 'Product tag does not exist'}, status=status.HTTP_404_NOT_FOUND)
-
-        ser_data = AddProductTagSerializer(instance=add_tag, data=request.data, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, product_id):
-        if product_id is None:
-            return Response(data={'message': 'Input Product ID'})
-
-        try:
-            add_tag = AddProductTagModel.objects.get(product=product_id)
-        except:
-            return Response(data={'message': 'Product is not exist'})
-
-        add_tag.delete()
-
-        return Response(data={'message': f'The Product ID {product_id} was deleted'})
-
-
-class GenderView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request):
-        genders = ProductGenderModel.objects.all()
-        ser_data = GenderSerializer(instance=genders, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        form = request.data
-        ser_data = GenderSerializer(data=form)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class GenderItemView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def put(self, request, gender_id):
-        try:
-            gender = ProductGenderModel.objects.get(id=gender_id)
-        except ProductModel.DoesNotExist:
-            return Response(data={'message': 'Gender does not exist'}, status=status.HTTP_404_NOT_FOUND)
-
-        ser_data = GenderSerializer(instance=gender, data=request.data, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, gender_id):
-        if gender_id is None:
-            return Response(data={'message': 'Input Gender ID'})
-
-        try:
-            gender = ProductGenderModel.objects.get(id=gender_id)
-        except:
-            return Response(data={'message': 'Gender is not exist'})
-
-        gender.delete()
-
-        return Response(data={'message': f'The Gender ID {gender_id} was deleted'}, status=status.HTTP_200_OK)
-
-
-class ProductVariantView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request, product_id):
-        product = ProductModel.objects.get(id=product_id)
-        variant = ProductVariantModel.objects.filter(product=product)
-        ser_data = ProductVariantSerializer(instance=variant, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-    def post(self, request, product_id):
-        ser_data = ProductWithVariantsSerializer(data=request.data)
-        product = ProductModel.objects.get(id=product_id)
-        if ser_data.is_valid():
-
-            extras = ser_data.validated_data['extras']
-            for extra in extras:
-                ProductVariantModel.objects.create(product=product,
-                                                   name=extra['name'],
-                                                   item_id=extra['item_id'],
-                                                   color=extra['color'],
-                                                   size=extra['size'],
-                                                   price=extra['price'],
-                                                   percent_discount=extra['percent_discount'],
-                                                   quantity=extra['quantity'],
-                                                   )
-
-            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class VariantPutView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def put(self, request):
-        ser_data = ProductWithVariantsSerializer(data=request.data)
-        if ser_data.is_valid():
-
-            extras = ser_data.validated_data['extras']
-            for extra in extras:
-                variant = ProductVariantModel.objects.get(id=(extra['id']))
-                if variant:
-                    variant.name = extra['name']
-                    variant.item_id = extra['item_id']
-                    variant.color_id = extra['color']  # Assigning the ID directly
-                    variant.size_id = extra['size']  # Assigning the ID directly
-                    variant.price = extra['price']
-                    variant.percent_discount = extra['percent_discount']
-                    variant.quantity = extra['quantity']
-                    variant.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ProductImageGallery(APIView):
-    permission_classes = [IsAdminUser]
-
-    def post(self, request):
-        query_dict = dict(request.data)
-        data = defaultdict(dict)
-
-        for key, value in query_dict.items():
-            # Split the key into parts
-            parts = key.split('.')
-            index = int(parts[1])
-            field = parts[2]
-
-            # Assign the value to the appropriate place in the dictionary
-            if field in ['product', 'color']:
-                # Convert the value to an integer
-                data[index][field] = int(value[0])
-            else:
-                # Handle images or other types of data
-                data[index][field] = value[0] if isinstance(value, list) else value
-
-        # Convert defaultdict to a list of dictionaries
-        data_list = [data[i] for i in sorted(data.keys())]
-
-        if not data_list:
-            return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
-
-        for form_data in data_list:
-            ser_data = ProductColorImageSerializer(data=form_data)
-            if ser_data.is_valid():
-                ser_data.save()
-            else:
-                return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(data='Done', status=status.HTTP_201_CREATED)
-
-    def put(self, request):
-        query_dict = dict(request.data)
-        data = defaultdict(dict)
-
-        for key, value in query_dict.items():
-            # Split the key into parts
-            parts = key.split('.')
-            index = int(parts[1])
-            field = parts[2]
-
-            # Assign the value to the appropriate place in the dictionary
-            if field in ['product', 'color', 'id']:
-                # Convert the value to an integer
-                data[index][field] = int(value[0])
-            else:
-                # Handle images or other types of data
-                data[index][field] = value[0] if isinstance(value, list) else value
-
-        # Convert defaultdict to a list of dictionaries
-        images_data = [data[i] for i in sorted(data.keys())]
-
-        if not images_data:
-            return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
-        id_gallery_list = []
-        for data in images_data:
-            id_gallery = data.get('id')
-            product_id = data.get('product')
-            color = data.get('color')
-            image = data.get('image')
-
-            if id_gallery == 0:
-                new_gallery = AddImageGalleryModel.objects.create(product=ProductModel.objects.get(id=product_id),
-                                                                  color=ColorProductModel.objects.get(id=color),
-                                                                  image=image)
-                id_gallery_list.append(new_gallery.id)
-            else:
-                id_gallery_list.append(id_gallery)
-        gallery = AddImageGalleryModel.objects.filter(product_id=product_id).exclude(id__in=id_gallery_list)
-        gallery.delete()
-
-        return Response(data={'message': 'Done'}, status=status.HTTP_200_OK)
-
-
-class VariantDataView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request, product_id):
-        product = get_object_or_404(ProductModel, id=product_id)
-        ser_data = ProductAdminSerializer(instance=product)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-
-class VariantImageView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request, product_id):
-        product = get_object_or_404(ProductModel, id=product_id)
-        gallery = AddImageGalleryModel.objects.filter(product=product)
-        ser_data = ProductColorImageSerializer(instance=gallery, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-
-class ColorImageView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request, product_id):
-        product = ProductModel.objects.get(id=product_id)
-        variants = ProductVariantModel.objects.filter(product=product)
-
-        colors = set([f'{str(p.color.color)} - {str(p.color.color_code)} - {str(p.color.id)}' for p in variants])
-        all_colors = [{'color': color.split(" - ")[0], 'code': color.split(" - ")[1], 'id': color.split(" - ")[2]} for
-                      color in colors]
-
-        return Response(data=all_colors, status=status.HTTP_200_OK)
-
-    def post(self, request, product_id):
-        product = ProductModel.objects.get(id=product_id)
-        sizes = request.data['sizes']
-        colors = request.data['colors']
-
-        for color in colors:
-            for size in sizes:
-                if not ProductVariantModel.objects.filter(product=product,
-                                                          color=ColorProductModel.objects.get(color=color),
-                                                          size=SizeProductModel.objects.get(size=size),
-                                                          ).exists():
-                    ProductVariantModel.objects.create(product=product,
-                                                       color=ColorProductModel.objects.get(color=color),
-                                                       size=SizeProductModel.objects.get(size=size),
-                                                       price=0,
-                                                       percent_discount=product.percent_discount,
-                                                       quantity=0,
-                                                       name=f'{product}-{color}-{size}')
-
-        variants = ProductVariantModel.objects.filter(product_id=product_id).exclude(
-                                                      color__color__in=colors,
-                                                      size__size__in=sizes
-                                                      )
-        variants.delete()
-
-        return Response(data={'message': 'Create'}, status=status.HTTP_201_CREATED)
-
-
-class OrderFilterView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request):
-        status_order = self.request.query_params.get('status')
-
-        try:
-            order_status = OrderStatusModel.objects.get(status=status_order)
-
-            orders = OrderModel.objects.filter(status=order_status)
-        except OrderStatusModel.DoesNotExist:
-            return Response({"error": "Invalid status value"}, status=400)
-
-        ser_data = OrderSerializer(instance=orders, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-
-class OrderPaidView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request):
-        order = OrderModel.objects.filter(paid=True)
-        ser_data = OrderSerializer(instance=order, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-
-class OrderUnpaidView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request):
-        order = OrderModel.objects.filter(paid=False)
-        ser_data = OrderSerializer(instance=order, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-
-class OrderDetailView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request, order_id):
-        order = OrderModel.objects.get(id=order_id)
-        ser_data = OrderDetailSerializer(instance=order)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-    def put(self, request, order_id):
-        try:
-            order = OrderModel.objects.get(id=order_id)
-        except ProductModel.DoesNotExist:
-            return Response(data={'message': 'Order does not exist'}, status=status.HTTP_404_NOT_FOUND)
-
-        ser_data = OrderDetailSerializer(instance=order, data=request.data, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class OrderCustomerView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request, order_id):
-        user = OrderModel.objects.get(id=order_id).user
-        ser_data = UserInfoSerializer(instance=user)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
-
-class OrderItemsView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request, order_id):
-        items = OrderItemModel.objects.filter(order=order_id)
-        ser_data = OrderItemSerializer(instance=items, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 
 class HomeContentView(APIView):
@@ -1388,3 +627,768 @@ class NewsLetterView(APIView):
             ser_data.save()
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Product Section
+class ProductCategoryView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request):
+        category = ProductCategoryModel.objects.all()
+        ser_data = ProductCategorySerializer(instance=category, many=True)
+
+        return Response(data=ser_data.data)
+
+
+class ProductCategoryItemView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request, category_id):
+        category = get_object_or_404(ProductCategoryModel, id=category_id)
+        ser_data = ProductCategorySerializer(instance=category)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = ProductCategorySerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, category_id):
+        form = request.data
+        category = get_object_or_404(ProductCategoryModel, id=category_id)
+        ser_data = ProductCategorySerializer(instance=category, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, category_id):
+        if category_id is None:
+            return Response(data={'message': 'Input Category ID'})
+
+        try:
+            category = ProductCategoryModel.objects.get(id=category_id)
+        except:
+            return Response(data={'message': 'Category is not exist'})
+
+        category.delete()
+
+        return Response(data={'message': f'The Category ID {category_id} was deleted'})
+
+
+class ProductSubCategoryView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request):
+        subcategory = ProductSubCategoryModel.objects.all()
+        ser_data = ProductSubCategorySerializer(instance=subcategory, many=True)
+
+        return Response(data=ser_data.data)
+
+
+class ProductSubCategoryItemView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request, category_id):
+        subcategory = get_object_or_404(ProductSubCategoryModel, id=category_id)
+        ser_data = ProductSubCategorySerializer(instance=subcategory)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = ProductSubCategorySerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, category_id):
+        form = request.data
+        subcategory = get_object_or_404(ProductSubCategoryModel, id=category_id)
+        ser_data = ProductSubCategorySerializer(instance=subcategory, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, category_id):
+        if category_id is None:
+            return Response(data={'message': 'Input Category ID'})
+
+        try:
+            subcategory = ProductSubCategoryModel.objects.get(id=category_id)
+        except:
+            return Response(data={'message': 'Category is not exist'})
+
+        subcategory.delete()
+
+        return Response(data={'message': f'The Category ID {category_id} was deleted'})
+
+
+class ExtraItemView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request):
+        extr_group = ExtraGroupModel.objects.all()
+        ser_data = ExtraGroupSerializer(instance=extr_group, many=True)
+        return Response(data=ser_data.data)
+
+
+class ExtraGroupView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request, id_extrag):
+        extra = get_object_or_404(ExtraGroupModel, id=id_extrag)
+        ser_data = ExtraGroupSerializer(instance=extra)
+        return Response(data=ser_data.data)
+
+    def post(self, request):
+        form = request.data
+
+        ser_data = ExtraGroupSerializer(data=form)
+
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, id_extrag):
+        if id_extrag is None:
+            return Response(data={'message': 'Input Extra Group ID'})
+
+        try:
+            extrag = ExtraGroupModel.objects.get(id=id_extrag)
+        except:
+            return Response(data={'message': 'Extra Group is not exist'})
+
+        ser_data = ExtraGroupSerializer(instance=extrag, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id_extrag):
+        if id_extrag is None:
+            return Response(data={'message': 'Input Extra Group ID'})
+
+        try:
+            extrag = ExtraGroupModel.objects.get(id=id_extrag)
+        except:
+            return Response(data={'message': 'Extra Group is not exist'})
+
+        name = extrag.title
+        extrag.delete()
+        return Response(data={'message': f'The {name} Extra Group was deleted'})
+
+
+class SizeItemView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request, size_id):
+
+        size = get_object_or_404(SizeProductModel, id=size_id)
+        ser_data = SizeValueSerializer(instance=size)
+        return Response(data=ser_data.data)
+
+
+class SizeValueView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request):
+
+        size = SizeProductModel.objects.all()
+        ser_data = SizeValueSerializer(instance=size, many=True)
+        return Response(data=ser_data.data)
+
+    def post(self, request):
+        form = request.data
+
+        ser_data = SizeValueCUDSerializer(data=form)
+
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, id_size):
+        # id_size = request.data['id_size']
+
+        if id_size is None:
+            return Response(data={'message': 'Input Size ID'})
+
+        try:
+            size = SizeProductModel.objects.get(id=id_size)
+        except:
+            return Response(data={'message': 'Size is not exist'})
+
+        ser_data = SizeValueCUDSerializer(instance=size, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id_size):
+        if id_size is None:
+            return Response(data={'message': 'Input Size ID'})
+
+        try:
+            size = SizeProductModel.objects.get(id=id_size)
+        except:
+            return Response(data={'message': 'Size is not exist'})
+
+        name = size.size
+        size.delete()
+        return Response(data={'message': f'The {name} Size was deleted'})
+
+
+class ColorItemView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request, color_id):
+
+        color = get_object_or_404(ColorProductModel, id=color_id)
+        ser_data = ColorValueSerializer(instance=color)
+        return Response(data=ser_data.data)
+
+
+class ColorValueView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request):
+
+        color = ColorProductModel.objects.all()
+        ser_data = ColorValueSerializer(instance=color, many=True)
+        return Response(data=ser_data.data)
+
+    def post(self, request):
+        form = request.data
+
+        ser_data = ColorValueCUDSerializer(data=form)
+
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, id_color):
+        # id_color = request.data['id_color']
+
+        if id_color is None:
+            return Response(data={'message': 'Input Color ID'})
+
+        try:
+            size = ColorProductModel.objects.get(id=id_color)
+        except:
+            return Response(data={'message': 'Color is not exist'})
+
+        ser_data = ColorValueCUDSerializer(instance=size, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id_color):
+
+        if id_color is None:
+            return Response(data={'message': 'Input Color ID'})
+
+        try:
+            color = ColorProductModel.objects.get(id=id_color)
+        except:
+            return Response(data={'message': 'Color is not exist'})
+
+        name = color.color
+        color.delete()
+        return Response(data={'message': f'The {name} Color was deleted'})
+
+
+class ProductView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request):
+        products = ProductModel.objects.all()
+        ser_data = ProductSerializer(instance=products, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        # per_page = int(self.request.query_params.get('limit', 10))
+        # page = self.request.query_params.get('page', None)
+        #
+        # product_count = len(ProductModel.objects.all())
+        # number_of_pages = ceil(product_count / per_page)
+        #
+        # if page is not None:
+        #     page = int(page)
+        #     product = ProductModel.objects.all()[per_page*(page-1):per_page*page]
+        # else:
+        #     product = ProductModel.objects.all()
+        #
+        # ser_data = ProductSerializer(instance=product, many=True)
+        # return Response({'data': ser_data.data, 'number_of_pages': number_of_pages})
+
+
+class ProductItemView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request, product_id):
+        product = ProductModel.objects.get(id=product_id)
+        ser_data = ProductSerializer(instance=product)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        form = request.data.copy()
+
+        if 'video' in form and form['video'] in [None, 'null']:
+            form.pop('video')
+        serializer = CombinedProductSerializer(data=form)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, product_id):
+        try:
+            product = ProductModel.objects.get(id=product_id)
+        except ProductModel.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        form = request.data.copy()
+
+        if 'video' in form and form['video'] in [None, 'null']:
+            product.video = None
+            product.save()
+            form.pop('video')
+
+        serializer = CombinedProductSerializer(instance=product, data=form, partial=True,
+                                               context={'product_id': product_id})
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, product_id):
+
+        if product_id is None:
+            return Response(data={'message': 'Input Product ID'})
+
+        try:
+            product = ProductModel.objects.get(id=product_id)
+        except:
+            return Response(data={'message': 'Product is not exist'})
+
+        name = product.product
+        product.delete()
+        return Response(data={'message': f'The {name} Product was deleted'})
+
+
+class ProductTagListView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request):
+        search = self.request.query_params.get('search')
+
+        used_tags = AddProductTagModel.objects.values('tag')
+
+        if search is None:
+            product_tag = ProductTagModel.objects.exclude(id__in=Subquery(used_tags))
+        else:
+            product_tag = ProductTagModel.objects.filter(tag__icontains=search).exclude(id__in=Subquery(used_tags))
+
+        ser_data = ProductTagSerializer(instance=product_tag, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = ProductTagSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, product_id):
+        form = request.data
+        product_tag = ProductTagModel.objects.get(id=product_id)
+        ser_data = ProductTagSerializer(instance=product_tag, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, product_id):
+        if product_id is None:
+            return Response(data={'message': 'Input Tag ID'})
+
+        try:
+            tag_product = ProductTagModel.objects.get(id=product_id)
+        except:
+            return Response(data={'message': 'Tag is not exist'})
+
+        tag_product.delete()
+
+        return Response(data={'message': f'The Product ID {product_id} was deleted'})
+
+
+class ProductTagItemView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request, product_id):
+        product = get_object_or_404(ProductTagModel, id=product_id)
+        ser_data = ProductTagSerializer(instance=product)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class AddProductTagListView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def post(self, request):
+        form = request.data
+        ser_data = AddProductTagSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, product_id):
+        try:
+            product = ProductModel.objects.get(id=product_id)
+        except ProductModel.DoesNotExist:
+            return Response(data={'message': 'Product does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            add_tag = AddProductTagModel.objects.get(product=product)
+        except AddProductTagModel.DoesNotExist:
+            return Response(data={'message': 'Product tag does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        ser_data = AddProductTagSerializer(instance=add_tag, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, product_id):
+        if product_id is None:
+            return Response(data={'message': 'Input Product ID'})
+
+        try:
+            add_tag = AddProductTagModel.objects.get(product=product_id)
+        except:
+            return Response(data={'message': 'Product is not exist'})
+
+        add_tag.delete()
+
+        return Response(data={'message': f'The Product ID {product_id} was deleted'})
+
+
+class GenderView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request):
+        genders = ProductGenderModel.objects.all()
+        ser_data = GenderSerializer(instance=genders, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = GenderSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GenderItemView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def put(self, request, gender_id):
+        try:
+            gender = ProductGenderModel.objects.get(id=gender_id)
+        except ProductModel.DoesNotExist:
+            return Response(data={'message': 'Gender does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        ser_data = GenderSerializer(instance=gender, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, gender_id):
+        if gender_id is None:
+            return Response(data={'message': 'Input Gender ID'})
+
+        try:
+            gender = ProductGenderModel.objects.get(id=gender_id)
+        except:
+            return Response(data={'message': 'Gender is not exist'})
+
+        gender.delete()
+
+        return Response(data={'message': f'The Gender ID {gender_id} was deleted'}, status=status.HTTP_200_OK)
+
+
+class ProductVariantView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request, product_id):
+        product = ProductModel.objects.get(id=product_id)
+        variant = ProductVariantModel.objects.filter(product=product)
+        ser_data = ProductVariantSerializer(instance=variant, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request, product_id):
+        ser_data = ProductWithVariantsSerializer(data=request.data)
+        product = ProductModel.objects.get(id=product_id)
+        if ser_data.is_valid():
+
+            extras = ser_data.validated_data['extras']
+            for extra in extras:
+                ProductVariantModel.objects.create(product=product,
+                                                   name=extra['name'],
+                                                   item_id=extra['item_id'],
+                                                   color=extra['color'],
+                                                   size=extra['size'],
+                                                   price=extra['price'],
+                                                   percent_discount=extra['percent_discount'],
+                                                   quantity=extra['quantity'],
+                                                   )
+
+            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class VariantPutView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def put(self, request):
+        ser_data = ProductWithVariantsSerializer(data=request.data)
+        if ser_data.is_valid():
+
+            extras = ser_data.validated_data['extras']
+            for extra in extras:
+                variant = ProductVariantModel.objects.get(id=(extra['id']))
+                if variant:
+                    variant.name = extra['name']
+                    variant.item_id = extra['item_id']
+                    variant.color_id = extra['color']  # Assigning the ID directly
+                    variant.size_id = extra['size']  # Assigning the ID directly
+                    variant.price = extra['price']
+                    variant.percent_discount = extra['percent_discount']
+                    variant.quantity = extra['quantity']
+                    variant.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProductImageGallery(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def post(self, request):
+        query_dict = dict(request.data)
+        data = defaultdict(dict)
+
+        for key, value in query_dict.items():
+            # Split the key into parts
+            parts = key.split('.')
+            index = int(parts[1])
+            field = parts[2]
+
+            # Assign the value to the appropriate place in the dictionary
+            if field in ['product', 'color']:
+                # Convert the value to an integer
+                data[index][field] = int(value[0])
+            else:
+                # Handle images or other types of data
+                data[index][field] = value[0] if isinstance(value, list) else value
+
+        # Convert defaultdict to a list of dictionaries
+        data_list = [data[i] for i in sorted(data.keys())]
+
+        if not data_list:
+            return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
+
+        for form_data in data_list:
+            ser_data = ProductColorImageSerializer(data=form_data)
+            if ser_data.is_valid():
+                ser_data.save()
+            else:
+                return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(data='Done', status=status.HTTP_201_CREATED)
+
+    def put(self, request):
+        query_dict = dict(request.data)
+        data = defaultdict(dict)
+
+        for key, value in query_dict.items():
+            # Split the key into parts
+            parts = key.split('.')
+            index = int(parts[1])
+            field = parts[2]
+
+            # Assign the value to the appropriate place in the dictionary
+            if field in ['product', 'color', 'id']:
+                # Convert the value to an integer
+                data[index][field] = int(value[0])
+            else:
+                # Handle images or other types of data
+                data[index][field] = value[0] if isinstance(value, list) else value
+
+        # Convert defaultdict to a list of dictionaries
+        images_data = [data[i] for i in sorted(data.keys())]
+
+        if not images_data:
+            return Response({"error": "No data found in request"}, status=status.HTTP_400_BAD_REQUEST)
+        id_gallery_list = []
+        for data in images_data:
+            id_gallery = data.get('id')
+            product_id = data.get('product')
+            color = data.get('color')
+            image = data.get('image')
+
+            if id_gallery == 0:
+                new_gallery = AddImageGalleryModel.objects.create(product=ProductModel.objects.get(id=product_id),
+                                                                  color=ColorProductModel.objects.get(id=color),
+                                                                  image=image)
+                id_gallery_list.append(new_gallery.id)
+            else:
+                id_gallery_list.append(id_gallery)
+        gallery = AddImageGalleryModel.objects.filter(product_id=product_id).exclude(id__in=id_gallery_list)
+        gallery.delete()
+
+        return Response(data={'message': 'Done'}, status=status.HTTP_200_OK)
+
+
+class VariantDataView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request, product_id):
+        product = get_object_or_404(ProductModel, id=product_id)
+        ser_data = ProductAdminSerializer(instance=product)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class VariantImageView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request, product_id):
+        product = get_object_or_404(ProductModel, id=product_id)
+        gallery = AddImageGalleryModel.objects.filter(product=product)
+        ser_data = ProductColorImageSerializer(instance=gallery, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class ColorImageView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get(self, request, product_id):
+        product = ProductModel.objects.get(id=product_id)
+        variants = ProductVariantModel.objects.filter(product=product)
+
+        colors = set([f'{str(p.color.color)} - {str(p.color.color_code)} - {str(p.color.id)}' for p in variants])
+        all_colors = [{'color': color.split(" - ")[0], 'code': color.split(" - ")[1], 'id': color.split(" - ")[2]} for
+                      color in colors]
+
+        return Response(data=all_colors, status=status.HTTP_200_OK)
+
+    def post(self, request, product_id):
+        product = ProductModel.objects.get(id=product_id)
+        sizes = request.data['sizes']
+        colors = request.data['colors']
+
+        for color in colors:
+            for size in sizes:
+                if not ProductVariantModel.objects.filter(product=product,
+                                                          color=ColorProductModel.objects.get(color=color),
+                                                          size=SizeProductModel.objects.get(size=size),
+                                                          ).exists():
+                    ProductVariantModel.objects.create(product=product,
+                                                       color=ColorProductModel.objects.get(color=color),
+                                                       size=SizeProductModel.objects.get(size=size),
+                                                       price=0,
+                                                       percent_discount=product.percent_discount,
+                                                       quantity=0,
+                                                       name=f'{product}-{color}-{size}')
+
+        variants = ProductVariantModel.objects.filter(product_id=product_id).exclude(
+                                                      color__color__in=colors,
+                                                      size__size__in=sizes
+                                                      )
+        variants.delete()
+
+        return Response(data={'message': 'Create'}, status=status.HTTP_201_CREATED)
+
+
+# Order Section
+class OrderFilterView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        status_order = self.request.query_params.get('status')
+
+        try:
+            order_status = OrderStatusModel.objects.get(status=status_order)
+
+            orders = OrderModel.objects.filter(status=order_status)
+        except OrderStatusModel.DoesNotExist:
+            return Response({"error": "Invalid status value"}, status=400)
+
+        ser_data = OrderSerializer(instance=orders, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class OrderPaidView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        order = OrderModel.objects.filter(paid=True)
+        ser_data = OrderSerializer(instance=order, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class OrderUnpaidView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        order = OrderModel.objects.filter(paid=False)
+        ser_data = OrderSerializer(instance=order, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class OrderDetailView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request, order_id):
+        order = OrderModel.objects.get(id=order_id)
+        ser_data = OrderDetailSerializer(instance=order)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, order_id):
+        try:
+            order = OrderModel.objects.get(id=order_id)
+        except ProductModel.DoesNotExist:
+            return Response(data={'message': 'Order does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        ser_data = OrderDetailSerializer(instance=order, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OrderCustomerView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request, order_id):
+        user = OrderModel.objects.get(id=order_id).user
+        ser_data = UserInfoSerializer(instance=user)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class OrderItemsView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request, order_id):
+        items = OrderItemModel.objects.filter(order=order_id)
+        ser_data = OrderItemSerializer(instance=items, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
