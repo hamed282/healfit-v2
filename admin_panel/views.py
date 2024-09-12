@@ -256,6 +256,11 @@ class BlogView(APIView):
 class BlogCategoryView(APIView):
     permission_classes = [IsAdminUser, IsBlogAdmin]
 
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsBlogAdmin, IsSEOAdmin)]
+        return super().get_permissions()
+
     def get(self, request):
         category = BlogCategoryModel.objects.all()
         ser_data = BlogCategorySerializer(instance=category, many=True)
@@ -280,7 +285,7 @@ class BlogCategoryView(APIView):
 
 
 class BLogTagListView(APIView):
-    permission_classes = [IsAdminUser, IsBlogAdmin]
+    permission_classes = [IsAdminUser, IsBlogAdmin | IsSEOAdmin]
 
     def get(self, request):
         search = self.request.query_params.get('search')
@@ -327,7 +332,7 @@ class BLogTagListView(APIView):
 
 
 class BLogTagItemView(APIView):
-    permission_classes = [IsAdminUser, IsBlogAdmin]
+    permission_classes = [IsAdminUser, IsBlogAdmin | IsSEOAdmin]
 
     def get(self, request, tag_id):
         tag = get_object_or_404(BlogTagModel, id=tag_id)
@@ -336,7 +341,7 @@ class BLogTagItemView(APIView):
 
 
 class AddBLogTagListView(APIView):
-    permission_classes = [IsAdminUser, IsBlogAdmin]
+    permission_classes = [IsAdminUser, IsBlogAdmin | IsSEOAdmin]
 
     def post(self, request):
         form = request.data
@@ -376,7 +381,7 @@ class AddBLogTagListView(APIView):
 
 
 class BlogImageView(APIView):
-    permission_classes = [IsAdminUser, IsBlogAdmin]
+    permission_classes = [IsAdminUser, IsBlogAdmin | IsSEOAdmin]
 
     def post(self, request):
         form = request.data
@@ -392,7 +397,7 @@ class BlogImageView(APIView):
 
 # Home Section
 class CommentHomeView(APIView):
-    permission_classes = [IsAdminUser, IsModeratorAdmin]
+    permission_classes = [IsAdminUser, IsModeratorAdmin | IsSEOAdmin]
 
     def get(self, request):
         comments = CommentHomeModel.objects.all()
@@ -440,7 +445,7 @@ class CommentItemView(APIView):
 
 
 class BannerHomeView(APIView):
-    permission_classes = [IsAdminUser, IsModeratorAdmin]
+    permission_classes = [IsAdminUser, IsModeratorAdmin | IsSEOAdmin]
 
     def get(self, request):
         banner = BannerSliderModel.objects.all()
@@ -450,6 +455,11 @@ class BannerHomeView(APIView):
 
 class BannerItemView(APIView):
     permission_classes = [IsAdminUser, IsModeratorAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsBlogAdmin, IsSEOAdmin)]
+        return super().get_permissions()
 
     def get(self, request, banner_id):
         banner = get_object_or_404(BannerSliderModel, id=banner_id)
@@ -488,7 +498,7 @@ class BannerItemView(APIView):
 
 
 class VideoHomeView(APIView):
-    permission_classes = [IsAdminUser, IsModeratorAdmin]
+    permission_classes = [IsAdminUser, IsModeratorAdmin |IsSEOAdmin]
 
     def get(self, request):
         video = VideoHomeModel.objects.all()
@@ -506,7 +516,7 @@ class VideoHomeView(APIView):
 
 
 class HomeContentView(APIView):
-    permission_classes = [IsAdminUser, IsModeratorAdmin]
+    permission_classes = [IsAdminUser, IsModeratorAdmin, IsSEOAdmin]
 
     def get(self, request):
         content = ContentHomeModel.objects.all()
@@ -524,7 +534,7 @@ class HomeContentView(APIView):
 
 
 class BannerShopView(APIView):
-    permission_classes = [IsAdminUser, IsModeratorAdmin]
+    permission_classes = [IsAdminUser, IsModeratorAdmin | IsSEOAdmin]
 
     def get(self, request):
         banner = BannerShopModel.objects.all()[:3]
@@ -542,6 +552,11 @@ class BannerShopView(APIView):
 
 class BannerShopItemView(APIView):
     permission_classes = [IsAdminUser, IsModeratorAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsBlogAdmin, IsSEOAdmin)]
+        return super().get_permissions()
 
     def get(self, request, banner_id):
         banner = BannerShopModel.objects.get(id=banner_id)
@@ -572,7 +587,7 @@ class BannerShopItemView(APIView):
 
 
 class LogoHomeView(APIView):
-    permission_classes = [IsAdminUser, IsModeratorAdmin]
+    permission_classes = [IsAdminUser, IsModeratorAdmin |IsSEOAdmin]
 
     def get(self, request):
         logo = LogoModel.objects.all()
@@ -590,7 +605,7 @@ class LogoHomeView(APIView):
 
 
 class SEOHomeView(APIView):
-    permission_classes = [IsAdminUser, IsModeratorAdmin]
+    permission_classes = [IsAdminUser, IsModeratorAdmin | IsSEOAdmin]
 
     def get(self, request):
         seo = SEOHomeModel.objects.all()
