@@ -455,7 +455,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderModel
-        fields = ['id', 'user', 'status', 'paid', 'created', 'amount', 'number_of_products']
+        fields = ['id', 'user', 'status', 'paid', 'created', 'amount', 'number_of_products', 'transaction_ref']
 
     def get_amount(self, obj):
         items = OrderItemModel.objects.filter(order=obj)
