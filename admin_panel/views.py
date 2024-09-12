@@ -196,7 +196,7 @@ class LoginUserView(APIView):
 
 # Blog Section
 class BlogListView(APIView):
-    permission_classes = [IsAdminUser, IsBlogAdmin]
+    permission_classes = [IsAdminUser, IsBlogAdmin | IsSEOAdmin]
 
     def get(self, request):
         blogs = BlogModel.objects.all()
