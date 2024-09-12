@@ -13,19 +13,23 @@ class IsBlogAdmin(BasePermission):
 
 class IsProductAdmin(BasePermission):
     def has_permission(self, request, view):
-        return RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='product')).exists()
+        return (RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='product')).exists() or
+                request.user.is_superuser)
 
 
 class IsOrderAdmin(BasePermission):
     def has_permission(self, request, view):
-        return RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='order')).exists()
+        return (RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='order')).exists() or
+                request.user.is_superuser)
 
 
 class IsSEOAdmin(BasePermission):
     def has_permission(self, request, view):
-        return RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='seo')).exists()
+        return (RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='seo')).exists() or
+                request.user.is_superuser)
 
 
 class IsModeratorAdmin(BasePermission):
     def has_permission(self, request, view):
-        return RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='moderator')).exists()
+        return (RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='moderator')).exists()
+                or request.user.is_superuser)
