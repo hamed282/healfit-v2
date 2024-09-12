@@ -15,3 +15,6 @@ class IsProductAdmin(BasePermission):
         return RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='product')).exists()
 
 
+class IsOrderAdmin(BasePermission):
+    def has_permission(self, request, view):
+        return RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='order')).exists()

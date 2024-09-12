@@ -30,7 +30,7 @@ from product.serializers import (ProductCategorySerializer, ProductSubCategorySe
 from collections import defaultdict
 from order.models import OrderModel, OrderItemModel, OrderStatusModel
 from django.db.models import Subquery
-from permissions import IsBlogAdmin, IsProductAdmin
+from permissions import IsBlogAdmin, IsProductAdmin, IsOrderAdmin
 
 
 # Account Section
@@ -1321,7 +1321,7 @@ class ColorImageView(APIView):
 
 # Order Section
 class OrderFilterView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsOrderAdmin]
 
     def get(self, request):
         status_order = self.request.query_params.get('status')
@@ -1338,7 +1338,7 @@ class OrderFilterView(APIView):
 
 
 class OrderPaidView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsOrderAdmin]
 
     def get(self, request):
         order = OrderModel.objects.filter(paid=True)
@@ -1347,7 +1347,7 @@ class OrderPaidView(APIView):
 
 
 class OrderUnpaidView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsOrderAdmin]
 
     def get(self, request):
         order = OrderModel.objects.filter(paid=False)
@@ -1356,7 +1356,7 @@ class OrderUnpaidView(APIView):
 
 
 class OrderDetailView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsOrderAdmin]
 
     def get(self, request, order_id):
         order = OrderModel.objects.get(id=order_id)
@@ -1377,7 +1377,7 @@ class OrderDetailView(APIView):
 
 
 class OrderCustomerView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsOrderAdmin]
 
     def get(self, request, order_id):
         user = OrderModel.objects.get(id=order_id).user
@@ -1386,7 +1386,7 @@ class OrderCustomerView(APIView):
 
 
 class OrderItemsView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsOrderAdmin]
 
     def get(self, request, order_id):
         items = OrderItemModel.objects.filter(order=order_id)
