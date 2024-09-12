@@ -7,7 +7,8 @@ class IsBlogAdmin(BasePermission):
         # if request.method in ['POST', 'PUT', 'PATCH']:
         #     return RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='blog')).exists()
         # return True
-        return RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='blog')).exists()
+        return (RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='blog')).exists() or
+                request.user.is_superuser)
 
 
 class IsProductAdmin(BasePermission):
