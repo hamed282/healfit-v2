@@ -30,7 +30,8 @@ from product.serializers import (ProductCategorySerializer, ProductSubCategorySe
 from collections import defaultdict
 from order.models import OrderModel, OrderItemModel, OrderStatusModel
 from django.db.models import Subquery
-from permissions import IsBlogAdmin, IsProductAdmin, IsOrderAdmin, IsModeratorAdmin, IsSEOAdmin
+from permissions import (IsBlogAdmin, IsProductAdmin, IsOrderAdmin, IsModeratorAdmin, IsSEOAdmin, IsAccountAdmin,
+                         IsSuperAdmin)
 
 
 # Account Section
@@ -48,7 +49,7 @@ class LanguageView(APIView):
 
 
 class UserView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsAccountAdmin]
 
     def get(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
@@ -110,7 +111,7 @@ class UserView(APIView):
 
 
 class UserValueView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsAccountAdmin]
 
     def get(self, request):
         page = self.request.query_params.get('page', None)
@@ -130,7 +131,7 @@ class UserValueView(APIView):
 
 
 class RoleView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsAccountAdmin]
 
     def get(self, request):
         role = RoleModel.objects.all()

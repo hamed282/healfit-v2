@@ -33,3 +33,14 @@ class IsModeratorAdmin(BasePermission):
     def has_permission(self, request, view):
         return (RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='moderator')).exists()
                 or request.user.is_superuser)
+
+
+class IsAccountAdmin(BasePermission):
+    def has_permission(self, request, view):
+        return (RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='account')).exists()
+                or request.user.is_superuser)
+
+
+class IsSuperAdmin(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_superuser
