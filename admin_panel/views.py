@@ -31,7 +31,7 @@ from collections import defaultdict
 from order.models import OrderModel, OrderItemModel, OrderStatusModel
 from django.db.models import Subquery
 from permissions import (IsBlogAdmin, IsProductAdmin, IsOrderAdmin, IsModeratorAdmin, IsSEOAdmin, IsAccountAdmin,
-                         IsSuperAdmin)
+                         IsSuperAdmin, OrPermission)
 
 
 # Account Section
@@ -208,8 +208,8 @@ class BlogView(APIView):
     permission_classes = [IsAdminUser, IsBlogAdmin]
 
     def get_permissions(self):
-        if self.request.method == 'PUT':
-            return [IsAdminUser(), IsBlogAdmin() | IsSEOAdmin()]
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsBlogAdmin, IsSEOAdmin)]
         return super().get_permissions()
 
     def get(self, request, blog_id):

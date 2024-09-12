@@ -44,3 +44,14 @@ class IsAccountAdmin(BasePermission):
 class IsSuperAdmin(BasePermission):
     def has_permission(self, request, view):
         return request.user.is_superuser
+
+
+class OrPermission(BasePermission):
+    def __init__(self, *perms):
+        self.perms = perms
+
+    def has_permission(self, request, view):
+        return any(perm().has_permission(request, view) for perm in self.perms)
+
+    def has_object_permission(self, request, view, obj):
+        return any(perm().has_object_permission(request, view, obj) for perm in self.perms)
