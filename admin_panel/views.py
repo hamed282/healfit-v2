@@ -30,7 +30,7 @@ from product.serializers import (ProductCategorySerializer, ProductSubCategorySe
 from collections import defaultdict
 from order.models import OrderModel, OrderItemModel, OrderStatusModel
 from django.db.models import Subquery
-from permissions import IsBlogAdmin, IsProductAdmin, IsOrderAdmin
+from permissions import IsBlogAdmin, IsProductAdmin, IsOrderAdmin, IsModeratorAdmin, IsSEOAdmin
 
 
 # Account Section
@@ -386,7 +386,7 @@ class BlogImageView(APIView):
 
 # Home Section
 class CommentHomeView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsModeratorAdmin]
 
     def get(self, request):
         comments = CommentHomeModel.objects.all()
@@ -395,7 +395,7 @@ class CommentHomeView(APIView):
 
 
 class CommentItemView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsModeratorAdmin]
 
     def get(self, request, comment_id):
         comment = get_object_or_404(CommentHomeModel, id=comment_id)
@@ -434,7 +434,7 @@ class CommentItemView(APIView):
 
 
 class BannerHomeView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsModeratorAdmin]
 
     def get(self, request):
         banner = BannerSliderModel.objects.all()
@@ -443,7 +443,7 @@ class BannerHomeView(APIView):
 
 
 class BannerItemView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsModeratorAdmin]
 
     def get(self, request, banner_id):
         banner = get_object_or_404(BannerSliderModel, id=banner_id)
@@ -482,7 +482,7 @@ class BannerItemView(APIView):
 
 
 class VideoHomeView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsModeratorAdmin]
 
     def get(self, request):
         video = VideoHomeModel.objects.all()
@@ -500,7 +500,7 @@ class VideoHomeView(APIView):
 
 
 class HomeContentView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsModeratorAdmin]
 
     def get(self, request):
         content = ContentHomeModel.objects.all()
@@ -518,7 +518,7 @@ class HomeContentView(APIView):
 
 
 class BannerShopView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsModeratorAdmin]
 
     def get(self, request):
         banner = BannerShopModel.objects.all()[:3]
@@ -535,7 +535,7 @@ class BannerShopView(APIView):
 
 
 class BannerShopItemView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsModeratorAdmin]
 
     def get(self, request, banner_id):
         banner = BannerShopModel.objects.get(id=banner_id)
@@ -566,7 +566,7 @@ class BannerShopItemView(APIView):
 
 
 class LogoHomeView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsModeratorAdmin]
 
     def get(self, request):
         logo = LogoModel.objects.all()
@@ -584,7 +584,7 @@ class LogoHomeView(APIView):
 
 
 class SEOHomeView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsModeratorAdmin]
 
     def get(self, request):
         seo = SEOHomeModel.objects.all()
@@ -602,7 +602,7 @@ class SEOHomeView(APIView):
 
 
 class NewsLetterView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsModeratorAdmin]
 
     def get(self, request):
         newsletter = NewsLetterModel.objects.all()

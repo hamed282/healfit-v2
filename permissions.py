@@ -18,3 +18,13 @@ class IsProductAdmin(BasePermission):
 class IsOrderAdmin(BasePermission):
     def has_permission(self, request, view):
         return RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='order')).exists()
+
+
+class IsSEOAdmin(BasePermission):
+    def has_permission(self, request, view):
+        return RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='seo')).exists()
+
+
+class IsModeratorAdmin(BasePermission):
+    def has_permission(self, request, view):
+        return RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='moderator')).exists()
