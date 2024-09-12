@@ -81,12 +81,12 @@ class AddBlogTagSerializer(ModelSerializer):
 
 class CombinedBlogSerializer(serializers.Serializer):
     cover_image = serializers.ImageField()
-    cover_image_alt = serializers.CharField(max_length=32)
+    cover_image_alt = serializers.CharField(max_length=125)
     banner = serializers.ImageField()
-    banner_alt = serializers.CharField(max_length=32)
+    banner_alt = serializers.CharField(max_length=125)
     title = serializers.CharField(max_length=250)
     title_image = serializers.ImageField()
-    title_image_alt = serializers.CharField(max_length=32)
+    title_image_alt = serializers.CharField(max_length=125)
     short_description = serializers.CharField(max_length=160)
     description = serializers.CharField()
     body = serializers.CharField()

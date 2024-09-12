@@ -6,7 +6,7 @@ class BannerSliderModel(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     banner = models.ImageField(upload_to='settings/banner-slide/', verbose_name='image (1455*505 px)')
-    banner_alt = models.CharField(max_length=64)
+    banner_alt = models.CharField(max_length=125)
     link = models.CharField(max_length=512, null=True, blank=True)
     active = models.BooleanField(default=False)
     created = models.DateField(auto_now_add=True)
@@ -88,7 +88,7 @@ class SEOHomeModel(models.Model):
 
 class LogoModel(models.Model):
     logo = models.FileField(upload_to='settings/logo/')
-    logo_alt = models.CharField(max_length=64)
+    logo_alt = models.CharField(max_length=125)
     fav = models.FileField(upload_to='settings/fav/')
 
     def __str__(self):
