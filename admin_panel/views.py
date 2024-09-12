@@ -207,6 +207,11 @@ class BlogListView(APIView):
 class BlogView(APIView):
     permission_classes = [IsAdminUser, IsBlogAdmin]
 
+    def get_permissions(self):
+        if self.request.method == 'PUT':
+            return [IsAdminUser(), IsBlogAdmin() | IsSEOAdmin()]
+        return super().get_permissions()
+
     def get(self, request, blog_id):
         blog = get_object_or_404(BlogModel, id=blog_id)
         ser_data = BlogSerializer(instance=blog)
