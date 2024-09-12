@@ -203,7 +203,7 @@ class BlogListView(APIView):
 
 
 class BlogView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsBlogAdmin]
 
     def get(self, request, blog_id):
         blog = get_object_or_404(BlogModel, id=blog_id)
@@ -247,7 +247,7 @@ class BlogView(APIView):
 
 
 class BlogCategoryView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsBlogAdmin]
 
     def get(self, request):
         category = BlogCategoryModel.objects.all()
@@ -273,7 +273,7 @@ class BlogCategoryView(APIView):
 
 
 class BLogTagListView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsBlogAdmin]
 
     def get(self, request):
         search = self.request.query_params.get('search')
@@ -320,7 +320,7 @@ class BLogTagListView(APIView):
 
 
 class BLogTagItemView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsBlogAdmin]
 
     def get(self, request, tag_id):
         tag = get_object_or_404(BlogTagModel, id=tag_id)
@@ -329,7 +329,7 @@ class BLogTagItemView(APIView):
 
 
 class AddBLogTagListView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser, IsBlogAdmin]
 
     def post(self, request):
         form = request.data
