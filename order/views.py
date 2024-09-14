@@ -173,7 +173,6 @@ class OrderPayAuthorisedView(APIView):
                 product_variant.quantity = product_variant.quantity - quantity
                 product_variant.save()
 
-                item.completed = True
                 item.trace = response['trace']
                 item.save()
 
