@@ -16,6 +16,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
 from .service import Cart
+from django.http import JsonResponse
+from datetime import datetime, timedelta
 
 
 class ProductGenderView(APIView):
@@ -354,16 +356,16 @@ class CartView(APIView):
             product = request.data["product"]
             cart.remove(product)
 
-            return Response(
-                {"message": 'cart removed'},
-                status=status.HTTP_202_ACCEPTED)
+            response = JsonResponse({"message": 'cart removed'})
+            response.delete_cookie('cart_id')
+            return response
 
         elif "clear" in request.data:
             cart.clear()
 
-            return Response(
-                {"message": 'cart cleaned'},
-                status=status.HTTP_202_ACCEPTED)
+            response = JsonResponse({"message": 'cart cleaned'})
+            response.delete_cookie('cart_id')
+            return response
 
         else:
             product = request.data
@@ -373,6 +375,59 @@ class CartView(APIView):
                 overide_quantity=product["overide_quantity"] if "overide_quantity" in product else False
             )
 
-            return Response(
-                {"message": add['massage']},
-                status=status.HTTP_202_ACCEPTED)
+            response = JsonResponse({"message": add['massage']})
+            expires = datetime.now() + timedelta(days=365 * 10)  # انقضا پس از 10 سال
+            response.set_cookie('cart_id', 'some_unique_cart_id', expires=expires)
+
+            return response
+
+
+# class CartView(APIView):
+#     def get(self, request, format=None):
+#         cart = Cart(request)
+#
+#         return Response(
+#             {"data": list(cart.__iter__()),
+#              "cart_total_price": cart.get_total_price()
+#              },
+#             status=status.HTTP_200_OK
+#             )
+#
+#     def post(self, request, **kwargs):
+#         """
+#         parameters:
+#         1. product # course id
+#             - id
+#             - off_price
+#         2. quantity # product order
+#         3. remove # true
+#         4. clear # true
+#         """
+#
+#         cart = Cart(request)
+#         if "remove" in request.data:
+#             product = request.data["product"]
+#             cart.remove(product)
+#
+#             return Response(
+#                 {"message": 'cart removed'},
+#                 status=status.HTTP_202_ACCEPTED)
+#
+#         elif "clear" in request.data:
+#             cart.clear()
+#
+#             return Response(
+#                 {"message": 'cart cleaned'},
+#                 status=status.HTTP_202_ACCEPTED)
+#
+#         else:
+#             product = request.data
+#             add = cart.add(
+#                 product=product["product"],
+#                 quantity=product["quantity"],
+#                 overide_quantity=product["overide_quantity"] if "overide_quantity" in product else False
+#             )
+#
+#             return Response(
+#                 {"message": add['massage']},
+#                 status=status.HTTP_202_ACCEPTED)
