@@ -35,7 +35,7 @@ class Cart:
         else:
             self.cart[product_id]["quantity"] += quantity
 
-        product = ProductModel.objects.get(id=int(product_id))
+        product = ProductVariantModel.objects.get(id=int(product_id))
         product = product.product_color_size.all()
         product = product.get(id=product_id)
         ser_product = QuantityProductSerializer(instance=product)
