@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import (ProductCategoryModel, ProductModel, PopularProductModel, SizeProductModel, ProductVariantModel,
                      ColorProductModel, ProductSubCategoryModel, AddSubCategoryModel, AddCategoryModel,
                      ProductGenderModel, AddImageGalleryModel, ExtraGroupModel, ProductTagModel, AddProductTagModel,
-                     FavUserModel)
+                     FavUserModel, CouponModel, ProductCouponModel)
 from django.utils.html import format_html
 
 
@@ -81,6 +81,16 @@ class FavUserAdmin(admin.ModelAdmin):
     list_display = ['user', 'product']
 
 
+class CouponInline(admin.TabularInline):
+    model = ProductCouponModel
+    extra = 1
+
+
+class CouponAdmin(admin.ModelAdmin):
+    list_display = ['id', 'customer', 'coupon_code', 'discount_percent', 'discount_amount', 'active', 'infinite']
+    inlines = (CouponInline,)
+
+
 admin.site.register(ProductCategoryModel, ProductCategoryAdmin)
 admin.site.register(ProductGenderModel, ProductGenderAdmin)
 admin.site.register(ProductSubCategoryModel, ProductSubCategoryAdmin)
@@ -96,3 +106,4 @@ admin.site.register(ExtraGroupModel)
 admin.site.register(ProductTagModel, ProductTagAdmin)
 admin.site.register(AddProductTagModel)
 admin.site.register(FavUserModel, FavUserAdmin)
+admin.site.register(CouponModel, CouponAdmin)

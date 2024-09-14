@@ -28,4 +28,6 @@ urlpatterns = [
     path('sizeofcolor/', views.SizeOfColorView.as_view(), name='size_of_color'),
     path('search_product/', views.SearchProductView.as_view({'get': 'list'}), name='search_product'),
 
+    # Coupon
+    path('coupon/', views.CouponView.as_view(), name='coupon'),
 ]

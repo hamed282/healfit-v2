@@ -411,3 +411,26 @@ class FavUserModel(models.Model):
 class Site(models.Model):
     domain = models.CharField(max_length=256)
     name = models.CharField(max_length=256)
+
+
+class CouponModel(models.Model):
+    objects = None
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    coupon_code = models.CharField(max_length=50, unique=True)
+    discount_percent = models.CharField(max_length=20, default=0)
+    discount_amount = models.CharField(max_length=20, default=0)
+    all_product = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
+    infinite = models.BooleanField(default=False)
+    limit = models.IntegerField(default=1)
+    created = models.DateTimeField(auto_now_add=True)
+    expire = models.DateTimeField(blank=True, null=True)
+    extra_discount = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.customer
+
+
+class ProductCouponModel(models.Model):
+    coupon = models.ForeignKey(CouponModel, on_delete=models.CASCADE)
+    product = models.ForeignKey(ProductModel, on_delete=models.CASCADE)

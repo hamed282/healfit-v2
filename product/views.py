@@ -319,3 +319,8 @@ class UserFavView(APIView):
         product_fav = FavUserModel.objects.filter(user=request.user)
         ser_data = UserFavSerializer(instance=product_fav, many=True, context={'request': request})
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class CouponView(APIView):
+    def post(self, request):
+        return Response(data='coupon', status=status.HTTP_200_OK)
