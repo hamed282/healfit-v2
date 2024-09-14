@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import (ProductGenderModel, ProductModel, SizeProductModel, ColorProductModel, ProductVariantModel,
                      AddImageGalleryModel, PopularProductModel, ProductCategoryModel, ProductSubCategoryModel,
-                     FavUserModel)
+                     FavUserModel, CouponModel)
 from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVariantShopSerializer,
                           ProductColorImageSerializer, ColorSizeProductSerializer, ProductListSerializer,
                           UserFavSerializer, PopularProductSerializer, ProductAllSerializer,
@@ -18,6 +18,7 @@ from rest_framework.permissions import IsAuthenticated
 from .service import Cart
 from django.http import JsonResponse
 from datetime import datetime, timedelta
+from decimal import Decimal
 
 
 class ProductGenderView(APIView):
@@ -349,9 +350,11 @@ class CartView(APIView):
         2. quantity # product order
         3. remove # true
         4. clear # true
+        ۵. discount_code # a code
         """
 
         cart = Cart(request)
+
         if "remove" in request.data:
             product = request.data["product"]
             cart.remove(product)
@@ -366,6 +369,38 @@ class CartView(APIView):
             response = JsonResponse({"message": 'cart cleaned'})
             response.delete_cookie('cart_id')
             return response
+
+        elif "discount_code" in request.data:
+            discount_code = request.data["discount_code"]
+
+            try:
+                # پیدا کردن کد تخفیف در دیتابیس
+                code = CouponModel.objects.get(coupon_code=discount_code)
+
+                # بررسی معتبر بودن کد
+                if code.is_valid():
+                    discount_percent = Decimal(code.discount_percent)
+                    data = list(cart.__iter__()),
+                    total_price = cart.get_total_price()
+
+                    # محاسبه قیمت پس از اعمال تخفیف
+                    discounted_price = total_price - (total_price * discount_percent / Decimal('100'))
+
+                    # بازگرداندن نتیجه به کاربر
+                    return JsonResponse({
+                        "message": "Discount applied",
+                        "data": list(cart.__iter__()),
+                        "total_price": str(total_price),
+                        "discounted_price": str(discounted_price)
+                    })
+
+                else:
+                    return JsonResponse({"message": "Invalid or expired discount code"},
+                                        status=status.HTTP_400_BAD_REQUEST)
+
+            except CouponModel.DoesNotExist:
+                return JsonResponse({"message": "Discount code does not exist"},
+                                    status=status.HTTP_400_BAD_REQUEST)
 
         else:
             product = request.data

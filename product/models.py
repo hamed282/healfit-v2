@@ -8,6 +8,7 @@ from upload_path import (get_cover_image_upload_path, get_gallery_upload_path, g
                          get_size_table_upload_path, get_category_upload_path, get_subcategory_upload_path,
                          get_gender_upload_path, get_video_product_upload_path)
 from accounts.models import User
+from django.utils import timezone
 
 
 class ProductModel(models.Model):
@@ -427,8 +428,12 @@ class CouponModel(models.Model):
     expire = models.DateTimeField(blank=True, null=True)
     extra_discount = models.BooleanField(default=False)
 
+    def is_valid(self):
+        now = timezone.now()
+        return self.active and self.created <= now <= self.expire
+
     def __str__(self):
-        return self.customer
+        return f'{self.customer}'
 
 
 class ProductCouponModel(models.Model):
