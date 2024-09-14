@@ -15,6 +15,7 @@ from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
+from .service import Cart
 
 
 class ProductGenderView(APIView):
@@ -324,3 +325,54 @@ class UserFavView(APIView):
 class CouponView(APIView):
     def post(self, request):
         return Response(data='coupon', status=status.HTTP_200_OK)
+
+
+class CartView(APIView):
+    def get(self, request, format=None):
+        cart = Cart(request)
+
+        return Response(
+            {"data": list(cart.__iter__()),
+             "cart_total_price": cart.get_total_price()
+             },
+            status=status.HTTP_200_OK
+            )
+
+    def post(self, request, **kwargs):
+        """
+        parameters:
+        1. product # course id
+            - id
+            - off_price
+        2. quantity # product order
+        3. remove # true
+        4. clear # true
+        """
+
+        cart = Cart(request)
+        if "remove" in request.data:
+            product = request.data["product"]
+            cart.remove(product)
+
+            return Response(
+                {"message": 'cart removed'},
+                status=status.HTTP_202_ACCEPTED)
+
+        elif "clear" in request.data:
+            cart.clear()
+
+            return Response(
+                {"message": 'cart cleaned'},
+                status=status.HTTP_202_ACCEPTED)
+
+        else:
+            product = request.data
+            add = cart.add(
+                product=product["product"],
+                quantity=product["quantity"],
+                overide_quantity=product["overide_quantity"] if "overide_quantity" in product else False
+            )
+
+            return Response(
+                {"message": add['massage']},
+                status=status.HTTP_202_ACCEPTED)

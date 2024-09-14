@@ -390,3 +390,77 @@ class UserFavSerializer(serializers.ModelSerializer):
     class Meta:
         model = FavUserModel
         fields = ['user_fav']
+
+
+# class ProductCartSerializer(serializers.ModelSerializer):
+#     product_color_size = ProductVariantShopSerializer(many=True, read_only=True)
+    # off_price = serializers.SerializerMethodField()
+    # size = serializers.SerializerMethodField()
+    # color = serializers.SerializerMethodField()
+
+    # class Meta:
+    #     model = ProductModel
+    #     fields = ['product_color_size']
+
+    # def get_size(self, obj):
+    #     return 'size'
+    #
+    # def get_color(self, obj):
+    #     return 'color'
+    #
+    # def get_off_price(self, obj):
+    #     price = obj.price
+    #     percent_discount = obj.percent_discount
+    #     if obj.percent_discount is None:
+    #         percent_discount = 0
+    #     return int(int(price) - int(price) * int(percent_discount) / 100)
+
+
+class ProductCartSerializer(serializers.ModelSerializer):
+    product = serializers.SlugRelatedField(read_only=True, slug_field='product')
+    size = serializers.SlugRelatedField(read_only=True, slug_field='size')
+    color = serializers.SlugRelatedField(read_only=True, slug_field='color')
+    off_price = serializers.SerializerMethodField()
+    gender = serializers.SerializerMethodField()
+    cover_image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductVariantModel
+        fields = ['product', 'price', 'off_price', 'size', 'color', 'gender', 'cover_image',]
+
+    def get_gender(self, obj):
+        try:
+            gender = obj.product.gender.gender
+        except:
+            gender = None
+        return gender
+
+    def get_cover_image(self, obj):
+        product = AddImageGalleryModel.objects.filter(product=obj.product, color=obj.color).first()
+        try:
+            cover = product.image.url
+        except:
+            cover = None
+        return cover
+
+    # def get_cover_image(self, obj):
+    #     cover = obj.product.cover_image
+    #     if cover:
+    #         cover = cover.url
+    #     else:
+    #         cover = None
+    #     return cover
+
+    def get_off_price(self, obj):
+        price = int(obj.price)
+        percent_discount = obj.percent_discount
+        if obj.percent_discount is None:
+            percent_discount = 0
+        return int(price - price * percent_discount / 100)
+
+
+class QuantityProductSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductVariantModel
+        fields = ['quantity']
