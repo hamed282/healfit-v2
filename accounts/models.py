@@ -59,6 +59,7 @@ class AddressModel(models.Model):
     phone_number = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
+    iban_country = models.CharField(max_length=6)
 
     class Meta:
         verbose_name = 'Address'

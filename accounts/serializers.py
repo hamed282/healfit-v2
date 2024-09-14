@@ -24,7 +24,7 @@ class UserAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = AddressModel
         fields = ['id', 'address', 'additional_information', 'emirats', 'city', 'country', 'phone_number',
-                  'current_address', 'prefix_number']
+                  'current_address', 'prefix_number', 'iban_country']
 
     def get_current_address(self, obj):
         if CurrentAddressModel.objects.filter(address=obj).exists():
@@ -47,4 +47,5 @@ class UserInfoSerializer(serializers.ModelSerializer):
 class UserInfoChangeSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'phone_number', 'company_name', 'trn_number', 'prefix_number']
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'company_name', 'trn_number', 'prefix_number',
+                  'iban_country']
