@@ -50,7 +50,6 @@ class OrderItemModel(models.Model):
     price = models.IntegerField()
     quantity = models.IntegerField(default=1)
     trace = models.CharField(max_length=200)
-    completed = models.BooleanField(default=False)
     created = models.DateField(auto_now_add=True)
 
     # class Meta:

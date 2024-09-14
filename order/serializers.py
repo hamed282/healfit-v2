@@ -1,16 +1,14 @@
 from rest_framework import serializers
-from .models import OrderItemModel
+from .models import OrderModel, OrderItemModel
 
 
-class OrderUserSerializer(serializers.ModelSerializer):
-    size = serializers.SlugRelatedField(slug_field='size', read_only=True)
-    color = serializers.SlugRelatedField(slug_field='color', read_only=True)
+class OrderItemSerializer(serializers.ModelSerializer):
     product = serializers.SlugRelatedField(slug_field='name', read_only=True)
     image = serializers.SerializerMethodField()
 
     class Meta:
         model = OrderItemModel
-        fields = ['product', 'image', 'price', 'size', 'color', 'quantity', 'trace', 'created']
+        fields = ['product', 'price', 'quantity', 'image']
 
     def get_image(self, obj):
         product = obj.product.product
@@ -20,3 +18,12 @@ class OrderUserSerializer(serializers.ModelSerializer):
         else:
             image = image.url
         return image
+
+
+class OrderUserSerializer(serializers.ModelSerializer):
+    status = serializers.SlugRelatedField(slug_field='status', read_only=True)
+    items = OrderItemSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = OrderModel
+        fields = ['status', 'transaction_ref', 'created', 'items']
