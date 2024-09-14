@@ -29,7 +29,7 @@ urlpatterns = [
     path('search_product/', views.SearchProductView.as_view({'get': 'list'}), name='search_product'),
 
     # Coupon
-    path('coupon/', views.CouponView.as_view(), name='coupon'),
+    # path('coupon/', views.CouponView.as_view(), name='coupon'),
 
     # Cart
     path('cart/', views.CartView.as_view(), name='cart'),

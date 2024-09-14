@@ -4,12 +4,13 @@ from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 import requests
 from .models import OrderModel, OrderItemModel, OrderStatusModel
-from product.models import ProductModel, ColorProductModel, SizeProductModel, ProductVariantModel
+from product.models import ProductModel, ColorProductModel, SizeProductModel, ProductVariantModel, CouponModel
 from order.models import UserProductModel
 from accounts.models import AddressModel
 from django.shortcuts import get_object_or_404
 from .serializers import OrderUserSerializer
 from django.core.mail import send_mail
+from decimal import Decimal
 
 
 class OrderPayView(APIView):
@@ -18,6 +19,7 @@ class OrderPayView(APIView):
     def post(self, request):
         forms = request.data['product']
         data = request.data
+        discount_code = data['discount_code']
 
         if len(forms) > 0:
             address = get_object_or_404(AddressModel, id=data['address_id'])
@@ -45,6 +47,15 @@ class OrderPayView(APIView):
                                               item_id=item_id)
             ############################################
             amount = str(order.get_total_price())
+            if discount_code != 0:
+                try:
+                    code = CouponModel.objects.get(coupon_code=discount_code)
+                    if code.is_valid():
+                        discount_percent = Decimal(code.discount_percent)
+                        amount = str(int(amount) - (int(amount) * discount_percent / Decimal('100')))
+                except:
+                    pass
+
             description = f'buy'
             cart_id = str(order.id)
             payload = {

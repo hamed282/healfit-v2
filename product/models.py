@@ -425,7 +425,7 @@ class CouponModel(models.Model):
     infinite = models.BooleanField(default=False)
     limit = models.IntegerField(default=1)
     created = models.DateTimeField(auto_now_add=True)
-    expire = models.DateTimeField(blank=True, null=True)
+    expire = models.DateTimeField()
     extra_discount = models.BooleanField(default=False)
 
     def is_valid(self):

@@ -325,11 +325,6 @@ class UserFavView(APIView):
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 
-class CouponView(APIView):
-    def post(self, request):
-        return Response(data='coupon', status=status.HTTP_200_OK)
-
-
 class CartView(APIView):
     def get(self, request, format=None):
         cart = Cart(request)
@@ -389,7 +384,7 @@ class CartView(APIView):
                     # بازگرداندن نتیجه به کاربر
                     return JsonResponse({
                         "message": "Discount applied",
-                        "data": list(cart.__iter__()),
+                        "data": data,
                         "total_price": str(total_price),
                         "discounted_price": str(discounted_price)
                     })
