@@ -23,7 +23,11 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderUserSerializer(serializers.ModelSerializer):
     status = serializers.SlugRelatedField(slug_field='status', read_only=True)
     items = OrderItemSerializer(read_only=True, many=True)
+    total_price = serializers.SerializerMethodField()
 
     class Meta:
         model = OrderModel
-        fields = ['status', 'transaction_ref', 'created', 'items']
+        fields = ['status', 'transaction_ref', 'created', 'items', 'total_price']
+
+    def get_total_price(self, obj):
+        return sum(item.price for item in obj.items.all())
