@@ -117,4 +117,8 @@ urlpatterns = [
     path('order/customer/<int:order_id>/', views.OrderCustomerView.as_view(), name='order_customer'),
     path('order/items/<int:order_id>/', views.OrderItemsView.as_view(), name='order_items'),
 
+    # Coupon
+    path('coupon/', views.CouponView.as_view(), name='coupon'),
+    path('coupon/<int:coupon_id>/', views.CouponItemView.as_view(), name='coupon_item'),
+
 ]

@@ -24,9 +24,10 @@ from home.serializers import (CommentHomeSerializer, VideoHomeSerializer, Banner
                               BannerShopSerializer, LogoHomeSerializer, SEOHomeSerializer, NewsLetterSerializer)
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
-                            ProductVariantModel, AddImageGalleryModel)
+                            ProductVariantModel, AddImageGalleryModel, CouponModel)
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer, ProductSerializer,
-                                 AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer)
+                                 AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer,
+                                 CouponSerializer, CouponCreateSerializer)
 from collections import defaultdict
 from order.models import OrderModel, OrderItemModel, OrderStatusModel
 from django.db.models import Subquery
@@ -1457,3 +1458,54 @@ class OrderItemsView(APIView):
         items = OrderItemModel.objects.filter(order=order_id)
         ser_data = OrderItemSerializer(instance=items, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class CouponView(APIView):
+    # permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        coupons = CouponModel.objects.all()
+        ser_data = CouponSerializer(instance=coupons, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = CouponCreateSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.validated_data['customer'] = request.user
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_200_OK)
+
+
+class CouponItemView(APIView):
+    # permission_classes = [IsAdminUser]
+    def get(self, request, coupon_id):
+        coupon = CouponModel.objects.get(id=coupon_id)
+        ser_data = CouponSerializer(instance=coupon)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, coupon_id):
+        try:
+            coupon = CouponModel.objects.get(id=coupon_id)
+        except ProductModel.DoesNotExist:
+            return Response(data={'message': 'Coupon does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        ser_data = CouponCreateSerializer(instance=coupon, data=request.data, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, coupon_id):
+        if coupon_id is None:
+            return Response(data={'message': 'Input Coupon ID'})
+
+        try:
+            coupon = CouponModel.objects.get(id=coupon_id)
+        except:
+            return Response(data={'message': 'Coupon is not exist'})
+
+        coupon.delete()
+
+        return Response(data={'message': f'The Coupon ID {coupon_id} was deleted'}, status=status.HTTP_200_OK)

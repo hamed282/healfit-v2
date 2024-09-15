@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (ProductGenderModel, ProductModel, ProductVariantModel, AddImageGalleryModel, PopularProductModel,
                      ProductCategoryModel, ProductSubCategoryModel, AddProductTagModel, AddSubCategoryModel,
-                     ProductTagModel, FavUserModel)
+                     ProductTagModel, FavUserModel, CouponModel)
 from django.shortcuts import get_object_or_404
 
 
@@ -464,3 +464,26 @@ class QuantityProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductVariantModel
         fields = ['quantity']
+
+
+class CouponSerializer(serializers.ModelSerializer):
+    customer = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CouponModel
+        fields = '__all__'
+
+    def get_customer(self, obj):
+        return f"{obj.customer.first_name} {obj.customer.last_name}"
+
+
+class CouponCreateSerializer(serializers.ModelSerializer):
+    customer = serializers.CharField(required=False)
+    products = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CouponModel
+        fields = '__all__'
+
+    def get_products(self, obj):
+        return 'products'
