@@ -1,5 +1,6 @@
 from django.db import models
 from upload_path import get_cover_blog_upload_path, get_title_blog_upload_path, get_banner_blog_upload_path
+from accounts.models import User
 
 
 class BlogCategoryModel(models.Model):
@@ -71,3 +72,16 @@ class AddBlogTagModel(models.Model):
 class BlogImageModel(models.Model):
     image = models.ImageField(upload_to='blog/blog/')
     type = models.CharField(max_length=32)
+
+
+class CommentBlogModel(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='usercomment')
+    blog = models.ForeignKey(BlogModel, on_delete=models.CASCADE, related_name='blogcomment')
+    reply = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replycomment', blank=True, null=True)
+    is_reply = models.BooleanField(default=False)
+    body = models.TextField(max_length=512)
+    is_active = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user}'

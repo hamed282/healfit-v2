@@ -1,10 +1,12 @@
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from .models import BlogModel, BlogCategoryModel
-from .serializers import BlogSerializer, BlogAllSerializer, RelatedBlogSerializer, MetaCategorySerializer
+from .models import BlogModel, BlogCategoryModel, CommentBlogModel
+from .serializers import (BlogSerializer, BlogAllSerializer, RelatedBlogSerializer, MetaCategorySerializer,
+                          CommentBlogSerializer, CommentCreateSerializer)
 import math
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 
 class BlogListView(APIView):
@@ -66,4 +68,39 @@ class RelatedPostView(APIView):
                         status=status.HTTP_200_OK)
 
 
+class CommentBlogView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
+    def get(self, request, blog_id):
+        comments = CommentBlogModel.objects.filter(blog=blog_id, is_active=True)
+        ser_data = CommentBlogSerializer(instance=comments, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request, blog_id):
+        blog = get_object_or_404(BlogModel, id=blog_id)
+        form = request.data
+        ser_data = CommentCreateSerializer(data=form)
+        if ser_data.is_valid():
+            CommentBlogModel.objects.create(user=request.user,
+                                            blog=blog,
+                                            body=form['body'])
+            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ReplyCommentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, blog_id, comment_id):
+        blog = get_object_or_404(BlogModel, id=blog_id)
+        comment = get_object_or_404(CommentBlogModel, id=comment_id)
+        form = request.data
+        ser_data = CommentCreateSerializer(data=form)
+        if ser_data.is_valid():
+            CommentBlogModel.objects.create(user=request.user,
+                                            blog=blog,
+                                            reply=comment,
+                                            is_reply=True,
+                                            body=form['body'])
+            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import BlogModel, AddBlogTagModel, BlogCategoryModel, BlogImageModel
+from .models import BlogModel, AddBlogTagModel, BlogCategoryModel, BlogImageModel, CommentBlogModel
 
 
 class BlogSerializer(serializers.ModelSerializer):
@@ -50,3 +50,16 @@ class ImageBlogSerializer(serializers.ModelSerializer):
     class Meta:
         model = BlogImageModel
         fields = '__all__'
+
+
+class CommentBlogSerializer(serializers.ModelSerializer):
+    created = serializers.DateTimeField(format='%d %b %Y - %H:%m')
+    user = serializers.SlugRelatedField(read_only=True, slug_field='first_name')
+
+    class Meta:
+        model = CommentBlogModel
+        fields = ['id', 'is_reply', 'body', 'created', 'user', 'reply']
+
+
+class CommentCreateSerializer(serializers.Serializer):
+    body = serializers.CharField()
