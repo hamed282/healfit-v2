@@ -5,7 +5,7 @@ from accounts.models import User
 
 class BlogCategoryModel(models.Model):
     category = models.CharField(max_length=16, unique=True)
-    slug = models.SlugField(blank=True, null=True, max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True)
 
     # SEO Fields
     follow = models.BooleanField(default=False)
