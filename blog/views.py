@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from .models import BlogModel, BlogCategoryModel, CommentBlogModel
-from .serializers import (BlogSerializer, BlogAllSerializer, RelatedBlogSerializer, MetaCategorySerializer,
+from .serializers import (GetBlogSerializer, BlogAllSerializer, RelatedBlogSerializer, MetaCategorySerializer,
                           CommentBlogSerializer, CommentCreateSerializer)
 import math
 from rest_framework import status
@@ -35,7 +35,7 @@ class BlogListView(APIView):
 class BlogView(APIView):
     def get(self, request, slug):
         blog = get_object_or_404(BlogModel, slug=slug)
-        ser_data = BlogSerializer(instance=blog)
+        ser_data = GetBlogSerializer(instance=blog)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 
