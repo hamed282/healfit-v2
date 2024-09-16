@@ -1472,7 +1472,6 @@ class CouponView(APIView):
         form = request.data
         ser_data = CouponCreateSerializer(data=form)
         if ser_data.is_valid():
-            ser_data.validated_data['customer'] = request.user
             ser_data.save()
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_200_OK)

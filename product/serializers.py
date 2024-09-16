@@ -478,7 +478,6 @@ class CouponSerializer(serializers.ModelSerializer):
 
 
 class CouponCreateSerializer(serializers.ModelSerializer):
-    customer = serializers.CharField(required=False)
     products = serializers.SerializerMethodField()
 
     class Meta:
