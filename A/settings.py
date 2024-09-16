@@ -18,7 +18,7 @@ DEBUG = True
 
 if DEBUG:
     # ALLOWED_HOSTS = ['*']
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'api.healfit.ae', 'www.api.healfit.ae', 'healfit.ae']
+    # ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'api.healfit.ae', 'www.api.healfit.ae', 'healfit.ae']
 
     # DATABASES = {
     #     'default': {
@@ -46,11 +46,13 @@ if DEBUG:
             },
         }
     }
-    CORS_ORIGIN_ALLOW_ALL = True
-    # CORS_ALLOWED_ORIGINS = [
-    #     'https://healfit.ae/',  # دامنه فرانت‌اند شما
-    # ]
+    CORS_ORIGIN_ALLOW_ALL = False
+    CORS_ALLOWED_ORIGINS = [
+        'https://healfit.ae',  # بدون اسلش انتهایی
+    ]
     CORS_ALLOW_CREDENTIALS = True
+
+    ALLOWED_HOSTS = ['healfit.ae', 'api.healfit.ae']
 
 else:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'api.healfit.ae', 'www.api.healfit.ae', 'healfit.ae']
