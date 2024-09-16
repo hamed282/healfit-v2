@@ -329,10 +329,10 @@ class UserFavView(APIView):
 class CartView(APIView):
     def get(self, request, format=None):
         # بررسی اینکه آیا شناسه سبد خرید در کوکی‌ها موجود است
-        cart_id = request.COOKIES.get('cart_id')
-
-        if not cart_id:
-            return Response({"message": "Cart is empty."}, status=status.HTTP_200_OK)
+        # cart_id = request.COOKIES.get('cart_id')
+        #
+        # if not cart_id:
+        #     return Response({"message": "Cart is empty."}, status=status.HTTP_200_OK)
 
         cart = Cart(request)
 
