@@ -441,12 +441,12 @@ class CartView(APIView):
             #
             # return response
             response.set_cookie(
-                key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+                key='cart_id',
                 value=unique_cart_id,
-                # expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
-                # secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
-                # httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-                # samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
+                expires=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
+                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
+                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
             )
 
 
