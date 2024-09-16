@@ -327,20 +327,21 @@ class UserFavView(APIView):
 
 class CartView(APIView):
     def get(self, request, format=None):
-        # cart = Cart(request)
-        #
-        # return Response(
-        #     {"data": list(cart.__iter__()),
-        #      "cart_total_price": cart.get_total_price()
-        #      },
-        #     status=status.HTTP_200_OK
-        #     )
-        # خواندن کوکی
+        # بررسی اینکه آیا شناسه سبد خرید در کوکی‌ها موجود است
         cart_id = request.COOKIES.get('cart_id')
-        print(f'Cart ID from cookies: {cart_id}')
 
-        # ادامه کدهای مربوط به سبد خرید...
-        return Response({"message": "Cart ID found in cookies."}, status=200)
+        if not cart_id:
+            return Response({"message": "Cart is empty."}, status=status.HTTP_200_OK)
+
+        cart = Cart(request)
+
+        return Response(
+            {
+                "data": list(cart.__iter__()),
+                "cart_total_price": cart.get_total_price()
+            },
+            status=status.HTTP_200_OK
+        )
 
 
     def post(self, request, **kwargs):
