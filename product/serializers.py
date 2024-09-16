@@ -467,14 +467,14 @@ class QuantityProductSerializer(serializers.ModelSerializer):
 
 
 class CouponSerializer(serializers.ModelSerializer):
-    customer = serializers.SerializerMethodField()
+    # customer = serializers.SerializerMethodField()
 
     class Meta:
         model = CouponModel
         fields = '__all__'
 
-    def get_customer(self, obj):
-        return f"{obj.customer.first_name} {obj.customer.last_name}"
+    # def get_customer(self, obj):
+    #     return f"{obj.customer.first_name} {obj.customer.last_name}"
 
 
 class CouponCreateSerializer(serializers.ModelSerializer):
