@@ -418,7 +418,15 @@ class CartView(APIView):
             expires = datetime.now() + timedelta(days=365 * 10)  # انقضا پس از 10 سال
             unique_cart_id = str(uuid.uuid4())  # ایجاد یک شناسه تصادفی منحصربه‌فرد
 
-            response.set_cookie('cart_id', unique_cart_id, expires=expires)
+            # response.set_cookie('cart_id', unique_cart_id, expires=expires)
+            response.set_cookie(
+                'cart_id',  # نام کوکی
+                unique_cart_id,  # مقدار کوکی
+                expires=expires,  # تاریخ انقضای کوکی
+                httponly=False,  # اگر نیاز دارید که جاوااسکریپت به کوکی دسترسی داشته باشد، این را False بگذارید
+                secure=False,  # برای HTTPS باید True باشد
+                samesite='Lax'  # یا 'None' اگر cross-origin است
+            )
 
             return response
 
