@@ -49,6 +49,9 @@ class AddRoleSerializer(ModelSerializer):
 class LoginUserSerializer(Serializer):
     email = EmailField()
     password = CharField(max_length=200)
+    first_name = CharField(max_length=200)
+    last_name = CharField(max_length=200)
+    role = 'waiter'
 
 
 class BlogTagSerializer(ModelSerializer):
