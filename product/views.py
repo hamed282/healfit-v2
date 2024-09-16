@@ -344,7 +344,6 @@ class CartView(APIView):
             status=status.HTTP_200_OK
         )
 
-
     def post(self, request, **kwargs):
         """
         parameters:
