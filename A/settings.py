@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 # Debug Mode
-DEBUG = True
+DEBUG = False
 
 if DEBUG:
     # ALLOWED_HOSTS = ['*']
@@ -80,6 +80,8 @@ else:
 
     # CSRF_TRUSTED_ORIGINS = ['https://api.healfit.ae', 'https://*.127.0.0.1']
     CORS_ORIGIN_ALLOW_ALL = True
+    CORS_ALLOW_CREDENTIALS = True
+
 
 # Application definition
 INSTALLED_APPS = [
