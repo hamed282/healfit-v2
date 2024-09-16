@@ -415,7 +415,8 @@ class CartView(APIView):
                 overide_quantity=product["overide_quantity"] if "overide_quantity" in product else False
             )
 
-            response = JsonResponse({"message": add['massage']})
+            # response = JsonResponse({"message": add['massage']})
+            response = Response()
             expires = datetime.now() + timedelta(days=365)  # انقضا پس از 1 سال
             unique_cart_id = str(uuid.uuid4())  # ایجاد یک شناسه تصادفی منحصربه‌فرد
 
