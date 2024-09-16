@@ -19,6 +19,7 @@ from .service import Cart
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 from decimal import Decimal
+import uuid
 
 
 class ProductGenderView(APIView):
@@ -415,7 +416,9 @@ class CartView(APIView):
 
             response = JsonResponse({"message": add['massage']})
             expires = datetime.now() + timedelta(days=365 * 10)  # انقضا پس از 10 سال
-            response.set_cookie('cart_id', 'some_unique_cart_id', expires=expires)
+            unique_cart_id = str(uuid.uuid4())  # ایجاد یک شناسه تصادفی منحصربه‌فرد
+
+            response.set_cookie('cart_id', unique_cart_id, expires=expires)
 
             return response
 
