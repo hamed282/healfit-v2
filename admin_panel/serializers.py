@@ -46,12 +46,19 @@ class AddRoleSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class LoginUserSerializer(Serializer):
-    email = EmailField()
-    password = CharField(max_length=200)
-    first_name = CharField(max_length=200)
-    last_name = CharField(max_length=200)
-    role = 'waiter'
+class LoginUserSerializer(ModelSerializer):
+    # email = EmailField()
+    # password = CharField(max_length=200)
+    # first_name = CharField(max_length=200)
+    # last_name = CharField(max_length=200)
+    role = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['email', 'password', 'first_name', 'last_name', 'role']
+
+    def get_role(self, obj):
+        return 'waiter'
 
 
 class BlogTagSerializer(ModelSerializer):
