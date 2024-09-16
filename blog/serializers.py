@@ -92,7 +92,7 @@ class GetBlogSerializer(serializers.ModelSerializer):
         model = BlogModel
         fields = ['id', 'tag', 'category', 'canonical', 'meta_title', 'meta_description', 'schema_markup', 'banner',
                   'banner_alt', 'title', 'short_description', 'all_categories', 'recent_blog', 'author', 'created',
-                  'updated', 'comments']
+                  'updated', 'comments', 'body']
 
     def get_comments(self, obj):
         comments = obj.blogcomment.all()
