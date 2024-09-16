@@ -383,18 +383,18 @@ class CartView(APIView):
 
                     # بازگرداندن نتیجه به کاربر
                     return JsonResponse({
-                        "message": "Discount applied",
+                        "message": "Code applied successfully! your total has been updated.",
                         "data": data,
                         "total_price": str(total_price),
                         "discounted_price": str(discounted_price)
                     })
 
                 else:
-                    return JsonResponse({"message": "Invalid or expired discount code"},
+                    return JsonResponse({"message": "The promo code isn't valid. Please verify the code and try again."},
                                         status=status.HTTP_400_BAD_REQUEST)
 
             except CouponModel.DoesNotExist:
-                return JsonResponse({"message": "Discount code does not exist"},
+                return JsonResponse({"message": "The promo code isn't valid. Please verify the code and try again."},
                                     status=status.HTTP_400_BAD_REQUEST)
 
         else:
