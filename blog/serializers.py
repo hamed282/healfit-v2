@@ -82,6 +82,7 @@ class GetBlogSerializer(serializers.ModelSerializer):
     all_categories = serializers.SerializerMethodField()
     recent_blog = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
+    comments_count = serializers.SerializerMethodField()
     category = serializers.SlugRelatedField(slug_field='category', queryset=BlogCategoryModel.objects.all(),)
     canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
     meta_title = serializers.CharField(max_length=60, required=False, allow_null=True)
@@ -92,11 +93,16 @@ class GetBlogSerializer(serializers.ModelSerializer):
         model = BlogModel
         fields = ['id', 'tag', 'category', 'canonical', 'meta_title', 'meta_description', 'schema_markup', 'banner',
                   'banner_alt', 'title', 'short_description', 'all_categories', 'recent_blog', 'author', 'created',
-                  'updated', 'comments', 'body']
+                  'updated', 'comments', 'body', 'comments_count']
 
     def get_comments(self, obj):
         comments = obj.blogcomment.all()
         return CommentBlogSerializer(comments, many=True).data
+
+    def get_comments_count(self, obj):
+        comments_count = len(obj.blogcomment.filter(reply=False))
+
+        return 'comments_count'
 
     def get_all_categories(self, obj):
         categories = BlogCategoryModel.objects.all()
