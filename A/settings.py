@@ -51,6 +51,12 @@ if DEBUG:
         'https://healfit.ae',  # دامنه فرانت‌اند شما
     ]
     CORS_ALLOW_CREDENTIALS = True
+    CORS_ALLOW_HEADERS = [
+        'content-type',
+        'authorization',
+    ]
+    CSRF_TRUSTED_ORIGINS = ['https://healfit.ae', 'https://api.healfit.ae']
+
 
 else:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'api.healfit.ae', 'www.api.healfit.ae', 'healfit.ae']
