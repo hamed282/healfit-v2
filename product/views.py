@@ -425,7 +425,7 @@ class CartView(APIView):
                 expires=expires,  # تاریخ انقضای کوکی
                 httponly=False,  # اگر نیاز دارید که جاوااسکریپت به کوکی دسترسی داشته باشد، این را False بگذارید
                 secure=True,  # برای HTTPS باید True باشد
-                samesite='Lax'  # یا 'None' اگر cross-origin است
+                samesite='None'  # یا 'None' اگر cross-origin است
             )
 
             print("Cart ID cookie set:", response.cookies.get('cart_id'))  # اضافه کردن لاگ
