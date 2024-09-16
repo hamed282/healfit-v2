@@ -20,7 +20,6 @@ from django.http import JsonResponse
 from datetime import datetime, timedelta
 from decimal import Decimal
 import uuid
-from django.http import HttpResponse
 
 
 class ProductGenderView(APIView):
@@ -415,8 +414,7 @@ class CartView(APIView):
                 overide_quantity=product["overide_quantity"] if "overide_quantity" in product else False
             )
 
-            # response = JsonResponse({"message": add['massage']})
-            response = HttpResponse("Cart updated successfully")
+            response = JsonResponse({"message": add['massage']})
             expires = datetime.now() + timedelta(days=365)  # انقضا پس از 1 سال
             unique_cart_id = str(uuid.uuid4())  # ایجاد یک شناسه تصادفی منحصربه‌فرد
 
