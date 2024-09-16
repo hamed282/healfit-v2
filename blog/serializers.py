@@ -102,7 +102,7 @@ class GetBlogSerializer(serializers.ModelSerializer):
     def get_comments_count(self, obj):
         comments_count = len(obj.blogcomment.filter(reply=False))
 
-        return 'comments_count'
+        return comments_count
 
     def get_all_categories(self, obj):
         categories = BlogCategoryModel.objects.all()
