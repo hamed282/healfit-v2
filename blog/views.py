@@ -7,6 +7,9 @@ from .serializers import (GetBlogSerializer, BlogAllSerializer, RelatedBlogSeria
 import math
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 
 class BlogListView(APIView):
@@ -104,3 +107,11 @@ class ReplyCommentView(APIView):
                                             body=form['body'])
             return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SearchBlogView(viewsets.ModelViewSet):
+    queryset = BlogModel.objects.all()
+    serializer_class = GetBlogSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['body', 'short_description', 'title']
+    ordering_fields = '__all__'
