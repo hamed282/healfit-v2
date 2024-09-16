@@ -424,7 +424,7 @@ class CartView(APIView):
                 unique_cart_id,
                 expires=expires,
                 path='/',  # در کل دامنه در دسترس باشد
-                domain='.healfit.ae',  # دسترسی به کوکی برای هر دو دامنه اصلی و ساب‌دامنه‌ها
+                # domain='.healfit.ae',  # دسترسی به کوکی برای هر دو دامنه اصلی و ساب‌دامنه‌ها
                 secure=True,  # برای HTTPS ضروری
                 httponly=False,  # اگر به جاوااسکریپت نیاز دارید که به کوکی دسترسی داشته باشد
                 samesite='None'  # برای Cross-Origin Requests
