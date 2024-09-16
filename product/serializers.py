@@ -468,6 +468,8 @@ class QuantityProductSerializer(serializers.ModelSerializer):
 
 class CouponSerializer(serializers.ModelSerializer):
     # customer = serializers.SerializerMethodField()
+    created = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+    expire = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
 
     class Meta:
         model = CouponModel
