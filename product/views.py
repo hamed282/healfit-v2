@@ -430,7 +430,7 @@ class CartView(APIView):
             response.set_cookie(
                 'cart_id',
                 unique_cart_id,
-                expires=expires,
+                max_age=3600,
                 path='/',  # در کل دامنه در دسترس باشد
                 domain='.healfit.ae',  # دسترسی به کوکی برای هر دو دامنه اصلی و ساب‌دامنه‌ها
                 secure=True,  # برای HTTPS ضروری
