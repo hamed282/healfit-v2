@@ -100,7 +100,7 @@ class GetBlogSerializer(serializers.ModelSerializer):
         return CommentBlogSerializer(comments, many=True).data
 
     def get_comments_count(self, obj):
-        comments_count = len(obj.blogcomment.filter(reply=False))
+        comments_count = len(obj.blogcomment.filter(is_reply=False))
 
         return comments_count
 
