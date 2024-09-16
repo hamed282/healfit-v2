@@ -14,11 +14,11 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 # Debug Mode
-DEBUG = False
+DEBUG = True
 
 if DEBUG:
-    # ALLOWED_HOSTS = ['*']
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'api.healfit.ae', 'www.api.healfit.ae', 'healfit.ae']
+    ALLOWED_HOSTS = ['*']
+    # ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'api.healfit.ae', 'www.api.healfit.ae', 'healfit.ae']
 
     # DATABASES = {
     #     'default': {
@@ -51,12 +51,6 @@ if DEBUG:
         'https://healfit.ae',  # دامنه فرانت‌اند شما
     ]
     CORS_ALLOW_CREDENTIALS = True
-    CORS_ALLOW_HEADERS = [
-        'content-type',
-        'authorization',
-    ]
-    CSRF_TRUSTED_ORIGINS = ['https://healfit.ae', 'https://api.healfit.ae']
-
 
 else:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'api.healfit.ae', 'www.api.healfit.ae', 'healfit.ae']
@@ -80,8 +74,6 @@ else:
 
     # CSRF_TRUSTED_ORIGINS = ['https://api.healfit.ae', 'https://*.127.0.0.1']
     CORS_ORIGIN_ALLOW_ALL = True
-    CORS_ALLOW_CREDENTIALS = True
-
 
 # Application definition
 INSTALLED_APPS = [
