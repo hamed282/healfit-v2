@@ -50,7 +50,7 @@ if DEBUG:
     # CORS_ALLOWED_ORIGINS = [
     #     'https://healfit.ae',  # دامنه فرانت‌اند شما
     # ]
-    # CORS_ALLOW_CREDENTIALS = True
+    CORS_ALLOW_CREDENTIALS = True
 
 else:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'api.healfit.ae', 'www.api.healfit.ae', 'healfit.ae']
