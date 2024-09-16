@@ -71,7 +71,7 @@ class AddBlogTagModel(models.Model):
 
 
 class BlogImageModel(models.Model):
-    image = models.ImageField(upload_to='blog/blog/')
+    image = models.ImageField(upload_to='blog/blog/', max_length=500)
     type = models.CharField(max_length=32)
 
 
