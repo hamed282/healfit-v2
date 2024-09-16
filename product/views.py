@@ -420,12 +420,14 @@ class CartView(APIView):
 
             # response.set_cookie('cart_id', unique_cart_id, expires=expires)
             response.set_cookie(
-                'cart_id',  # نام کوکی
-                unique_cart_id,  # مقدار کوکی
-                expires=expires,  # تاریخ انقضای کوکی
-                httponly=False,  # اگر نیاز دارید که جاوااسکریپت به کوکی دسترسی داشته باشد، این را False بگذارید
-                secure=True,  # برای HTTPS باید True باشد
-                samesite='None'  # یا 'None' اگر cross-origin است
+                'cart_id',
+                unique_cart_id,
+                expires=expires,
+                path='/',  # در کل دامنه در دسترس باشد
+                domain='.healfit.ae',  # دسترسی به کوکی برای هر دو دامنه اصلی و ساب‌دامنه‌ها
+                secure=True,  # برای HTTPS ضروری
+                httponly=False,  # اگر به جاوااسکریپت نیاز دارید که به کوکی دسترسی داشته باشد
+                samesite='None'  # برای Cross-Origin Requests
             )
 
             print("Cart ID cookie set:", response.cookies.get('cart_id'))  # اضافه کردن لاگ
