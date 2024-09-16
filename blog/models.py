@@ -31,7 +31,7 @@ class BlogTagModel(models.Model):
 
 
 class BlogModel(models.Model):
-    cover_image = models.ImageField(upload_to=get_cover_blog_upload_path)
+    cover_image = models.ImageField(upload_to=get_cover_blog_upload_path, max_length=500)
     cover_image_alt = models.CharField(max_length=125)
     banner = models.ImageField(upload_to=get_banner_blog_upload_path, null=True, blank=True)
     banner_alt = models.CharField(max_length=125, null=True, blank=True)
