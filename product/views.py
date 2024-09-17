@@ -413,20 +413,15 @@ class CartView(APIView):
                 quantity=product["quantity"],
                 overide_quantity=product["overide_quantity"] if "overide_quantity" in product else False
             )
-
-            response = JsonResponse({"message": add['massage'], "cart_total_items": cart.get_total_items()})
+            product_variant = ProductVariantModel.objects.get(id=product["product"]["id"])
+            item_price = Decimal(product_variant.get_off_price()) * product["quantity"]
+            print(item_price)
+            response = JsonResponse({"message": add['massage'],
+                                     "cart_total_items": cart.get_total_items(),
+                                     "item_total_price": str(item_price),})
             expires = datetime.now() + timedelta(days=365)  # انقضا پس از 1 سال
             unique_cart_id = str(uuid.uuid4())  # ایجاد یک شناسه تصادفی منحصربه‌فرد
 
-            # response.set_cookie('cart_id', unique_cart_id, expires=expires)
-            # response.set_cookie(
-            #     'cart_id',  # نام کوکی
-            #     unique_cart_id,  # مقدار کوکی
-            #     expires=expires,  # تاریخ انقضای کوکی
-            #     httponly=False,  # اگر نیاز دارید که جاوااسکریپت به کوکی دسترسی داشته باشد، این را False بگذارید
-            #     secure=True,  # برای HTTPS باید True باشد
-            #     samesite='None'  # یا 'None' اگر cross-origin است
-            # )
             response.set_cookie(
                 'cart_id',
                 unique_cart_id,
@@ -439,54 +434,3 @@ class CartView(APIView):
             )
 
             return response
-
-
-# class CartView(APIView):
-#     def get(self, request, format=None):
-#         cart = Cart(request)
-#
-#         return Response(
-#             {"data": list(cart.__iter__()),
-#              "cart_total_price": cart.get_total_price()
-#              },
-#             status=status.HTTP_200_OK
-#             )
-#
-#     def post(self, request, **kwargs):
-#         """
-#         parameters:
-#         1. product # course id
-#             - id
-#             - off_price
-#         2. quantity # product order
-#         3. remove # true
-#         4. clear # true
-#         """
-#
-#         cart = Cart(request)
-#         if "remove" in request.data:
-#             product = request.data["product"]
-#             cart.remove(product)
-#
-#             return Response(
-#                 {"message": 'cart removed'},
-#                 status=status.HTTP_202_ACCEPTED)
-#
-#         elif "clear" in request.data:
-#             cart.clear()
-#
-#             return Response(
-#                 {"message": 'cart cleaned'},
-#                 status=status.HTTP_202_ACCEPTED)
-#
-#         else:
-#             product = request.data
-#             add = cart.add(
-#                 product=product["product"],
-#                 quantity=product["quantity"],
-#                 overide_quantity=product["overide_quantity"] if "overide_quantity" in product else False
-#             )
-#
-#             return Response(
-#                 {"message": add['massage']},
-#                 status=status.HTTP_202_ACCEPTED)
