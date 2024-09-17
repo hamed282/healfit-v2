@@ -434,7 +434,7 @@ class CouponModel(models.Model):
         return self.active and self.created <= now <= self.expire
 
     def __str__(self):
-        return f'{self.customer}'
+        return f'{self.customer} - {self.coupon_code}'
 
 
 class ProductCouponModel(models.Model):
