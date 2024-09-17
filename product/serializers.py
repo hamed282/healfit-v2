@@ -423,10 +423,11 @@ class ProductCartSerializer(serializers.ModelSerializer):
     off_price = serializers.SerializerMethodField()
     gender = serializers.SerializerMethodField()
     cover_image = serializers.SerializerMethodField()
+    max_quantity = serializers.IntegerField(source='quantity', read_only=True)
 
     class Meta:
         model = ProductVariantModel
-        fields = ['id', 'product', 'price', 'off_price', 'size', 'color', 'gender', 'cover_image', 'quantity']
+        fields = ['id', 'product', 'price', 'off_price', 'size', 'color', 'gender', 'cover_image', 'max_quantity']
 
     def get_gender(self, obj):
         try:
