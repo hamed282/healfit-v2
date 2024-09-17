@@ -392,7 +392,7 @@ class CartView(APIView):
                     # بازگرداندن نتیجه به کاربر
                     return JsonResponse({
                         "message": "Code applied successfully! your total has been updated.",
-                        "data": list(cart.__iter__()),
+                        "data": cart.__iter__(),
                         "total_price": str(total_price),
                         "discounted_price": str(discounted_price),
                         "cart_total_items": cart.get_total_items(),
