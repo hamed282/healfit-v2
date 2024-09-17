@@ -176,7 +176,9 @@ class UserAddressView(APIView):
                                         # emirats=form['emirats'],
                                         city=form['city'],
                                         country=form['country'],
-                                        phone_number=form['phone_number'])
+                                        phone_number=form['phone_number'],
+                                        prefix_number=form['prefix_number'],
+                                        iban_country=form['iban_country'])
             return Response(data={'message': 'Address added'}, status=status.HTTP_201_CREATED)
         else:
             return Response(data=ser_address.errors, status=status.HTTP_400_BAD_REQUEST)
