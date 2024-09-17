@@ -383,8 +383,8 @@ class CartView(APIView):
 
                 # بررسی معتبر بودن کد
                 if code.is_valid():
-                    discount_percent = Decimal(code.discount_percent)
-                    discount_amount = Decimal(code.discount_amount)
+                    discount_percent = code.discount_percent
+                    discount_amount = code.discount_amount
                     data = list(cart.__iter__())
                     total_price = cart.get_total_price()
                     total_price_without_discount = cart.get_total_price_without_discount()
