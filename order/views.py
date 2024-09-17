@@ -18,11 +18,10 @@ class OrderPayView(APIView):
 
     def post(self, request):
         forms = request.data['product']
-        data = request.data
-        discount_code = data['discount_code']
+        discount_code = request.data.get('discount_code', None)
 
         if len(forms) > 0:
-            address = get_object_or_404(AddressModel, id=data['address_id'])
+            address = get_object_or_404(AddressModel, id=request.data['address_id'])
 
             order = OrderModel.objects.create(user=request.user, address=address,
                                               status=OrderStatusModel.objects.get(status='New'))
