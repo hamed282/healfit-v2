@@ -362,14 +362,14 @@ class CartView(APIView):
             product = request.data["product"]
             cart.remove(product)
 
-            response = JsonResponse({"message": 'cart removed'})
+            response = JsonResponse({"message": 'cart removed', "cart_total_items": len(cart)})
             response.delete_cookie('cart_id')
             return response
 
         elif "clear" in request.data:
             cart.clear()
 
-            response = JsonResponse({"message": 'cart cleaned'})
+            response = JsonResponse({"message": 'cart cleaned', "cart_total_items": len(cart)})
             response.delete_cookie('cart_id')
             return response
 
@@ -394,7 +394,8 @@ class CartView(APIView):
                         "message": "Code applied successfully! your total has been updated.",
                         "data": data,
                         "total_price": str(total_price),
-                        "discounted_price": str(discounted_price)
+                        "discounted_price": str(discounted_price),
+                        "cart_total_items": len(cart)
                     })
 
                 else:
@@ -413,7 +414,7 @@ class CartView(APIView):
                 overide_quantity=product["overide_quantity"] if "overide_quantity" in product else False
             )
 
-            response = JsonResponse({"message": add['massage']})
+            response = JsonResponse({"message": add['massage'], "cart_total_items": len(cart)})
             expires = datetime.now() + timedelta(days=365)  # انقضا پس از 1 سال
             unique_cart_id = str(uuid.uuid4())  # ایجاد یک شناسه تصادفی منحصربه‌فرد
 
