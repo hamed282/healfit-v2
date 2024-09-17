@@ -384,7 +384,7 @@ class CartView(APIView):
                 # بررسی معتبر بودن کد
                 if code.is_valid():
                     discount_percent = Decimal(code.discount_percent)
-                    data = list(cart.__iter__()),
+                    data = cart.__iter__(),
                     total_price = cart.get_total_price()
 
                     # محاسبه قیمت پس از اعمال تخفیف
