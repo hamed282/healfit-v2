@@ -386,7 +386,7 @@ class BlogImageView(APIView):
 
     def post(self, request):
         def remove_after_question_mark(text):
-            index = text.find('؟')
+            index = text.find('?')
             if index != -1:
                 return text[:index]
             return text
