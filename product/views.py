@@ -390,9 +390,9 @@ class CartView(APIView):
                     discounted_price = total_price - (total_price * discount_percent / Decimal('100'))
 
                     # بازگرداندن نتیجه به کاربر
-                    return JsonResponse({
+                    return Response({
                         "message": "Code applied successfully! your total has been updated.",
-                        "data": cart.__iter__(),
+                        "data": list(cart.__iter__()),
                         "total_price": str(total_price),
                         "discounted_price": str(discounted_price),
                         "cart_total_items": cart.get_total_items(),
