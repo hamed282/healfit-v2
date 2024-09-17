@@ -36,10 +36,10 @@ class OrderPayView(APIView):
                     if code.is_valid():
 
                         if code.discount_percent is not None and int(code.discount_percent) != 0:
-                            discount_percent = code.discount_percent
+                            discount_percent = Decimal(code.discount_percent)
 
                         elif code.discount_amount is not None and int(code.discount_amount) != 0:
-                            discount_amount = code.discount_amount
+                            discount_amount = Decimal(code.discount_amount)
 
                 except:
                     pass
