@@ -1,4 +1,3 @@
-from math import ceil
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -94,7 +93,7 @@ class OrderPayView(APIView):
                 order.coupon = code
                 order.save()
             elif discount_percent:
-                amount = str(ceil(order.get_total_price()))
+                amount = str(order.get_total_price())
 
                 order.total_discount = discount_amount
                 order.coupon = code
