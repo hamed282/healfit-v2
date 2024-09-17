@@ -384,16 +384,16 @@ class CartView(APIView):
                 # بررسی معتبر بودن کد
                 if code.is_valid():
                     discount_percent = Decimal(code.discount_percent)
-                    data = list(cart.__iter__()),
+                    data = 'list(cart.__iter__())',
                     total_price = cart.get_total_price()
 
                     # محاسبه قیمت پس از اعمال تخفیف
                     discounted_price = total_price - (total_price * discount_percent / Decimal('100'))
 
                     # بازگرداندن نتیجه به کاربر
-                    return Response({
+                    return JsonResponse({
                         "message": "Code applied successfully! your total has been updated.",
-                        "datas": data,
+                        "data": data,
                         "total_price": str(total_price),
                         "discounted_price": str(discounted_price),
                         "cart_total_items": cart.get_total_items(),
