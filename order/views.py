@@ -30,8 +30,9 @@ class OrderPayView(APIView):
                 color = get_object_or_404(ColorProductModel, color=form['color'])
                 size = get_object_or_404(SizeProductModel, size=form['size'])
 
-                product_group = ProductModel.objects.get(id=form['product_id'])
-                product = ProductVariantModel.objects.get(product=product_group, color=color, size=size)
+                # product_group = ProductModel.objects.get(id=form['product_id'])
+                # product = ProductVariantModel.objects.get(product=product_group, color=color, size=size)
+                product = ProductVariantModel.objects.get(id=form['product_id'])
                 quantity = form['quantity']
 
                 price = product.get_off_price()
