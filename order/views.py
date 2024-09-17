@@ -47,13 +47,20 @@ class OrderPayView(APIView):
                                               item_id=item_id)
             ############################################
             amount = str(order.get_total_price())
-            if discount_code != 0:
+            print('amount', amount)
+            print('discount_code', discount_code)
+            print('discount_code type', type(discount_code))
+
+            if discount_code and discount_code != 0:
                 try:
                     code = CouponModel.objects.get(coupon_code=discount_code)
                     if code.is_valid():
                         discount_percent = Decimal(code.discount_percent)
                         amount = str(int(amount) - (int(amount) * discount_percent / Decimal('100')))
+                    print('succes')
                 except:
+                    print('invalid')
+
                     pass
 
             description = f'buy'
