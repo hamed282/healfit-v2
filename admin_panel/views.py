@@ -385,12 +385,18 @@ class BlogImageView(APIView):
     permission_classes = [IsAdminUser, IsBlogAdmin | IsSEOAdmin]
 
     def post(self, request):
+        def remove_after_question_mark(text):
+            index = text.find('؟')
+            if index != -1:
+                return text[:index]
+            return text
+
         form = request.data
         ser_data = ImageBlogSerializer(data=form)
         if ser_data.is_valid():
             ser_data.save()
             response = {'data': {
-                'title': ser_data.data['image'], 'type': ser_data.data['type']}
+                'title': remove_after_question_mark(ser_data.data['image']), 'type': ser_data.data['type']}
             }
             return Response(data=response, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
