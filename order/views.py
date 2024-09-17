@@ -26,42 +26,67 @@ class OrderPayView(APIView):
             order = OrderModel.objects.create(user=request.user, address=address,
                                               status=OrderStatusModel.objects.get(status='New'))
 
-            for form in forms:
-                color = get_object_or_404(ColorProductModel, color=form['color'])
-                size = get_object_or_404(SizeProductModel, size=form['size'])
+            ################################
+            # discount_code = 'ABC'
+            discount_percent = None
+            discount_amount = None
+            if discount_code:
+                try:
+                    code = CouponModel.objects.get(coupon_code=discount_code)
+                    if code.is_valid():
 
+                        if code.discount_percent is not None and int(code.discount_percent) != 0:
+                            discount_percent = Decimal(code.discount_percent)
+
+                        elif code.discount_amount is not None and int(code.discount_amount) != 0:
+                            discount_amount = Decimal(code.discount_amount)
+
+                except:
+                    pass
+
+            ######################################
+
+            for form in forms:
                 # product_group = ProductModel.objects.get(id=form['product_id'])
                 # product = ProductVariantModel.objects.get(product=product_group, color=color, size=size)
                 product = ProductVariantModel.objects.get(id=form['product_id'])
+                color = product.color
+                size = product.size
+
                 quantity = form['quantity']
 
-                price = product.get_off_price()
-                item_id = product.item_id
+                price = product.price
+                discount_price = product.get_off_price()
+
+                selling_price = product.get_off_price()
+                if discount_code is not None:
+                    try:
+                        code = CouponModel.objects.get(coupon_code=discount_code)
+                        if code.is_valid():
+                            if not code.extra_discount:
+                                if discount_percent:
+                                    selling_price = price - (price * discount_percent) / 100
+                                elif discount_amount:
+                                    selling_price = price - discount_amount
+                            else:
+                                if discount_percent:
+                                    selling_price = discount_price - (discount_price * discount_percent) / 100
+                                elif discount_amount:
+                                    selling_price = discount_price - discount_amount
+                    except:
+                        pass
+
                 OrderItemModel.objects.create(order=order,
                                               user=request.user,
                                               product=product,
                                               price=price,
+                                              discount_price=discount_price,
+                                              selling_price=selling_price,
                                               quantity=quantity,
                                               color=color,
-                                              size=size,
-                                              item_id=item_id)
+                                              size=size,)
             ############################################
             amount = str(order.get_total_price())
-            print('amount', amount)
-            print('discount_code', discount_code)
-            print('discount_code type', type(discount_code))
-
-            if discount_code and discount_code != 0:
-                try:
-                    code = CouponModel.objects.get(coupon_code=discount_code)
-                    if code.is_valid():
-                        discount_percent = Decimal(code.discount_percent)
-                        amount = str(int(amount) - (int(amount) * discount_percent / Decimal('100')))
-                    print('succes')
-                except:
-                    print('invalid')
-
-                    pass
 
             description = f'buy'
             cart_id = str(order.id)
