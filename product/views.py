@@ -384,11 +384,25 @@ class CartView(APIView):
                 # بررسی معتبر بودن کد
                 if code.is_valid():
                     discount_percent = Decimal(code.discount_percent)
+                    discount_amount = Decimal(code.discount_amount)
                     data = list(cart.__iter__())
                     total_price = cart.get_total_price()
+                    total_price_without_discount = cart.get_total_price_without_discount()
 
                     # محاسبه قیمت پس از اعمال تخفیف
-                    discounted_price = total_price - (total_price * discount_percent / Decimal('100'))
+                    # discounted_price = int(total_price - (total_price * discount_percent / Decimal('100')))
+                    discounted_price = int(total_price)
+                    if not code.extra_discount:
+                        if discount_percent:
+                            discounted_price = total_price_without_discount - (total_price_without_discount * discount_percent) / 100
+                        elif discount_amount:
+                            discounted_price = total_price_without_discount - discount_amount
+                    else:
+                        if discount_percent:
+                            discounted_price = total_price - (total_price * discount_percent) / 100
+                        elif discount_amount:
+                            discounted_price = total_price - discount_amount
+
 
                     # بازگرداندن نتیجه به کاربر
                     return JsonResponse({
