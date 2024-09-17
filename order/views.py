@@ -67,12 +67,12 @@ class OrderPayView(APIView):
                                 if discount_percent:
                                     selling_price = price - (price * discount_percent) / 100
                                 elif discount_amount:
-                                    selling_price = price - discount_amount
+                                    selling_price = price
                             else:
                                 if discount_percent:
                                     selling_price = discount_price - (discount_price * discount_percent) / 100
                                 elif discount_amount:
-                                    selling_price = discount_price - discount_amount
+                                    selling_price = discount_price
                     except:
                         pass
 
@@ -86,7 +86,20 @@ class OrderPayView(APIView):
                                               color=color,
                                               size=size,)
             ############################################
-            amount = str(order.get_total_price())
+            if discount_amount:
+                amount = str(order.get_total_price() - discount_amount)
+
+                order.total_discount = discount_amount
+                order.coupon = code
+                order.save()
+            elif discount_percent:
+                amount = str(order.get_total_price())
+
+                order.total_discount = discount_amount
+                order.coupon = code
+                order.save()
+            else:
+                amount = str(order.get_total_price())
 
             description = f'buy'
             cart_id = str(order.id)

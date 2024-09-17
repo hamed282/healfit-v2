@@ -1,6 +1,6 @@
 from django.db import models
 from accounts.models import User
-from product.models import ProductVariantModel, ColorProductModel, SizeProductModel
+from product.models import ProductVariantModel, ColorProductModel, SizeProductModel, CouponModel
 from accounts.models import AddressModel
 
 
@@ -22,6 +22,8 @@ class OrderModel(models.Model):
     trace = models.CharField(max_length=200, blank=True, null=True)
     error_message = models.TextField(blank=True, null=True)
     error_note = models.TextField(blank=True, null=True)
+    coupon = models.ForeignKey(CouponModel, on_delete=models.CASCADE, blank=True, null=True)
+    total_discount = models.CharField(max_length=9, blank=True, null=True)
 
     paid = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
