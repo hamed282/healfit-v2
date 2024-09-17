@@ -339,7 +339,8 @@ class CartView(APIView):
         return Response(
             {
                 "data": list(cart.__iter__()),
-                "cart_total_price": cart.get_total_price()
+                "cart_total_price": cart.get_total_price(),
+                "cart_total_price_without_discount": cart.get_total_price_without_discount()
             },
             status=status.HTTP_200_OK
         )
