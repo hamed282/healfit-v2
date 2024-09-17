@@ -27,7 +27,7 @@ class OrderPayView(APIView):
                                               status=OrderStatusModel.objects.get(status='New'))
 
             ################################
-            # discount_code = 'ABC'
+            discount_code = 'ABC'
             discount_percent = None
             discount_amount = None
             if discount_code:
