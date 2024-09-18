@@ -33,7 +33,7 @@ class OrderPayView(APIView):
             if discount_code:
                 try:
                     code = CouponModel.objects.get(coupon_code=discount_code)
-                    if code.is_valid():
+                    if code.is_valid() and code.active:
 
                         if code.discount_percent is not None and int(code.discount_percent) != 0:
                             discount_percent = Decimal(code.discount_percent)
@@ -62,7 +62,7 @@ class OrderPayView(APIView):
                 if discount_code is not None:
                     try:
                         code = CouponModel.objects.get(coupon_code=discount_code)
-                        if code.is_valid():
+                        if code.is_valid() and code.active:
                             if not code.extra_discount:
                                 if discount_percent:
                                     selling_price = price - (price * discount_percent) / 100
