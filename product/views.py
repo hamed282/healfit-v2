@@ -382,7 +382,7 @@ class CartView(APIView):
                 code = CouponModel.objects.get(coupon_code=discount_code)
 
                 # بررسی معتبر بودن کد
-                if code.is_valid() and code.active:
+                if code.is_valid() and code.active and (code.limit > 0 or code.infinite):
                     discount_percent = code.discount_percent
                     discount_amount = code.discount_amount
                     data = list(cart.__iter__())

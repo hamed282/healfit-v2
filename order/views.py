@@ -33,7 +33,7 @@ class OrderPayView(APIView):
             if discount_code:
                 try:
                     code = CouponModel.objects.get(coupon_code=discount_code)
-                    if code.is_valid() and code.active:
+                    if code.is_valid() and code.active and (code.limit > 0 or code.infinite):
 
                         if code.discount_percent is not None and int(code.discount_percent) != 0:
                             discount_percent = Decimal(code.discount_percent)
@@ -62,7 +62,7 @@ class OrderPayView(APIView):
                 if discount_code is not None:
                     try:
                         code = CouponModel.objects.get(coupon_code=discount_code)
-                        if code.is_valid() and code.active:
+                        if code.is_valid() and code.active and (code.limit > 0 or code.infinite):
                             if not code.extra_discount:
                                 if discount_percent:
                                     selling_price = price - (price * discount_percent) / 100
@@ -151,7 +151,9 @@ class OrderPayView(APIView):
                     # email_from = settings.EMAIL_HOST_USER
                     #
                     # send_mail(subject, message_provider, email_from, ['hamed@healfit.ae'])
-
+                    if code.infinite:
+                        code.limit -= 1
+                        code.save()
                     return Response({'redirect to : ': url}, status=200)
                 else:
                     return Response({'Error code: ': str(response['error'])}, status=400)
