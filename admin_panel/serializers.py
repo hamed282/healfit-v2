@@ -486,11 +486,15 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     address = serializers.SlugRelatedField(read_only=True, slug_field='address')
     number_of_products = serializers.SerializerMethodField()
     amount = serializers.SerializerMethodField()
+    coupon = serializers.SerializerMethodField()
     created = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
 
     class Meta:
         model = OrderModel
         fields = '__all__'
+
+    def get_coupon(self, obj):
+        return f'{obj.coupon.customer}'
 
     def get_amount(self, obj):
         items = OrderItemModel.objects.filter(order=obj)
