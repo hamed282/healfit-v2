@@ -42,7 +42,7 @@ class BlogModel(models.Model):
     description = models.TextField(null=True, blank=True)
     body = models.TextField()
     author = models.CharField(max_length=64)
-    role = models.CharField(max_length=24)
+    role = models.CharField(max_length=24, null=True, blank=True)
     slug = models.SlugField(unique=True)
     category = models.ForeignKey(BlogCategoryModel, on_delete=models.CASCADE)
 
