@@ -115,3 +115,9 @@ class SearchBlogView(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['body', 'short_description', 'title']
     ordering_fields = '__all__'
+
+    def list(self, request, *args, **kwargs):
+        search_query = request.query_params.get('search', None)
+        if not search_query:
+            return Response({"detail": "Search query is required."}, status=status.HTTP_400_BAD_REQUEST)
+        return super().list(request, *args, **kwargs)
