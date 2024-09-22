@@ -430,7 +430,7 @@ class CartView(APIView):
                 overide_quantity=product["overide_quantity"] if "overide_quantity" in product else False
             )
             print("cart2")
-            print(cart)
+            # print(cart.values())
             product_variant = ProductVariantModel.objects.get(id=product["product"]["id"])
             item_price = Decimal(product_variant.get_off_price()) * product["quantity"]
             # cart_total_price = sum(Decimal(item["product"]["off_price"]) * item["quantity"] for item in cart.values())
