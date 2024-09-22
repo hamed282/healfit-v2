@@ -422,13 +422,14 @@ class CartView(APIView):
                                     status=status.HTTP_400_BAD_REQUEST)
 
         else:
+            print("cart")
             product = request.data
             add = cart.add(
                 product=product["product"],
                 quantity=product["quantity"],
                 overide_quantity=product["overide_quantity"] if "overide_quantity" in product else False
             )
-            print("cart")
+            print("cart"2)
             print(cart)
             product_variant = ProductVariantModel.objects.get(id=product["product"]["id"])
             item_price = Decimal(product_variant.get_off_price()) * product["quantity"]
