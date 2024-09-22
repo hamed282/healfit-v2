@@ -358,7 +358,7 @@ class CartView(APIView):
         """
 
         cart = Cart(request)
-        total_items = len(cart)
+        total_items = cart.__len__()
         if "remove" in request.data:
             product = request.data["product"]
             cart.remove(product)
