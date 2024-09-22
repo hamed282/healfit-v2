@@ -24,6 +24,7 @@ class OrderUserSerializer(serializers.ModelSerializer):
     status = serializers.SlugRelatedField(slug_field='status', read_only=True)
     items = OrderItemSerializer(read_only=True, many=True)
     total_price = serializers.SerializerMethodField()
+    created = serializers.DateTimeField(format='%d %b %Y - %H:%m:%s')
 
     class Meta:
         model = OrderModel
