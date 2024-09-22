@@ -433,12 +433,12 @@ class CartView(APIView):
             print(cart)
             product_variant = ProductVariantModel.objects.get(id=product["product"]["id"])
             item_price = Decimal(product_variant.get_off_price()) * product["quantity"]
-            cart_total_price = sum(Decimal(item["product"]["off_price"]) * item["quantity"] for item in cart.values())
+            # cart_total_price = sum(Decimal(item["product"]["off_price"]) * item["quantity"] for item in cart.values())
 
             response = JsonResponse({"message": add['massage'],
                                      "cart_total_items": cart.__len__(),
                                      "item_total_price": str(item_price),
-                                     "cart_total_price": cart_total_price})
+                                     })
             expires = datetime.now() + timedelta(days=365)  # انقضا پس از 1 سال
             unique_cart_id = str(uuid.uuid4())  # ایجاد یک شناسه تصادفی منحصربه‌فرد
 
