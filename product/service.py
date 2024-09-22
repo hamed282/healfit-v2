@@ -75,11 +75,9 @@ class Cart:
         """
         return sum(item["quantity"] for item in self.cart.values())
 
-    def get_total_items(self):
-        """
-        Return the number of unique product types in the cart.
-        """
-        return len(self.cart)
+    # def get_total_items(self):
+    #
+    #     return len(self.cart)
 
     def get_total_price(self):
         return sum(Decimal(item["product"]["off_price"]) * item["quantity"] for item in self.cart.values())
