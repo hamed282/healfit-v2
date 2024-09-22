@@ -80,12 +80,7 @@ class Cart:
     #     return len(self.cart)
 
     def get_total_price(self):
-        total = 0
-        for item in self.cart.values():
-            product = item.get("product")  # استفاده از get برای جلوگیری از خطای KeyError
-            if product:
-                total += Decimal(product.get("off_price", 0)) * item.get("quantity", 1)
-        return total
+        return sum(Decimal(item["product"]["off_price"]) * item["quantity"] for item in self.cart.values())
 
     def get_total_price_without_discount(self):
         return sum(Decimal(item["product"]["price"]) * item["quantity"] for item in self.cart.values())
