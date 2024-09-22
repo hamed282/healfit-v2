@@ -433,7 +433,8 @@ class CartView(APIView):
             print(item_price)
             response = JsonResponse({"message": add['massage'],
                                      "cart_total_items": cart.__len__(),
-                                     "item_total_price": str(item_price)})
+                                     "item_total_price": str(item_price),
+                                     "cart_total_price": cart.get_total_price()})
             expires = datetime.now() + timedelta(days=365)  # انقضا پس از 1 سال
             unique_cart_id = str(uuid.uuid4())  # ایجاد یک شناسه تصادفی منحصربه‌فرد
 
