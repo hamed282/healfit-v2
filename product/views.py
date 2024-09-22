@@ -429,7 +429,8 @@ class CartView(APIView):
                 overide_quantity=product["overide_quantity"] if "overide_quantity" in product else False
             )
             product_variant = ProductVariantModel.objects.get(id=product["product"]["id"])
-            item_price = Decimal(product_variant.get_off_price()) * product["quantity"]
+            # item_price = Decimal(product_variant.get_off_price()) * product["quantity"]
+            item_price = cart.get_total_price()
             print(item_price)
             response = JsonResponse({"message": add['massage'],
                                      "cart_total_items": cart.__len__(),
