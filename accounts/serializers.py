@@ -47,5 +47,4 @@ class UserInfoSerializer(serializers.ModelSerializer):
 class UserInfoChangeSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'phone_number', 'company_name', 'trn_number', 'prefix_number',
-                  'iban_country']
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'company_name', 'trn_number', 'iban_country']
