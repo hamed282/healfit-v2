@@ -392,17 +392,16 @@ class CartView(APIView):
                     # محاسبه قیمت پس از اعمال تخفیف
                     # discounted_price = int(total_price - (total_price * discount_percent / Decimal('100')))
                     discounted_price = int(total_price)
-                    if not code.extra_discount:
+                    if not code.extra_discount and code.discount_threshold >= total_price_without_discount:
                         if discount_percent:
                             discounted_price = int(total_price_without_discount - (total_price_without_discount * int(discount_percent)) / 100)
                         elif discount_amount:
                             discounted_price = int(total_price_without_discount - int(discount_amount))
-                    else:
+                    elif code.extra_discount and code.discount_threshold >= total_price:
                         if discount_percent:
                             discounted_price = int(total_price - (total_price * int(discount_percent)) / 100)
                         elif discount_amount:
                             discounted_price = int(total_price - int(discount_amount))
-
 
                     # بازگرداندن نتیجه به کاربر
                     return JsonResponse({
@@ -418,7 +417,7 @@ class CartView(APIView):
                                         status=status.HTTP_400_BAD_REQUEST)
 
             except CouponModel.DoesNotExist:
-                return JsonResponse({"message": "The promo code isn't valid. Please verify the code and try again."},
+                return JsonResponse({"message": "The promo code isn't valid. Please verify the code and try again!"},
                                     status=status.HTTP_400_BAD_REQUEST)
 
         else:
