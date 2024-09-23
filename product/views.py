@@ -402,6 +402,10 @@ class CartView(APIView):
                             discounted_price = int(total_price - (total_price * int(discount_percent)) / 100)
                         elif discount_amount:
                             discounted_price = int(total_price - int(discount_amount))
+                    else:
+                        return JsonResponse(
+                            {"message": "The promo code isn't valid. Please verify the code and try again."},
+                            status=status.HTTP_400_BAD_REQUEST)
 
                     # بازگرداندن نتیجه به کاربر
                     return JsonResponse({
