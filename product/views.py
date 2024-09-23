@@ -433,19 +433,19 @@ class CartView(APIView):
                 overide_quantity=product["overide_quantity"] if "overide_quantity" in product else False
             )
 
-            for item in cart:
-                print(item["product"]["off_price"])
+            # for item in cart:
+            #     print(item["product"]["off_price"])
                 # price = item["product"]["off_price"]
                 # quantity = ["quantity"]
                 # print(quantity)
             product_variant = ProductVariantModel.objects.get(id=product["product"]["id"])
-            item_price = Decimal(product_variant.get_off_price()) * product["quantity"]
-            # cart_total_price = sum(Decimal(item["product"]["off_price"]) * item["quantity"] for item in cart)
-            # print(cart_total_price)
+            item_price = int(product_variant.get_off_price()) * product["quantity"]
+            cart_total_price = sum(int(item["product"]["off_price"]) * item["quantity"] for item in cart)
+            print(cart_total_price)
             response = JsonResponse({"message": add['massage'],
                                      "cart_total_items": cart.__len__(),
                                      "item_total_price": str(item_price),
-                                     # "cart_total_price": str(cart_total_price),
+                                     "cart_total_price": str(cart_total_price),
                                      })
             expires = datetime.now() + timedelta(days=365)  # انقضا پس از 1 سال
             unique_cart_id = str(uuid.uuid4())  # ایجاد یک شناسه تصادفی منحصربه‌فرد
