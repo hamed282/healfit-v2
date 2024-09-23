@@ -437,7 +437,7 @@ class CartView(APIView):
             print(type(cart))
             for item in cart:
                 price = item["product"]["off_price"]
-                quantity = item["quantity"]
+                quantity = item
                 print(quantity)
             product_variant = ProductVariantModel.objects.get(id=product["product"]["id"])
             item_price = Decimal(product_variant.get_off_price()) * product["quantity"]
