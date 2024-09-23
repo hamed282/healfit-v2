@@ -432,16 +432,10 @@ class CartView(APIView):
                 quantity=product["quantity"],
                 overide_quantity=product["overide_quantity"] if "overide_quantity" in product else False
             )
-            # print(cart.values())
+            print(cart)
+            print(type(cart))
             product_variant = ProductVariantModel.objects.get(id=product["product"]["id"])
             item_price = Decimal(product_variant.get_off_price()) * product["quantity"]
-
-            session = request.session
-            crt = session.get(settings.CART_SESSION_ID)
-            print(crt.values())
-            # if not crt:
-            #     # save an empty cart in session
-            #     crt = session[settings.CART_SESSION_ID] = {}
             # cart_total_price = sum(Decimal(item["product"]["off_price"]) * item["quantity"] for item in crt.values())
 
             response = JsonResponse({"message": add['massage'],
