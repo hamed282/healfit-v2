@@ -438,6 +438,7 @@ class CartView(APIView):
 
             session = request.session
             crt = session.get(settings.CART_SESSION_ID)
+            print(crt.values())
             if not crt:
                 # save an empty cart in session
                 crt = session[settings.CART_SESSION_ID] = {}
