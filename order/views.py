@@ -74,7 +74,7 @@ class OrderPayView(APIView):
                                 elif discount_amount:
                                     selling_price = discount_price
                     except:
-                        pass
+                        code = None
 
                 OrderItemModel.objects.create(order=order,
                                               user=request.user,
@@ -151,7 +151,6 @@ class OrderPayView(APIView):
                     # email_from = settings.EMAIL_HOST_USER
                     #
                     # send_mail(subject, message_provider, email_from, ['hamed@healfit.ae'])
-
                     if code and not code.infinite:
                         code.limit -= 1
                         code.save()
