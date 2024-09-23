@@ -10,7 +10,6 @@ from accounts.models import AddressModel
 from django.shortcuts import get_object_or_404
 from .serializers import OrderUserSerializer
 from django.core.mail import send_mail
-from decimal import Decimal
 
 
 class OrderPayView(APIView):
@@ -36,10 +35,10 @@ class OrderPayView(APIView):
                     if code.is_valid() and code.active and (code.limit > 0 or code.infinite):
 
                         if code.discount_percent is not None and int(code.discount_percent) != 0:
-                            discount_percent = Decimal(code.discount_percent)
+                            discount_percent = int(code.discount_percent)
 
                         elif code.discount_amount is not None and int(code.discount_amount) != 0:
-                            discount_amount = Decimal(code.discount_amount)
+                            discount_amount = int(code.discount_amount)
 
                 except:
                     code = None

@@ -18,9 +18,7 @@ from rest_framework.permissions import IsAuthenticated
 from .service import Cart
 from django.http import JsonResponse
 from datetime import datetime, timedelta
-from decimal import Decimal
 import uuid
-from django.conf import settings
 
 
 class ProductGenderView(APIView):
@@ -391,7 +389,7 @@ class CartView(APIView):
                     total_price_without_discount = cart.get_total_price_without_discount()
 
                     # محاسبه قیمت پس از اعمال تخفیف
-                    # discounted_price = int(total_price - (total_price * discount_percent / Decimal('100')))
+                    # discounted_price = int(total_price - (total_price * discount_percent / int('100')))
                     discounted_price = int(total_price)
                     if not code.extra_discount and int(code.discount_threshold) <= total_price_without_discount:
                         if discount_percent:

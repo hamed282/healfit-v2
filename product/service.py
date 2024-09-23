@@ -1,4 +1,3 @@
-from decimal import Decimal
 from django.conf import settings
 from .serializers import ProductCartSerializer, QuantityProductSerializer
 from .models import ProductModel, ProductVariantModel
@@ -66,7 +65,7 @@ class Cart:
         for product in products:
             cart[str(product.id)]["product"] = ProductCartSerializer(product).data
         for item in cart.values():
-            item["total_price"] = Decimal(item["product"]['off_price']) * item["quantity"]
+            item["total_price"] = int(item["product"]['off_price']) * item["quantity"]
             yield item
 
     def __len__(self):
@@ -80,10 +79,10 @@ class Cart:
     #     return len(self.cart)
 
     def get_total_price(self):
-        return sum(Decimal(item["product"]["off_price"]) * item["quantity"] for item in self.cart.values())
+        return sum(int(item["product"]["off_price"]) * item["quantity"] for item in self.cart.values())
 
     def get_total_price_without_discount(self):
-        return sum(Decimal(item["product"]["price"]) * item["quantity"] for item in self.cart.values())
+        return sum(int(item["product"]["price"]) * item["quantity"] for item in self.cart.values())
 
     def clear(self):
         # remove cart from session
