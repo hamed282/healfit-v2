@@ -421,6 +421,7 @@ class CouponModel(models.Model):
     coupon_code = models.CharField(max_length=50, unique=True)
     discount_percent = models.CharField(max_length=20, default=0, blank=True, null=True)
     discount_amount = models.CharField(max_length=20, default=0, blank=True, null=True)
+    discount_threshold = models.CharField(max_length=20, default=0, blank=True, null=True)
     all_product = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
     infinite = models.BooleanField(default=False)
