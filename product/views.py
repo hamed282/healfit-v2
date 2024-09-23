@@ -434,7 +434,7 @@ class CartView(APIView):
             )
 
             for item in cart:
-                print(item)
+                print(item["product"]["off_price"])
                 # price = item["product"]["off_price"]
                 # quantity = ["quantity"]
                 # print(quantity)
