@@ -42,7 +42,9 @@ class OrderPayView(APIView):
                             discount_amount = Decimal(code.discount_amount)
 
                 except:
-                    pass
+                    code = None
+            else:
+                code = None
 
             ######################################
 
@@ -88,18 +90,53 @@ class OrderPayView(APIView):
                                               color=color,
                                               size=size,)
             ############################################
-            if discount_amount:
-                amount = str(order.get_total_price() - discount_amount)
+            # if discount_amount:
+            #     amount = str(order.get_total_price() - discount_amount)
+            #
+            #     order.total_discount = discount_amount
+            #     order.coupon = code
+            #     order.save()
+            # elif discount_percent:
+            #     amount = str(order.get_total_price())
+            #
+            #     order.total_discount = discount_amount
+            #     order.coupon = code
+            #     order.save()
+            # else:
+            #     amount = str(order.get_total_price())
 
-                order.total_discount = discount_amount
-                order.coupon = code
-                order.save()
-            elif discount_percent:
-                amount = str(order.get_total_price())
+            def total_price_without_discount():
+                prd = ProductVariantModel.objects.get(id=form['product_id'])
+                total_price = 0
+                for frm in forms:
+                    qnt = frm['quantity']
+                    prc = prd.price
+                    total_price += int(qnt) * int(prc)
+                return total_price
 
-                order.total_discount = discount_amount
-                order.coupon = code
-                order.save()
+            def total_price_with_discount():
+                prd = ProductVariantModel.objects.get(id=form['product_id'])
+                total_price = 0
+                for frm in forms:
+                    qnt = frm['quantity']
+                    prc = prd.get_off_price()
+                    total_price += int(qnt) * int(prc)
+                return total_price
+
+            total_price_without_discount = total_price_without_discount()
+            total_price_with_discount = total_price_with_discount()
+
+            if not code.extra_discount and int(code.discount_threshold) <= total_price_without_discount:
+                if discount_percent:
+                    amount = int(
+                        total_price_without_discount - (total_price_without_discount * int(discount_percent)) / 100)
+                elif discount_amount:
+                    amount = int(total_price_without_discount - int(discount_amount))
+            elif code.extra_discount and int(code.discount_threshold) <= total_price_with_discount:
+                if discount_percent:
+                    amount = int(total_price_with_discount - (total_price_with_discount * int(discount_percent)) / 100)
+                elif discount_amount:
+                    amount = int(total_price_with_discount - int(discount_amount))
             else:
                 amount = str(order.get_total_price())
 
