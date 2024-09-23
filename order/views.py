@@ -151,7 +151,8 @@ class OrderPayView(APIView):
                     # email_from = settings.EMAIL_HOST_USER
                     #
                     # send_mail(subject, message_provider, email_from, ['hamed@healfit.ae'])
-                    if not code.infinite:
+
+                    if code and not code.infinite:
                         code.limit -= 1
                         code.save()
                     return Response({'redirect to : ': url}, status=200)
