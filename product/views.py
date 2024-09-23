@@ -403,7 +403,6 @@ class CartView(APIView):
                         elif discount_amount:
                             discounted_price = int(total_price - int(discount_amount))
 
-
                     # بازگرداندن نتیجه به کاربر
                     return JsonResponse({
                         "message": "Code applied successfully! your total has been updated.",
@@ -418,7 +417,7 @@ class CartView(APIView):
                                         status=status.HTTP_400_BAD_REQUEST)
 
             except CouponModel.DoesNotExist:
-                return JsonResponse({"message": "The promo code isn't valid. Please verify the code and try again."},
+                return JsonResponse({"message": "The promo code isn't valid. Please verify the code and try again!"},
                                     status=status.HTTP_400_BAD_REQUEST)
 
         else:
