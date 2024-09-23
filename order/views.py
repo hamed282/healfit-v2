@@ -108,7 +108,7 @@ class OrderPayView(APIView):
             def total_price_without_discount():
                 total_price = 0
                 for frm in forms:
-                    prd = ProductVariantModel.objects.get(id=form['product_id'])
+                    prd = ProductVariantModel.objects.get(id=frm['product_id'])
                     qnt = frm['quantity']
                     prc = prd.price
                     total_price += int(qnt) * int(prc)
@@ -117,7 +117,7 @@ class OrderPayView(APIView):
             def total_price_with_discount():
                 total_price = 0
                 for frm in forms:
-                    prd = ProductVariantModel.objects.get(id=form['product_id'])
+                    prd = ProductVariantModel.objects.get(id=frm['product_id'])
                     qnt = frm['quantity']
                     prc = prd.get_off_price()
                     total_price += int(qnt) * int(prc)
