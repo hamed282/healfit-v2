@@ -125,6 +125,8 @@ class OrderPayView(APIView):
 
             total_price_without_discount = total_price_without_discount()
             total_price_with_discount = total_price_with_discount()
+            print(total_price_without_discount)
+            print(total_price_with_discount)
 
             if code and not code.extra_discount and int(code.discount_threshold) <= total_price_without_discount:
                 if discount_percent:
