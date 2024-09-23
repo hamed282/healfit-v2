@@ -17,6 +17,7 @@ class OrderPayView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        print('add start')
         forms = request.data['product']
         discount_code = request.data.get('discount_code', None)
 
