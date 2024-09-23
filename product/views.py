@@ -432,6 +432,7 @@ class CartView(APIView):
                 quantity=product["quantity"],
                 overide_quantity=product["overide_quantity"] if "overide_quantity" in product else False
             )
+            print('cart')
             print(cart)
             print(type(cart))
             product_variant = ProductVariantModel.objects.get(id=product["product"]["id"])
