@@ -75,6 +75,8 @@ class OrderPayView(APIView):
                                     selling_price = discount_price
                     except:
                         code = None
+                else:
+                    code = None
 
                 OrderItemModel.objects.create(order=order,
                                               user=request.user,
