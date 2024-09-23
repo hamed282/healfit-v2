@@ -392,12 +392,12 @@ class CartView(APIView):
                     # محاسبه قیمت پس از اعمال تخفیف
                     # discounted_price = int(total_price - (total_price * discount_percent / Decimal('100')))
                     discounted_price = int(total_price)
-                    if not code.extra_discount and int(code.discount_threshold) >= total_price_without_discount:
+                    if not code.extra_discount and int(code.discount_threshold) <= total_price_without_discount:
                         if discount_percent:
                             discounted_price = int(total_price_without_discount - (total_price_without_discount * int(discount_percent)) / 100)
                         elif discount_amount:
                             discounted_price = int(total_price_without_discount - int(discount_amount))
-                    elif code.extra_discount and int(code.discount_threshold) >= total_price:
+                    elif code.extra_discount and int(code.discount_threshold) <= total_price:
                         if discount_percent:
                             discounted_price = int(total_price - (total_price * int(discount_percent)) / 100)
                         elif discount_amount:
