@@ -17,7 +17,6 @@ class OrderPayView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        print('add start')
         forms = request.data['product']
         discount_code = request.data.get('discount_code', None)
 
@@ -107,18 +106,18 @@ class OrderPayView(APIView):
             #     amount = str(order.get_total_price())
 
             def total_price_without_discount():
-                prd = ProductVariantModel.objects.get(id=form['product_id'])
                 total_price = 0
                 for frm in forms:
+                    prd = ProductVariantModel.objects.get(id=form['product_id'])
                     qnt = frm['quantity']
                     prc = prd.price
                     total_price += int(qnt) * int(prc)
                 return total_price
 
             def total_price_with_discount():
-                prd = ProductVariantModel.objects.get(id=form['product_id'])
                 total_price = 0
                 for frm in forms:
+                    prd = ProductVariantModel.objects.get(id=form['product_id'])
                     qnt = frm['quantity']
                     prc = prd.get_off_price()
                     total_price += int(qnt) * int(prc)
