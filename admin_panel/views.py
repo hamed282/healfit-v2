@@ -382,7 +382,7 @@ class AddBLogTagListView(APIView):
 
 
 class BlogImageView(APIView):
-    permission_classes = [IsAdminUser, IsBlogAdmin | IsSEOAdmin]
+    # permission_classes = [IsAdminUser, IsBlogAdmin | IsSEOAdmin]
 
     def post(self, request):
         def remove_after_question_mark(text):
