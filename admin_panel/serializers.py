@@ -34,6 +34,12 @@ class UserValueSerializer(ModelSerializer):
         exclude = ('password', 'last_login')
 
 
+class RoleUpdateSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        exclude = ('role',)
+
+
 class RoleSerializer(ModelSerializer):
     class Meta:
         model = RoleModel

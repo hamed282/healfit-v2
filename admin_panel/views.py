@@ -7,7 +7,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
                           ProductWithVariantsSerializer, ProductVariantSerializer, OrderSerializer,
-                          OrderDetailSerializer, OrderItemSerializer)
+                          OrderDetailSerializer, OrderItemSerializer, RoleUpdateSerializer)
 from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
@@ -109,6 +109,24 @@ class UserView(APIView):
             ser_user_info.save()
             return Response(data={'message': 'Done'}, status=status.HTTP_200_OK)
         return Response(data=ser_user_info.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RoleUpdateView(APIView):
+    # permission_classes = [IsAdminUser, IsAccountAdmin]
+
+    def put(self, request, user_id):
+        user = User.objects.get(id=user_id)
+        role = RoleModel.objects.get(role=request.data['role'])
+
+        if RoleUserModel.objects.filter(user=user).exists():
+            role_user = RoleUserModel.objects.get(user=user)
+            role_user.role = role
+            role_user.save()
+        else:
+            RoleUserModel.objects.create(user=user, role=role)
+
+        return Response(data={'message': 'User role Updated'})
+
 
 
 class UserValueView(APIView):
