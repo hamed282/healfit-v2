@@ -10,6 +10,7 @@ from accounts.models import AddressModel
 from django.shortcuts import get_object_or_404
 from .serializers import OrderUserSerializer
 from django.core.mail import send_mail
+from product.service import Cart
 
 
 class OrderPayView(APIView):
@@ -230,6 +231,9 @@ class OrderPayAuthorisedView(APIView):
         print('-'*100)
 
         if 'order' in response:
+
+            cart = Cart(request)
+            cart.clear()
 
             if 'transaction' in response['order']:
                 transaction = response['order']['transaction']['ref']
