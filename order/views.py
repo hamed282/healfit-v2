@@ -228,7 +228,6 @@ class OrderPayAuthorisedView(APIView):
         response = requests.post(settings.TELR_API_VERIFY, json=payload, headers=headers)
         response = response.json()
         print('-'*100)
-        print('response auth:', response.encode('utf-8'))
 
         if 'order' in response:
 
