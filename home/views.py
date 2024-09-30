@@ -9,12 +9,16 @@ from .serializers import (BannerSliderSerializer, CommentHomeSerializer, VideoHo
 from django.conf import settings
 from django.core.mail import send_mail
 from product.service import Cart
+from django.http import JsonResponse
 
 
 class ImageSliderView(APIView):
     def get(self, request):
         cart = Cart(request)
         cart.clear()
+        response = JsonResponse({"message": 'cart cleaned', "cart_total_items": cart.__len__()})
+        response.delete_cookie('cart_id')
+
         banner_slider = BannerSliderModel.objects.all()
         ser_data = BannerSliderSerializer(instance=banner_slider, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
