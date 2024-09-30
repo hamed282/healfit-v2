@@ -8,10 +8,13 @@ from .serializers import (BannerSliderSerializer, CommentHomeSerializer, VideoHo
                           ContactSubmitSerializer)
 from django.conf import settings
 from django.core.mail import send_mail
+from product.service import Cart
 
 
 class ImageSliderView(APIView):
     def get(self, request):
+        cart = Cart(request)
+        cart.clear()
         banner_slider = BannerSliderModel.objects.all()
         ser_data = BannerSliderSerializer(instance=banner_slider, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
