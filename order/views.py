@@ -232,10 +232,15 @@ class OrderPayAuthorisedView(APIView):
 
         if 'order' in response:
 
-            print('response auth order:', response['order']['transaction']['ref'])
+            if 'transaction' in response['order']:
+                transaction = response['order']['transaction']['ref']
+                print('response auth order:', transaction)
+            else:
+                transaction = None
+                print('Transaction key not found in the response')
 
             order.trace = response['trace']
-            order.transaction_ref = response['order']['transaction']['ref']
+            order.transaction_ref = transaction
 
             order.error_message = 'No Detail'
             order.error_note = 'No Detail'
@@ -303,7 +308,7 @@ class OrderPayAuthorisedView(APIView):
 
             # return HttpResponseRedirect(redirect_to='https://gogle.com')
             return Response(data={'message': 'success', 'cart_id': order.cart_id,
-                                  'transaction_ref': response['order']['transaction']['ref']})
+                                  'transaction_ref': transaction})
 
         else:
             order.paid = False
@@ -341,10 +346,10 @@ class OrderPayDeclinedView(APIView):
         response = requests.post(settings.TELR_API_VERIFY, json=payload, headers=headers)
         response = response.json()
         print('response dec:', response)
-
+        transaction = response['order']['transaction']['ref']
         order.paid = False
         order.trace = response['trace']
-        order.transaction_ref = response['order']['transaction']['ref']
+        order.transaction_ref = transaction
         order.error_message = 'Declined'
         order.save()
 
@@ -376,10 +381,10 @@ class OrderPayCancelledView(APIView):
         response = requests.post(settings.TELR_API_VERIFY, json=payload, headers=headers)
         response = response.json()
         print('response cancel:', response)
-
+        transaction = response['order']['transaction']['ref']
         order.paid = False
         order.trace = response['trace']
-        order.transaction_ref = response['order']['transaction']['ref']
+        order.transaction_ref = transaction
         order.error_message = 'canceled'
         order.save()
 
