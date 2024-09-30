@@ -181,6 +181,7 @@ class OrderPayView(APIView):
                     url = response['order']['url']
                     order.ref_id = response['order']['ref']
                     order.cart_id = cart_id
+                    order.coupon = code
                     order.save()
 
                     # subject = 'New Order (Unpaid invoice) Received from healfit.ae'
@@ -193,7 +194,6 @@ class OrderPayView(APIView):
                     # send_mail(subject, message_provider, email_from, ['hamed@healfit.ae'])
                     if code and not code.infinite:
                         code.limit -= 1
-                        order.coupon = code
                         code.save()
                     return Response({'redirect to : ': url}, status=200)
                 else:
