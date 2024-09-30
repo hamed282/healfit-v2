@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (BannerSliderModel, VideoHomeModel, CommentHomeModel, ContentHomeModel, BannerShopModel, LogoModel,
-                     SEOHomeModel, NewsLetterModel)
+                     SEOHomeModel, NewsLetterModel, ContactSubmitModel)
 
 
 admin.site.register(BannerSliderModel)
@@ -11,3 +11,4 @@ admin.site.register(BannerShopModel)
 admin.site.register(LogoModel)
 admin.site.register(SEOHomeModel)
 admin.site.register(NewsLetterModel)
+admin.site.register(ContactSubmitModel)
