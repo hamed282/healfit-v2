@@ -500,7 +500,9 @@ class OrderDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_coupon(self, obj):
-        return f'{obj.coupon.customer} - {obj.coupon.coupon_code}'
+        if obj.coupon:
+            return f'{obj.coupon.customer} - {obj.coupon.coupon_code}'
+        return None
 
     def get_amount(self, obj):
         items = OrderItemModel.objects.filter(order=obj)
