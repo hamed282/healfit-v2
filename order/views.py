@@ -181,7 +181,7 @@ class OrderPayView(APIView):
                     order.ref_id = response['order']['ref']
                     order.cart_id = cart_id
                     order.coupon = code
-                    order.total_discount = total_price_without_discount - amount
+                    order.total_discount = int(total_price_without_discount) - int(amount)
                     order.save()
 
                     # subject = 'New Order (Unpaid invoice) Received from healfit.ae'
