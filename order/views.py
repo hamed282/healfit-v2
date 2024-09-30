@@ -124,8 +124,6 @@ class OrderPayView(APIView):
 
             total_price_without_discount = total_price_without_discount()
             total_price_with_discount = total_price_with_discount()
-            print(total_price_without_discount)
-            print(total_price_with_discount)
 
             if code and not code.extra_discount and int(code.discount_threshold) <= total_price_without_discount:
                 if discount_percent:
@@ -348,7 +346,12 @@ class OrderPayDeclinedView(APIView):
         response = requests.post(settings.TELR_API_VERIFY, json=payload, headers=headers)
         response = response.json()
         print('response dec:', response)
-        transaction = response['order']['transaction']['ref']
+        if 'transaction' in response['order']:
+            transaction = response['order']['transaction']['ref']
+            print('response auth order:', transaction)
+        else:
+            transaction = None
+            print('Transaction key not found in the response')
         order.paid = False
         order.trace = response['trace']
         order.transaction_ref = transaction
@@ -383,7 +386,12 @@ class OrderPayCancelledView(APIView):
         response = requests.post(settings.TELR_API_VERIFY, json=payload, headers=headers)
         response = response.json()
         print('response cancel:', response)
-        transaction = response['order']['transaction']['ref']
+        if 'transaction' in response['order']:
+            transaction = response['order']['transaction']['ref']
+            print('response auth order:', transaction)
+        else:
+            transaction = None
+            print('Transaction key not found in the response')
         order.paid = False
         order.trace = response['trace']
         order.transaction_ref = transaction
