@@ -154,6 +154,7 @@ class ProductCategoryModel(models.Model):
     objects = None
     category = models.CharField(max_length=50)
     category_title = models.CharField(max_length=50)
+    short_description = models.TextField()
     description = models.TextField()
     slug = models.SlugField(max_length=100, unique=True)
     image = models.FileField(upload_to=get_category_upload_path)
@@ -190,6 +191,7 @@ class ProductSubCategoryModel(models.Model):
     category = models.ForeignKey(ProductCategoryModel, on_delete=models.CASCADE)
     subcategory = models.CharField(max_length=50)
     subcategory_title = models.CharField(max_length=50)
+    short_description = models.TextField()
     description = models.TextField()
     image = models.FileField(upload_to=get_subcategory_upload_path)
     slug = models.SlugField(max_length=100, unique=True)
