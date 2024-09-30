@@ -386,16 +386,15 @@ class OrderPayCancelledView(APIView):
         response = requests.post(settings.TELR_API_VERIFY, json=payload, headers=headers)
         response = response.json()
         print('response cancel:', response)
-        if 'transaction' in response['order']:
-            transaction = response['order']['transaction']['ref']
-            print('response auth order:', transaction)
+        if 'status' in response['order']:
+            transaction = response['order']['status']['text']
         else:
             transaction = None
-            print('Transaction key not found in the response')
+
         order.paid = False
         order.trace = response['trace']
         order.transaction_ref = transaction
-        order.error_message = 'canceled'
+        order.error_message = 'cancelled'
         order.save()
 
         return Response(data={'message': 'Cancelled'})
