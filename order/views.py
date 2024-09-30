@@ -193,6 +193,7 @@ class OrderPayView(APIView):
                     # send_mail(subject, message_provider, email_from, ['hamed@healfit.ae'])
                     if code and not code.infinite:
                         code.limit -= 1
+                        order.coupon = code
                         code.save()
                     return Response({'redirect to : ': url}, status=200)
                 else:
