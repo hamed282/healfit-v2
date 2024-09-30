@@ -228,7 +228,6 @@ class OrderPayAuthorisedView(APIView):
 
         response = requests.post(settings.TELR_API_VERIFY, json=payload, headers=headers)
         response = response.json()
-        print('-'*100)
 
         if 'order' in response:
 
@@ -237,10 +236,8 @@ class OrderPayAuthorisedView(APIView):
 
             if 'transaction' in response['order']:
                 transaction = response['order']['transaction']['ref']
-                print('response auth order:', transaction)
             else:
                 transaction = None
-                print('Transaction key not found in the response')
 
             order.trace = response['trace']
             order.transaction_ref = transaction
