@@ -125,3 +125,18 @@ class NewsLetterModel(models.Model):
     class Meta:
         verbose_name = 'NewsLetter'
         verbose_name_plural = 'NewsLetter'
+
+
+class ContactSubmitModel(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    mobile = models.CharField(max_length=20)
+    message = models.TextField()
+
+    def __str__(self):
+        return f'{self.email}'
+
+    class Meta:
+        verbose_name = 'Contact User Submit'
+        verbose_name_plural = 'Contact User Submit'

@@ -11,4 +11,5 @@ urlpatterns = [
     path('logo/', views.LogoHomeView.as_view(), name='logo'),
     path('seo/', views.SEOHomeView.as_view(), name='seo'),
     path('newsletter/', views.NewsLetterView.as_view(), name='newsletter'),
+    path('contact_submit/', views.ContactView.as_view(), name='contact_submit'),
 ]

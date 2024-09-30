@@ -2,9 +2,12 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import (BannerSliderModel, CommentHomeModel, VideoHomeModel, ContentHomeModel, BannerShopModel, LogoModel,
-                     SEOHomeModel, NewsLetterModel)
+                     SEOHomeModel, NewsLetterModel, ContactSubmitModel)
 from .serializers import (BannerSliderSerializer, CommentHomeSerializer, VideoHomeSerializer, ContentHomeSerializer,
-                          BannerShopSerializer, SEOHomeSerializer, LogoHomeSerializer, NewsLetterSerializer)
+                          BannerShopSerializer, SEOHomeSerializer, LogoHomeSerializer, NewsLetterSerializer,
+                          ContactSubmitSerializer)
+from django.conf import settings
+from django.core.mail import send_mail
 
 
 class ImageSliderView(APIView):
@@ -67,3 +70,39 @@ class NewsLetterView(APIView):
             ser_data.save()
             return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ContactView(APIView):
+    def post(self, request):
+        """
+        parameters:
+        1. first_name
+        2. last_name
+        3. email
+        4. mobile
+        5. message
+        """
+        form = request.data
+        ser_submit = ContactSubmitSerializer(data=form)
+        if ser_submit.is_valid():
+            ContactSubmitModel.objects.create(first_name=form['first_name'],
+                                              last_name=form['last_name'],
+                                              email=form['email'],
+                                              mobile=form['mobile'],
+                                              message=form['message'])
+
+            subject = 'welcome to Healfit'
+            message_customer = 'Hi Wellcome to healfit'
+            message_provider = f'full name: {form["first_name"]} {form["last_name"]} \n' \
+                               f'emai: {form["email"]} \n' \
+                               f'mobile: {form["mobile"]} \n' \
+                               f'Message: {form["message"]}'
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = [form['email']]
+
+            send_mail(subject, message_customer, email_from, recipient_list)
+            send_mail(subject, message_provider, email_from, ['no-reply@healfit.ae'])
+
+            return Response(data={'message': 'successfully submitted'})
+        else:
+            return Response(data=ser_submit.errors)
