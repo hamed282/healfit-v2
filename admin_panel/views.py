@@ -7,7 +7,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
                           ProductWithVariantsSerializer, ProductVariantSerializer, OrderSerializer,
-                          OrderDetailSerializer, OrderItemSerializer, RoleUpdateSerializer)
+                          OrderDetailSerializer, OrderItemSerializer)
 from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
@@ -19,9 +19,10 @@ from blog.serializers import BlogAllSerializer, BlogSerializer, ImageBlogSeriali
 from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel
 from rest_framework.permissions import IsAdminUser
 from home.models import (CommentHomeModel, BannerSliderModel, VideoHomeModel, ContentHomeModel, BannerShopModel,
-                         SEOHomeModel, LogoModel, NewsLetterModel)
+                         SEOHomeModel, LogoModel, NewsLetterModel, ContactSubmitModel)
 from home.serializers import (CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer, ContentHomeSerializer,
-                              BannerShopSerializer, LogoHomeSerializer, SEOHomeSerializer, NewsLetterSerializer)
+                              BannerShopSerializer, LogoHomeSerializer, SEOHomeSerializer, NewsLetterSerializer,
+                              ContactSubmitSerializer)
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel, CouponModel)
@@ -1532,3 +1533,17 @@ class CouponItemView(APIView):
         coupon.delete()
 
         return Response(data={'message': f'The Coupon ID {coupon_id} was deleted'}, status=status.HTTP_200_OK)
+
+
+class ContactUsView(APIView):
+    def get(self, request):
+        contact = ContactSubmitModel.objects.all()
+        ser_data = ContactSubmitSerializer(instance=contact, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class ContactUsItemView(APIView):
+    def get(self, request, contact_id):
+        contact = ContactSubmitModel.objects.get(id=contact_id)
+        ser_data = ContactSubmitSerializer(instance=contact)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
