@@ -181,7 +181,7 @@ class UserValueView(APIView):
             product = User.objects.all()
 
         ser_data = UserSerializer(instance=product, many=True)
-        return Response({'data': ser_data.data, 'number_of_pages': number_of_pages})
+        return Response({'data': ser_data.data})
 
 
 class RoleView(APIView):
