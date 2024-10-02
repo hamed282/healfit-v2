@@ -113,7 +113,7 @@ class UserView(APIView):
         if ser_user_info.is_valid():
             ser_user_info.save()
 
-            if form['role']:
+            if 'role' in form:
                 try:
                     role_user = RoleUserModel.objects.get(user=user)
                     role_user.role = RoleModel.objects.get(role=form['role'])
