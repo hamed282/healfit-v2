@@ -68,19 +68,21 @@ class UserView(APIView):
                 5. trn_number
                 6. company_name
                 7. password
+                8. role
                 """
         form = request.data
         ser_data = UserRegisterSerializer(data=form)
         if ser_data.is_valid():
             user = User.objects.filter(email=form['email']).exists()
             if not user:
-                User.objects.create_user(first_name=form['first_name'],
-                                         last_name=form['last_name'],
-                                         email=form['email'],
-                                         phone_number=form['phone_number'],
-                                         trn_number=form['trn_number'],
-                                         company_name=form['company_name'],
-                                         password=form['password']),
+                new_user = User.objects.create_user(first_name=form['first_name'],
+                                                    last_name=form['last_name'],
+                                                    email=form['email'],
+                                                    phone_number=form['phone_number'],
+                                                    trn_number=form['trn_number'],
+                                                    company_name=form['company_name'],
+                                                    password=form['password'])
+                RoleUserModel.objects.create(user=new_user, role=RoleModel.objects.get(role=form['role']))
                 return Response(data={'message': 'user created'},
                                 status=status.HTTP_201_CREATED)
 
@@ -101,6 +103,7 @@ class UserView(APIView):
         6. trn_number
         7. zoho_customer_id
         8. is_active
+        9. role
         """
         user = get_object_or_404(User, id=user_id)
         form = request.data
@@ -108,6 +111,14 @@ class UserView(APIView):
         ser_user_info = UserValueSerializer(instance=user, data=form, partial=True)
         if ser_user_info.is_valid():
             ser_user_info.save()
+
+            try:
+                role_user = RoleUserModel.objects.get(user=user)
+                role_user.role = RoleModel.objects.get(role=form['role'])
+                role_user.save()
+            except:
+                RoleUserModel.objects.create(user=user, role=RoleModel.objects.get(role=form['role']))
+
             return Response(data={'message': 'Done'}, status=status.HTTP_200_OK)
         return Response(data=ser_user_info.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -127,7 +138,6 @@ class RoleUpdateView(APIView):
             RoleUserModel.objects.create(user=user, role=role)
 
         return Response(data={'message': 'User role Updated'})
-
 
 
 class UserValueView(APIView):
