@@ -113,12 +113,13 @@ class UserView(APIView):
         if ser_user_info.is_valid():
             ser_user_info.save()
 
-            try:
-                role_user = RoleUserModel.objects.get(user=user)
-                role_user.role = RoleModel.objects.get(role=form['role'])
-                role_user.save()
-            except:
-                RoleUserModel.objects.create(user=user, role=RoleModel.objects.get(role=form['role']))
+            if form['role']:
+                try:
+                    role_user = RoleUserModel.objects.get(user=user)
+                    role_user.role = RoleModel.objects.get(role=form['role'])
+                    role_user.save()
+                except:
+                    RoleUserModel.objects.create(user=user, role=RoleModel.objects.get(role=form['role']))
 
             return Response(data={'message': 'Done'}, status=status.HTTP_200_OK)
         return Response(data=ser_user_info.errors, status=status.HTTP_400_BAD_REQUEST)
