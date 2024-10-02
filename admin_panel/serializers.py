@@ -16,7 +16,7 @@ class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'role']
+        fields = ['id', 'first_name', 'last_name', 'email', 'role', 'is_active']
 
     def get_role(self, obj):
         try:
@@ -31,7 +31,7 @@ class UserSerializer(ModelSerializer):
 class UserValueSerializer(ModelSerializer):
     class Meta:
         model = User
-        exclude = ('password', 'last_login')
+        exclude = ('password', 'last_login', 'is_active')
 
 
 class RoleUpdateSerializer(ModelSerializer):
