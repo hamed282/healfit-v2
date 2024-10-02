@@ -8,7 +8,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
                           ProductWithVariantsSerializer, ProductVariantSerializer, OrderSerializer,
                           OrderDetailSerializer, OrderItemSerializer)
-from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
+from accounts.serializers import UserRegisterSerializer, UserInfoSerializer, ChangePasswordSerializer
 from rest_framework import status
 from math import ceil
 from django.contrib.auth import authenticate
@@ -34,6 +34,7 @@ from order.models import OrderModel, OrderItemModel, OrderStatusModel
 from django.db.models import Subquery
 from permissions import (IsBlogAdmin, IsProductAdmin, IsOrderAdmin, IsModeratorAdmin, IsSEOAdmin, IsAccountAdmin,
                          IsSuperAdmin, OrPermission)
+from django.contrib.auth import update_session_auth_hash
 
 
 # Account Section
@@ -121,6 +122,28 @@ class UserView(APIView):
 
             return Response(data={'message': 'Done'}, status=status.HTTP_200_OK)
         return Response(data=ser_user_info.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAdminUser, IsAccountAdmin]
+
+    @staticmethod
+    def post(request, user_id):
+        """
+        parameters:
+        1. old_password
+        2. new_password
+        """
+        ser_data = ChangePasswordSerializer(data=request.data)
+        if ser_data.is_valid():
+            user = User.objects.get(id=user_id)
+            if user.check_password(ser_data.data.get('old_password')):
+                user.set_password(ser_data.data.get('new_password'))
+                user.save()
+                update_session_auth_hash(request, user)  # To update session after password change
+                return Response({'message': 'Password changed successfully.'}, status=status.HTTP_200_OK)
+            return Response({'error': 'Incorrect old password.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RoleUpdateView(APIView):
