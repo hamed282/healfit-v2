@@ -68,7 +68,12 @@ class LoginUserSerializer(ModelSerializer):
         fields = ['email', 'password', 'first_name', 'last_name', 'role']
 
     def get_role(self, obj):
-        return 'waiter'
+        try:
+            role = RoleUserModel.objects.get(user=obj)
+            role = role.role.role
+        except:
+            role = 'user'
+        return role
 
 
 class BlogTagSerializer(ModelSerializer):
