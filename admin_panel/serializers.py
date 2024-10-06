@@ -34,6 +34,10 @@ class UserValueSerializer(ModelSerializer):
         exclude = ('password', 'last_login')
 
 
+class ChangePasswordSerializer(serializers.Serializer):
+    new_password = serializers.CharField(required=True)
+
+
 class RoleUpdateSerializer(ModelSerializer):
     class Meta:
         model = User

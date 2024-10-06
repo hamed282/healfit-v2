@@ -7,8 +7,8 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
                           ProductWithVariantsSerializer, ProductVariantSerializer, OrderSerializer,
-                          OrderDetailSerializer, OrderItemSerializer)
-from accounts.serializers import UserRegisterSerializer, UserInfoSerializer, ChangePasswordSerializer
+                          OrderDetailSerializer, OrderItemSerializer, ChangePasswordSerializer)
+from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
 from django.contrib.auth import authenticate
@@ -132,18 +132,15 @@ class ChangePasswordView(APIView):
     def post(request, user_id):
         """
         parameters:
-        1. old_password
         2. new_password
         """
         ser_data = ChangePasswordSerializer(data=request.data)
         if ser_data.is_valid():
             user = User.objects.get(id=user_id)
-            if user.check_password(ser_data.data.get('old_password')):
-                user.set_password(ser_data.data.get('new_password'))
-                user.save()
-                update_session_auth_hash(request, user)  # To update session after password change
-                return Response({'message': 'Password changed successfully.'}, status=status.HTTP_200_OK)
-            return Response({'error': 'Incorrect old password.'}, status=status.HTTP_400_BAD_REQUEST)
+            user.set_password(ser_data.data.get('new_password'))
+            user.save()
+            update_session_auth_hash(request, user)  # To update session after password change
+            return Response({'message': 'Password changed successfully.'}, status=status.HTTP_200_OK)
         return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
