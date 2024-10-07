@@ -106,7 +106,6 @@ def zoho_invoice_quantity_update(first_name,
     else:
         customer_id = customer_id
         response_item = {'code': 0}
-    ###################################
 
     if response_item['code'] == 0:
         # customer_id = response_item['contact']['contact_id']
@@ -119,25 +118,6 @@ def zoho_invoice_quantity_update(first_name,
 
         payload = {'customer_id': customer_id,
                    'line_items': line_items,
-                   #     [
-                   #     {
-                   #         'item_id': item_id,
-                   #         # 'name': 'Hard Drive',
-                   #         # 'description': '',
-                   #         # 'rate': 120,
-                   #         'quantity': quantity,
-                   #         # 'unit': " ",
-                   #         # "tax_id": 982000000557028,
-                   #         # "tds_tax_id": "982000000557012",
-                   #         # "tax_name": "VAT",
-                   #         # "tax_type": "tax",
-                   #         # "tax_percentage": 12.5,
-                   #         # "tax_treatment_code": "uae_others",
-                   #     },
-                   #     {
-                   #         'item_id': 982000000030049,
-                   #     }
-                   # ],
                    }
 
         response_item = requests.post(url=url_invoice, headers=headers, json=payload)

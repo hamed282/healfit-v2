@@ -46,19 +46,13 @@ class OrderItemModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_order_item')
     order = models.ForeignKey(OrderModel, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(ProductVariantModel, on_delete=models.CASCADE, related_name='order_product')
-    # item_id = models.CharField(max_length=200)
     color = models.ForeignKey(ColorProductModel, on_delete=models.CASCADE, related_name='order_color')
     size = models.ForeignKey(SizeProductModel, on_delete=models.CASCADE, related_name='order_size')
     price = models.IntegerField()
     discount_price = models.IntegerField()
     selling_price = models.IntegerField()
     quantity = models.IntegerField(default=1)
-    # trace = models.CharField(max_length=200)
     created = models.DateField(auto_now_add=True)
-
-    # class Meta:
-    #     verbose_name = ''
-    #     verbose_name_plural = ''
 
     def __str__(self):
         return str(self.id)

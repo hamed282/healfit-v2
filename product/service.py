@@ -35,8 +35,7 @@ class Cart:
             self.cart[product_id]["quantity"] += quantity
 
         product = ProductVariantModel.objects.get(id=int(product_id))
-        # product = product.product_color_size.all()
-        # product = product.get(id=product_id)
+
         ser_product = QuantityProductSerializer(instance=product)
         quantity_stock = ser_product.data['quantity']
         if int(self.cart[product_id]["quantity"]) > int(quantity_stock):
@@ -73,10 +72,6 @@ class Cart:
         Count all items in the cart
         """
         return sum(item["quantity"] for item in self.cart.values())
-
-    # def get_total_items(self):
-    #
-    #     return len(self.cart)
 
     def get_total_price(self):
         return sum(int(item["product"]["off_price"]) * item["quantity"] for item in self.cart.values())

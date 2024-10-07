@@ -34,7 +34,6 @@ def zoho_product_update():
                     product_obj = product_exists.get(product=product)
                     product_obj.price = item['items'][0]['rate']
                     product_obj.save()
-                    # pass
 
                 else:
                     ProductModel.objects.create(product=product, group_id=group_id, price=item['items'][0]['rate'])  # price=item['price']
@@ -99,5 +98,3 @@ def zoho_product_update():
                 continue
 
         has_more_page = response_items['page_context']['has_more_page']
-
-# zoho_product_update()

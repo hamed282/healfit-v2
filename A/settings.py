@@ -14,42 +14,20 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 # Debug Mode
-DEBUG = True
+DEBUG = False
 
 if DEBUG:
     ALLOWED_HOSTS = ['*']
-    # ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'api.healfit.ae', 'www.api.healfit.ae', 'healfit.ae']
-
-    # DATABASES = {
-    #     'default': {
-    #         'ENGINE': 'django.db.backends.sqlite3',
-    #         'NAME': BASE_DIR / 'db.sqlite3',
-    #     }
-    # }
-
-    # Ensure the default charset is UTF-8
-    DEFAULT_CHARSET = 'utf-8'
-
-    # Ensure the default encoding for template rendering is UTF-8
-    FILE_CHARSET = 'utf-8'
 
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.getenv('NAME'),
-            'USER': os.getenv('USER'),
-            'PASSWORD': os.getenv('PASSWORD'),
-            'HOST': os.getenv('HOST'),
-            'PORT': os.getenv('PORT'),
-            'OPTIONS': {
-                'charset': 'utf8mb4',
-            },
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
     CORS_ORIGIN_ALLOW_ALL = True
-    # CORS_ALLOWED_ORIGINS = [
-    #     'https://healfit.ae',  # دامنه فرانت‌اند شما
-    # ]
+
     CORS_ALLOW_CREDENTIALS = True
 
 else:
@@ -72,7 +50,6 @@ else:
         }
     }
 
-    # CSRF_TRUSTED_ORIGINS = ['https://api.healfit.ae', 'https://*.127.0.0.1']
     CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
@@ -156,12 +133,6 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# STATIC_URL = 'static/'
-# STATIC_ROOT = "staticfiles"
-# STATICFILES_DIRS = (
-#     os.path.join(BASE_DIR, 'static/'),
-# )
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 

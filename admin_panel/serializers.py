@@ -1,4 +1,4 @@
-from rest_framework.serializers import Serializer, ModelSerializer, SerializerMethodField, EmailField, CharField
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework import serializers
 from accounts.models import User, RoleUserModel, RoleModel
 from blog.models import BlogTagModel, AddBlogTagModel, BlogCategoryModel, BlogModel
@@ -57,10 +57,6 @@ class AddRoleSerializer(ModelSerializer):
 
 
 class LoginUserSerializer(ModelSerializer):
-    # email = EmailField()
-    # password = CharField(max_length=200)
-    # first_name = CharField(max_length=200)
-    # last_name = CharField(max_length=200)
     role = serializers.SerializerMethodField()
 
     class Meta:
@@ -438,21 +434,6 @@ class ColorImageSerializer(serializers.ModelSerializer):
         return 'color'
 
 
-# class ProductVariantPutSerializer(serializers.Serializer):
-#     name = serializers.CharField()
-#     item_id = serializers.CharField()
-#     color = serializers.PrimaryKeyRelatedField(queryset=ColorProductModel.objects.all())
-#     size = serializers.PrimaryKeyRelatedField(queryset=SizeProductModel.objects.all())
-#     percent_discount = serializers.IntegerField()
-#     price = serializers.IntegerField()
-#     quantity = serializers.IntegerField()
-#     slug = serializers.SlugField(required=False)
-#
-#
-# class ProductWithVariantsPutSerializer(serializers.Serializer):
-#     extras = ProductVariantPutSerializer(many=True)
-
-
 class VariantImageSerializer(serializers.Serializer):
     color = serializers.IntegerField()
     image = serializers.CharField()
@@ -565,7 +546,3 @@ class OrderItemSerializer(serializers.ModelSerializer):
     def get_total_price(self, obj):
         total_price = obj.price * obj.quantity
         return total_price
-
-    # def get_total_price(self, obj):
-    #     total_price = obj.order.get_total_price()
-    #     return total_price

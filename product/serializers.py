@@ -392,30 +392,6 @@ class UserFavSerializer(serializers.ModelSerializer):
         fields = ['user_fav']
 
 
-# class ProductCartSerializer(serializers.ModelSerializer):
-#     product_color_size = ProductVariantShopSerializer(many=True, read_only=True)
-    # off_price = serializers.SerializerMethodField()
-    # size = serializers.SerializerMethodField()
-    # color = serializers.SerializerMethodField()
-
-    # class Meta:
-    #     model = ProductModel
-    #     fields = ['product_color_size']
-
-    # def get_size(self, obj):
-    #     return 'size'
-    #
-    # def get_color(self, obj):
-    #     return 'color'
-    #
-    # def get_off_price(self, obj):
-    #     price = obj.price
-    #     percent_discount = obj.percent_discount
-    #     if obj.percent_discount is None:
-    #         percent_discount = 0
-    #     return int(int(price) - int(price) * int(percent_discount) / 100)
-
-
 class ProductCartSerializer(serializers.ModelSerializer):
     product = serializers.SlugRelatedField(read_only=True, slug_field='product')
     size = serializers.SlugRelatedField(read_only=True, slug_field='size')
@@ -444,13 +420,6 @@ class ProductCartSerializer(serializers.ModelSerializer):
             cover = None
         return cover
 
-    # def get_cover_image(self, obj):
-    #     cover = obj.product.cover_image
-    #     if cover:
-    #         cover = cover.url
-    #     else:
-    #         cover = None
-    #     return cover
 
     def get_off_price(self, obj):
         price = int(obj.price)
@@ -476,8 +445,6 @@ class CouponSerializer(serializers.ModelSerializer):
         model = CouponModel
         fields = '__all__'
 
-    # def get_customer(self, obj):
-    #     return f"{obj.customer.first_name} {obj.customer.last_name}"
 
 
 class CouponCreateSerializer(serializers.ModelSerializer):

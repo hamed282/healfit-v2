@@ -418,7 +418,6 @@ class Site(models.Model):
 
 class CouponModel(models.Model):
     objects = None
-    # customer = models.ForeignKey(User, on_delete=models.CASCADE)
     customer = models.CharField(max_length=50)
     coupon_code = models.CharField(max_length=50, unique=True)
     discount_percent = models.CharField(max_length=20, default=0, blank=True, null=True)

@@ -12,13 +12,11 @@ class ProductGenderAdmin(admin.ModelAdmin):
 
 class CategoryInline(admin.TabularInline):
     model = AddCategoryModel
-    # raw_id_fields = ('product',)
     extra = 1
 
 
 class SubCategoryInline(admin.TabularInline):
     model = AddSubCategoryModel
-    # raw_id_fields = ('product',)
     extra = 1
 
 
@@ -43,7 +41,6 @@ class ProductImageGalleryAdmin(admin.ModelAdmin):
 
 class ImageGalleryInline(admin.TabularInline):
     model = AddImageGalleryModel
-    # raw_id_fields = ('product',)
     extra = 1
 
 
@@ -54,7 +51,6 @@ class TagInline(admin.TabularInline):
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['id', 'product', 'priority']
-    # readonly_fields = ["slug"]
     inlines = (ImageGalleryInline, CategoryInline, SubCategoryInline, TagInline)
 
 
@@ -68,12 +64,10 @@ class SizeProductAdmin(admin.ModelAdmin):
 
 
 class CategoryTagAdmin(admin.ModelAdmin):
-    # readonly_fields = ["slug"]
     list_display = ['tag']
 
 
 class ProductTagAdmin(admin.ModelAdmin):
-    # readonly_fields = ["slug"]
     list_display = ['tag']
 
 
