@@ -327,12 +327,6 @@ class UserFavView(APIView):
 
 class CartView(APIView):
     def get(self, request, format=None):
-        # بررسی اینکه آیا شناسه سبد خرید در کوکی‌ها موجود است
-        # cart_id = request.COOKIES.get('cart_id')
-        #
-        # if not cart_id:
-        #     return Response({"message": "Cart is empty."}, status=status.HTTP_200_OK)
-
         cart = Cart(request)
 
         return Response(
@@ -431,11 +425,6 @@ class CartView(APIView):
                 overide_quantity=product["overide_quantity"] if "overide_quantity" in product else False
             )
 
-            # for item in cart:
-            #     print(item["product"]["off_price"])
-                # price = item["product"]["off_price"]
-                # quantity = ["quantity"]
-                # print(quantity)
             product_variant = ProductVariantModel.objects.get(id=product["product"]["id"])
             item_price = int(product_variant.get_off_price()) * product["quantity"]
             cart_total_price = sum(int(item["product"]["off_price"]) * item["quantity"] for item in cart)

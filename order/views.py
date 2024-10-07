@@ -89,21 +89,6 @@ class OrderPayView(APIView):
                                               quantity=quantity,
                                               color=color,
                                               size=size,)
-            ############################################
-            # if discount_amount:
-            #     amount = str(order.get_total_price() - discount_amount)
-            #
-            #     order.total_discount = discount_amount
-            #     order.coupon = code
-            #     order.save()
-            # elif discount_percent:
-            #     amount = str(order.get_total_price())
-            #
-            #     order.total_discount = discount_amount
-            #     order.coupon = code
-            #     order.save()
-            # else:
-            #     amount = str(order.get_total_price())
 
             def total_price_without_discount():
                 total_price = 0
@@ -184,14 +169,6 @@ class OrderPayView(APIView):
                     order.total_discount = int(total_price_without_discount) - int(amount)
                     order.save()
 
-                    # subject = 'New Order (Unpaid invoice) Received from healfit.ae'
-                    # message_provider = f'New Order Received \n' \
-                    #                    f'Customer Name: {order.user} \n' \
-                    #                    f'Transaction Reference: {order.transaction_ref} \n' \
-                    #                    f'Cart Id: {order.cart_id}'
-                    # email_from = settings.EMAIL_HOST_USER
-                    #
-                    # send_mail(subject, message_provider, email_from, ['hamed@healfit.ae'])
                     if code and not code.infinite:
                         code.limit -= 1
                         code.save()
@@ -252,26 +229,6 @@ class OrderPayAuthorisedView(APIView):
                 product_variant = item.product
                 price = product_variant.get_off_price()
                 quantity = item.quantity
-
-                # try:
-                #     stock_on_hand = zoho_item_quantity_update(item.item_id, quantity)
-                #     # product_variant = ProductVariantModel.objects.get(product=product, color=item.color, size=item.size)
-                #     product_variant.quantity = stock_on_hand
-                #     product_variant.save()
-                # except:
-                #     # product_variant = ProductVariantModel.objects.get(product=product, color=item.color, size=item.size)
-                #     product_variant.quantity = product_variant.quantity - quantity
-                #     product_variant.save()
-
-                # try:
-                #     stock_on_hand = zoho_item_quantity_update(item.item_id, quantity)
-                #     # product_variant = ProductVariantModel.objects.get(product=product, color=item.color, size=item.size)
-                #     product_variant.quantity = stock_on_hand
-                #     product_variant.save()
-                # except:
-                #     # product_variant = ProductVariantModel.objects.get(product=product, color=item.color, size=item.size)
-                #     product_variant.quantity = product_variant.quantity - quantity
-                #     product_variant.save()
 
                 product_variant.quantity = product_variant.quantity - quantity
                 product_variant.save()

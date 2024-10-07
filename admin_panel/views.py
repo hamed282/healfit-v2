@@ -1014,20 +1014,6 @@ class ProductView(APIView):
         products = ProductModel.objects.all()
         ser_data = ProductSerializer(instance=products, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        # per_page = int(self.request.query_params.get('limit', 10))
-        # page = self.request.query_params.get('page', None)
-        #
-        # product_count = len(ProductModel.objects.all())
-        # number_of_pages = ceil(product_count / per_page)
-        #
-        # if page is not None:
-        #     page = int(page)
-        #     product = ProductModel.objects.all()[per_page*(page-1):per_page*page]
-        # else:
-        #     product = ProductModel.objects.all()
-        #
-        # ser_data = ProductSerializer(instance=product, many=True)
-        # return Response({'data': ser_data.data, 'number_of_pages': number_of_pages})
 
 
 class ProductItemView(APIView):
