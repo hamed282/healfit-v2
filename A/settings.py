@@ -14,15 +14,29 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 # Debug Mode
-DEBUG = False
+DEBUG = True
 
 if DEBUG:
     ALLOWED_HOSTS = ['*']
 
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.sqlite3',
+    #         'NAME': BASE_DIR / 'db.sqlite3',
+    #     }
+    # }
+
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.getenv('NAME'),
+            'USER': os.getenv('USER'),
+            'PASSWORD': os.getenv('PASSWORD'),
+            'HOST': os.getenv('HOST'),
+            'PORT': os.getenv('PORT'),
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+            },
         }
     }
 
@@ -67,6 +81,7 @@ INSTALLED_APPS = [
     'storages',
     'django_filters',
     'django.contrib.sitemaps',
+    'dbbackup',
 
     # Installed App
     'accounts.apps.AccountsConfig',
@@ -257,3 +272,13 @@ EMAIL_HOST_PASSWORD = 'Ljho,cP4tD#@'
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
+
+
+# DB Backup Storage
+DBBACKUP_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DBBACKUP_STORAGE_OPTIONS = {
+    'access_key': 'your-access-key',
+    'secret_key': 'your-secret-key',
+    'bucket_name': 'your-s3-bucket-name',
+    'region_name': 'your-region',
+}
