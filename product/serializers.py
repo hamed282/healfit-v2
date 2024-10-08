@@ -37,7 +37,7 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_off_price(self, obj):
-        price = int(obj.price)
+        price = float(obj.price)
         percent_discount = obj.percent_discount
         if obj.percent_discount is None:
             percent_discount = 0
