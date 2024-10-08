@@ -18,6 +18,7 @@ DEBUG = True
 
 if DEBUG:
     ALLOWED_HOSTS = ['*']
+    # ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'api.healfit.ae', 'www.api.healfit.ae', 'healfit.ae']
 
     # DATABASES = {
     #     'default': {
@@ -25,6 +26,12 @@ if DEBUG:
     #         'NAME': BASE_DIR / 'db.sqlite3',
     #     }
     # }
+
+    # Ensure the default charset is UTF-8
+    DEFAULT_CHARSET = 'utf-8'
+
+    # Ensure the default encoding for template rendering is UTF-8
+    FILE_CHARSET = 'utf-8'
 
     DATABASES = {
         'default': {
@@ -39,9 +46,10 @@ if DEBUG:
             },
         }
     }
-
     CORS_ORIGIN_ALLOW_ALL = True
-
+    # CORS_ALLOWED_ORIGINS = [
+    #     'https://healfit.ae',  # دامنه فرانت‌اند شما
+    # ]
     CORS_ALLOW_CREDENTIALS = True
 
 else:
@@ -64,9 +72,8 @@ else:
         }
     }
 
+    # CSRF_TRUSTED_ORIGINS = ['https://api.healfit.ae', 'https://*.127.0.0.1']
     CORS_ORIGIN_ALLOW_ALL = True
-    CORS_ALLOW_CREDENTIALS = True
-
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -278,8 +285,8 @@ EMAIL_USE_TLS = False
 # DB Backup Storage
 DBBACKUP_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DBBACKUP_STORAGE_OPTIONS = {
-    'access_key': 'your-access-key',
-    'secret_key': 'your-secret-key',
-    'bucket_name': 'your-s3-bucket-name',
-    'region_name': 'your-region',
+    'access_key': os.getenv('ACCESS_KEY'),
+    'secret_key': os.getenv('SECRET_KEY'),
+    'bucket_name': os.getenv('BUCKET_NAME'),
+    'region_name': os.getenv('AWS_S3_REGION_NAME'),
 }
