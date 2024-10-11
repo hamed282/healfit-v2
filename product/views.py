@@ -428,7 +428,6 @@ class CartView(APIView):
             product_variant = ProductVariantModel.objects.get(id=product["product"]["id"])
             item_price = int(product_variant.get_off_price()) * product["quantity"]
             cart_total_price = sum(int(item["product"]["off_price"]) * item["quantity"] for item in cart)
-            print(str(cart_total_price))
             response = JsonResponse({"message": add['massage'],
                                      "cart_total_items": cart.__len__(),
                                      "item_total_price": str(item_price),

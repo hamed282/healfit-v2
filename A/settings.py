@@ -89,7 +89,7 @@ INSTALLED_APPS = [
     'storages',
     'django_filters',
     'django.contrib.sitemaps',
-    'dbbackup',
+    # 'dbbackup',
 
     # Installed App
     'accounts.apps.AccountsConfig',
@@ -283,10 +283,12 @@ EMAIL_USE_TLS = False
 
 
 # DB Backup Storage
-DBBACKUP_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-DBBACKUP_STORAGE_OPTIONS = {
-    'access_key': os.getenv('ACCESS_KEY'),
-    'secret_key': os.getenv('SECRET_KEY'),
-    'bucket_name': os.getenv('BUCKET_NAME'),
-    'region_name': os.getenv('AWS_S3_REGION_NAME'),
-}
+# DBBACKUP_CRYPT_ENABLED = True
+# DBBACKUP_CRYPT_SECRET = 'your-encryption-secret-key'
+# DBBACKUP_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# DBBACKUP_STORAGE_OPTIONS = {
+#     'access_key': os.getenv('ACCESS_KEY'),
+#     'secret_key': os.getenv('SECRET_KEY'),
+#     'bucket_name': os.getenv('BUCKET_NAME'),
+#     'region_name': os.getenv('AWS_S3_REGION_NAME'),
+# }

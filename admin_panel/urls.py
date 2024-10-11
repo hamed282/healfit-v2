@@ -126,4 +126,7 @@ urlpatterns = [
     path('coupon/', views.CouponView.as_view(), name='coupon'),
     path('coupon/<int:coupon_id>/', views.CouponItemView.as_view(), name='coupon_item'),
 
+    # Backup
+    path('manually-backup/', views.CouponView.as_view(), name='manually_backup'),
+
 ]

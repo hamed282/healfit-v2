@@ -191,6 +191,9 @@ class OrderPayAuthorisedView(APIView):
             # return HttpResponseRedirect(redirect_to='https://gogle.com')
             return Response(data={'message': 'invalid order'})
 
+        order.error_note = 'Error 01'
+        order.save()
+
         payload = {
             "method": "check",
             "store": settings.SOTRE_ID,
@@ -206,10 +209,10 @@ class OrderPayAuthorisedView(APIView):
         response = requests.post(settings.TELR_API_VERIFY, json=payload, headers=headers)
         response = response.json()
 
-        if 'order' in response:
+        order.error_note = 'Error 02'
+        order.save()
 
-            cart = Cart(request)
-            cart.clear()
+        if 'order' in response:
 
             if 'transaction' in response['order']:
                 transaction = response['order']['transaction']['ref']
@@ -219,13 +222,17 @@ class OrderPayAuthorisedView(APIView):
             order.trace = response['trace']
             order.transaction_ref = transaction
 
-            order.error_message = 'No Detail'
-            order.error_note = 'No Detail'
+            order.error_message = '03'
+            order.error_note = '03'
             order.paid = True
             order.save()
             order_items = order.items.all()
 
             for item in order_items:
+
+                order.error_note = 'Error 04'
+                order.save()
+
                 product_variant = item.product
                 price = product_variant.get_off_price()
                 quantity = item.quantity
@@ -236,8 +243,14 @@ class OrderPayAuthorisedView(APIView):
                 item.trace = response['trace']
                 item.save()
 
+                order.error_note = 'Error 05'
+                order.save()
+
                 UserProductModel.objects.create(user=user, product=product_variant, order=order,
                                                 quantity=quantity, price=price)
+
+                order.error_note = 'Error 06'
+                order.save()
 
             subject = 'New Order Received from healfit.ae'
             message_provider = f'New Order Received \n' \
@@ -269,9 +282,9 @@ class OrderPayAuthorisedView(APIView):
 
         else:
             order.paid = False
-            order.trace = response['trace']
-            order.error_message = response['error']['message']
-            order.error_note = response['error']['note']
+            order.trace = 'Eroor 07'
+            order.error_message = 'Error 07'
+            order.error_note = 'Eroor 07'
 
             order.save()
             # return HttpResponseRedirect(redirect_to='https://gogle.com')
