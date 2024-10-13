@@ -89,7 +89,7 @@ INSTALLED_APPS = [
     'storages',
     'django_filters',
     'django.contrib.sitemaps',
-    # 'dbbackup',
+    'dbbackup',
 
     # Installed App
     'accounts.apps.AccountsConfig',
@@ -283,6 +283,10 @@ EMAIL_USE_TLS = False
 
 
 # DB Backup Storage
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DBBACKUP_STORAGE_OPTIONS = {
+    'location': '/backup',  # محل ذخیره فایل‌های پشتیبان
+}
 # DBBACKUP_CRYPT_ENABLED = True
 # DBBACKUP_CRYPT_SECRET = 'your-encryption-secret-key'
 # DBBACKUP_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
