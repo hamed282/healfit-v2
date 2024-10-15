@@ -390,10 +390,8 @@ class CombinedProductSerializer(serializers.Serializer):
 
         try:
             variants = ProductVariantModel.objects.filter(product=product)
-            print(variants)
             for variant in variants:
                 discount = validated_data.pop('percent_discount', None)
-                print(discount)
                 variant.percent_discount = discount
                 variant.save()
         except:
