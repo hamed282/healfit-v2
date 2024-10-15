@@ -21,7 +21,7 @@ urlpatterns = [
     path('blog/<int:blog_id>/', views.BlogView.as_view(), name='blog_item_get'),
     path('blog/item/', views.BlogView.as_view(), name='blog_item'),
     path('blog/image/', views.BlogImageView.as_view(), name='blog_image'),
-    path('search_blog/', views.SearchProductView.as_view({'get': 'list'}), name='search_blog'),
+    path('search_blog/', views.SearchBlogView.as_view({'get': 'list'}), name='search_blog'),
 
     # Blog Tag
     path('blog/tag/', views.BLogTagListView.as_view(), name='tag_list'),
