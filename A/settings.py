@@ -285,7 +285,7 @@ EMAIL_USE_TLS = False
 # DB Backup Storage
 DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
 DBBACKUP_STORAGE_OPTIONS = {
-    'location': '/home/healfita/backup/',  # محل ذخیره فایل‌های پشتیبان
+    'location': '/home/healfita/backup/',
 }
 # DBBACKUP_CRYPT_ENABLED = True
 # DBBACKUP_CRYPT_SECRET = 'your-encryption-secret-key'

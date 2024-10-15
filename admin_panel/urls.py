@@ -21,6 +21,7 @@ urlpatterns = [
     path('blog/<int:blog_id>/', views.BlogView.as_view(), name='blog_item_get'),
     path('blog/item/', views.BlogView.as_view(), name='blog_item'),
     path('blog/image/', views.BlogImageView.as_view(), name='blog_image'),
+    path('search_blog/', views.SearchProductView.as_view({'get': 'list'}), name='search_blog'),
 
     # Blog Tag
     path('blog/tag/', views.BLogTagListView.as_view(), name='tag_list'),
@@ -96,6 +97,7 @@ urlpatterns = [
     path('product/item/', views.ProductItemView.as_view(), name='product'),
     path('product/genders/', views.GenderView.as_view(), name='gender'),
     path('product/genders/<int:gender_id>/', views.GenderItemView.as_view(), name='gender_item'),
+    path('search_product/', views.SearchProductView.as_view({'get': 'list'}), name='search_product'),
 
     # Product Tag
     path('product/tag/', views.ProductTagListView.as_view(), name='product_list'),
@@ -121,12 +123,13 @@ urlpatterns = [
     path('order/details/<int:order_id>/', views.OrderDetailView.as_view(), name='order_detail'),
     path('order/customer/<int:order_id>/', views.OrderCustomerView.as_view(), name='order_customer'),
     path('order/items/<int:order_id>/', views.OrderItemsView.as_view(), name='order_items'),
+    path('search_order/', views.SearchOrderView.as_view({'get': 'list'}), name='search_order'),
 
     # Coupon
     path('coupon/', views.CouponView.as_view(), name='coupon'),
     path('coupon/<int:coupon_id>/', views.CouponItemView.as_view(), name='coupon_item'),
 
     # Backup
-    path('manually-backup/', views.CouponView.as_view(), name='manually_backup'),
+    path('manually-backup/', views.ManuallyBackupView.as_view(), name='manually_backup'),
 
 ]

@@ -1,6 +1,8 @@
 from django.conf import settings
 import requests
 from accounts.models import User
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 
 def zoho_refresh_token(scope):
@@ -127,3 +129,27 @@ def zoho_invoice_quantity_update(first_name,
         return response_item
 
 
+def send_order_email(order, order_items, recipient_list):
+    subject = 'New Order Received from healfit.ae'
+
+    # قالب HTML را با استفاده از render_to_string رندر می‌کنیم
+    html_content = render_to_string('invoice/invoice.html', {'order': order,
+                                                             'order_items': order_items})
+
+    # محتوای ساده (متن) ایمیل برای نسخه‌هایی که از HTML پشتیبانی نمی‌کنند
+    text_content = f'New Order Received \n' \
+                   f'Customer Name: {order.user} \n' \
+                   f'Transaction Reference: {order.transaction_ref} \n' \
+                   f'Cart Id: {order.cart_id}'
+
+    email_from = settings.EMAIL_HOST_USER
+    # recipient_list = ['hamed.alizadegan@gmail.com']
+
+    # ایجاد ایمیل
+    email = EmailMultiAlternatives(subject, text_content, email_from, recipient_list)
+
+    # اضافه کردن نسخه HTML
+    email.attach_alternative(html_content, "text/html")
+
+    # ارسال ایمیل
+    email.send()

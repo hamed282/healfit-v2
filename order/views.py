@@ -10,7 +10,7 @@ from accounts.models import AddressModel
 from django.shortcuts import get_object_or_404
 from .serializers import OrderUserSerializer
 from django.core.mail import send_mail
-from product.service import Cart
+from utils import send_order_email
 
 
 class OrderPayView(APIView):
@@ -167,6 +167,7 @@ class OrderPayView(APIView):
                     order.cart_id = cart_id
                     order.coupon = code
                     order.total_discount = int(total_price_without_discount) - int(amount)
+                    order.total_amount = amount
                     order.save()
 
                     if code and not code.infinite:
@@ -252,29 +253,8 @@ class OrderPayAuthorisedView(APIView):
                 order.error_note = 'Error 06'
                 order.save()
 
-            subject = 'New Order Received from healfit.ae'
-            message_provider = f'New Order Received \n' \
-                               f'Customer Name: {order.user} \n' \
-                               f'Transaction Reference: {order.transaction_ref} \n' \
-                               f'Cart Id: {order.cart_id}'
-            email_from = settings.EMAIL_HOST_USER
-            send_mail(subject, message_provider, email_from, ['hamed@healfit.ae'])
-
-            subject = f'Order Confirmation Transaction Reference #{order.transaction_ref}'
-            message_provider = f'Dear {order.user}, \n' \
-                               f'Thank you for shopping with Healfit! We’re excited to confirm that your order has been successfully placed. Below is a summary of your recent purchase: \n' \
-                               f'Order Details: \n' \
-                               f'•	Transaction Reference: {order.transaction_ref} \n' \
-                               f'•	Product(s) Ordered: \n' \
-                               f'•	Total Amount Paid: \n' \
-                               f'Your invoice is attached to this email for your reference. \n' \
-                               f'If you have any trouble accessing your order or need further assistance, feel free to reach out to our support team. We’re here to help! \n' \
-                               f'Thank you for choosing Healfit. We look forward to assisting you in your recovery journey! \n' \
-                               f'Best regards, \n' \
-                               f'The Healfit Team \n' \
-                               f'Email: info@healfit.ae'
-            email_from = settings.EMAIL_HOST_USER
-            send_mail(subject, message_provider, email_from, [order.user.email])
+            recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae', order.user.email]
+            send_order_email(order, order_items, recipient_list)
 
             # return HttpResponseRedirect(redirect_to='https://gogle.com')
             return Response(data={'message': 'success', 'cart_id': order.cart_id,

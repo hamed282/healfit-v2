@@ -35,6 +35,11 @@ from django.db.models import Subquery
 from permissions import (IsBlogAdmin, IsProductAdmin, IsOrderAdmin, IsModeratorAdmin, IsSEOAdmin, IsAccountAdmin,
                          IsSuperAdmin, OrPermission)
 from django.contrib.auth import update_session_auth_hash
+from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
+from django.http import JsonResponse
+from django.core.management import call_command
 
 
 # Account Section
@@ -82,6 +87,8 @@ class UserView(APIView):
                                                     phone_number=form['phone_number'],
                                                     trn_number=form['trn_number'],
                                                     company_name=form['company_name'],
+                                                    is_active=form['is_active'],
+                                                    is_admin=form['is_admin'],
                                                     password=form['password'])
                 RoleUserModel.objects.create(user=new_user, role=RoleModel.objects.get(role=form['role']))
                 return Response(data={'message': 'user created'},
@@ -1564,3 +1571,36 @@ class ContactUsItemView(APIView):
         contact = ContactSubmitModel.objects.get(id=contact_id)
         ser_data = ContactSubmitSerializer(instance=contact)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class SearchOrderView(viewsets.ModelViewSet):
+    queryset = OrderModel.objects.all()
+    serializer_class = OrderSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['transaction_ref', 'cart_id']
+    ordering_fields = '__all__'
+
+
+class SearchProductView(viewsets.ModelViewSet):
+    queryset = ProductModel.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['product']
+    ordering_fields = '__all__'
+
+
+class SearchBlogView(viewsets.ModelViewSet):
+    queryset = BlogModel.objects.all()
+    serializer_class = BlogSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['title']
+    ordering_fields = '__all__'
+
+
+class ManuallyBackupView(APIView):
+    def post(self, request):
+        try:
+            call_command('dbbackup')
+            return JsonResponse({'status': 'success', 'message': 'Database backup successful'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})

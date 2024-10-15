@@ -24,6 +24,7 @@ class OrderModel(models.Model):
     error_note = models.TextField(blank=True, null=True)
     coupon = models.ForeignKey(CouponModel, on_delete=models.CASCADE, blank=True, null=True)
     total_discount = models.CharField(max_length=9, blank=True, null=True)
+    total_amount = models.CharField(max_length=9, blank=True, null=True)
 
     paid = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
