@@ -388,6 +388,17 @@ class CombinedProductSerializer(serializers.Serializer):
         elif hasattr(instance, 'product_tag'):
             instance.product_tag.delete()
 
+        try:
+            variants = ProductVariantModel.objects.filter(product=product)
+            print(variants)
+            for variant in variants:
+                discount = validated_data.pop('percent_discount', None)
+                print(discount)
+                variant.percent_discount = discount
+                variant.save()
+        except:
+            pass
+
         return instance
 
     def to_representation(self, instance):
