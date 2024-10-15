@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework import serializers
 from accounts.models import User, RoleUserModel, RoleModel
-from blog.models import BlogTagModel, AddBlogTagModel, BlogCategoryModel, BlogModel
+from blog.models import BlogTagModel, AddBlogTagModel, BlogCategoryModel, BlogModel, CommentBlogModel
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
 from product.models import (ExtraGroupModel, SizeProductModel, ColorProductModel, AddImageGalleryModel, ProductTagModel,
@@ -555,3 +555,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
     def get_total_price(self, obj):
         total_price = obj.price * obj.quantity
         return total_price
+
+
+class CommentBlogSerializer(ModelSerializer):
+    class Meta:
+        model = CommentBlogModel
+        fields = '__all__'

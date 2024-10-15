@@ -7,7 +7,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
                           ProductWithVariantsSerializer, ProductVariantSerializer, OrderSerializer,
-                          OrderDetailSerializer, OrderItemSerializer, ChangePasswordSerializer)
+                          OrderDetailSerializer, OrderItemSerializer, ChangePasswordSerializer, CommentBlogSerializer)
 from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
@@ -16,7 +16,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.serializers import UserLoginSerializer
 from blog.serializers import BlogAllSerializer, BlogSerializer, ImageBlogSerializer
-from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel
+from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel, CommentBlogModel
 from rest_framework.permissions import IsAdminUser
 from home.models import (CommentHomeModel, BannerSliderModel, VideoHomeModel, ContentHomeModel, BannerShopModel,
                          SEOHomeModel, LogoModel, NewsLetterModel, ContactSubmitModel)
@@ -458,6 +458,21 @@ class BlogImageView(APIView):
             return Response(data=response, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class BlogCommentsView(APIView):
+    def get(self, request, blog_id):
+        comments = CommentBlogModel.objects.all()
+        ser_data = CommentBlogSerializer(instance=comments, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class BlogCommentEditView(APIView):
+    def put(self, request, comment_id):
+        comment = CommentBlogModel.objects.get(id=comment_id)
+        ser_data = CommentBlogSerializer(instance=comment, partial=True, data=request.data)
+        if ser_data.is_valid():
+            ser_data.save()
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 # Home Section
 class CommentHomeView(APIView):

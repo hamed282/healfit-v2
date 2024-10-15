@@ -36,6 +36,10 @@ urlpatterns = [
     path('blog/category/', views.BlogCategoryView.as_view(), name='category'),
     path('blog/category/<int:category_id>/', views.BlogCategoryView.as_view(), name='category_put'),
 
+    # Blog Comment
+    path('blog/comments/<int:blog_id>/', views.BlogCommentsView.as_view(), name='blog_comments'),
+    path('blog/comment/edit/<int:comment_id>/', views.BlogCommentEditView.as_view(), name='blog_comments'),
+
     # Home
     path('home/comment/', views.CommentHomeView.as_view(), name='comment'),
     path('home/comment/item/', views.CommentItemView.as_view(), name='comment_item'),
