@@ -74,8 +74,10 @@ class UserProductModel(models.Model):
     def __str__(self):
         return f'{self.order}'
 
-#
-# class CountryShippingModel(models.Model):
-#     country = models.CharField(max_length=12)
-# class ShippingModel(models.Model):
-#     country =
+
+class CountryShippingModel(models.Model):
+    country = models.CharField(max_length=12)
+
+
+class ShippingModel(models.Model):
+    country =
