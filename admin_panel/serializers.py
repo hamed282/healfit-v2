@@ -558,6 +558,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class CommentBlogSerializer(ModelSerializer):
+    blog = serializers.SlugRelatedField(read_only=True, slug_field='title')
+
     class Meta:
         model = CommentBlogModel
         fields = '__all__'
