@@ -460,7 +460,7 @@ class BlogImageView(APIView):
 
 
 class BlogCommentsView(APIView):
-    def get(self, request, blog_id):
+    def get(self, request):
         comments = CommentBlogModel.objects.all()
         ser_data = CommentBlogSerializer(instance=comments, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
