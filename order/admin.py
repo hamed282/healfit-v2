@@ -17,5 +17,5 @@ class OrderAdmin(admin.ModelAdmin):
 admin.site.register(OrderStatusModel)
 admin.site.register(OrderItemModel)
 admin.site.register(UserProductModel)
-admin.site.register(UserProductModel)
-admin.site.register(UserProductModel)
+admin.site.register(ShippingModel)
+admin.site.register(CountryShippingModel)
