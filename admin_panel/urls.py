@@ -39,6 +39,7 @@ urlpatterns = [
     # Blog Comment
     path('blog/comments/', views.BlogCommentsView.as_view(), name='blog_comments'),
     path('blog/comment/edit/<int:comment_id>/', views.BlogCommentEditView.as_view(), name='blog_comments'),
+    path('blog/search_comment/', views.SearchBlogCommentView.as_view({'get': 'list'}), name='search_comment'),
 
     # Home
     path('home/comment/', views.CommentHomeView.as_view(), name='comment'),

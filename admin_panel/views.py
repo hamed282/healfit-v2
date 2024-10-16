@@ -474,6 +474,15 @@ class BlogCommentEditView(APIView):
             ser_data.save()
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
+
+class SearchBlogCommentView(viewsets.ModelViewSet):
+    queryset = CommentBlogModel.objects.all()
+    serializer_class = CommentBlogSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['id']
+    ordering_fields = '__all__'
+
+
 # Home Section
 class CommentHomeView(APIView):
     permission_classes = [IsAdminUser, IsModeratorAdmin | IsSEOAdmin]
