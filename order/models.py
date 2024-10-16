@@ -75,9 +75,15 @@ class UserProductModel(models.Model):
         return f'{self.order}'
 
 
-# class CountryShippingModel(models.Model):
-#     country = models.CharField(max_length=12)
-#
-#
-# class ShippingModel(models.Model):
-#     country =
+class ShippingModel(models.Model):
+    country = models.CharField(max_length=24)
+    city = models.CharField(max_length=24, blank=True, null=True)
+    threshold_free = models.CharField(max_length=9)
+    shipping_fee = models.CharField(max_length=9)
+
+
+class CountryShippingModel(models.Model):
+    country = models.CharField(max_length=24)
+    threshold_free = models.CharField(max_length=9)
+    shipping_fee = models.CharField(max_length=9)
+
