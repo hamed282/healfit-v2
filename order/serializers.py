@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import OrderModel, OrderItemModel
+from .models import OrderModel, OrderItemModel, ShippingModel
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -32,3 +32,7 @@ class OrderUserSerializer(serializers.ModelSerializer):
 
     def get_total_price(self, obj):
         return sum(item.price for item in obj.items.all())
+
+
+class ShippingSerializer(serializers.Serializer):
+    shipping_fee = serializers.CharField()

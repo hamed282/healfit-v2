@@ -3,12 +3,12 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 import requests
-from .models import OrderModel, OrderItemModel, OrderStatusModel
+from .models import OrderModel, OrderItemModel, OrderStatusModel, ShippingModel, ShippingCountryModel
 from product.models import ProductModel, ColorProductModel, SizeProductModel, ProductVariantModel, CouponModel
 from order.models import UserProductModel
 from accounts.models import AddressModel
 from django.shortcuts import get_object_or_404
-from .serializers import OrderUserSerializer
+from .serializers import OrderUserSerializer, ShippingSerializer
 from django.core.mail import send_mail
 from utils import send_order_email
 
@@ -355,3 +355,27 @@ class OrderHistoryView(APIView):
         order_history = OrderModel.objects.filter(user=request.user, paid=True)
         ser_order_history = OrderUserSerializer(instance=order_history, many=True)
         return Response(data=ser_order_history.data)
+
+
+class ShippingView(APIView):
+    def post(self, request):
+        country = request.data['country']
+        city = request.data['city']
+        amount = float(request.data['amount'])
+
+        if ShippingCountryModel.objects.filter(country=country).exists():
+            country_model = ShippingCountryModel.objects.get(country=country)
+            if ShippingModel.objects.filter(country=country_model, city=city).exists():
+                shipping = ShippingModel.objects.get(country=country_model, city=city)
+                if float(shipping.threshold_free) > amount:
+                    ser_data = ShippingSerializer(instance=shipping)
+                    return Response(data=ser_data.data)
+                return Response(data={'shipping_fee': '0'})
+            else:
+                shipping = ShippingCountryModel.objects.get(country=country)
+                if float(shipping.threshold_free) > amount:
+                    ser_data = ShippingSerializer(instance=shipping)
+                    return Response(data=ser_data.data)
+                return Response(data={'shipping_fee': '0'})
+        else:
+            return Response(data={'shipping_fee': '100'})

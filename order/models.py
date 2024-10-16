@@ -75,8 +75,14 @@ class UserProductModel(models.Model):
         return f'{self.order}'
 
 
-class ShippingModel(models.Model):
+class ShippingCountryModel(models.Model):
     country = models.CharField(max_length=24)
-    city = models.CharField(max_length=24, blank=True, null=True)
+    threshold_free = models.CharField(max_length=9)
+    shipping_fee = models.CharField(max_length=9)
+
+
+class ShippingModel(models.Model):
+    country = models.ForeignKey(ShippingCountryModel, on_delete=models.CASCADE)
+    city = models.CharField(max_length=24)
     threshold_free = models.CharField(max_length=9)
     shipping_fee = models.CharField(max_length=9)

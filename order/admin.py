@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import OrderItemModel, OrderModel, OrderStatusModel, UserProductModel, ShippingModel
+from .models import OrderItemModel, OrderModel, OrderStatusModel, UserProductModel, ShippingModel, ShippingCountryModel
 
 
 class OrderItemInline(admin.TabularInline):
@@ -14,7 +14,19 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = (OrderItemInline,)
 
 
+class ShippingInline(admin.TabularInline):
+    model = ShippingModel
+    raw_id_fields = ('country',)
+    extra = 1
+
+
+class ShippingCountryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'country')
+    list_filter = ('country',)
+    inlines = (ShippingInline,)
+
+
 admin.site.register(OrderStatusModel)
 admin.site.register(OrderItemModel)
 admin.site.register(UserProductModel)
-admin.site.register(ShippingModel)
+admin.site.register(ShippingCountryModel, ShippingCountryAdmin)
