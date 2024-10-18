@@ -8,10 +8,11 @@ from product.models import ProductModel, ColorProductModel, SizeProductModel, Pr
 from order.models import UserProductModel
 from accounts.models import AddressModel
 from django.shortcuts import get_object_or_404
-from .serializers import OrderUserSerializer, ShippingSerializer
+from .serializers import OrderUserSerializer
 from django.core.mail import send_mail
 from utils import send_order_email
 from datetime import datetime, timedelta
+import holidays
 
 
 class OrderPayView(APIView):
@@ -364,31 +365,34 @@ class ShippingView(APIView):
         city = request.data['city']
         amount = float(request.data['amount'])
 
-        def delivery_date(delivery_day):
+        def delivery_date(delivery_day, zone=None):
+            uae_holidays = holidays.UnitedArabEmirates(years=datetime.now().year)
+
             order_time = datetime.now()
-
             work_time = datetime.strptime("17:00", '%H:%M')
-            #
-            if order_time.time() > work_time.time():
-                delivery_time = datetime.now() + timedelta(days=delivery_day)
-            else:
-                delivery_time = datetime.now()
 
-            return delivery_time
+            if order_time.time() > work_time.time():
+                delivery_time = datetime.now() + timedelta(days=delivery_day + 1)
+            else:
+                delivery_time = datetime.now() + timedelta(days=delivery_day)
+
+            print(zone)
+            while delivery_time in uae_holidays or delivery_time.weekday() in [5, 6] and zone != 'Dubai':
+                delivery_time += timedelta(days=1)
+
+            return delivery_time.strftime('%Y-%m-%d')
 
         if ShippingCountryModel.objects.filter(country=country).exists():
             country_model = ShippingCountryModel.objects.get(country=country)
             if ShippingModel.objects.filter(country=country_model, city=city).exists():
                 shipping = ShippingModel.objects.get(country=country_model, city=city)
                 if float(shipping.threshold_free) > amount:
-                    ser_data = ShippingSerializer(instance=shipping)
-                    return Response(data=ser_data.data)
-                return Response(data={'shipping_fee': '0', 'delivery_day': delivery_date(shipping.delivery_day)})
+                    return Response(data={'shipping_fee': shipping.shipping_fee, 'delivery_time': delivery_date(int(shipping.delivery_day), city)})
+                return Response(data={'shipping_fee': '0', 'delivery_time': delivery_date(int(shipping.delivery_day), city)})
             else:
                 shipping = ShippingCountryModel.objects.get(country=country)
                 if float(shipping.threshold_free) > amount:
-                    ser_data = ShippingSerializer(instance=shipping)
-                    return Response(data=ser_data.data)
-                return Response(data={'shipping_fee': '0', 'delivery_day': shipping.delivery_day})
+                    return Response(data={'shipping_fee': shipping.shipping_fee, 'delivery_time': delivery_date(int(shipping.delivery_day), city)})
+                return Response(data={'shipping_fee': '0', 'delivery_time': delivery_date(int(shipping.delivery_day), city)})
         else:
-            return Response(data={'shipping_fee': '100', 'delivery_day': '7'})
+            return Response(data={'shipping_fee': '100', 'delivery_day': delivery_date(7)})
