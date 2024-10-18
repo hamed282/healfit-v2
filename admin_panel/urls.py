@@ -137,4 +137,11 @@ urlpatterns = [
     # Backup
     path('manually-backup/', views.ManuallyBackupView.as_view(), name='manually_backup'),
 
+    # Shipping
+    path('shipping/countries', views.ShippingCountryVIew.as_view(), name='shipping_country'),
+    path('shipping/countries/<int:country_id>/', views.ShippingCountryVIew.as_view(), name='put_country'),
+    path('shipping/country/<int:country_id>/', views.ShippingVIew.as_view(), name='shipping_item'),
+    path('shipping/city/', views.ShippingVIew.as_view(), name='add_city'),
+    path('shipping/city/<int:city_id>/', views.ShippingVIew.as_view(), name='put_city'),
+
 ]

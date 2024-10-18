@@ -8,7 +8,7 @@ from product.models import (ExtraGroupModel, SizeProductModel, ColorProductModel
                             ProductSubCategoryModel, ProductModel, AddProductTagModel, ProductGenderModel,
                             AddSubCategoryModel, ProductVariantModel, AddCategoryModel, ProductCategoryModel)
 from product.serializers import ProductSerializer, ProductColorImageSerializer
-from order.models import OrderItemModel, OrderModel, OrderStatusModel
+from order.models import OrderItemModel, OrderModel, OrderStatusModel, ShippingModel, ShippingCountryModel
 
 
 class UserSerializer(ModelSerializer):
@@ -563,3 +563,34 @@ class CommentBlogSerializer(ModelSerializer):
     class Meta:
         model = CommentBlogModel
         fields = '__all__'
+
+
+class ShippingCountrySerializer(ModelSerializer):
+    class Meta:
+        model = ShippingCountryModel
+        fields = '__all__'
+
+
+class CityShippingSerializer(ModelSerializer):
+    class Meta:
+        model = ShippingModel
+        fields = '__all__'
+
+
+class ShippingSerializer(ModelSerializer):
+    city = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ShippingCountryModel
+        fields = '__all__'
+
+    def get_city(self, obj):
+        cities = ShippingModel.objects.filter(country=obj)
+        data = [{'city': city.city, 'threshold_free': city.threshold_free, 'shipping_fee': city.shipping_fee,
+                 'delivery_day': city.delivery_day} for city in cities]
+        return data
+
+
+# class AddCityShippingSerializer(ModelSerializer):
+#     class Meta:
+#         model =

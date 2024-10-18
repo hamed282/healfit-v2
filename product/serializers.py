@@ -446,7 +446,6 @@ class CouponSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class CouponCreateSerializer(serializers.ModelSerializer):
     products = serializers.SerializerMethodField()
 

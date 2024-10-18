@@ -7,7 +7,8 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           ExtraGroupSerializer, SizeValueCUDSerializer, SizeValueSerializer, ColorValueCUDSerializer,
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
                           ProductWithVariantsSerializer, ProductVariantSerializer, OrderSerializer,
-                          OrderDetailSerializer, OrderItemSerializer, ChangePasswordSerializer, CommentBlogSerializer)
+                          OrderDetailSerializer, OrderItemSerializer, ChangePasswordSerializer, CommentBlogSerializer,
+                          ShippingCountrySerializer, ShippingSerializer, CityShippingSerializer)
 from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
@@ -30,7 +31,7 @@ from product.serializers import (ProductCategorySerializer, ProductSubCategorySe
                                  AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer,
                                  CouponSerializer, CouponCreateSerializer)
 from collections import defaultdict
-from order.models import OrderModel, OrderItemModel, OrderStatusModel
+from order.models import OrderModel, OrderItemModel, OrderStatusModel, ShippingModel, ShippingCountryModel
 from django.db.models import Subquery
 from permissions import (IsBlogAdmin, IsProductAdmin, IsOrderAdmin, IsModeratorAdmin, IsSEOAdmin, IsAccountAdmin,
                          IsSuperAdmin, OrPermission)
@@ -1628,3 +1629,53 @@ class ManuallyBackupView(APIView):
             return JsonResponse({'status': 'success', 'message': 'Database backup successful'})
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
+
+
+class ShippingCountryVIew(APIView):
+    def get(self, request):
+        countries = ShippingCountryModel.objects.all()
+        ser_data = ShippingCountrySerializer(instance=countries, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = ShippingCountrySerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+        return Response(data=ser_data.errors, status=status.HTTP_200_OK)
+
+    def put(self, request, country_id):
+        form = request.data
+        country = ShippingCountryModel.objects.get(id=country_id)
+        ser_data = ShippingCountrySerializer(instance=country, partial=True, data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_200_OK)
+
+
+class ShippingVIew(APIView):
+    def get(self, request, country_id):
+        country = ShippingCountryModel.objects.get(id=country_id)
+        ser_data = ShippingSerializer(instance=country)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = CityShippingSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+        return Response(data=ser_data.errors, status=status.HTTP_200_OK)
+
+    def put(self, request, city_id):
+        form = request.data
+        city = ShippingModel.objects.get(id=city_id)
+        ser_data = CityShippingSerializer(instance=city, partial=True, data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_200_OK)
