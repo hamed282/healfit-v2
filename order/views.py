@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from .serializers import OrderUserSerializer, ShippingSerializer
 from django.core.mail import send_mail
 from utils import send_order_email
+from datetime import datetime, timedelta
 
 
 class OrderPayView(APIView):
@@ -363,6 +364,18 @@ class ShippingView(APIView):
         city = request.data['city']
         amount = float(request.data['amount'])
 
+        def delivery_date(delivery_day):
+            order_time = datetime.now()
+
+            work_time = datetime.strptime("17:00", '%H:%M')
+            #
+            if order_time.time() > work_time.time():
+                delivery_time = datetime.now() + timedelta(days=delivery_day)
+            else:
+                delivery_time = datetime.now()
+
+            return delivery_time
+
         if ShippingCountryModel.objects.filter(country=country).exists():
             country_model = ShippingCountryModel.objects.get(country=country)
             if ShippingModel.objects.filter(country=country_model, city=city).exists():
@@ -370,12 +383,12 @@ class ShippingView(APIView):
                 if float(shipping.threshold_free) > amount:
                     ser_data = ShippingSerializer(instance=shipping)
                     return Response(data=ser_data.data)
-                return Response(data={'shipping_fee': '0'})
+                return Response(data={'shipping_fee': '0', 'delivery_day': delivery_date(shipping.delivery_day)})
             else:
                 shipping = ShippingCountryModel.objects.get(country=country)
                 if float(shipping.threshold_free) > amount:
                     ser_data = ShippingSerializer(instance=shipping)
                     return Response(data=ser_data.data)
-                return Response(data={'shipping_fee': '0'})
+                return Response(data={'shipping_fee': '0', 'delivery_day': shipping.delivery_day})
         else:
-            return Response(data={'shipping_fee': '100'})
+            return Response(data={'shipping_fee': '100', 'delivery_day': '7'})

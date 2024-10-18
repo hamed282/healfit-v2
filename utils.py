@@ -132,6 +132,8 @@ def zoho_invoice_quantity_update(first_name,
 def send_order_email(order, order_items, recipient_list):
     subject = 'New Order Received from healfit.ae'
 
+    context = {}
+
     # قالب HTML را با استفاده از render_to_string رندر می‌کنیم
     html_content = render_to_string('invoice/invoice.html', {'order': order,
                                                              'order_items': order_items})

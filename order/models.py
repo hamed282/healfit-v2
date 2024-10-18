@@ -79,6 +79,7 @@ class ShippingCountryModel(models.Model):
     country = models.CharField(max_length=24)
     threshold_free = models.CharField(max_length=9)
     shipping_fee = models.CharField(max_length=9)
+    delivery_day = models.CharField(max_length=8)
 
 
 class ShippingModel(models.Model):
@@ -86,3 +87,4 @@ class ShippingModel(models.Model):
     city = models.CharField(max_length=24)
     threshold_free = models.CharField(max_length=9)
     shipping_fee = models.CharField(max_length=9)
+    delivery_day = models.CharField(max_length=8)

@@ -36,3 +36,4 @@ class OrderUserSerializer(serializers.ModelSerializer):
 
 class ShippingSerializer(serializers.Serializer):
     shipping_fee = serializers.CharField()
+    delivery_day = serializers.CharField()
