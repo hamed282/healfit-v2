@@ -12,13 +12,13 @@ from django.core.mail import send_mail
 
 class ImageSliderView(APIView):
     def get(self, request):
-        from order.models import OrderModel, OrderItemModel
-        from utils import send_order_email
-        order = OrderModel.objects.get(id=38)
-        order_items = OrderItemModel.objects.filter(order=order)
+        # from order.models import OrderModel, OrderItemModel
+        # from utils import send_order_email
+        # order = OrderModel.objects.get(id=38)
+        # order_items = OrderItemModel.objects.filter(order=order)
 
-        recipient_list = ['hamed.alizadegan@gmail.com']
-        send_order_email(order, order_items, recipient_list)
+        # recipient_list = ['hamed.alizadegan@gmail.com']
+        # send_order_email(order, order_items, recipient_list)
 
         banner_slider = BannerSliderModel.objects.all()
         ser_data = BannerSliderSerializer(instance=banner_slider, many=True)
