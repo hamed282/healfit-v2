@@ -131,19 +131,31 @@ def zoho_invoice_quantity_update(first_name,
 
 def send_order_email(order, order_items, recipient_list):
     subject = 'New Order Received from healfit.ae'
+    print(str(order.created.year)[-2:])
+    print(str(order.cart_id).zfill(6))
+    print(order.user.first_name, order.user.last_name)
+    print(order.address.address)
+    print(order.address.city)
+    print(order.address.country)
+    print(order.created)
+    products = [{'name': item.product.name,
+                'quantity': item.quantity,
+                'amount': item.selling_price,
+                'taxable_amount': round(int(item.selling_price)/1.05, 2),
+                'tax_amount': round(int(item.selling_price) - round(int(item.selling_price)/1.05, 2), 2),
+                } for item in order_items]
+    print(products)
+    print(sum(int(item.selling_price) * int(item.quantity) for item in order_items))
+    print(sum(round(int(item.selling_price)/1.05, 2) * int(item.quantity) for item in order_items))
+    print(sum(round(int(item.selling_price) - round(int(item.selling_price)/1.05, 2), 2) * int(item.quantity) for item in order_items))
 
-    context = {'invoice_number': order.created.Year(),
+    context = {'invoice_number': order.created,
                'bill_to': {'name': order,
                            'address': order,
                            'city': order,
                            'country': order},
                'invoice_date': order,
-               'products': {'name': order_items,
-                            'quantity': order_items,
-                            'amount': order_items,
-                            'taxable_amount': order_items,
-                            'tax_amount': order_items,
-                            },
+               'products': products,
                'total_invoice': order_items,
                'total_taxable_amount': order_items,
                'total_tax_amount': order_items
