@@ -367,6 +367,7 @@ class ShippingView(APIView):
 
         def delivery_date(delivery_day, zone=None):
             uae_holidays = holidays.UnitedArabEmirates(years=datetime.now().year)
+            count_holiday = 0
 
             order_time = datetime.now()
             work_time = datetime.strptime("17:00", '%H:%M')
@@ -378,10 +379,12 @@ class ShippingView(APIView):
             print('day:', delivery_day)
             print('zone:', zone)
             print('1:', delivery_time)
-            while delivery_time in uae_holidays or delivery_time.weekday() in [5, 6] and zone != 'Dubai':
-                delivery_time += timedelta(days=1)
-                print('2:', delivery_time)
 
+            while delivery_time in uae_holidays or delivery_time.weekday() in [5, 6] and zone != 'Dubai':
+                count_holiday += 1
+                # delivery_time += timedelta(days=1)
+                print('2:', delivery_time)
+            delivery_time += timedelta(days=count_holiday)
             print('3:', delivery_time)
 
             return delivery_time.strftime('%Y-%m-%d')
