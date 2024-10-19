@@ -388,15 +388,12 @@ class ShippingView(APIView):
                 delivery_time = datetime.now() + timedelta(days=delivery_day + 1)
             else:
                 delivery_time = datetime.now() + timedelta(days=delivery_day)
-            print('day:', delivery_day)
-            print('zone:', zone)
-            print('1:', delivery_time)
+
             # while delivery_time in uae_holidays or delivery_time.weekday() in [5, 6] and zone != 'Dubai':
             #     delivery_time += timedelta(days=1)
             #     print('2:', delivery_time)
-
-            delivery_time += timedelta(days=holidays_count(order_time, delivery_time))
-            print('3:', delivery_time)
+            if zone != 'Dubai':
+                delivery_time += timedelta(days=holidays_count(order_time, delivery_time))
 
             return delivery_time.strftime('%Y-%m-%d')
 
