@@ -586,11 +586,6 @@ class ShippingSerializer(ModelSerializer):
 
     def get_city(self, obj):
         cities = ShippingModel.objects.filter(country=obj)
-        data = [{'city': city.city, 'threshold_free': city.threshold_free, 'shipping_fee': city.shipping_fee,
-                 'delivery_day': city.delivery_day} for city in cities]
+        data = [{'id': city.id, 'city': city.city, 'threshold_free': city.threshold_free,
+                 'shipping_fee': city.shipping_fee, 'delivery_day': city.delivery_day} for city in cities]
         return data
-
-
-# class AddCityShippingSerializer(ModelSerializer):
-#     class Meta:
-#         model =

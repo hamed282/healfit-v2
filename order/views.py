@@ -389,9 +389,6 @@ class ShippingView(APIView):
             else:
                 delivery_time = datetime.now() + timedelta(days=delivery_day)
 
-            # while delivery_time in uae_holidays or delivery_time.weekday() in [5, 6] and zone != 'Dubai':
-            #     delivery_time += timedelta(days=1)
-            #     print('2:', delivery_time)
             if zone != 'Dubai':
                 delivery_time += timedelta(days=holidays_count(order_time, delivery_time))
 
