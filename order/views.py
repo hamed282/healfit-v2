@@ -187,19 +187,19 @@ class OrderPayAuthorisedView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # print(request.session.get('ref_id'))
-        # print(request.user)
-        # order = OrderModel.objects.get(ref_id=request.session.get('ref_id'))
-        try:
-            # order = OrderModel.objects.filter(user=user).first()
-            order = OrderModel.objects.get(ref_id=request.session.get('ref_id'))
-            print(order)
-            order.error_note = 'Error 00'
-            order.save()
-        except:
-            # return HttpResponseRedirect(redirect_to='https://gogle.com')
-            print('order error')
-            return Response(data={'message': 'invalid order'})
+        print(request.session.get('ref_id'))
+        print(request.user)
+        order = OrderModel.objects.filter(ref_id=request.session.get('ref_id'))
+        # try:
+        #     # order = OrderModel.objects.filter(user=user).first()
+        #     order = OrderModel.objects.get(ref_id=request.session.get('ref_id'))
+        #     print(order)
+        #     order.error_note = 'Error 00'
+        #     order.save()
+        # except:
+        #     # return HttpResponseRedirect(redirect_to='https://gogle.com')
+        #     print('order error')
+        #     return Response(data={'message': 'invalid order'})
 
         order.error_note = 'Error 01'
         order.save()
