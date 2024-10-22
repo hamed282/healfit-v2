@@ -171,11 +171,7 @@ class OrderPayView(APIView):
                     order.total_discount = int(total_price_without_discount) - int(amount)
                     order.total_amount = amount
                     order.save()
-
                     request.session['ref_id'] = response['order']['ref']
-
-                    user_code = request.session.get('ref_id')
-                    print(user_code)
 
                     if code and not code.infinite:
                         code.limit -= 1
@@ -191,10 +187,9 @@ class OrderPayAuthorisedView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = request.user
-
         try:
-            order = OrderModel.objects.filter(user=user).first()
+            # order = OrderModel.objects.filter(user=user).first()
+            order = OrderModel.objects.get(ref_id=request.session.get('ref_id'))
             order.error_note = 'Error 00'
             order.save()
         except:
@@ -257,7 +252,7 @@ class OrderPayAuthorisedView(APIView):
                 order.error_note = 'Error 05'
                 order.save()
 
-                UserProductModel.objects.create(user=user, product=product_variant, order=order,
+                UserProductModel.objects.create(user=request.user, product=product_variant, order=order,
                                                 quantity=quantity, price=price)
 
                 order.error_note = 'Error 06'
