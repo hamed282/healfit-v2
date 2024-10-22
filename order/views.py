@@ -187,16 +187,16 @@ class OrderPayAuthorisedView(APIView):
 
     def get(self, request):
         user = request.user
-        order = OrderModel.objects.filter(user=user).first()
 
-        # try:
-        #     order = OrderModel.objects.filter(user=user).first()
-        #     order.error_note = 'Error 00'
-        #     order.save()
-        # except:
-        #     # return HttpResponseRedirect(redirect_to='https://gogle.com')
-        #     print('order error')
-        #     return Response(data={'message': 'invalid order'})
+        try:
+            order = OrderModel.objects.filter(user=user).first()
+            order.error_note = 'Error 00'
+            order.save()
+        except Exception as e:
+            # return HttpResponseRedirect(redirect_to='https://gogle.com')
+            print('order error')
+            print(f'Error occurred: {e}')
+            return Response(data={'message': 'invalid order'})
 
         order.error_note = 'Error 01'
         order.save()
