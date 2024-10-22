@@ -190,6 +190,7 @@ class OrderPayAuthorisedView(APIView):
         try:
             # order = OrderModel.objects.filter(user=user).first()
             order = OrderModel.objects.get(ref_id=request.session.get('ref_id'))
+            print(order)
             order.error_note = 'Error 00'
             order.save()
         except:
