@@ -172,6 +172,11 @@ class OrderPayView(APIView):
                     order.total_amount = amount
                     order.save()
 
+                    request.session['ref_id'] = response['order']['ref']
+
+                    user_code = request.session.get('ref_id')
+                    print(user_code)
+
                     if code and not code.infinite:
                         code.limit -= 1
                         code.save()
@@ -190,8 +195,11 @@ class OrderPayAuthorisedView(APIView):
 
         try:
             order = OrderModel.objects.filter(user=user).first()
+            order.error_note = 'Error 00'
+            order.save()
         except:
             # return HttpResponseRedirect(redirect_to='https://gogle.com')
+            print('order error')
             return Response(data={'message': 'invalid order'})
 
         order.error_note = 'Error 01'
@@ -407,4 +415,4 @@ class ShippingView(APIView):
                     return Response(data={'shipping_fee': shipping.shipping_fee, 'delivery_time': delivery_date(int(shipping.delivery_day), city)})
                 return Response(data={'shipping_fee': '0', 'delivery_time': delivery_date(int(shipping.delivery_day), city)})
         else:
-            return Response(data={'shipping_fee': '100', 'delivery_day': delivery_date(7)})
+            return Response(data={'shipping_fee': '0', 'delivery_day': ''})  # delivery_date(7)
