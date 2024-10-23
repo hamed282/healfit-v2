@@ -22,7 +22,7 @@ class OrderPayView(APIView):
         forms = request.data['product']
         discount_code = request.data.get('discount_code', None)
 
-        def shipping_fee(country, city):
+        def shipping_fee(country, city, amount):
             if ShippingCountryModel.objects.filter(country=country).exists():
                 country_model = ShippingCountryModel.objects.get(country=country)
                 if ShippingModel.objects.filter(country=country_model, city=city).exists():
@@ -40,10 +40,8 @@ class OrderPayView(APIView):
 
         if len(forms) > 0:
             address = get_object_or_404(AddressModel, id=request.data['address_id'])
-            shipping = int(shipping_fee(address.country, address.city))
             order = OrderModel.objects.create(user=request.user, address=address,
-                                              status=OrderStatusModel.objects.get(status='New'),
-                                              shipping=shipping)
+                                              status=OrderStatusModel.objects.get(status='New'))
 
             ################################
             # discount_code = 'ABC'
@@ -133,16 +131,21 @@ class OrderPayView(APIView):
             if code and not code.extra_discount and int(code.discount_threshold) <= total_price_without_discount:
                 if discount_percent:
                     amount = int(
-                        total_price_without_discount - (total_price_without_discount * int(discount_percent)) / 100) + shipping
+                        total_price_without_discount - (total_price_without_discount * int(discount_percent)) / 100)
+                    amount_shipping = amount + int(shipping_fee(address.country, address.city, amount))
                 elif discount_amount:
-                    amount = int(total_price_without_discount - int(discount_amount)) + shipping
+                    amount = int(total_price_without_discount - int(discount_amount))
+                    amount_shipping = amount + int(shipping_fee(address.country, address.city, amount))
             elif code and code.extra_discount and int(code.discount_threshold) <= total_price_with_discount:
                 if discount_percent:
-                    amount = int(total_price_with_discount - (total_price_with_discount * int(discount_percent)) / 100) + shipping
+                    amount = int(total_price_with_discount - (total_price_with_discount * int(discount_percent)) / 100)
+                    amount_shipping = amount + int(shipping_fee(address.country, address.city, amount))
                 elif discount_amount:
-                    amount = int(total_price_with_discount - int(discount_amount)) + shipping
+                    amount = int(total_price_with_discount - int(discount_amount))
+                    amount_shipping = amount + int(shipping_fee(address.country, address.city, amount))
             else:
-                amount = int(str(order.get_total_price())) + shipping
+                amount = int(str(order.get_total_price()))
+                amount_shipping = amount + int(shipping_fee(address.country, address.city, amount))
 
             description = f'buy'
             cart_id = str(order.id)
@@ -154,7 +157,7 @@ class OrderPayView(APIView):
                 "order": {
                     "cartid": cart_id,
                     "test": settings.TEST,
-                    "amount": amount,
+                    "amount": amount_shipping,
                     "currency": settings.CURRENCY,
                     "description": description,
                 },
@@ -187,6 +190,7 @@ class OrderPayView(APIView):
                     order.coupon = code
                     order.total_discount = int(total_price_without_discount) - int(amount)
                     order.total_amount = amount
+                    order.shipping = int(shipping_fee(address.country, address.city, amount))
                     order.save()
 
                     if code and not code.infinite:
