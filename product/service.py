@@ -38,8 +38,11 @@ class Cart:
 
         ser_product = QuantityProductSerializer(instance=product)
         quantity_stock = ser_product.data['quantity']
-        if int(self.cart[product_id]["quantity"]) > int(quantity_stock):
+
+        if int(self.cart[product_id]["quantity"]) == 0:
             return {'massage': 'out of stock'}
+        elif int(self.cart[product_id]["quantity"]) > int(quantity_stock):
+            return {'massage': f'only {quantity_stock} item available in the stock'}
         else:
             self.save()
             return {'massage': 'cart updated'}

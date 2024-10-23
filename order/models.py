@@ -25,6 +25,7 @@ class OrderModel(models.Model):
     coupon = models.ForeignKey(CouponModel, on_delete=models.CASCADE, blank=True, null=True)
     total_discount = models.CharField(max_length=9, blank=True, null=True)
     total_amount = models.CharField(max_length=9, blank=True, null=True)
+    shipping = models.CharField(max_length=9, default='0')
 
     paid = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)

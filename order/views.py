@@ -21,13 +21,29 @@ class OrderPayView(APIView):
     def post(self, request):
         forms = request.data['product']
         discount_code = request.data.get('discount_code', None)
-        print('create order')
+
+        def shipping_fee(country, city):
+            if ShippingCountryModel.objects.filter(country=country).exists():
+                country_model = ShippingCountryModel.objects.get(country=country)
+                if ShippingModel.objects.filter(country=country_model, city=city).exists():
+                    shipping = ShippingModel.objects.get(country=country_model, city=city)
+                    if float(shipping.threshold_free) > amount:
+                        return shipping.shipping_fee
+                    return 0
+                else:
+                    shipping = ShippingCountryModel.objects.get(country=country)
+                    if float(shipping.threshold_free) > amount:
+                        return shipping.shipping_fee
+                    return 0
+            else:
+                return 300
 
         if len(forms) > 0:
             address = get_object_or_404(AddressModel, id=request.data['address_id'])
-
+            shipping = int(shipping_fee(address.country, address.city))
             order = OrderModel.objects.create(user=request.user, address=address,
-                                              status=OrderStatusModel.objects.get(status='New'))
+                                              status=OrderStatusModel.objects.get(status='New'),
+                                              shipping=shipping)
 
             ################################
             # discount_code = 'ABC'
@@ -117,16 +133,16 @@ class OrderPayView(APIView):
             if code and not code.extra_discount and int(code.discount_threshold) <= total_price_without_discount:
                 if discount_percent:
                     amount = int(
-                        total_price_without_discount - (total_price_without_discount * int(discount_percent)) / 100)
+                        total_price_without_discount - (total_price_without_discount * int(discount_percent)) / 100) + shipping
                 elif discount_amount:
-                    amount = int(total_price_without_discount - int(discount_amount))
+                    amount = int(total_price_without_discount - int(discount_amount)) + shipping
             elif code and code.extra_discount and int(code.discount_threshold) <= total_price_with_discount:
                 if discount_percent:
-                    amount = int(total_price_with_discount - (total_price_with_discount * int(discount_percent)) / 100)
+                    amount = int(total_price_with_discount - (total_price_with_discount * int(discount_percent)) / 100) + shipping
                 elif discount_amount:
-                    amount = int(total_price_with_discount - int(discount_amount))
+                    amount = int(total_price_with_discount - int(discount_amount)) + shipping
             else:
-                amount = str(order.get_total_price())
+                amount = int(str(order.get_total_price())) + shipping
 
             description = f'buy'
             cart_id = str(order.id)
@@ -394,8 +410,9 @@ class ShippingView(APIView):
             else:
                 delivery_time = datetime.now() + timedelta(days=delivery_day)
 
-            if zone != 'Dubai':
-                delivery_time += timedelta(days=holidays_count(order_time, delivery_time))
+            # if zone != 'Dubai':
+            #     delivery_time += timedelta(days=holidays_count(order_time, delivery_time))
+            delivery_time += timedelta(days=holidays_count(order_time, delivery_time))
 
             return delivery_time.strftime('%Y-%m-%d')
 
@@ -404,12 +421,31 @@ class ShippingView(APIView):
             if ShippingModel.objects.filter(country=country_model, city=city).exists():
                 shipping = ShippingModel.objects.get(country=country_model, city=city)
                 if float(shipping.threshold_free) > amount:
-                    return Response(data={'shipping_fee': shipping.shipping_fee, 'delivery_time': delivery_date(int(shipping.delivery_day), city)})
-                return Response(data={'shipping_fee': '0', 'delivery_time': delivery_date(int(shipping.delivery_day), city)})
+                    return Response(data={'shipping_fee': shipping.shipping_fee,
+                                          'delivery_time': delivery_date(int(shipping.delivery_day), city),
+                                          'total_amount': int(amount),
+                                          'total_with_shipping': int(amount) + int(shipping.shipping_fee)})
+                return Response(data={'shipping_fee': '0',
+                                      'delivery_time': delivery_date(int(shipping.delivery_day), city),
+                                      'total_amount': int(amount),
+                                      'total_with_shipping': int(amount) + 0
+                                      })
             else:
                 shipping = ShippingCountryModel.objects.get(country=country)
                 if float(shipping.threshold_free) > amount:
-                    return Response(data={'shipping_fee': shipping.shipping_fee, 'delivery_time': delivery_date(int(shipping.delivery_day), city)})
-                return Response(data={'shipping_fee': '0', 'delivery_time': delivery_date(int(shipping.delivery_day), city)})
+                    return Response(data={'shipping_fee': shipping.shipping_fee,
+                                          'delivery_time': delivery_date(int(shipping.delivery_day), city),
+                                          'total_amount': int(amount),
+                                          'total_with_shipping': int(amount) + int(shipping.shipping_fee)
+                                          })
+                return Response(data={'shipping_fee': '0',
+                                      'delivery_time': delivery_date(int(shipping.delivery_day), city),
+                                      'total_amount': int(amount),
+                                      'total_with_shipping': int(amount) + 0
+                                      })
         else:
-            return Response(data={'shipping_fee': '0', 'delivery_day': ''})  # delivery_date(7)
+            return Response(data={'shipping_fee': '50',
+                                  'delivery_day': delivery_date(7),
+                                  'total_amount': int(amount),
+                                  'total_with_shipping': int(amount) + 300
+                                  })
