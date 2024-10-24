@@ -156,9 +156,9 @@ def send_order_email(order, order_items, recipient_list):
                            'country': f'{order.address.country}'},
                'invoice_date': order.created,
                'products': products,
-               'total_invoice': order_items,
-               'total_taxable_amount': order_items,
-               'total_tax_amount': order_items
+               'total_invoice': sum(int(item.selling_price) * int(item.quantity) for item in order_items),
+               'total_taxable_amount': sum(round(int(item.selling_price)/1.05, 2) * int(item.quantity) for item in order_items),
+               'total_tax_amount': sum(round(int(item.selling_price) - round(int(item.selling_price)/1.05, 2), 2) * int(item.quantity) for item in order_items)
                }
 
     # قالب HTML را با استفاده از render_to_string رندر می‌کنیم
