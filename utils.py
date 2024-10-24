@@ -154,7 +154,7 @@ def send_order_email(order, order_items, recipient_list):
                            'address': f'{order.address.address}',
                            'city': f'{order.address.city}',
                            'country': f'{order.address.country}'},
-               'invoice_date': order.created,
+               'invoice_date': order.created.strftime("%d-%m-%Y"),
                'products': products,
                'total_invoice': sum(int(item.selling_price) * int(item.quantity) for item in order_items),
                'total_taxable_amount': sum(round(int(item.selling_price)/1.05, 2) * int(item.quantity) for item in order_items),

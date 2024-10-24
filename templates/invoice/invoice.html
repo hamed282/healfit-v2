@@ -15,6 +15,7 @@
 
         .terms-conditions {
             text-align: left;
+            font-size: 8pt;
         }
 
         .pcs-item-desc {
@@ -33,7 +34,7 @@
             max-width: 800px;
             margin: 20px auto;
             background: #fff;
-            padding: 30px;
+            padding: 50px;
             border-radius: 15px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
@@ -179,29 +180,27 @@
 <body>
 
     <div class="invoice-container">
-<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin-top: 10; padding: 0; border: 0;">
-    <tr>
-        <td style="text-align: left; padding: 0; border: 0;">
-            <h1 style="font-size: 22px; color: #27BDBE; margin: 0;">healfit</h1>
-            <p style="margin: 0;">(SATELEC LLC FZ)</p>
-        </td>
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin-top: 10; padding: 0; border: 0;">
+        <tr>
+            <td style="text-align: left; padding: 0; border: 0;">
+                <h1 style="font-size: 22px; color: #27BDBE; margin: 0;">healfit</h1>
+            </td>
 
-        <td style="text-align: right; padding: 0; border: 0;">
-            <p style="margin: 0;">Invoice: {{ invoice_number }}</p>
-            <p style="margin: 0;">Invoice Date: {{ invoice_date }}</p>
-        </td>
-    </tr>
-</table>
+            <td style="text-align: right; padding: 0; border: 0;">
+                <p style="margin: 0;">Tax Invoice: {{ invoice_number }}</p>
+                <p style="margin: 0;">Date: {{ invoice_date }}</p>
+            </td>
+        </tr>
+    </table>
 
 
         <section class="invoice-details">
             <div class="company-info">
-                <p><strong>healfit.ae</strong></p>
-                <p>610 Clover Bay Tower, Business Bay, Dubai</p>
+                <p><strong>(SATELEC LLC FZ)</strong></p>
+                <p>610 Clover Bay Tower</p>
                 <p>U.A.E</p>
                 <p>044455097</p>
-                <p>info@healfit.ae</p>
-                <p>www.healfit.ae</p>
+
             </div>
             <div class="bill-to">
                 <p><strong>Bill To:</strong></p>
@@ -291,7 +290,6 @@
         </section>
 
         <footer class="terms-conditions">
-            <strong>Terms & Conditions:</strong>
             <p>Please be advised that all items purchased are non-refundable. Exchanges for products with the same code are permissible, provided a formal request for exchange is submitted within 24 hours of the delivery time. This ensures we can continue to offer the quality and service you expect. In the unfortunate event that you receive a product in a damaged condition, we strongly urge you to contact the Healfit Sales Team immediately. For a swift resolution, report any damages within 3 hours of receiving your delivery. When reporting, please include photos of the damage, as prompt and clear reporting is essential for us to effectively address your concern. Should you have any inquiries or need to report an issue, please don't hesitate to get in touch with us at info@healfit.ae or call us at 0529745838. Ensuring your satisfaction and maintaining your trust in our products are of paramount importance to us. Thank you for choosing Healfit.</p>
         </footer>
     </div>

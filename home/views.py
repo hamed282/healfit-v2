@@ -16,8 +16,8 @@ class ImageSliderView(APIView):
         # from utils import send_order_email
         # order = OrderModel.objects.get(id=38)
         # order_items = OrderItemModel.objects.filter(order=order)
-
-        # recipient_list = ['hamed.alizadegan@gmail.com']
+        #
+        # recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae']
         # send_order_email(order, order_items, recipient_list)
 
         banner_slider = BannerSliderModel.objects.all()
