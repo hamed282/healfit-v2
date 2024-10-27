@@ -10,7 +10,7 @@ from accounts.models import AddressModel
 from django.shortcuts import get_object_or_404
 from .serializers import OrderUserSerializer
 from django.core.mail import send_mail
-from utils import send_order_email
+from utils import send_order_email, send_order_telegram
 from datetime import datetime, timedelta
 import holidays
 
@@ -282,6 +282,8 @@ class OrderPayAuthorisedView(APIView):
 
             recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae', order.user.email]
             send_order_email(order, order_items, recipient_list)
+
+            send_order_telegram(order, order_items)
 
             # return HttpResponseRedirect(redirect_to='https://gogle.com')
             return Response(data={'message': 'success', 'cart_id': order.cart_id,
