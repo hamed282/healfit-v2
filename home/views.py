@@ -2,23 +2,28 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import (BannerSliderModel, CommentHomeModel, VideoHomeModel, ContentHomeModel, BannerShopModel, LogoModel,
-                     SEOHomeModel, ContactSubmitModel)
+                     SEOHomeModel, ContactSubmitModel, TelegramBotModel)
 from .serializers import (BannerSliderSerializer, CommentHomeSerializer, VideoHomeSerializer, ContentHomeSerializer,
                           BannerShopSerializer, SEOHomeSerializer, LogoHomeSerializer, NewsLetterSerializer,
                           ContactSubmitSerializer)
 from django.conf import settings
 from django.core.mail import send_mail
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
 
 
 class ImageSliderView(APIView):
     def get(self, request):
         # from order.models import OrderModel, OrderItemModel
-        # from utils import send_order_email
+        # from utils import send_order_email, send_order_telegram
         # order = OrderModel.objects.get(id=38)
         # order_items = OrderItemModel.objects.filter(order=order)
         #
         # recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae']
         # send_order_email(order, order_items, recipient_list)
+        #
+        # send_order_telegram(order, order_items)
 
         banner_slider = BannerSliderModel.objects.all()
         ser_data = BannerSliderSerializer(instance=banner_slider, many=True)
@@ -114,3 +119,26 @@ class ContactView(APIView):
             return Response(data={'message': 'successfully submitted'})
         else:
             return Response(data=ser_submit.errors)
+
+
+@csrf_exempt
+def telegram_webhook(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            message = data.get('message')
+            if message and message.get('text') == '/start':
+                chat_id = message['chat']['id']
+                username = message['from'].get('username')
+
+                user, created = TelegramBotModel.objects.get_or_create(chat_id=chat_id)
+                if username:
+                    user.username = username
+                user.save()
+
+                return JsonResponse({'status': 'success', 'created': created})
+        except Exception as e:
+            print(f"Error: {e}")
+            return JsonResponse({'status': 'error', 'message': str(e)})
+
+    return JsonResponse({'status': 'failed'})

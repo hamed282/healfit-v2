@@ -3,6 +3,7 @@ import requests
 from accounts.models import User
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from home.models import TelegramBotModel
 
 
 def zoho_refresh_token(scope):
@@ -184,5 +185,38 @@ def send_order_email(order, order_items, recipient_list):
     email.send()
 
 
-def send_order_telegram(order, order_items, recipient_list):
-    pass
+def send_order_telegram(order, order_items):
+    token = '7634802186:AAEXRh2YALEoXZXDA6TywGckdG_7erAgrxA'
+    bill_to = {'name': f'{order.user.first_name} {order.user.last_name}',
+               'address': f'{order.address.address}',
+               'city': f'{order.address.city}',
+               'country': f'{order.address.country}'}
+
+    products = [{'name': item.product.name,
+                'quantity': item.quantity,
+                'amount': item.selling_price,
+                'taxable_amount': round(int(item.selling_price)/1.05, 2),
+                'tax_amount': round(int(item.selling_price) - round(int(item.selling_price)/1.05, 2), 2),
+                } for item in order_items]
+
+    total_invoice = sum(int(item.selling_price) * int(item.quantity) for item in order_items) + int(order.shipping),
+    shipping_fee = order.shipping,
+    product_message = ''
+    id_message = 1
+    for product in products:
+        product_message += f"{id_message}- {product['name']} - {product['quantity']} pcs - {product['amount']} AED \n"
+        id_message += 1
+
+    message = ('New Order Received\n \n'
+               f'Bill to: {bill_to['name']} - {bill_to['address']} - {bill_to['city']} - {bill_to['country']}\n \n'
+               f'Products: \n {product_message} \n \n'
+               f'shipping fee: {shipping_fee[0]} \n'
+               f'total amount: {total_invoice[0]}')
+
+    chat_list = TelegramBotModel.objects.all()
+    chat_list = [chat_id for chat_id in chat_list]
+    for chat_id in chat_list:
+        url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&parse_mode=Markdown&text={message}"
+        response = requests.get(url)
+        print(response.json())
+

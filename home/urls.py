@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import telegram_webhook
 
 app_name = 'home'
 urlpatterns = [
@@ -12,4 +13,6 @@ urlpatterns = [
     path('seo/', views.SEOHomeView.as_view(), name='seo'),
     path('newsletter/', views.NewsLetterView.as_view(), name='newsletter'),
     path('contact_submit/', views.ContactView.as_view(), name='contact_submit'),
+    path('telegram_webhook/', telegram_webhook, name='telegram_webhook'),
 ]
+

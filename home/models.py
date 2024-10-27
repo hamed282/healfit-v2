@@ -140,3 +140,11 @@ class ContactSubmitModel(models.Model):
     class Meta:
         verbose_name = 'Contact User Submit'
         verbose_name_plural = 'Contact User Submit'
+
+
+class TelegramBotModel(models.Model):
+    username = models.CharField(max_length=64)
+    chat_id = models.CharField(max_length=64)
+
+    def __str__(self):
+        return self.chat_id
