@@ -156,7 +156,8 @@ def send_order_email(order, order_items, recipient_list):
                            'country': f'{order.address.country}'},
                'invoice_date': order.created.strftime("%d-%m-%Y"),
                'products': products,
-               'total_invoice': sum(int(item.selling_price) * int(item.quantity) for item in order_items),
+               'total_invoice': sum(int(item.selling_price) * int(item.quantity) for item in order_items) + int(order.shipping),
+               'shipping_fee': order.shipping,
                'total_taxable_amount': sum(round(int(item.selling_price)/1.05, 2) * int(item.quantity) for item in order_items),
                'total_tax_amount': sum(round(int(item.selling_price) - round(int(item.selling_price)/1.05, 2), 2) * int(item.quantity) for item in order_items)
                }
@@ -181,3 +182,7 @@ def send_order_email(order, order_items, recipient_list):
 
     # ارسال ایمیل
     email.send()
+
+
+def send_order_telegram(order, order_items, recipient_list):
+    pass
