@@ -208,7 +208,7 @@ def send_order_telegram(order, order_items):
         id_message += 1
 
     message = ('New Order Received\n \n'
-               f'Bill to: {bill_to['name']} - {bill_to['address']} - {bill_to['city']} - {bill_to['country']}\n \n'
+               f"Bill to: {bill_to['name']} - {bill_to['address']} - {bill_to['city']} - {bill_to['country']}\n \n"
                f'Products: \n {product_message} \n \n'
                f'shipping fee: {shipping_fee[0]} \n'
                f'total amount: {total_invoice[0]}')
