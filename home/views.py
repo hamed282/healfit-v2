@@ -36,9 +36,10 @@ class ImageSliderView(APIView):
         email = order.user.email
         address = order.address.address
         city = order.address.city
+        customer_id = order.user.zoho_customer_id
         line_items = [{'item_id': item.product.item_id, 'quantity': item.quantity}for item in order_items]
         zoho_invoice_quantity_update(first_name, last_name, email, address, city, line_items,
-                                     country='United Arab Emirates', customer_id=None)
+                                     country='United Arab Emirates', customer_id=customer_id)
 
         banner_slider = BannerSliderModel.objects.all()
         ser_data = BannerSliderSerializer(instance=banner_slider, many=True)
