@@ -114,6 +114,7 @@ def zoho_invoice_quantity_update(first_name, last_name, email, address, city, li
             'content-type': "application/json"}
 
         payload = {'customer_id': customer_id,
+                   "status": "paid",
                    'line_items': line_items,
                    }
 
