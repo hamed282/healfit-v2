@@ -4,13 +4,12 @@ from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 import requests
 from .models import OrderModel, OrderItemModel, OrderStatusModel, ShippingModel, ShippingCountryModel
-from product.models import ProductModel, ColorProductModel, SizeProductModel, ProductVariantModel, CouponModel
+from product.models import ProductVariantModel, CouponModel
 from order.models import UserProductModel
 from accounts.models import AddressModel
 from django.shortcuts import get_object_or_404
 from .serializers import OrderUserSerializer
-from django.core.mail import send_mail
-from utils import send_order_email, send_order_telegram
+from utils import send_order_email, send_order_telegram, zoho_invoice_quantity_update
 from datetime import datetime, timedelta
 import holidays
 
@@ -267,6 +266,11 @@ class OrderPayAuthorisedView(APIView):
 
                 product_variant.quantity = product_variant.quantity - quantity
                 product_variant.save()
+
+                line_items = [{'item_id': item.product.item_id, 'quantity': item.quantity} for item in order_items]
+                zoho_invoice_quantity_update(order.user.first_name, order.user.last_name, order.user.email,
+                                             order.address.address, order.address.city, line_items,
+                                             country='United Arab Emirates', customer_id=order.user.zoho_customer_id)
 
                 item.trace = response['trace']
                 item.save()
