@@ -21,14 +21,8 @@ def zoho_refresh_token(scope):
     return response_refresh
 
 
-def zoho_invoice_quantity_update(first_name,
-                                 last_name,
-                                 email,
-                                 address,
-                                 city,
-                                 line_items,
-                                 country='United Arab Emirates',
-                                 customer_id=None):
+def zoho_invoice_quantity_update(first_name, last_name, email, address, city, line_items,
+                                 country='United Arab Emirates', customer_id=None):
 
     organization_id = settings.ORGANIZATION_ID
     if not customer_id:
@@ -131,24 +125,14 @@ def zoho_invoice_quantity_update(first_name,
 
 
 def send_order_email(order, order_items, recipient_list):
-    subject = 'New Order Received from healfit.ae'
-    # print(str(order.created.year)[-2:])
-    # print(str(order.cart_id).zfill(6))
-    # print(order.user.first_name, order.user.last_name)
-    # print(order.address.address)
-    # print(order.address.city)
-    # print(order.address.country)
-    # print(order.created)
+    subject = 'Your Order Has been Received'
+
     products = [{'name': item.product.name,
                 'quantity': item.quantity,
                 'amount': item.selling_price,
                 'taxable_amount': round(int(item.selling_price)/1.05, 2),
                 'tax_amount': round(int(item.selling_price) - round(int(item.selling_price)/1.05, 2), 2),
                 } for item in order_items]
-    # print(products)
-    # print(sum(int(item.selling_price) * int(item.quantity) for item in order_items))
-    # print(sum(round(int(item.selling_price)/1.05, 2) * int(item.quantity) for item in order_items))
-    # print(sum(round(int(item.selling_price) - round(int(item.selling_price)/1.05, 2), 2) * int(item.quantity) for item in order_items))
 
     context = {'invoice_number': f'E-INV-{str(order.created.year)[-2:]}-{str(order.cart_id).zfill(6)}',
                'bill_to': {'name': f'{order.user.first_name} {order.user.last_name}',
@@ -219,4 +203,5 @@ def send_order_telegram(order, order_items):
         url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&parse_mode=Markdown&text={message}"
         response = requests.get(url)
         print(response.json())
+
 
