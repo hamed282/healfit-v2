@@ -28,7 +28,7 @@ class ImageSliderView(APIView):
         from utils import zoho_invoice_quantity_update
         from order.models import OrderModel, OrderItemModel
 
-        order = OrderModel.objects.get(id=38)
+        order = OrderModel.objects.get(id=172)
         order_items = OrderItemModel.objects.filter(order=order)
 
         first_name = order.user.first_name
