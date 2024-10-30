@@ -15,32 +15,6 @@ import json
 
 class ImageSliderView(APIView):
     def get(self, request):
-        # from order.models import OrderModel, OrderItemModel
-        # from utils import send_order_email, send_order_telegram
-        # order = OrderModel.objects.get(id=38)
-        # order_items = OrderItemModel.objects.filter(order=order)
-        #
-        # recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae']
-        # send_order_email(order, order_items, recipient_list)
-        #
-        # send_order_telegram(order, order_items)
-
-        # from utils import zoho_invoice_quantity_update
-        # from order.models import OrderModel, OrderItemModel
-        #
-        # order = OrderModel.objects.get(id=172)
-        # order_items = OrderItemModel.objects.filter(order=order)
-        #
-        # first_name = order.user.first_name
-        # last_name = order.user.last_name
-        # email = order.user.email
-        # address = order.address.address
-        # city = order.address.city
-        # customer_id = order.user.zoho_customer_id
-        # line_items = [{'item_id': item.product.item_id, 'quantity': item.quantity}for item in order_items]
-        # zoho_invoice_quantity_update(first_name, last_name, email, address, city, line_items,
-        #                              country='United Arab Emirates', customer_id=customer_id)
-
         banner_slider = BannerSliderModel.objects.all()
         ser_data = BannerSliderSerializer(instance=banner_slider, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
