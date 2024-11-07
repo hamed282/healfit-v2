@@ -88,8 +88,17 @@ class ProductSitemap(Sitemap):
         return ProductModel.objects.all()
 
     def lastmod(self, item):
-        return item.updated
+        # تبدیل دقیق به فرمت ISO در صورت نیاز
+        if isinstance(item.updated, str):
+            try:
+                date_time = datetime.fromisoformat(item.updated)
+            except ValueError:
+                date_time = datetime.strptime(item.updated, '%Y-%m-%d %H:%M:%S')
+        else:
+            date_time = item.updated
 
+        # بازگرداندن مقدار به فرمت ISO
+        return date_time  # .isoformat()
 
 class ProductCategorySitemap(Sitemap):
     changefreq = 'weekly'

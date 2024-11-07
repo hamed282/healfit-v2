@@ -427,10 +427,12 @@ class CartView(APIView):
 
             product_variant = ProductVariantModel.objects.get(id=product["product"]["id"])
             item_price = int(product_variant.get_off_price()) * product["quantity"]
+            item_price_without_discount = int(product_variant.price) * product["quantity"]
             cart_total_price = sum(int(item["product"]["off_price"]) * item["quantity"] for item in cart)
             response = JsonResponse({"message": add['massage'],
                                      "cart_total_items": cart.__len__(),
                                      "item_total_price": str(item_price),
+                                     "item_total_price_without_discount": str(item_price_without_discount),
                                      "cart_total_price": str(cart_total_price),
                                      })
             expires = datetime.now() + timedelta(days=365)  # انقضا پس از 1 سال
