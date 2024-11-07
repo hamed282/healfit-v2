@@ -176,14 +176,16 @@ def send_order_telegram(order, order_items):
     bill_to = {'name': f'{order.user.first_name} {order.user.last_name}',
                'address': f'{order.address.address}',
                'city': f'{order.address.city}',
-               'country': f'{order.address.country}'}
+               'country': f'{order.address.country}',
+               'email': f'{order.user.email}',
+               'phone': f'{order.address.phone_number}'}
 
     products = [{'name': item.product.name,
-                'quantity': item.quantity,
-                'amount': item.selling_price,
-                'taxable_amount': round(int(item.selling_price)/1.05, 2),
-                'tax_amount': round(int(item.selling_price) - round(int(item.selling_price)/1.05, 2), 2),
-                } for item in order_items]
+                 'quantity': item.quantity,
+                 'amount': item.selling_price,
+                 'taxable_amount': round(int(item.selling_price)/1.05, 2),
+                 'tax_amount': round(int(item.selling_price) - round(int(item.selling_price)/1.05, 2), 2),
+                 } for item in order_items]
 
     total_invoice = sum(int(item.selling_price) * int(item.quantity) for item in order_items) + int(order.shipping),
     shipping_fee = order.shipping,
@@ -194,7 +196,7 @@ def send_order_telegram(order, order_items):
         id_message += 1
 
     message = ('New Order Received\n \n'
-               f"Bill to: {bill_to['name']} - {bill_to['address']} - {bill_to['city']} - {bill_to['country']}\n \n"
+               f"Bill to: {bill_to['name']} - {bill_to['address']} - {bill_to['city']} - {bill_to['country']} - {bill_to['email']} - {bill_to['phone']}\n \n"
                f'Products: \n {product_message} \n \n'
                f'shipping fee: {shipping_fee[0]} \n'
                f'total amount: {total_invoice[0]}')
