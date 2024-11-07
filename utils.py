@@ -178,7 +178,9 @@ def send_order_telegram(order, order_items):
                'city': f'{order.address.city}',
                'country': f'{order.address.country}',
                'email': f'{order.user.email}',
-               'phone': f'{order.address.phone_number}'}
+               'phone': f'{order.address.phone_number}',
+               'ref_id': f'{order.ref_id}',
+               'order_id': f'{order.cart_id}'}
 
     products = [{'name': item.product.name,
                  'quantity': item.quantity,
@@ -196,7 +198,8 @@ def send_order_telegram(order, order_items):
         id_message += 1
 
     message = ('New Order Received\n \n'
-               f"Bill to: {bill_to['name']} - {bill_to['address']} - {bill_to['city']} - {bill_to['country']} - {bill_to['email']} - {bill_to['phone']}\n \n"
+               f"Bill to: name: {bill_to['name']} - address: {bill_to['address']} -  city: {bill_to['city']} - country: {bill_to['country']}"
+               f" - email: {bill_to['email']} - phone: {bill_to['phone']} - reference id: {bill_to['ref_id']} - order id: {bill_to['order_id']}\n \n"
                f'Products: \n {product_message} \n \n'
                f'shipping fee: {shipping_fee[0]} \n'
                f'total amount: {total_invoice[0]}')
