@@ -81,6 +81,7 @@ class CommentBlogModel(models.Model):
     reply = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replycomment', blank=True, null=True)
     is_reply = models.BooleanField(default=False)
     body = models.TextField(max_length=512)
+    new_comment = models.BooleanField(default=True)
     is_active = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
 

@@ -463,7 +463,9 @@ class BlogImageView(APIView):
 class BlogCommentsView(APIView):
     def get(self, request):
         comments = CommentBlogModel.objects.all()
+        comments.update(new_comment=False)
         ser_data = CommentBlogSerializer(instance=comments, many=True)
+
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 
@@ -474,6 +476,12 @@ class BlogCommentEditView(APIView):
         if ser_data.is_valid():
             ser_data.save()
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class BlogCommentsNotifView(APIView):
+    def get(self, request):
+        new_comments = CommentBlogModel.objects.filter(new_comment=True).count()
+        return Response(data={'new_comments': new_comments})
 
 
 class SearchBlogCommentView(viewsets.ModelViewSet):

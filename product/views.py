@@ -72,19 +72,10 @@ class ProductColorImageView(APIView):
     """
     def get(self, request):
         product = self.request.query_params.get('product', None)
-        print(product)
-        try:
-            product = ProductModel.objects.get(product=product)
-            print(product)
-        except:
-            return Response({"error": "محصول مورد نظر پیدا نشد."})
+        product = ProductModel.objects.get(product=product)
 
         color = self.request.query_params.get('color', None)
-        print(color)
-        try:
-            product_color = ColorProductModel.objects.get(color=color)
-        except:
-            return Response({"error": "محصول مورد نظر پیدا نشد."})
+        product_color = ColorProductModel.objects.get(color=color)
 
         images = AddImageGalleryModel.objects.filter(product=product, color=product_color)
         ser_data = ProductColorImageSerializer(many=True, instance=images)
