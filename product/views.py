@@ -72,7 +72,12 @@ class ProductColorImageView(APIView):
     """
     def get(self, request):
         product = self.request.query_params.get('product', None)
-        product = ProductModel.objects.get(product=product)
+        print(product)
+        try:
+            product = ProductModel.objects.get(product=product)
+            print(product)
+        except:
+            return Response({"error": "محصول مورد نظر پیدا نشد."}, status=404)
 
         color = self.request.query_params.get('color', None)
         product_color = ColorProductModel.objects.get(color=color)
