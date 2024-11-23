@@ -11,6 +11,7 @@ from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
+from utils import sitemap
 
 
 class ImageSliderView(APIView):
@@ -132,3 +133,9 @@ def telegram_webhook(request):
             return JsonResponse({'status': 'error', 'message': str(e)})
 
     return JsonResponse({'status': 'failed'})
+
+
+class SiteMapView(APIView):
+    def get(self, request):
+        data = sitemap()
+        return Response(data=data, status=status.HTTP_200_OK)

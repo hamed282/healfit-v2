@@ -4,6 +4,7 @@ from accounts.models import User
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from home.models import TelegramBotModel
+from product.models import ProductCategoryModel, ProductSubCategoryModel, AddSubCategoryModel
 
 
 def zoho_refresh_token(scope):
@@ -212,3 +213,34 @@ def send_order_telegram(order, order_items):
         print(response.json())
 
 
+def sitemap():
+    home_page = '/'
+
+    products_json = []
+    prd = {}
+    subcat = {}
+    cate = {}
+    categories = ProductCategoryModel.objects.all()
+    for category in categories:
+        cat = category.category
+        subcategories = ProductSubCategoryModel.objects.filter(category=category)
+        for subcategory in subcategories:
+            sub = subcategory.subcategory
+            products = AddSubCategoryModel.objects.filter(subcategory=subcategory)
+            for product in products:
+                pro = product.product.product
+                prd[pro] = product.product.slug
+            subcat[sub] = prd
+        cate[cat] = subcat
+
+        # products_json.append({
+        #     "Products": {cat: {
+        #         sub: prd
+        #     }}
+        # })
+
+    data = {
+        'Home Page': home_page,
+        'Products': cate,
+    }
+    return data
