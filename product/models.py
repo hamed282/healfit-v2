@@ -31,7 +31,7 @@ class ProductModel(models.Model):
     size_guide = models.TextField(blank=True, null=True, default='')
     video = models.FileField(upload_to=get_video_product_upload_path, blank=True, null=True)
     group_id = models.CharField(max_length=100)
-    priority = models.IntegerField(blank=True, null=True, default=1)
+    priority = models.IntegerField(blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True)
 
     # SEO Fields
@@ -51,7 +51,6 @@ class ProductModel(models.Model):
         verbose_name_plural = 'Item Groups'
 
     def save(self, *args, **kwargs):
-        # تولید اولیه slug
         if self.slug is None:
             original_slug = slugify(self.product)
             unique_slug = original_slug
@@ -63,10 +62,20 @@ class ProductModel(models.Model):
 
             self.slug = unique_slug
 
+        # تنظیم priority به ترتیب و بدون فاصله
         if self.priority is None:
-            self.priority = 1
+            # پیدا کردن آخرین مقدار priority
+            last_priority = ProductModel.objects.count()
+            self.priority = last_priority + 1
 
         super(ProductModel, self).save(*args, **kwargs)
+
+        # به‌روز رسانی priority برای از بین بردن فاصله‌ها
+        all_products = ProductModel.objects.all().order_by('priority')
+        for index, product in enumerate(all_products, start=1):
+            if product.priority != index:
+                product.priority = index
+                product.save(update_fields=['priority'])
 
     def __str__(self) -> str:
         return str(self.product)

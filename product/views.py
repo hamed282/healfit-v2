@@ -340,17 +340,6 @@ class CartView(APIView):
         )
 
     def post(self, request, **kwargs):
-        """
-        parameters:
-        1. product # course id
-            - id
-            - off_price
-        2. quantity # product order
-        3. remove # true
-        4. clear # true
-        ۵. discount_code # a code
-        """
-
         cart = Cart(request)
         if "remove" in request.data:
             product = request.data["product"]
