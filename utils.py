@@ -217,7 +217,7 @@ def sitemap():
     home_page = '/'
 
     products_json = []
-    prd = {}
+    prd = []
     subcat = {}
     cate = {}
     categories = ProductCategoryModel.objects.all()
@@ -229,9 +229,11 @@ def sitemap():
             products = AddSubCategoryModel.objects.filter(subcategory=subcategory)
             for product in products:
                 pro = product.product.product
-                prd[pro] = product.product.slug
-            subcat[sub] = prd
-        cate[cat] = subcat
+                prd.append({'name': pro, 'slug': product.product.slug})
+            # subcat[sub] = prd
+            subcat[sub] = {'data': prd, 'slug': subcategory.slug}
+
+        cate[cat] = {'data': subcat, 'slug': category.slug}
 
         # products_json.append({
         #     "Products": {cat: {
