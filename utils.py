@@ -5,6 +5,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from home.models import TelegramBotModel
 from product.models import ProductCategoryModel, ProductSubCategoryModel, AddSubCategoryModel
+from blog.models import BlogCategoryModel
 
 
 def zoho_refresh_token(scope):
@@ -216,7 +217,6 @@ def send_order_telegram(order, order_items):
 def sitemap():
     home_page = '/'
 
-    products_json = []
     prd = []
     subcat = {}
     cate = {}
@@ -230,19 +230,39 @@ def sitemap():
             for product in products:
                 pro = product.product.product
                 prd.append({'name': pro, 'slug': product.product.slug})
-            # subcat[sub] = prd
             subcat[sub] = {'data': prd, 'slug': subcategory.slug}
-
         cate[cat] = {'data': subcat, 'slug': category.slug}
 
-        # products_json.append({
-        #     "Products": {cat: {
-        #         sub: prd
-        #     }}
-        # })
+    blogs = BlogCategoryModel.objects.all()
+    blog = [{'category': blg.category, 'slug': blg.slug} for blg in blogs]
+
+    company = [{'name': 'Company', 'slug': '#', 'data': [{'name': 'About Us', 'slug': 'about'},
+                                                         {'name': 'Careers', 'slug': 'about'},
+                                                         {'name': 'FAQ', 'slug': '#'}]}]
+
+    customer_service = [{'name': 'Customer Service', 'slug': '#', 'data': [{'name': 'Customer Care', 'slug': '#'},
+                                                                           {'name': 'Wholesale Inquiry', 'slug': '#'},
+                                                                           {'name': 'Return & Refund Policy', 'slug': '#'}]}]
+
+    legal = [{'name': 'Legal', 'slug': '#', 'data': [{'name': 'GTC (General Terms & Cond.)', 'slug': '#'},
+                                                     {'name': 'Payment', 'slug': '#'},
+                                                     {'name': 'Delivery', 'slug': '#'},
+                                                     {'name': 'Privacy-Policy', 'slug': '#'}]}]
+
+    customer = [{'name': 'Customer', 'slug': '#', 'data': [{'name': 'Login', 'slug': '#'},
+                                                         {'name': 'Account', 'slug': '#'},
+                                                         {'name': 'Create/Register', 'slug': '#'}]}]
+
+    contact = [{'name': 'Contact', 'slug': 'contact'}]
 
     data = {
-        'Home Page': home_page,
-        'Products': cate,
+        'Home': {'name': 'Home Page', 'slug': ''},
+        'Products': {'name': 'Products', 'data': cate, 'slug': 'shop'},
+        'Blog': {'name': 'Blog', 'data': blog, 'slug': 'blog'},
+        'Company': company,
+        'CustomerService': customer_service,
+        'Legal': legal,
+        'Customer': customer,
+        'Contact': contact,
     }
     return data
