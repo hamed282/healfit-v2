@@ -37,9 +37,12 @@ class BlogListView(APIView):
 
 class BlogView(APIView):
     def get(self, request, slug):
-        blog = get_object_or_404(BlogModel, slug=slug)
-        ser_data = GetBlogSerializer(instance=blog)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        try:
+            blog = get_object_or_404(BlogModel, slug=slug)
+            ser_data = GetBlogSerializer(instance=blog)
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        except:
+            return Response(data={'message': 'Page Not Found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class RelatedPostView(APIView):
