@@ -126,6 +126,7 @@ class ProductVariantModel(models.Model):
     item_id = models.CharField(max_length=100, verbose_name='Product ID', unique=True, blank=True, null=True)
     color = models.ForeignKey('ColorProductModel', on_delete=models.CASCADE, related_name='color_product')
     size = models.ForeignKey('SizeProductModel', on_delete=models.CASCADE, related_name='size_product')
+    classes = models.ForeignKey('ClassProductModel', on_delete=models.CASCADE, related_name='class_product', blank=True, null=True)
     price = models.IntegerField()
     percent_discount = models.IntegerField(null=True, blank=True)
     quantity = models.IntegerField()
@@ -295,6 +296,19 @@ class SizeProductModel(models.Model):
 
     def __str__(self):
         return f'{self.size}'
+
+
+class ClassProductModel(models.Model):
+    objects = None
+    classes = models.CharField(max_length=120)
+    priority = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Class Product'
+        verbose_name_plural = 'Class Products'
+
+    def __str__(self):
+        return f'{self.classes}'
 
 
 @receiver(pre_save, sender=ProductModel)

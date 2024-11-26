@@ -148,3 +148,179 @@ class TelegramBotModel(models.Model):
 
     def __str__(self):
         return self.chat_id
+
+
+class AboutPageModel(models.Model):
+    body = models.TextField()
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'About Page'
+
+    def clean(self):
+        if not self.pk and AboutPageModel.objects.exists():
+            # This below line will render error by breaking page, you will see
+            raise ValidationError(
+                "There can be only one About Page you can not add another"
+            )
+
+
+class ContactUsPageModel(models.Model):
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'ContactUs Page'
+
+    def clean(self):
+        if not self.pk and ContactUsPageModel.objects.exists():
+            # This below line will render error by breaking page, you will see
+            raise ValidationError(
+                "There can be only one ContactUs Page you can not add another"
+            )
+
+
+class CustomerCarePageModel(models.Model):
+    body = models.TextField()
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'CustomerCare Page'
+
+    def clean(self):
+        if not self.pk and CustomerCarePageModel.objects.exists():
+            # This below line will render error by breaking page, you will see
+            raise ValidationError(
+                "There can be only one CustomerCare Page you can not add another"
+            )
+
+
+class WholesaleInquiryPageModel(models.Model):
+    body = models.TextField()
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'WholesaleInquiry Page'
+
+    def clean(self):
+        if not self.pk and WholesaleInquiryPageModel.objects.exists():
+            # This below line will render error by breaking page, you will see
+            raise ValidationError(
+                "There can be only one WholesaleInquiry Page you can not add another"
+            )
+
+
+class RefundPolicyPageModel(models.Model):
+    body = models.TextField()
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'RefundPolicy Page'
+
+    def clean(self):
+        if not self.pk and RefundPolicyPageModel.objects.exists():
+            # This below line will render error by breaking page, you will see
+            raise ValidationError(
+                "There can be only one RefundPolicy Page you can not add another"
+            )
+
+
+class SitemapPageModel(models.Model):
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Sitemap Page'
+
+    def clean(self):
+        if not self.pk and SitemapPageModel.objects.exists():
+            # This below line will render error by breaking page, you will see
+            raise ValidationError(
+                "There can be only one Sitemap Page you can not add another"
+            )
+
+
+class CareerPageModel(models.Model):
+    body = models.TextField()
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Career Page'
+
+    def clean(self):
+        if not self.pk and CareerPageModel.objects.exists():
+            # This below line will render error by breaking page, you will see
+            raise ValidationError(
+                "There can be only one Career Page you can not add another"
+            )
+
+
+class ShopPageModel(models.Model):
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Shop Page'
+
+    def clean(self):
+        if not self.pk and ShopPageModel.objects.exists():
+            # This below line will render error by breaking page, you will see
+            raise ValidationError(
+                "There can be only one Shop Page you can not add another"
+            )
+
+
+class BlogPageModel(models.Model):
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Blog Page'
+
+    def clean(self):
+        if not self.pk and BlogPageModel.objects.exists():
+            # This below line will render error by breaking page, you will see
+            raise ValidationError(
+                "There can be only one Blog Page you can not add another"
+            )

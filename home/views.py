@@ -2,10 +2,14 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import (BannerSliderModel, CommentHomeModel, VideoHomeModel, ContentHomeModel, BannerShopModel, LogoModel,
-                     SEOHomeModel, ContactSubmitModel, TelegramBotModel)
+                     SEOHomeModel, ContactSubmitModel, TelegramBotModel, AboutPageModel, CareerPageModel, BlogPageModel,
+                     ShopPageModel, SitemapPageModel, WholesaleInquiryPageModel, CustomerCarePageModel,
+                     RefundPolicyPageModel, ContactUsPageModel)
 from .serializers import (BannerSliderSerializer, CommentHomeSerializer, VideoHomeSerializer, ContentHomeSerializer,
                           BannerShopSerializer, SEOHomeSerializer, LogoHomeSerializer, NewsLetterSerializer,
-                          ContactSubmitSerializer)
+                          ContactSubmitSerializer, AboutPageSerializer, ShopPageSerializer, BlogPageSerializer,
+                          CareerPageSerializer, SitemapPageSerializer, ContactUsPageSerializer,
+                          RefundPolicyPageSerializer, WholesaleInquiryPageSerializer, CustomerCarePageSerializer)
 from django.conf import settings
 from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
@@ -139,3 +143,66 @@ class SiteMapView(APIView):
     def get(self, request):
         data = sitemap()
         return Response(data=data, status=status.HTTP_200_OK)
+
+
+class AboutPageView(APIView):
+    def get(self, request):
+        about = AboutPageModel.objects.all().first()
+        ser_data = AboutPageSerializer(instance=about)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class ContactUsPageView(APIView):
+    def get(self, request):
+        contact = ContactUsPageModel.objects.all().first()
+        ser_data = ContactUsPageSerializer(instance=contact)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class CustomerCarePageView(APIView):
+    def get(self, request):
+        customer = CustomerCarePageModel.objects.all().first()
+        ser_data = CustomerCarePageSerializer(instance=customer)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class WholesaleInquiryPageView(APIView):
+    def get(self, request):
+        wholesale = WholesaleInquiryPageModel.objects.all().first()
+        ser_data = WholesaleInquiryPageSerializer(instance=wholesale)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class RefundPolicyPageView(APIView):
+    def get(self, request):
+        refund = RefundPolicyPageModel.objects.all().first()
+        ser_data = RefundPolicyPageSerializer(instance=refund)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class SitemapPageView(APIView):
+    def get(self, request):
+        sitemap_page = SitemapPageModel.objects.all().first()
+        ser_data = SitemapPageSerializer(instance=sitemap_page)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class CareerPageView(APIView):
+    def get(self, request):
+        career = CareerPageModel.objects.all().first()
+        ser_data = CareerPageSerializer(instance=career)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class ShopPageView(APIView):
+    def get(self, request):
+        shop = ShopPageModel.objects.all().first()
+        ser_data = ShopPageSerializer(instance=shop)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class BlogPageView(APIView):
+    def get(self, request):
+        blog = BlogPageModel.objects.all().first()
+        ser_data = BlogPageSerializer(instance=blog)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)

@@ -283,9 +283,12 @@ class SubcategoryFilterView(APIView):
 
 class ProductItemView(APIView):
     def get(self, request, slug_product):
-        product = ProductModel.objects.get(slug=slug_product)
-        ser_data = ProductSerializer(instance=product)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        try:
+            product = ProductModel.objects.get(slug=slug_product)
+            ser_data = ProductSerializer(instance=product)
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        except:
+            return Response(data={'message': 'Page Not Found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class FavProductView(APIView):
