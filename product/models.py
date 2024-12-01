@@ -191,11 +191,11 @@ class ProductCategoryModel(models.Model):
 
         if self.priority is None:
             # پیدا کردن آخرین مقدار priority
-            last_priority = ProductModel.objects.count()
+            last_priority = ProductCategoryModel.objects.count()
             self.priority = last_priority + 1
 
         # به‌روز رسانی priority برای از بین بردن فاصله‌ها
-        all_products = ProductModel.objects.all().order_by('priority')
+        all_products = ProductCategoryModel.objects.all().order_by('priority')
         for index, product in enumerate(all_products, start=1):
             if product.priority != index:
                 product.priority = index
@@ -218,6 +218,7 @@ class ProductSubCategoryModel(models.Model):
     short_description = models.TextField()
     description = models.TextField()
     image = models.FileField(upload_to=get_subcategory_upload_path)
+    priority = models.IntegerField(blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True)
 
     # SEO Fields
@@ -238,6 +239,19 @@ class ProductSubCategoryModel(models.Model):
 
     def save(self, **kwargs):
         self.slug = slugify(self.subcategory)
+
+        if self.priority is None:
+            # پیدا کردن آخرین مقدار priority
+            last_priority = ProductSubCategoryModel.objects.count()
+            self.priority = last_priority + 1
+
+        # به‌روز رسانی priority برای از بین بردن فاصله‌ها
+        all_products = ProductSubCategoryModel.objects.all().order_by('priority')
+        for index, product in enumerate(all_products, start=1):
+            if product.priority != index:
+                product.priority = index
+                product.save(update_fields=['priority'])
+
         super(ProductSubCategoryModel, self).save(**kwargs)
 
     def __str__(self):
