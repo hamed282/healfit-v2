@@ -173,6 +173,21 @@ def send_order_email(order, order_items, recipient_list):
     email.send()
 
 
+def send_inprocess_email(order, recipient_list):
+    subject = 'Your Order Has been Received'
+
+    # محتوای ساده (متن) ایمیل برای نسخه‌هایی که از HTML پشتیبانی نمی‌کنند
+    text_content = f'order {order.transaction_ref} is in process'
+
+    email_from = settings.EMAIL_HOST_USER
+
+    # ایجاد ایمیل
+    email = EmailMultiAlternatives(subject, text_content, email_from, recipient_list)
+
+    # ارسال ایمیل
+    email.send()
+
+
 def send_order_telegram(order, order_items):
     token = '7634802186:AAEXRh2YALEoXZXDA6TywGckdG_7erAgrxA'
     bill_to = {'name': f'{order.user.first_name} {order.user.last_name}',
