@@ -145,4 +145,31 @@ urlpatterns = [
     path('shipping/city/', views.ShippingVIew.as_view(), name='add_city'),
     path('shipping/city/<int:city_id>/', views.ShippingVIew.as_view(), name='put_city'),
 
+    # Pages
+    path('pages/about/', views.AboutPageView.as_view(), name='about'),
+    path('pages/about/<int:about_id>/', views.AboutPageView.as_view(), name='about'),
+
+    path('pages/contactus/', views.ContactUsPageView.as_view(), name='contactus'),
+    path('pages/contactus/<int:contactus_id>/', views.ContactUsPageView.as_view(), name='contactus'),
+
+    path('pages/customerCare/', views.CustomerCarePageView.as_view(), name='customerCare'),
+    path('pages/customerCare/<int:customerCare_id>/', views.CustomerCarePageView.as_view(), name='customerCare'),
+
+    path('pages/wholesale/', views.WholesaleInquiryPageView.as_view(), name='wholesale'),
+    path('pages/wholesale/<int:wholesale_id>/', views.WholesaleInquiryPageView.as_view(), name='wholesale'),
+
+    path('pages/refund/', views.RefundPolicyPageView.as_view(), name='refund'),
+    path('pages/refund/<int:refund_id>/', views.RefundPolicyPageView.as_view(), name='refund'),
+
+    path('pages/sitemapPage/', views.SitemapPageView.as_view(), name='sitemapPage'),
+    path('pages/sitemapPage/<int:sitemapPage_id>/', views.SitemapPageView.as_view(), name='sitemapPage'),
+
+    path('pages/career/', views.CareerPageView.as_view(), name='career'),
+    path('pages/career/<int:career_id>/', views.CareerPageView.as_view(), name='career'),
+
+    path('pages/shop/', views.ShopPageView.as_view(), name='shop'),
+    path('pages/shop/<int:shop_id>/', views.ShopPageView.as_view(), name='shop'),
+
+    path('pages/blog/', views.BlogPageView.as_view(), name='blog'),
+    path('pages/blog/<int:blog_id>/', views.BlogPageView.as_view(), name='blog'),
 ]

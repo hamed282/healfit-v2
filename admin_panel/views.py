@@ -20,10 +20,14 @@ from blog.serializers import BlogAllSerializer, BlogSerializer, ImageBlogSeriali
 from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel, CommentBlogModel
 from rest_framework.permissions import IsAdminUser
 from home.models import (CommentHomeModel, BannerSliderModel, VideoHomeModel, ContentHomeModel, BannerShopModel,
-                         SEOHomeModel, LogoModel, NewsLetterModel, ContactSubmitModel)
+                         SEOHomeModel, LogoModel, NewsLetterModel, ContactSubmitModel, AboutPageModel, CareerPageModel,
+                         BlogPageModel, ShopPageModel, SitemapPageModel, WholesaleInquiryPageModel,
+                         CustomerCarePageModel, RefundPolicyPageModel, ContactUsPageModel)
 from home.serializers import (CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer, ContentHomeSerializer,
                               BannerShopSerializer, LogoHomeSerializer, SEOHomeSerializer, NewsLetterSerializer,
-                              ContactSubmitSerializer)
+                              ContactSubmitSerializer, AboutPageSerializer, ShopPageSerializer, BlogPageSerializer,
+                              CareerPageSerializer, SitemapPageSerializer, ContactUsPageSerializer,
+                              RefundPolicyPageSerializer, WholesaleInquiryPageSerializer, CustomerCarePageSerializer)
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel, CouponModel)
@@ -1687,3 +1691,147 @@ class ShippingVIew(APIView):
             ser_data.save()
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_200_OK)
+
+
+class AboutPageView(APIView):
+    def get(self, request):
+        about = AboutPageModel.objects.all().first()
+        ser_data = AboutPageSerializer(instance=about)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, about_id):
+        form = request.data
+        about = get_object_or_404(AboutPageModel, id=about_id)
+        ser_data = AboutPageSerializer(instance=about, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ContactUsPageView(APIView):
+    def get(self, request):
+        contact = ContactUsPageModel.objects.all().first()
+        ser_data = ContactUsPageSerializer(instance=contact)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, contactus_id):
+        form = request.data
+        contactus = get_object_or_404(ContactUsPageModel, id=contactus_id)
+        ser_data = ContactUsPageSerializer(instance=contactus, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomerCarePageView(APIView):
+    def get(self, request):
+        customer = CustomerCarePageModel.objects.all().first()
+        ser_data = CustomerCarePageSerializer(instance=customer)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, customerCare_id):
+        form = request.data
+        customer = get_object_or_404(CustomerCarePageModel, id=customerCare_id)
+        ser_data = CustomerCarePageSerializer(instance=customer, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class WholesaleInquiryPageView(APIView):
+    def get(self, request):
+        wholesale = WholesaleInquiryPageModel.objects.all().first()
+        ser_data = WholesaleInquiryPageSerializer(instance=wholesale)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, wholesale_id):
+        form = request.data
+        wholesale = get_object_or_404(WholesaleInquiryPageModel, id=wholesale_id)
+        ser_data = WholesaleInquiryPageSerializer(instance=wholesale, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RefundPolicyPageView(APIView):
+    def get(self, request):
+        refund = RefundPolicyPageModel.objects.all().first()
+        ser_data = RefundPolicyPageSerializer(instance=refund)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, refund_id):
+        form = request.data
+        refund = get_object_or_404(RefundPolicyPageModel, id=refund_id)
+        ser_data = RefundPolicyPageSerializer(instance=refund, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SitemapPageView(APIView):
+    def get(self, request):
+        sitemap_page = SitemapPageModel.objects.all().first()
+        ser_data = SitemapPageSerializer(instance=sitemap_page)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, sitemapPage_id):
+        form = request.data
+        sitemap_page = get_object_or_404(SitemapPageModel, id=sitemapPage_id)
+        ser_data = SitemapPageSerializer(instance=sitemap_page, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CareerPageView(APIView):
+    def get(self, request):
+        career = CareerPageModel.objects.all().first()
+        ser_data = CareerPageSerializer(instance=career)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, career_id):
+        form = request.data
+        career = get_object_or_404(CareerPageModel, id=career_id)
+        ser_data = CareerPageSerializer(instance=career, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ShopPageView(APIView):
+    def get(self, request):
+        shop = ShopPageModel.objects.all().first()
+        ser_data = ShopPageSerializer(instance=shop)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, shop_id):
+        form = request.data
+        shop = get_object_or_404(ShopPageModel, id=shop_id)
+        ser_data = ShopPageSerializer(instance=shop, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BlogPageView(APIView):
+    def get(self, request):
+        blog = BlogPageModel.objects.all().first()
+        ser_data = BlogPageSerializer(instance=blog)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, blog_id):
+        form = request.data
+        blog = get_object_or_404(BlogPageModel, id=blog_id)
+        ser_data = BlogPageSerializer(instance=blog, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
