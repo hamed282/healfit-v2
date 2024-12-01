@@ -194,14 +194,14 @@ class ProductCategoryModel(models.Model):
             last_priority = ProductCategoryModel.objects.count()
             self.priority = last_priority + 1
 
-        # به‌روز رسانی priority برای از بین بردن فاصله‌ها
-        all_products = ProductCategoryModel.objects.all().order_by('priority')
-        for index, product in enumerate(all_products, start=1):
-            if product.priority != index:
-                product.priority = index
-                product.save(update_fields=['priority'])
-
         super(ProductCategoryModel, self).save(**kwargs)
+
+        # به‌روز رسانی priority برای از بین بردن فاصله‌ها
+        all_categories = ProductCategoryModel.objects.all().order_by('priority')
+        for index, category in enumerate(all_categories, start=1):
+            if category.priority != index:
+                category.priority = index
+                category.save(update_fields=['priority'])
 
     def __str__(self):
         return f'{self.slug}'
@@ -245,14 +245,14 @@ class ProductSubCategoryModel(models.Model):
             last_priority = ProductSubCategoryModel.objects.count()
             self.priority = last_priority + 1
 
-        # به‌روز رسانی priority برای از بین بردن فاصله‌ها
-        all_products = ProductSubCategoryModel.objects.all().order_by('priority')
-        for index, product in enumerate(all_products, start=1):
-            if product.priority != index:
-                product.priority = index
-                product.save(update_fields=['priority'])
-
         super(ProductSubCategoryModel, self).save(**kwargs)
+
+        # به‌روز رسانی priority برای از بین بردن فاصله‌ها
+        all_subcategories = ProductSubCategoryModel.objects.all().order_by('priority')
+        for index, subcategory in enumerate(all_subcategories, start=1):
+            if subcategory.priority != index:
+                subcategory.priority = index
+                subcategory.save(update_fields=['priority'])
 
     def __str__(self):
         return f'{self.slug}'
