@@ -187,6 +187,19 @@ class ProductCategoryModel(models.Model):
 
     def save(self, **kwargs):
         self.slug = slugify(self.category)
+
+        if self.priority is None:
+            # پیدا کردن آخرین مقدار priority
+            last_priority = ProductModel.objects.count()
+            self.priority = last_priority + 1
+
+        # به‌روز رسانی priority برای از بین بردن فاصله‌ها
+        all_products = ProductModel.objects.all().order_by('priority')
+        for index, product in enumerate(all_products, start=1):
+            if product.priority != index:
+                product.priority = index
+                product.save(update_fields=['priority'])
+
         super(ProductCategoryModel, self).save(**kwargs)
 
     def __str__(self):
