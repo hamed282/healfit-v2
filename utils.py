@@ -245,7 +245,7 @@ def sitemap():
             # for product in products:
             #     pro = product.product.product
             #     prd.append({'name': pro, 'slug': product.product.slug})
-            subcat[sub] = {'data': prd, 'slug': subcategory.slug}
+            subcat[sub] = {'slug': subcategory.slug}
         cate[cat] = {'data': subcat, 'slug': category.slug}
 
     blogs = BlogCategoryModel.objects.all()
