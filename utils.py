@@ -232,13 +232,14 @@ def send_order_telegram(order, order_items):
 def sitemap():
     home_page = '/'
 
-    prd = []
-    subcat = {}
+    # prd = []
+
     cate = {}
     categories = ProductCategoryModel.objects.all()
     for category in categories:
         cat = category.category
         subcategories = ProductSubCategoryModel.objects.filter(category=category)
+        subcat = {}
         for subcategory in subcategories:
             sub = subcategory.subcategory
             products = AddSubCategoryModel.objects.filter(subcategory=subcategory)
