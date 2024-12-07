@@ -49,7 +49,7 @@ class CommentHomeModel(models.Model):
 
 
 class ContentHomeModel(models.Model):
-    home_content = models.TextField()
+    content = models.TextField()
 
     class Meta:
         verbose_name = 'Content'
