@@ -237,11 +237,11 @@ def sitemap():
     cate = {}
     categories = ProductCategoryModel.objects.all()
     for category in categories:
-        cat = category.category
+        cat = category.category_title
         subcategories = ProductSubCategoryModel.objects.filter(category=category)
         subcat = {}
         for subcategory in subcategories:
-            sub = subcategory.subcategory
+            sub = subcategory.subcategory_title
             subcat[sub] = {'slug': subcategory.slug}
         cate[cat] = {'data': subcat, 'slug': category.slug}
 
