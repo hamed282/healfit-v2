@@ -49,8 +49,7 @@ class CommentHomeModel(models.Model):
 
 
 class ContentHomeModel(models.Model):
-    home_about_title = models.TextField()
-    home_about_description = models.TextField()
+    home_content = models.TextField()
 
     class Meta:
         verbose_name = 'Content'
