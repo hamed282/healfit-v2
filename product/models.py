@@ -186,25 +186,35 @@ class ProductCategoryModel(models.Model):
         verbose_name = 'Product Category'
         verbose_name_plural = 'Product Category'
 
-    def save(self, **kwargs):
-        self.slug = slugify(self.category)
+    def save(self, *args, **kwargs):
+        if self.slug is None:
+            original_slug = slugify(self.category)
+            unique_slug = original_slug
 
+            num = 1
+            while ProductCategoryModel.objects.filter(slug=unique_slug).exists():
+                unique_slug = f'{original_slug}-{num}'
+                num += 1
+
+            self.slug = unique_slug
+
+        # تنظیم priority به ترتیب و بدون فاصله
         if self.priority is None:
             # پیدا کردن آخرین مقدار priority
             last_priority = ProductCategoryModel.objects.count()
             self.priority = last_priority + 1
 
-        super(ProductCategoryModel, self).save(**kwargs)
+        super(ProductCategoryModel, self).save(*args, **kwargs)
 
         # به‌روز رسانی priority برای از بین بردن فاصله‌ها
-        all_categories = ProductCategoryModel.objects.all().order_by('priority')
-        for index, category in enumerate(all_categories, start=1):
-            if category.priority != index:
-                category.priority = index
-                category.save(update_fields=['priority'])
+        all_products = ProductCategoryModel.objects.all().order_by('priority')
+        for index, product in enumerate(all_products, start=1):
+            if product.priority != index:
+                product.priority = index
+                product.save(update_fields=['priority'])
 
-    def __str__(self):
-        return f'{self.slug}'
+    def __str__(self) -> str:
+        return str(self.category)
 
     def get_absolute_url(self):
         return f'/category/{self.slug}'
@@ -237,22 +247,32 @@ class ProductSubCategoryModel(models.Model):
         verbose_name = 'Product SubCategory'
         verbose_name_plural = 'Product SubCategory'
 
-    def save(self, **kwargs):
-        self.slug = slugify(self.subcategory)
+    def save(self, *args, **kwargs):
+        if self.slug is None:
+            original_slug = slugify(self.subcategory)
+            unique_slug = original_slug
 
+            num = 1
+            while ProductSubCategoryModel.objects.filter(slug=unique_slug).exists():
+                unique_slug = f'{original_slug}-{num}'
+                num += 1
+
+            self.slug = unique_slug
+
+        # تنظیم priority به ترتیب و بدون فاصله
         if self.priority is None:
             # پیدا کردن آخرین مقدار priority
             last_priority = ProductSubCategoryModel.objects.count()
             self.priority = last_priority + 1
 
-        super(ProductSubCategoryModel, self).save(**kwargs)
+        super(ProductSubCategoryModel, self).save(*args, **kwargs)
 
         # به‌روز رسانی priority برای از بین بردن فاصله‌ها
-        all_subcategories = ProductSubCategoryModel.objects.all().order_by('priority')
-        for index, subcategory in enumerate(all_subcategories, start=1):
-            if subcategory.priority != index:
-                subcategory.priority = index
-                subcategory.save(update_fields=['priority'])
+        all_products = ProductSubCategoryModel.objects.all().order_by('priority')
+        for index, product in enumerate(all_products, start=1):
+            if product.priority != index:
+                product.priority = index
+                product.save(update_fields=['priority'])
 
     def __str__(self):
         return f'{self.slug}'
@@ -394,6 +414,60 @@ def increment_numbers_after_existing(sender, instance, **kwargs):
         if SizeProductModel.objects.filter(priority__lte=instance.priority).exists():
             SizeProductModel.objects.filter(priority__gte=instance.priority).update(
                 priority=models.F('priority') + 1)
+
+
+@receiver(pre_save, sender=ProductCategoryModel)
+def increment_numbers_after_existing(sender, instance, **kwargs):
+    if instance.priority is None:
+        instance.priority = 1
+
+    if instance.pk:
+        existing_instance = ProductCategoryModel.objects.get(pk=instance.pk)
+        current_priority = existing_instance.priority or 0
+        update_priority = instance.priority or 0
+
+        if current_priority > update_priority:
+            ProductCategoryModel.objects.filter(priority__lt=current_priority, priority__gte=update_priority).update(
+                priority=models.F('priority') + 1)
+        elif current_priority < update_priority:
+            ProductCategoryModel.objects.filter(priority__gt=current_priority, priority__lte=update_priority).update(
+                priority=models.F('priority') - 1)
+
+    elif not instance.pk:
+        last_number = ProductCategoryModel.objects.aggregate(max_number=Max('priority'))['max_number']
+        if not instance.priority:
+            instance.priority = (last_number or 0) + 1
+        else:
+            if ProductCategoryModel.objects.filter(priority__lte=instance.priority).exists():
+                ProductCategoryModel.objects.filter(priority__gte=instance.priority).update(
+                    priority=models.F('priority') + 1)
+
+
+@receiver(pre_save, sender=ProductSubCategoryModel)
+def increment_numbers_after_existing(sender, instance, **kwargs):
+    if instance.priority is None:
+        instance.priority = 1
+
+    if instance.pk:
+        existing_instance = ProductSubCategoryModel.objects.get(pk=instance.pk)
+        current_priority = existing_instance.priority or 0
+        update_priority = instance.priority or 0
+
+        if current_priority > update_priority:
+            ProductSubCategoryModel.objects.filter(priority__lt=current_priority, priority__gte=update_priority).update(
+                priority=models.F('priority') + 1)
+        elif current_priority < update_priority:
+            ProductSubCategoryModel.objects.filter(priority__gt=current_priority, priority__lte=update_priority).update(
+                priority=models.F('priority') - 1)
+
+    elif not instance.pk:
+        last_number = ProductSubCategoryModel.objects.aggregate(max_number=Max('priority'))['max_number']
+        if not instance.priority:
+            instance.priority = (last_number or 0) + 1
+        else:
+            if ProductSubCategoryModel.objects.filter(priority__lte=instance.priority).exists():
+                ProductSubCategoryModel.objects.filter(priority__gte=instance.priority).update(
+                    priority=models.F('priority') + 1)
 
 
 class AddImageGalleryModel(models.Model):
