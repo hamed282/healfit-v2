@@ -22,13 +22,13 @@ class SubCategoryInline(admin.TabularInline):
 
 class ProductCategoryAdmin(admin.ModelAdmin):
     list_display = ['category', 'priority']
-    readonly_fields = ["slug"]
+    # readonly_fields = ["slug"]
     inlines = (CategoryInline, )
 
 
 class ProductSubCategoryAdmin(admin.ModelAdmin):
     list_display = ['subcategory', 'priority']
-    readonly_fields = ["slug"]
+    # readonly_fields = ["slug"]
     inlines = (SubCategoryInline, )
 
 
