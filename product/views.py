@@ -227,7 +227,7 @@ class CategoryItemView(APIView):
 
 class CategoryListView(APIView):
     def get(self, request):
-        categories = ProductCategoryModel.objects.all()
+        categories = ProductCategoryModel.objects.all().order_by('priority')
         ser_data = ProductCategorySerializer(instance=categories, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
