@@ -252,7 +252,7 @@ class UserInfoView(APIView):
 
     def get(self, request):
         # from order.models import OrderModel, OrderItemModel
-        # from utils import send_order_email, send_order_telegram
+        # from services import send_order_email, send_order_telegram
         # order = OrderModel.objects.get(id=38)
         # order_items = OrderItemModel.objects.filter(order=order)
         #
@@ -261,7 +261,7 @@ class UserInfoView(APIView):
         #
         # send_order_telegram(order, order_items)
 
-        # from utils import zoho_invoice_quantity_update
+        # from services import zoho_invoice_quantity_update
         # from order.models import OrderModel, OrderItemModel
         #
         # order = OrderModel.objects.get(id=172)

@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 
 
 class BannerSliderModel(models.Model):
+    objects = None
     title = models.CharField(max_length=100)
     description = models.TextField()
     banner = models.ImageField(upload_to='settings/banner-slide/', verbose_name='image (1455*505 px)')
@@ -39,6 +40,7 @@ class VideoHomeModel(models.Model):
 
 
 class CommentHomeModel(models.Model):
+    objects = None
     name = models.CharField(max_length=32)
     comment = models.TextField()
     active = models.BooleanField(default=False)
@@ -49,6 +51,7 @@ class CommentHomeModel(models.Model):
 
 
 class ContentHomeModel(models.Model):
+    objects = None
     content = models.TextField()
 
     class Meta:
@@ -67,6 +70,7 @@ class ContentHomeModel(models.Model):
 
 
 class SEOHomeModel(models.Model):
+    objects = None
     follow = models.BooleanField(default=False)
     index = models.BooleanField(default=False)
     canonical = models.CharField(max_length=256, null=True, blank=True)
@@ -86,6 +90,7 @@ class SEOHomeModel(models.Model):
 
 
 class LogoModel(models.Model):
+    objects = None
     logo = models.FileField(upload_to='settings/logo/')
     logo_alt = models.CharField(max_length=125)
     fav = models.FileField(upload_to='settings/fav/')
@@ -102,6 +107,7 @@ class LogoModel(models.Model):
 
 
 class BannerShopModel(models.Model):
+    objects = None
     image = models.ImageField(upload_to='banner_shop/images/')
     link = models.CharField(max_length=512, null=True, blank=True)
 
@@ -127,6 +133,7 @@ class NewsLetterModel(models.Model):
 
 
 class ContactSubmitModel(models.Model):
+    objects = None
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -142,6 +149,7 @@ class ContactSubmitModel(models.Model):
 
 
 class TelegramBotModel(models.Model):
+    objects = None
     username = models.CharField(max_length=64)
     chat_id = models.CharField(max_length=64)
 
@@ -150,6 +158,7 @@ class TelegramBotModel(models.Model):
 
 
 class AboutPageModel(models.Model):
+    objects = None
     body = models.TextField()
     follow = models.BooleanField(default=False)
     index = models.BooleanField(default=False)
@@ -170,6 +179,7 @@ class AboutPageModel(models.Model):
 
 
 class ContactUsPageModel(models.Model):
+    objects = None
     follow = models.BooleanField(default=False)
     index = models.BooleanField(default=False)
     canonical = models.CharField(max_length=256, null=True, blank=True)
@@ -189,6 +199,7 @@ class ContactUsPageModel(models.Model):
 
 
 class CustomerCarePageModel(models.Model):
+    objects = None
     body = models.TextField()
     follow = models.BooleanField(default=False)
     index = models.BooleanField(default=False)
@@ -209,6 +220,7 @@ class CustomerCarePageModel(models.Model):
 
 
 class WholesaleInquiryPageModel(models.Model):
+    objects = None
     body = models.TextField()
     follow = models.BooleanField(default=False)
     index = models.BooleanField(default=False)
@@ -229,6 +241,7 @@ class WholesaleInquiryPageModel(models.Model):
 
 
 class RefundPolicyPageModel(models.Model):
+    objects = None
     body = models.TextField()
     follow = models.BooleanField(default=False)
     index = models.BooleanField(default=False)
@@ -249,6 +262,7 @@ class RefundPolicyPageModel(models.Model):
 
 
 class SitemapPageModel(models.Model):
+    objects = None
     follow = models.BooleanField(default=False)
     index = models.BooleanField(default=False)
     canonical = models.CharField(max_length=256, null=True, blank=True)
@@ -268,6 +282,7 @@ class SitemapPageModel(models.Model):
 
 
 class CareerPageModel(models.Model):
+    objects = None
     body = models.TextField()
     follow = models.BooleanField(default=False)
     index = models.BooleanField(default=False)
@@ -288,6 +303,7 @@ class CareerPageModel(models.Model):
 
 
 class ShopPageModel(models.Model):
+    objects = None
     follow = models.BooleanField(default=False)
     index = models.BooleanField(default=False)
     canonical = models.CharField(max_length=256, null=True, blank=True)
@@ -307,6 +323,7 @@ class ShopPageModel(models.Model):
 
 
 class BlogPageModel(models.Model):
+    objects = None
     follow = models.BooleanField(default=False)
     index = models.BooleanField(default=False)
     canonical = models.CharField(max_length=256, null=True, blank=True)
