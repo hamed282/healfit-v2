@@ -34,7 +34,7 @@ def zoho_product_update():
                 if product_exists.exists():
                     product_obj = product_exists.get(product=product)
                     product_obj.price = item['items'][0]['rate']
-                    product_obj.priority = ProductModel.objects.aggregate(max_priority=models.Max('priority'))['max_priority'] + 1
+                    product_obj.priority = 1
                     product_obj.save()
 
                 else:
