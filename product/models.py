@@ -360,8 +360,7 @@ class ClassProductModel(models.Model):
 @receiver(pre_save, sender=ProductModel)
 def increment_numbers_after_existing(sender, instance, **kwargs):
     if instance.priority is None:
-        last_priority = ProductModel.objects.count()
-        instance.priority = last_priority + 1
+        instance.priority = 1
 
     if instance.pk:
         existing_instance = ProductModel.objects.get(pk=instance.pk)

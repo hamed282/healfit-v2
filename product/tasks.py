@@ -4,6 +4,7 @@ from celery import shared_task
 from django.conf import settings
 from services.zoho_services import zoho_refresh_token
 from django.db import models
+from django.db.models import Max
 
 
 @shared_task
@@ -34,13 +35,20 @@ def zoho_product_update():
                 if product_exists.exists():
                     product_obj = product_exists.get(product=product)
                     product_obj.price = item['items'][0]['rate']
-                    product_obj.priority = 1
+
+                    if product_obj.priority is None:
+                        last_priority = ProductModel.objects.aggregate(max_priority=Max('priority'))['max_priority']
+                        product_obj.priority = (last_priority or 0) + 1
+
                     product_obj.save()
 
                 else:
-                    ProductModel.objects.create(product=product, group_id=group_id, price=item['items'][0]['rate'])  # price=item['price']
+                    last_priority = ProductModel.objects.aggregate(max_priority=Max('priority'))['max_priority']
+                    priority = (last_priority or 0) + 1
+                    ProductModel.objects.create(product=product, group_id=group_id, price=item['items'][0]['rate'], priority=priority)
                 i += 1
-            except:
+            except Exception as e:
+                print(f"Error processing item group: {e}")
                 continue
         has_more_page = response_itemgroups['page_context']['has_more_page']
 
@@ -95,8 +103,8 @@ def zoho_product_update():
                                                        price=price,
                                                        quantity=quantity)
                 i += 1
-            except:
-                product = item['group_name']
+            except Exception as e:
+                print(f"Error processing item: {e}")
                 continue
 
         has_more_page = response_items['page_context']['has_more_page']
