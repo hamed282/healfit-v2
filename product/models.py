@@ -32,7 +32,7 @@ class ProductModel(models.Model):
     video = models.FileField(upload_to=get_video_product_upload_path, blank=True, null=True)
     group_id = models.CharField(max_length=100)
     priority = models.IntegerField(blank=True, null=True)
-    slug = models.SlugField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True, blank=True, null=True)
 
     # SEO Fields
     follow = models.BooleanField(default=False)
