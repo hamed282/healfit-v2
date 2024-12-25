@@ -62,9 +62,7 @@ class ProductModel(models.Model):
 
             self.slug = unique_slug
 
-        # تنظیم priority به ترتیب و بدون فاصله
         if self.priority is None:
-            # پیدا کردن آخرین مقدار priority
             last_priority = ProductModel.objects.count()
             self.priority = last_priority + 1
 
@@ -362,7 +360,8 @@ class ClassProductModel(models.Model):
 @receiver(pre_save, sender=ProductModel)
 def increment_numbers_after_existing(sender, instance, **kwargs):
     if instance.priority is None:
-        instance.priority = 1
+        last_priority = ProductModel.objects.count()
+        instance.priority = last_priority + 1
 
     if instance.pk:
         existing_instance = ProductModel.objects.get(pk=instance.pk)
