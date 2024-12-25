@@ -357,31 +357,31 @@ class ClassProductModel(models.Model):
         return f'{self.classes}'
 
 
-# @receiver(pre_save, sender=ProductModel)
-# def increment_numbers_after_existing(sender, instance, **kwargs):
-#     if instance.priority is None:
-#         instance.priority = 1
-#
-#     if instance.pk:
-#         existing_instance = ProductModel.objects.get(pk=instance.pk)
-#         current_priority = existing_instance.priority or 0
-#         update_priority = instance.priority or 0
-#
-#         if current_priority > update_priority:
-#             ProductModel.objects.filter(priority__lt=current_priority, priority__gte=update_priority).update(
-#                 priority=models.F('priority') + 1)
-#         elif current_priority < update_priority:
-#             ProductModel.objects.filter(priority__gt=current_priority, priority__lte=update_priority).update(
-#                 priority=models.F('priority') - 1)
-#
-#     elif not instance.pk:
-#         last_number = ProductModel.objects.aggregate(max_number=Max('priority'))['max_number']
-#         if not instance.priority:
-#             instance.priority = (last_number or 0) + 1
-#         else:
-#             if ProductModel.objects.filter(priority__lte=instance.priority).exists():
-#                 ProductModel.objects.filter(priority__gte=instance.priority).update(
-#                     priority=models.F('priority') + 1)
+@receiver(pre_save, sender=ProductModel)
+def increment_numbers_after_existing(sender, instance, **kwargs):
+    if instance.priority is None:
+        instance.priority = 1
+
+    if instance.pk:
+        existing_instance = ProductModel.objects.get(pk=instance.pk)
+        current_priority = existing_instance.priority or 0
+        update_priority = instance.priority or 0
+
+        if current_priority > update_priority:
+            ProductModel.objects.filter(priority__lt=current_priority, priority__gte=update_priority).update(
+                priority=models.F('priority') + 1)
+        elif current_priority < update_priority:
+            ProductModel.objects.filter(priority__gt=current_priority, priority__lte=update_priority).update(
+                priority=models.F('priority') - 1)
+
+    elif not instance.pk:
+        last_number = ProductModel.objects.aggregate(max_number=Max('priority'))['max_number']
+        if not instance.priority:
+            instance.priority = (last_number or 0) + 1
+        else:
+            if ProductModel.objects.filter(priority__lte=instance.priority).exists():
+                ProductModel.objects.filter(priority__gte=instance.priority).update(
+                    priority=models.F('priority') + 1)
 
 
 @receiver(pre_save, sender=SizeProductModel)
@@ -414,58 +414,58 @@ def increment_numbers_after_existing(sender, instance, **kwargs):
                 priority=models.F('priority') + 1)
 
 
-# @receiver(pre_save, sender=ProductCategoryModel)
-# def increment_numbers_after_existing(sender, instance, **kwargs):
-#     if instance.priority is None:
-#         instance.priority = 1
-#
-#     if instance.pk:
-#         existing_instance = ProductCategoryModel.objects.get(pk=instance.pk)
-#         current_priority = existing_instance.priority or 0
-#         update_priority = instance.priority or 0
-#
-#         if current_priority > update_priority:
-#             ProductCategoryModel.objects.filter(priority__lt=current_priority, priority__gte=update_priority).update(
-#                 priority=models.F('priority') + 1)
-#         elif current_priority < update_priority:
-#             ProductCategoryModel.objects.filter(priority__gt=current_priority, priority__lte=update_priority).update(
-#                 priority=models.F('priority') - 1)
-#
-#     elif not instance.pk:
-#         last_number = ProductCategoryModel.objects.aggregate(max_number=Max('priority'))['max_number']
-#         if not instance.priority:
-#             instance.priority = (last_number or 0) + 1
-#         else:
-#             if ProductCategoryModel.objects.filter(priority__lte=instance.priority).exists():
-#                 ProductCategoryModel.objects.filter(priority__gte=instance.priority).update(
-#                     priority=models.F('priority') + 1)
-#
-#
-# @receiver(pre_save, sender=ProductSubCategoryModel)
-# def increment_numbers_after_existing(sender, instance, **kwargs):
-#     if instance.priority is None:
-#         instance.priority = 1
-#
-#     if instance.pk:
-#         existing_instance = ProductSubCategoryModel.objects.get(pk=instance.pk)
-#         current_priority = existing_instance.priority or 0
-#         update_priority = instance.priority or 0
-#
-#         if current_priority > update_priority:
-#             ProductSubCategoryModel.objects.filter(priority__lt=current_priority, priority__gte=update_priority).update(
-#                 priority=models.F('priority') + 1)
-#         elif current_priority < update_priority:
-#             ProductSubCategoryModel.objects.filter(priority__gt=current_priority, priority__lte=update_priority).update(
-#                 priority=models.F('priority') - 1)
-#
-#     elif not instance.pk:
-#         last_number = ProductSubCategoryModel.objects.aggregate(max_number=Max('priority'))['max_number']
-#         if not instance.priority:
-#             instance.priority = (last_number or 0) + 1
-#         else:
-#             if ProductSubCategoryModel.objects.filter(priority__lte=instance.priority).exists():
-#                 ProductSubCategoryModel.objects.filter(priority__gte=instance.priority).update(
-#                     priority=models.F('priority') + 1)
+@receiver(pre_save, sender=ProductCategoryModel)
+def increment_numbers_after_existing(sender, instance, **kwargs):
+    if instance.priority is None:
+        instance.priority = 1
+
+    if instance.pk:
+        existing_instance = ProductCategoryModel.objects.get(pk=instance.pk)
+        current_priority = existing_instance.priority or 0
+        update_priority = instance.priority or 0
+
+        if current_priority > update_priority:
+            ProductCategoryModel.objects.filter(priority__lt=current_priority, priority__gte=update_priority).update(
+                priority=models.F('priority') + 1)
+        elif current_priority < update_priority:
+            ProductCategoryModel.objects.filter(priority__gt=current_priority, priority__lte=update_priority).update(
+                priority=models.F('priority') - 1)
+
+    elif not instance.pk:
+        last_number = ProductCategoryModel.objects.aggregate(max_number=Max('priority'))['max_number']
+        if not instance.priority:
+            instance.priority = (last_number or 0) + 1
+        else:
+            if ProductCategoryModel.objects.filter(priority__lte=instance.priority).exists():
+                ProductCategoryModel.objects.filter(priority__gte=instance.priority).update(
+                    priority=models.F('priority') + 1)
+
+
+@receiver(pre_save, sender=ProductSubCategoryModel)
+def increment_numbers_after_existing(sender, instance, **kwargs):
+    if instance.priority is None:
+        instance.priority = 1
+
+    if instance.pk:
+        existing_instance = ProductSubCategoryModel.objects.get(pk=instance.pk)
+        current_priority = existing_instance.priority or 0
+        update_priority = instance.priority or 0
+
+        if current_priority > update_priority:
+            ProductSubCategoryModel.objects.filter(priority__lt=current_priority, priority__gte=update_priority).update(
+                priority=models.F('priority') + 1)
+        elif current_priority < update_priority:
+            ProductSubCategoryModel.objects.filter(priority__gt=current_priority, priority__lte=update_priority).update(
+                priority=models.F('priority') - 1)
+
+    elif not instance.pk:
+        last_number = ProductSubCategoryModel.objects.aggregate(max_number=Max('priority'))['max_number']
+        if not instance.priority:
+            instance.priority = (last_number or 0) + 1
+        else:
+            if ProductSubCategoryModel.objects.filter(priority__lte=instance.priority).exists():
+                ProductSubCategoryModel.objects.filter(priority__gte=instance.priority).update(
+                    priority=models.F('priority') + 1)
 
 
 class AddImageGalleryModel(models.Model):
