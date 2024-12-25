@@ -3,13 +3,11 @@ from .models import ProductModel, ProductVariantModel, ColorProductModel, SizePr
 from celery import shared_task
 from django.conf import settings
 from services.zoho_services import zoho_refresh_token
-from django.db import models
-from django.db.models import Max
+from django.utils.text import slugify
 
 
 @shared_task
 def zoho_product_update():
-    print(1)
     organization_id = settings.ORGANIZATION_ID
     oauth = zoho_refresh_token(settings.SCOPE_READING)
     per_page = '200'
@@ -19,11 +17,7 @@ def zoho_product_update():
     has_more_page = True
     page = 0
     i = 1
-    print(2)
-
     while has_more_page:
-        print(3)
-
         page += 1
         url_itemgroups = f'https://www.zohoapis.com/inventory/v1/itemgroups?organization_id={organization_id}&page={page}&per_page={per_page}'
 
@@ -31,8 +25,6 @@ def zoho_product_update():
         response_itemgroups = response_itemgroups.json()
 
         for item in response_itemgroups['itemgroups']:
-            print(4)
-
             try:
                 product = item['group_name'].strip()
                 group_id = item['group_id']
@@ -42,32 +34,22 @@ def zoho_product_update():
                 if product_exists.exists():
                     product_obj = product_exists.get(product=product)
                     product_obj.price = item['items'][0]['rate']
-
-                    if product_obj.priority is None:
-                        last_priority = ProductModel.objects.aggregate(max_priority=Max('priority'))['max_priority']
-                        product_obj.priority = (last_priority or 0) + 1
-
                     product_obj.save()
 
                 else:
-                    last_priority = ProductModel.objects.aggregate(max_priority=Max('priority'))['max_priority']
-                    priority = (last_priority or 0) + 1
-                    ProductModel.objects.create(product=product, group_id=group_id, price=item['items'][0]['rate'], priority=priority)
+                    ProductModel.objects.create(product=product,
+                                                group_id=group_id,
+                                                price=item['items'][0]['rate'],
+                                                slug=slugify(product))
                 i += 1
-                print(5)
-
-            except Exception as e:
-                print(f"Error processing item group: {e}")
+            except:
                 continue
         has_more_page = response_itemgroups['page_context']['has_more_page']
-    print(6)
 
     has_more_page = True
     page = 0
     i = 1
     while has_more_page:
-        print(7)
-
         page += 1
         url_items = f'https://www.zohoapis.com/inventory/v1/items?organization_id={organization_id}&page={page}&per_page={per_page}'
 
@@ -75,7 +57,6 @@ def zoho_product_update():
         response_items = response_items.json()
 
         for item in response_items['items']:
-            print(8)
 
             try:
                 product = item['group_name']
@@ -116,9 +97,8 @@ def zoho_product_update():
                                                        price=price,
                                                        quantity=quantity)
                 i += 1
-            except Exception as e:
-                print(f"Error processing item: {e}")
+            except:
+                product = item['group_name']
                 continue
-        print(9)
 
         has_more_page = response_items['page_context']['has_more_page']
