@@ -50,30 +50,30 @@ class ProductModel(models.Model):
         verbose_name = 'Item Groups'
         verbose_name_plural = 'Item Groups'
 
-    def save(self, *args, **kwargs):
-        if self.slug is None:
-            original_slug = slugify(self.product)
-            unique_slug = original_slug
-
-            num = 1
-            while ProductModel.objects.filter(slug=unique_slug).exists():
-                unique_slug = f'{original_slug}-{num}'
-                num += 1
-
-            self.slug = unique_slug
-
-        if self.priority is None:
-            last_priority = ProductModel.objects.count()
-            self.priority = last_priority + 1
-
-        super(ProductModel, self).save(*args, **kwargs)
-
-        # به‌روز رسانی priority برای از بین بردن فاصله‌ها
-        all_products = ProductModel.objects.all().order_by('priority')
-        for index, product in enumerate(all_products, start=1):
-            if product.priority != index:
-                product.priority = index
-                product.save(update_fields=['priority'])
+    # def save(self, *args, **kwargs):
+    #     if self.slug is None:
+    #         original_slug = slugify(self.product)
+    #         unique_slug = original_slug
+    #
+    #         num = 1
+    #         while ProductModel.objects.filter(slug=unique_slug).exists():
+    #             unique_slug = f'{original_slug}-{num}'
+    #             num += 1
+    #
+    #         self.slug = unique_slug
+    #
+    #     if self.priority is None:
+    #         last_priority = ProductModel.objects.count()
+    #         self.priority = last_priority + 1
+    #
+    #     super(ProductModel, self).save(*args, **kwargs)
+    #
+    #     # به‌روز رسانی priority برای از بین بردن فاصله‌ها
+    #     all_products = ProductModel.objects.all().order_by('priority')
+    #     for index, product in enumerate(all_products, start=1):
+    #         if product.priority != index:
+    #             product.priority = index
+    #             product.save(update_fields=['priority'])
 
     def __str__(self) -> str:
         return str(self.product)
