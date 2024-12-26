@@ -2,7 +2,7 @@ import requests
 from .models import ProductModel, ProductVariantModel, ColorProductModel, SizeProductModel
 from celery import shared_task
 from django.conf import settings
-from services.zoho_services import zoho_refresh_token
+# from services.zoho_services import zoho_refresh_token
 
 
 @shared_task
