@@ -8,6 +8,7 @@ from django.utils.text import slugify
 
 @shared_task
 def zoho_product_update():
+    print(1)
     organization_id = settings.ORGANIZATION_ID
     oauth = zoho_refresh_token(settings.SCOPE_READING)
     per_page = '200'
