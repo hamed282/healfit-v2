@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import OrderModel, OrderStatusModel
-from services.send_order_message import send_inprocess_email  # فرض کنید تابع ایمیل در این مسیر ذخیره شده است
+from utils import send_inprocess_email
 
 
 @receiver(post_save, sender=OrderModel)

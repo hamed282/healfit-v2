@@ -9,8 +9,7 @@ from order.models import UserProductModel
 from accounts.models import AddressModel
 from django.shortcuts import get_object_or_404
 from .serializers import OrderUserSerializer
-from services.zoho_services import zoho_invoice_quantity_update
-from services.send_order_message import send_order_email, send_order_telegram
+from utils import send_order_email, send_order_telegram, zoho_invoice_quantity_update
 from datetime import datetime, timedelta
 import holidays
 

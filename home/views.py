@@ -15,7 +15,7 @@ from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
-from services.sitemapPage import sitemap
+from utils import sitemap
 
 
 class ImageSliderView(APIView):
