@@ -5,6 +5,10 @@ from .models import (BannerSliderModel, VideoHomeModel, CommentHomeModel, Conten
                      RefundPolicyPageModel, ContactUsPageModel, WholesaleInquiryPageModel)
 
 
+class BannerSLiderAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'priority']
+
+
 admin.site.register(BannerSliderModel)
 admin.site.register(VideoHomeModel)
 admin.site.register(CommentHomeModel)
