@@ -143,11 +143,6 @@ class ProductGenderListView(APIView):
 
 class ProductAllView(APIView):
     def get(self, request):
-        """
-        get parameter:
-        1. page_number
-        3. limit
-        """
         page_number = int(self.request.query_params.get('page_number', 1))
         per_page = int(self.request.query_params.get('limit', 16))
         gender = self.request.query_params.get('gender', None)

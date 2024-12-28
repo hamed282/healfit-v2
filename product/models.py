@@ -104,7 +104,7 @@ class ProductModel(models.Model):
 
         # فیلتر کردن محصولات بر اساس واریانت‌ها
         product_ids = variant_queryset.values_list('product_id', flat=True)
-        queryset = cls.objects.filter(id__in=product_ids)
+        queryset = cls.objects.filter(id__in=product_ids, is_active=True)
 
         # اعمال فیلترهای بیشتر بر روی محصولات
         if gender:
