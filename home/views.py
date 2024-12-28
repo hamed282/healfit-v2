@@ -20,7 +20,7 @@ from services.sitemapPage import sitemap
 
 class ImageSliderView(APIView):
     def get(self, request):
-        banner_slider = BannerSliderModel.objects.filter(active=True)
+        banner_slider = BannerSliderModel.objects.filter(active=True).order_by('priority')
         ser_data = BannerSliderSerializer(instance=banner_slider, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
