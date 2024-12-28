@@ -21,17 +21,15 @@ class BannerSliderModel(models.Model):
         verbose_name_plural = 'Banner Sliders'
 
     def save(self, *args, **kwargs):
-        if self.priority is None:
-            last_priority = BannerSliderModel.objects.count()
-            self.priority = last_priority + 1
+        if not self.pk:  # برای شیء جدید
+            if self.priority is None:
+                last_priority = BannerSliderModel.objects.aggregate(max_priority=Max('priority'))['max_priority'] or 0
+                self.priority = last_priority + 1
+            else:
+                # اگر اولویتی وجود دارد، سایر موارد را آپدیت کن
+                BannerSliderModel.objects.filter(priority__gte=self.priority).update(priority=F('priority') + 1)
 
-        super(BannerSliderModel, self).save(*args, **kwargs)
-
-        all_image = BannerSliderModel.objects.all().order_by('priority')
-        for index, image in enumerate(all_image, start=1):
-            if image.priority != index:
-                image.priority = index
-                image.save(update_fields=['priority'])
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.title}'
