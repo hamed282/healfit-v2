@@ -9,7 +9,7 @@ class BannerSliderAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'priority']
 
 
-admin.site.register(BannerSliderAdmin, BannerSliderModel)
+admin.site.register(BannerSliderModel, BannerSliderAdmin)
 admin.site.register(VideoHomeModel)
 admin.site.register(CommentHomeModel)
 admin.site.register(ContentHomeModel)
