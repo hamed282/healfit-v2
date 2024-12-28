@@ -228,7 +228,7 @@ class ProductAllSerializer(serializers.ModelSerializer):
         model = ProductModel
         fields = ['id', 'name_product', 'gender', 'category', 'subcategory', 'product', 'cover_image', 'price',
                   'percent_discount', 'group_id', 'slug', 'subtitle', 'fav', 'size_table_image_alt', 'cover_image_alt',
-                  'description_image_alt', 'off_price']
+                  'description_image_alt', 'off_price', 'is_active']
 
     def get_fav(self, obj):
         request = self.context.get('request', None)
