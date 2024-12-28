@@ -33,6 +33,7 @@ class ProductModel(models.Model):
     group_id = models.CharField(max_length=100)
     priority = models.IntegerField(blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
 
     # SEO Fields
     follow = models.BooleanField(default=False)
