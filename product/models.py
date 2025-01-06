@@ -219,6 +219,13 @@ class ProductCategoryModel(models.Model):
         return f'/category/{self.slug}'
 
 
+class ProductBrandModel(models.Model):
+    brand = models.CharField(max_length=32)
+
+    def __str__(self):
+        return f'{self.name}'
+
+
 class ProductSubCategoryModel(models.Model):
     objects = None
     category = models.ForeignKey(ProductCategoryModel, on_delete=models.CASCADE)

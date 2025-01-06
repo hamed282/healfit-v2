@@ -32,6 +32,7 @@ sitemaps = {
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v2/accounts/', include('accounts.urls', namespace='accounts')),
+    path(r'api/v2/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('api/v2/admin/', include('admin_panel.urls', namespace='admin_panel')),
     path('api/v2/blog/', include('blog.urls', namespace='blog')),
     path('api/v2/home/', include('home.urls', namespace='home')),
