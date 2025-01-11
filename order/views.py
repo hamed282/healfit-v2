@@ -455,7 +455,7 @@ class ShippingView(APIView):
                                       'total_with_shipping': int(amount) + 0
                                       })
         else:
-            return Response(data={'shipping_fee': '50',
+            return Response(data={'shipping_fee': '300',
                                   'delivery_day': delivery_date(7),
                                   'total_amount': int(amount),
                                   'total_with_shipping': int(amount) + 300
