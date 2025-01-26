@@ -405,12 +405,12 @@ class ShippingView(APIView):
                     return Response(data={'shipping_fee': shipping.shipping_fee,
                                           'delivery_time': delivery_date(int(shipping.delivery_day), city),
                                           'total_amount': int(amount),
-                                          'total_amount_without_discount': int(amount_total),
+                                          'total_amount_without_discount': int(amount_total) + int(shipping.shipping_fee),
                                           'total_with_shipping': int(amount) + int(shipping.shipping_fee)})
                 return Response(data={'shipping_fee': '0',
                                       'delivery_time': delivery_date(int(shipping.delivery_day), city),
                                       'total_amount': int(amount),
-                                      'total_amount_without_discount': int(amount_total),
+                                      'total_amount_without_discount': int(amount_total) + 0,
                                       'total_with_shipping': int(amount) + 0
                                       })
             else:
@@ -419,19 +419,19 @@ class ShippingView(APIView):
                     return Response(data={'shipping_fee': shipping.shipping_fee,
                                           'delivery_time': delivery_date(int(shipping.delivery_day), city),
                                           'total_amount': int(amount),
-                                          'total_amount_without_discount': int(amount_total),
+                                          'total_amount_without_discount': int(amount_total) + int(shipping.shipping_fee),
                                           'total_with_shipping': int(amount) + int(shipping.shipping_fee)
                                           })
                 return Response(data={'shipping_fee': '0',
                                       'delivery_time': delivery_date(int(shipping.delivery_day), city),
                                       'total_amount': int(amount),
-                                      'total_amount_without_discount': int(amount_total),
+                                      'total_amount_without_discount': int(amount_total) + 0,
                                       'total_with_shipping': int(amount) + 0
                                       })
         else:
             return Response(data={'shipping_fee': '300',
                                   'delivery_day': delivery_date(7),
                                   'total_amount': int(amount),
-                                  'total_amount_without_discount': int(amount_total),
+                                  'total_amount_without_discount': int(amount_total) + 300,
                                   'total_with_shipping': int(amount) + 300
                                   })
