@@ -109,7 +109,7 @@ class ContactView(APIView):
             recipient_list = [form['email']]
 
             send_mail(subject, message_customer, email_from, recipient_list)
-            send_mail(subject, message_provider, email_from, ['no-reply@healfit.ae'])
+            send_mail(subject, message_provider, email_from, ['hamed@healfit.ae', 'info@healfit.ae'])
 
             return Response(data={'message': 'successfully submitted'})
         else:

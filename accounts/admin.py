@@ -18,17 +18,17 @@ class UserAdmin(BaseUserAdmin):
     readonly_fields = ['last_login']
 
     fieldsets = (
-        (None, {'fields': ('first_name', 'last_name', 'email', 'phone_number', 'trn_number', 'company_name',
+        (None, {'fields': ('first_name', 'last_name', 'email', 'prefix_number', 'phone_number', 'trn_number', 'company_name',
                            'zoho_customer_id', 'password')}),
         ('Permissions', {'fields': ('is_active', 'is_admin', 'is_superuser',)}),
     )
 
     add_fieldsets = (
-        (None, {'fields': ('first_name', 'last_name', 'email', 'phone_number', 'trn_number', 'company_name',
+        (None, {'fields': ('first_name', 'last_name', 'email', 'prefix_number', 'phone_number', 'trn_number', 'company_name',
                            'zoho_customer_id', 'password')}),
     )
 
-    search_fields = ['first_name', 'last_name', 'email', 'phone_number', 'trn_number', 'company_name',
+    search_fields = ['first_name', 'last_name', 'email', 'prefix_number', 'phone_number', 'trn_number', 'company_name',
                      'zoho_customer_id']
     ordering = ['first_name', 'last_name']
 

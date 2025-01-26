@@ -30,6 +30,7 @@ class UserRegisterView(APIView):
         5. trn_number
         6. company_name
         7. password
+        8. prefix_number
         """
         form = request.data
         ser_data = UserRegisterSerializer(data=form)
@@ -38,6 +39,7 @@ class UserRegisterView(APIView):
                 User.objects.create_user(first_name=form['first_name'],
                                          last_name=form['last_name'],
                                          email=form['email'],
+                                         prefix_number=form['prefix_number'],
                                          phone_number=form['phone_number'],
                                          trn_number=form['trn_number'],
                                          company_name=form['company_name'],
@@ -276,7 +278,6 @@ class UserInfoView(APIView):
         # line_items = [{'item_id': item.product.item_id, 'quantity': item.quantity}for item in order_items]
         # zoho_invoice_quantity_update(first_name, last_name, email, address, city, line_items,
         #                              country='United Arab Emirates', customer_id=customer_id)
-
 
         user_id = request.user.id
         user_info = get_object_or_404(User, id=user_id)

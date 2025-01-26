@@ -17,6 +17,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(max_length=100, unique=True)
     company_name = models.CharField(max_length=100, null=True, blank=True)
     trn_number = models.CharField(max_length=100, null=True, blank=True)
+    prefix_number = models.CharField(max_length=8, null=True, blank=True)
     phone_number = models.CharField(max_length=22, null=True, blank=True)
     zoho_customer_id = models.CharField(max_length=128, null=True, blank=True)
     password = models.CharField(max_length=100)

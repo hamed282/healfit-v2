@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 import requests
+from services.shipping_utiles import delivery_date
 from .models import OrderModel, OrderItemModel, OrderStatusModel, ShippingModel, ShippingCountryModel
 from product.models import ProductVariantModel, CouponModel
 from order.models import UserProductModel
@@ -11,8 +12,6 @@ from django.shortcuts import get_object_or_404
 from .serializers import OrderUserSerializer
 from services.zoho_services import zoho_invoice_quantity_update
 from services.send_order_message import send_order_email, send_order_telegram
-from datetime import datetime, timedelta
-import holidays
 
 
 class OrderPayView(APIView):
@@ -396,36 +395,7 @@ class ShippingView(APIView):
         country = request.data['country']
         city = request.data['city']
         amount = float(request.data['amount'])
-
-        def holidays_count(start_date, end_date):
-            uae_holidays = holidays.UnitedArabEmirates(years=datetime.now().year)
-
-            count = 0
-
-            while start_date <= end_date:
-                if start_date in uae_holidays:
-                    count += 1
-                elif start_date.weekday() in (5, 6):
-                    count += 1
-                start_date += timedelta(days=1)
-
-            return count
-
-        def delivery_date(delivery_day, zone=None):
-
-            order_time = datetime.now()
-            work_time = datetime.strptime("17:00", '%H:%M')
-
-            if order_time.time() > work_time.time():
-                delivery_time = datetime.now() + timedelta(days=delivery_day + 1)
-            else:
-                delivery_time = datetime.now() + timedelta(days=delivery_day)
-
-            # if zone != 'Dubai':
-            #     delivery_time += timedelta(days=holidays_count(order_time, delivery_time))
-            delivery_time += timedelta(days=holidays_count(order_time, delivery_time))
-
-            return delivery_time.strftime('%Y-%m-%d')
+        amount_total = float(request.data['amount_total'])
 
         if ShippingCountryModel.objects.filter(country=country).exists():
             country_model = ShippingCountryModel.objects.get(country=country)
@@ -435,10 +405,12 @@ class ShippingView(APIView):
                     return Response(data={'shipping_fee': shipping.shipping_fee,
                                           'delivery_time': delivery_date(int(shipping.delivery_day), city),
                                           'total_amount': int(amount),
+                                          'total_amount_without_discount': int(amount_total),
                                           'total_with_shipping': int(amount) + int(shipping.shipping_fee)})
                 return Response(data={'shipping_fee': '0',
                                       'delivery_time': delivery_date(int(shipping.delivery_day), city),
                                       'total_amount': int(amount),
+                                      'total_amount_without_discount': int(amount_total),
                                       'total_with_shipping': int(amount) + 0
                                       })
             else:
@@ -447,16 +419,19 @@ class ShippingView(APIView):
                     return Response(data={'shipping_fee': shipping.shipping_fee,
                                           'delivery_time': delivery_date(int(shipping.delivery_day), city),
                                           'total_amount': int(amount),
+                                          'total_amount_without_discount': int(amount_total),
                                           'total_with_shipping': int(amount) + int(shipping.shipping_fee)
                                           })
                 return Response(data={'shipping_fee': '0',
                                       'delivery_time': delivery_date(int(shipping.delivery_day), city),
                                       'total_amount': int(amount),
+                                      'total_amount_without_discount': int(amount_total),
                                       'total_with_shipping': int(amount) + 0
                                       })
         else:
             return Response(data={'shipping_fee': '300',
                                   'delivery_day': delivery_date(7),
                                   'total_amount': int(amount),
+                                  'total_amount_without_discount': int(amount_total),
                                   'total_with_shipping': int(amount) + 300
                                   })
