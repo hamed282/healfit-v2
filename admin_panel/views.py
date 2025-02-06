@@ -22,12 +22,13 @@ from rest_framework.permissions import IsAdminUser
 from home.models import (CommentHomeModel, BannerSliderModel, VideoHomeModel, ContentHomeModel, BannerShopModel,
                          SEOHomeModel, LogoModel, NewsLetterModel, ContactSubmitModel, AboutPageModel, CareerPageModel,
                          BlogPageModel, ShopPageModel, SitemapPageModel, WholesaleInquiryPageModel,
-                         CustomerCarePageModel, RefundPolicyPageModel, ContactUsPageModel)
+                         CustomerCarePageModel, RefundPolicyPageModel, ContactUsPageModel, BannerSliderMobileModel)
 from home.serializers import (CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer, ContentHomeSerializer,
                               BannerShopSerializer, LogoHomeSerializer, SEOHomeSerializer, NewsLetterSerializer,
                               ContactSubmitSerializer, AboutPageSerializer, ShopPageSerializer, BlogPageSerializer,
                               CareerPageSerializer, SitemapPageSerializer, ContactUsPageSerializer,
-                              RefundPolicyPageSerializer, WholesaleInquiryPageSerializer, CustomerCarePageSerializer)
+                              RefundPolicyPageSerializer, WholesaleInquiryPageSerializer, CustomerCarePageSerializer,
+                              BannerSliderMobileSerializer)
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel, CouponModel)
@@ -554,6 +555,15 @@ class BannerHomeView(APIView):
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 
+class BannerMobileHomeView(APIView):
+    # permission_classes = [IsAdminUser, IsModeratorAdmin | IsSEOAdmin]
+
+    def get(self, request):
+        banner = BannerSliderMobileModel.objects.all()
+        ser_data = BannerSliderSerializer(instance=banner, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
 class BannerItemView(APIView):
     permission_classes = [IsAdminUser, IsModeratorAdmin]
 
@@ -590,6 +600,50 @@ class BannerItemView(APIView):
 
         try:
             banner = BannerSliderModel.objects.get(id=banner_id)
+        except:
+            return Response(data={'message': 'Banner is not exist'})
+
+        banner.delete()
+
+        return Response(data={'message': f'The Banner ID {banner_id} was deleted'})
+
+
+class BannerMobileItemView(APIView):
+    # permission_classes = [IsAdminUser, IsModeratorAdmin]
+
+    # def get_permissions(self):
+    #     if self.request.method in ['PUT', 'GET']:
+    #         return [OrPermission(IsBlogAdmin, IsSEOAdmin)]
+    #     return super().get_permissions()
+
+    def get(self, request, banner_id):
+        banner = get_object_or_404(BannerSliderMobileModel, id=banner_id)
+        ser_data = BannerSliderSerializer(instance=banner)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = BannerSliderMobileSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, banner_id):
+        form = request.data
+        banner = get_object_or_404(BannerSliderMobileModel, id=banner_id)
+        ser_data = BannerSliderMobileSerializer(instance=banner, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, banner_id):
+        if banner_id is None:
+            return Response(data={'message': 'Input Banner ID'})
+
+        try:
+            banner = BannerSliderMobileModel.objects.get(id=banner_id)
         except:
             return Response(data={'message': 'Banner is not exist'})
 
@@ -1052,7 +1106,7 @@ class ColorValueView(APIView):
 
 
 class ProductView(APIView):
-    permission_classes = [IsAdminUser, IsProductAdmin | IsSEOAdmin]
+    # permission_classes = [IsAdminUser, IsProductAdmin | IsSEOAdmin]
 
     def get(self, request):
         products = ProductModel.objects.all()

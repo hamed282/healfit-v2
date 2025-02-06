@@ -51,6 +51,10 @@ urlpatterns = [
     path('home/banner/item/', views.BannerItemView.as_view(), name='banner_item'),
     path('home/banner/item/<int:banner_id>/', views.BannerItemView.as_view(), name='banner_id'),
 
+    path('home/banner_mobile/', views.BannerMobileHomeView.as_view(), name='banner_mobile'),
+    path('home/banner_mobile/item/', views.BannerMobileItemView.as_view(), name='banner_item_mobile'),
+    path('home/banner_mobile/item/<int:banner_id>/', views.BannerMobileItemView.as_view(), name='banner_id_mobile'),
+
     path('home/video/', views.VideoHomeView.as_view(), name='video'),
     path('home/video/item/<int:video_id>/', views.VideoHomeView.as_view(), name='video_id'),
 

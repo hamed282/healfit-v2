@@ -2,14 +2,19 @@ from django.contrib import admin
 from .models import (BannerSliderModel, VideoHomeModel, CommentHomeModel, ContentHomeModel, BannerShopModel, LogoModel,
                      SEOHomeModel, NewsLetterModel, ContactSubmitModel, TelegramBotModel, AboutPageModel,
                      CareerPageModel, SitemapPageModel, CustomerCarePageModel, BlogPageModel, ShopPageModel,
-                     RefundPolicyPageModel, ContactUsPageModel, WholesaleInquiryPageModel)
+                     RefundPolicyPageModel, ContactUsPageModel, WholesaleInquiryPageModel, BannerSliderMobileModel)
 
 
 class BannerSliderAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'priority']
 
 
+class BannerSliderMobileAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'priority']
+
+
 admin.site.register(BannerSliderModel, BannerSliderAdmin)
+admin.site.register(BannerSliderMobileModel, BannerSliderMobileAdmin)
 admin.site.register(VideoHomeModel)
 admin.site.register(CommentHomeModel)
 admin.site.register(ContentHomeModel)

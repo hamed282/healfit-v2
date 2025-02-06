@@ -37,6 +37,38 @@ class BannerSliderModel(models.Model):
         return f'{self.title}'
 
 
+class BannerSliderMobileModel(models.Model):
+    objects = None
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    banner = models.ImageField(upload_to='settings/banner-slide-mobile/', verbose_name='image (1455*505 px)')
+    banner_alt = models.CharField(max_length=125)
+    link = models.CharField(max_length=512, null=True, blank=True)
+    priority = models.IntegerField(blank=True, null=True)
+    active = models.BooleanField(default=False)
+    created = models.DateField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Banner Slider Mobile'
+        verbose_name_plural = 'Banner Sliders Mobile'
+
+    def save(self, *args, **kwargs):
+        if self.priority is None:
+            last_priority = BannerSliderMobileModel.objects.count()
+            self.priority = last_priority + 1
+
+        super(BannerSliderMobileModel, self).save(*args, **kwargs)
+
+        all_image = BannerSliderMobileModel.objects.all().order_by('priority')
+        for index, image in enumerate(all_image, start=1):
+            if image.priority != index:
+                image.priority = index
+                image.save(update_fields=['priority'])
+
+    def __str__(self):
+        return f'{self.title}'
+
+
 @receiver(pre_save, sender=BannerSliderModel)
 def increment_numbers_after_existing(sender, instance, **kwargs):
     if instance.priority is None:
@@ -61,6 +93,33 @@ def increment_numbers_after_existing(sender, instance, **kwargs):
         else:
             if BannerSliderModel.objects.filter(priority__lte=instance.priority).exists():
                 BannerSliderModel.objects.filter(priority__gte=instance.priority).update(
+                    priority=models.F('priority') + 1)
+
+
+@receiver(pre_save, sender=BannerSliderMobileModel)
+def increment_numbers_after_existing(sender, instance, **kwargs):
+    if instance.priority is None:
+        instance.priority = 1
+
+    if instance.pk:
+        existing_instance = BannerSliderMobileModel.objects.get(pk=instance.pk)
+        current_priority = existing_instance.priority or 0
+        update_priority = instance.priority or 0
+
+        if current_priority > update_priority:
+            BannerSliderMobileModel.objects.filter(priority__lt=current_priority, priority__gte=update_priority).update(
+                priority=models.F('priority') + 1)
+        elif current_priority < update_priority:
+            BannerSliderMobileModel.objects.filter(priority__gt=current_priority, priority__lte=update_priority).update(
+                priority=models.F('priority') - 1)
+
+    elif not instance.pk:
+        last_number = BannerSliderMobileModel.objects.aggregate(max_number=Max('priority'))['max_number']
+        if not instance.priority:
+            instance.priority = (last_number or 0) + 1
+        else:
+            if BannerSliderMobileModel.objects.filter(priority__lte=instance.priority).exists():
+                BannerSliderMobileModel.objects.filter(priority__gte=instance.priority).update(
                     priority=models.F('priority') + 1)
 
 

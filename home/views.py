@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from .models import (BannerSliderModel, CommentHomeModel, VideoHomeModel, ContentHomeModel, BannerShopModel, LogoModel,
                      SEOHomeModel, ContactSubmitModel, TelegramBotModel, AboutPageModel, CareerPageModel, BlogPageModel,
                      ShopPageModel, SitemapPageModel, WholesaleInquiryPageModel, CustomerCarePageModel,
-                     RefundPolicyPageModel, ContactUsPageModel)
+                     RefundPolicyPageModel, ContactUsPageModel, BannerSliderMobileModel)
 from .serializers import (BannerSliderSerializer, CommentHomeSerializer, VideoHomeSerializer, ContentHomeSerializer,
                           BannerShopSerializer, SEOHomeSerializer, LogoHomeSerializer, NewsLetterSerializer,
                           ContactSubmitSerializer, AboutPageSerializer, ShopPageSerializer, BlogPageSerializer,
@@ -21,8 +21,12 @@ from services.sitemapPage import sitemap
 class ImageSliderView(APIView):
     def get(self, request):
         banner_slider = BannerSliderModel.objects.filter(active=True).order_by('priority')
+        banner_slider_mobile = BannerSliderMobileModel.objects.filter(active=True).order_by('priority')
+
         ser_data = BannerSliderSerializer(instance=banner_slider, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        ser_data_mobile = BannerSliderSerializer(instance=banner_slider_mobile, many=True)
+
+        return Response(data={'desktop': ser_data.data, 'mobile': ser_data_mobile.data}, status=status.HTTP_200_OK)
 
 
 class VideoHomeView(APIView):
