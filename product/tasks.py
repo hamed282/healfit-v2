@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 @shared_task
 def zoho_product_update():
+    logger.info("test 0")
     organization_id = settings.ORGANIZATION_ID
     oauth = zoho_refresh_token(settings.SCOPE_READING)
     per_page = '200'
