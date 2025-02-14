@@ -104,3 +104,10 @@ def send_order_telegram(order, order_items):
         url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&parse_mode=Markdown&text={message}"
         response = requests.get(url)
         print(response.json())
+
+
+# from order.models import OrderModel
+# order = OrderModel.objects.filter(user=1).first()
+# order_items = order.items.all()
+# recipient_list = ['hamed.alizadegan@gmail.com']
+# send_order_email(order, order_items, recipient_list)
