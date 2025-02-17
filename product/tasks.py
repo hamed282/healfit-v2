@@ -21,8 +21,6 @@ def zoho_product_update():
     page = 0
     i = 1
 
-    logger.info("test 1")
-
     while has_more_page:
         page += 1
         url_itemgroups = f'https://www.zohoapis.com/inventory/v1/itemgroups?organization_id={organization_id}&page={page}&per_page={per_page}'
@@ -51,8 +49,6 @@ def zoho_product_update():
             except:
                 continue
         has_more_page = response_itemgroups['page_context']['has_more_page']
-
-    logger.info("test 2")
 
     has_more_page = True
     page = 0
@@ -90,6 +86,8 @@ def zoho_product_update():
                 item_id = item['item_id']
                 price = item['rate']
                 product_variant = ProductVariantModel.objects.filter(name=name)
+                logger.info(product_variant)
+
                 if product_variant.exists():
                     product_obj = product_variant.get(name=name)
                     product_obj.quantity = quantity
@@ -108,7 +106,5 @@ def zoho_product_update():
             except:
                 product = item['group_name']
                 continue
-
-        logger.info("test 3")
 
         has_more_page = response_items['page_context']['has_more_page']
