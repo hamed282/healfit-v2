@@ -86,10 +86,10 @@ def zoho_product_update():
                 item_id = item['item_id']
                 price = item['rate']
                 product_variant = ProductVariantModel.objects.filter(name=name)
-                # logger.info(product_variant)
-                product_all = ProductVariantModel.objects.all()
-                logger.info(product_all)
-                logger.info(product_all.count())
+                logger.info(product_variant)
+                # product_all = ProductVariantModel.objects.all()
+                # logger.info(product_all)
+                # logger.info(product_all.count())
 
                 if product_variant.exists():
                     product_obj = product_variant.get(name=name)
