@@ -89,6 +89,7 @@ def zoho_product_update():
                 # logger.info(product_variant)
                 product_all = ProductVariantModel.objects.all()
                 logger.info(product_all)
+                logger.info(product_all.count())
 
                 if product_variant.exists():
                     product_obj = product_variant.get(name=name)
