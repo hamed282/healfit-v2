@@ -112,8 +112,8 @@ def zoho_product_update():
                                                        price=price,
                                                        quantity=quantity)
                 i += 1
-            except:
-                logger.info('error')
+            except Exception as e:
+                logger.exception("An error occurred")
 
                 product = item['group_name']
                 continue
