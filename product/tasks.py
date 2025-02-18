@@ -102,7 +102,8 @@ def zoho_product_update():
                     product_obj.save()
 
                 else:
-                    print(i)
+                    logger.info(i)
+
                     ProductVariantModel.objects.create(product=product,
                                                        name=name,
                                                        item_id=item_id,
@@ -112,6 +113,8 @@ def zoho_product_update():
                                                        quantity=quantity)
                 i += 1
             except:
+                logger.info('error')
+
                 product = item['group_name']
                 continue
 
