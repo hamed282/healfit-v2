@@ -97,12 +97,14 @@ def zoho_product_update():
 
                 if product_variant.exists():
                     product_obj = product_variant.get(name=name)
+                    logger.info(product_obj)
+
                     product_obj.quantity = quantity
                     product_obj.price = price
                     product_obj.save()
 
                 else:
-                    logger.info(i)
+                    # logger.info(i)
 
                     ProductVariantModel.objects.create(product=product,
                                                        name=name,
