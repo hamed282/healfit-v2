@@ -96,8 +96,9 @@ def zoho_product_update():
                 # logger.info(product_all.count())
 
                 if product_variant.exists():
+                    logger.info(name)
+
                     product_obj = product_variant.get(name=name)
-                    logger.info(product_obj)
 
                     product_obj.quantity = quantity
                     product_obj.price = price
