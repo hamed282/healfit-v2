@@ -102,6 +102,7 @@ def zoho_product_update():
                     product_obj.save()
 
                 else:
+                    print(i)
                     ProductVariantModel.objects.create(product=product,
                                                        name=name,
                                                        item_id=item_id,
