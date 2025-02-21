@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import (ProductCategoryModel, ProductModel, PopularProductModel, SizeProductModel, ProductVariantModel,
                      ColorProductModel, ProductSubCategoryModel, AddSubCategoryModel, AddCategoryModel,
                      ProductGenderModel, AddImageGalleryModel, ExtraGroupModel, ProductTagModel, AddProductTagModel,
-                     FavUserModel, CouponModel, ProductCouponModel)
+                     FavUserModel, CouponModel, ProductCouponModel, AddSideModel, AddCompressionClassModel)
 from django.utils.html import format_html
 
 
@@ -51,13 +51,25 @@ class TagInline(admin.TabularInline):
     extra = 1
 
 
+class CompressionClassInline(admin.TabularInline):
+    model = AddCompressionClassModel
+    extra = 1
+
+
+class SideInline(admin.TabularInline):
+    model = AddSideModel
+    extra = 1
+
+
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['id', 'product', 'priority']
     inlines = (ImageGalleryInline, CategoryInline, SubCategoryInline, TagInline)
 
 
 class ProductVariantAdmin(admin.ModelAdmin):
-    list_display = ['id', 'product', 'color', 'size', 'quantity', 'price', 'percent_discount']
+    list_display = ['id', 'product', 'color', 'size', 'quantity', 'price', 'percent_discount', 'compression_class',
+                    'side']
+    inlines = (CompressionClassInline, SideInline)
     readonly_fields = ["slug"]
 
 

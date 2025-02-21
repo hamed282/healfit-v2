@@ -129,6 +129,8 @@ class ProductVariantModel(models.Model):
     price = models.IntegerField()
     percent_discount = models.IntegerField(null=True, blank=True)
     quantity = models.IntegerField()
+    compression_class = models.ForeignKey('CompressionModel', on_delete=models.CASCADE, related_name='compression_class')
+    side = models.ForeignKey('SideModel', on_delete=models.CASCADE, related_name='side')
     slug = models.SlugField(max_length=100, unique=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -157,6 +159,48 @@ class ProductVariantModel(models.Model):
         if self.percent_discount is None:
             percent_discount = 0
         return int(price - price * percent_discount / 100)
+
+
+class CompressionClassModel(models.Model):
+    compression_class = models.CharField(max_length=8)
+
+    class Meta:
+        verbose_name = 'Compression Class'
+        verbose_name_plural = 'Compression Class'
+
+    def __str__(self):
+        return f'{self.compression_class}'
+
+
+class AddCompressionClassModel(models.Model):
+    objects = None
+    compression_class = models.ForeignKey(CompressionClassModel, on_delete=models.CASCADE, related_name='class_rel')
+    variant_product = models.ForeignKey(ProductVariantModel, on_delete=models.CASCADE, related_name='class_variant')
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.compression_class}'
+
+
+class SideModel(models.Model):
+    side = models.CharField(max_length=8)
+
+    class Meta:
+        verbose_name = 'Side'
+        verbose_name_plural = 'Side'
+
+    def __str__(self):
+        return f'{self.side}'
+
+
+class AddSideModel(models.Model):
+    objects = None
+    side = models.ForeignKey(SideModel, on_delete=models.CASCADE, related_name='side_rel')
+    variant_product = models.ForeignKey(ProductVariantModel, on_delete=models.CASCADE, related_name='side_variant')
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.side}'
 
 
 class ProductCategoryModel(models.Model):
