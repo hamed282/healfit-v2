@@ -105,7 +105,7 @@ def zoho_product_update():
                     product_obj.save()
 
                 else:
-                    logger.info(i)
+                    # logger.info(i)
 
                     ProductVariantModel.objects.create(product=product,
                                                        name=name,
@@ -116,7 +116,7 @@ def zoho_product_update():
                                                        quantity=quantity)
                 i += 1
             except Exception as e:
-                # logger.exception("An error occurred")
+                logger.exception("An error occurred")
 
                 product = item['group_name']
                 continue
