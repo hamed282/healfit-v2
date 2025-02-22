@@ -137,7 +137,7 @@ class ProductVariantModel(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['product', 'color', 'size'],
+                fields=['product', 'color', 'size', 'compression_class', 'side'],
                 name='unique_prod_color_size_combo'
             )
         ]
