@@ -87,8 +87,8 @@ def zoho_product_update():
                 price = item['rate']
                 product_variant = ProductVariantModel.objects.filter(name=name)
 
-                if not product_variant.exists():
-                    logger.warning(f"No product variant found with name: {name}")
+                # if not product_variant.exists():
+                #     logger.warning(f"No product variant found with name: {name}")
 
                 # logger.info(product_variant)
                 # product_all = ProductVariantModel.objects.all()
@@ -96,7 +96,7 @@ def zoho_product_update():
                 # logger.info(product_all.count())
 
                 if product_variant.exists():
-                    logger.info(name)
+                    # logger.info(name)
 
                     product_obj = product_variant.get(name=name)
 
@@ -105,7 +105,7 @@ def zoho_product_update():
                     product_obj.save()
 
                 else:
-                    # logger.info(i)
+                    logger.info(i)
 
                     ProductVariantModel.objects.create(product=product,
                                                        name=name,

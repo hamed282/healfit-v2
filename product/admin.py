@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import (ProductCategoryModel, ProductModel, PopularProductModel, SizeProductModel, ProductVariantModel,
                      ColorProductModel, ProductSubCategoryModel, AddSubCategoryModel, AddCategoryModel,
                      ProductGenderModel, AddImageGalleryModel, ExtraGroupModel, ProductTagModel, AddProductTagModel,
-                     FavUserModel, CouponModel, ProductCouponModel, AddSideModel, AddCompressionClassModel)
+                     FavUserModel, CouponModel, ProductCouponModel, CompressionClassModel, SideModel)
 from django.utils.html import format_html
 
 
@@ -51,16 +51,6 @@ class TagInline(admin.TabularInline):
     extra = 1
 
 
-class CompressionClassInline(admin.TabularInline):
-    model = AddCompressionClassModel
-    extra = 1
-
-
-class SideInline(admin.TabularInline):
-    model = AddSideModel
-    extra = 1
-
-
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['id', 'product', 'priority']
     inlines = (ImageGalleryInline, CategoryInline, SubCategoryInline, TagInline)
@@ -69,7 +59,6 @@ class ProductAdmin(admin.ModelAdmin):
 class ProductVariantAdmin(admin.ModelAdmin):
     list_display = ['id', 'product', 'color', 'size', 'quantity', 'price', 'percent_discount', 'compression_class',
                     'side']
-    inlines = (CompressionClassInline, SideInline)
     readonly_fields = ["slug"]
 
 
@@ -110,6 +99,8 @@ admin.site.register(ProductVariantModel, ProductVariantAdmin)
 admin.site.register(ColorProductModel)
 admin.site.register(AddCategoryModel)
 admin.site.register(AddSubCategoryModel)
+admin.site.register(CompressionClassModel)
+admin.site.register(SideModel)
 admin.site.register(ExtraGroupModel)
 admin.site.register(ProductTagModel, ProductTagAdmin)
 admin.site.register(AddProductTagModel)

@@ -125,12 +125,11 @@ class ProductVariantModel(models.Model):
     item_id = models.CharField(max_length=100, verbose_name='Product ID', unique=True, blank=True, null=True)
     color = models.ForeignKey('ColorProductModel', on_delete=models.CASCADE, related_name='color_product')
     size = models.ForeignKey('SizeProductModel', on_delete=models.CASCADE, related_name='size_product')
-    classes = models.ForeignKey('ClassProductModel', on_delete=models.CASCADE, related_name='class_product', blank=True, null=True)
     price = models.IntegerField()
     percent_discount = models.IntegerField(null=True, blank=True)
     quantity = models.IntegerField()
-    compression_class = models.ForeignKey('CompressionModel', on_delete=models.CASCADE, related_name='compression_class')
-    side = models.ForeignKey('SideModel', on_delete=models.CASCADE, related_name='side')
+    compression_class = models.ForeignKey('CompressionClassModel', on_delete=models.CASCADE, blank=True, null=True)
+    side = models.ForeignKey('SideModel', on_delete=models.CASCADE, blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -172,32 +171,12 @@ class CompressionClassModel(models.Model):
         return f'{self.compression_class}'
 
 
-class AddCompressionClassModel(models.Model):
-    objects = None
-    compression_class = models.ForeignKey(CompressionClassModel, on_delete=models.CASCADE, related_name='class_rel')
-    variant_product = models.ForeignKey(ProductVariantModel, on_delete=models.CASCADE, related_name='class_variant')
-    created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f'{self.compression_class}'
-
-
 class SideModel(models.Model):
     side = models.CharField(max_length=8)
 
     class Meta:
         verbose_name = 'Side'
         verbose_name_plural = 'Side'
-
-    def __str__(self):
-        return f'{self.side}'
-
-
-class AddSideModel(models.Model):
-    objects = None
-    side = models.ForeignKey(SideModel, on_delete=models.CASCADE, related_name='side_rel')
-    variant_product = models.ForeignKey(ProductVariantModel, on_delete=models.CASCADE, related_name='side_variant')
-    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.side}'
@@ -394,19 +373,6 @@ class SizeProductModel(models.Model):
 
     def __str__(self):
         return f'{self.size}'
-
-
-class ClassProductModel(models.Model):
-    objects = None
-    classes = models.CharField(max_length=120)
-    priority = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        verbose_name = 'Class Product'
-        verbose_name_plural = 'Class Products'
-
-    def __str__(self):
-        return f'{self.classes}'
 
 
 @receiver(pre_save, sender=ProductModel)
