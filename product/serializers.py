@@ -3,6 +3,7 @@ from .models import (ProductGenderModel, ProductModel, ProductVariantModel, AddI
                      ProductCategoryModel, ProductSubCategoryModel, AddProductTagModel, AddSubCategoryModel,
                      ProductTagModel, FavUserModel, CouponModel)
 from django.shortcuts import get_object_or_404
+import re
 
 
 class ProductGenderSerializer(serializers.ModelSerializer):
@@ -15,8 +16,8 @@ class ProductSerializer(serializers.ModelSerializer):
     colors = serializers.SerializerMethodField()
     all_size = serializers.SerializerMethodField()
     size = serializers.SerializerMethodField()
-    # compression_class = serializers.SerializerMethodField()
-    # side = serializers.SerializerMethodField()
+    compression_class = serializers.SerializerMethodField()
+    side = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
     subcategory = serializers.SerializerMethodField()
     gender = serializers.SlugRelatedField(read_only=True, slug_field='id')
@@ -92,20 +93,30 @@ class ProductSerializer(serializers.ModelSerializer):
         sizes = sorted(size, key=lambda x: int(x.split(" - ")[1]))
         size = [size.split(" - ")[0] for size in sizes]
         return size
-    #
-    # def get_compression_class(self, obj):
-    #     product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
-    #     ccl = set([f'{str(p.compression_class)} - {str(p.compression_class.priority)}' for p in product if p.quantity > 0])
-    #     ccls = sorted(ccl, key=lambda x: int(x.split(" - ")[1]))
-    #     ccl = [ccl.split(" - ")[0] for ccl in ccls]
-    #     return ccl
 
-    # def get_side(self, obj):
-    #     product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
-    #     side = set([f'{str(p.side)} - {str(p.side.priority)}' for p in product if p.quantity > 0])
-    #     sides = sorted(side, key=lambda x: int(x.split(" - ")[1]))
-    #     side = [side.split(" - ")[0] for side in sides]
-    #     return side
+    def get_compression_class(self, obj):
+        product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
+
+        valid_products = [p for p in product if re.search(r"/CCL.*$", p.name, re.IGNORECASE)]
+        if not valid_products:
+            return []
+
+        ccl = set([f'{str(p.compression_class)} - {str(p.compression_class.priority)}' for p in product if p.quantity > 0])
+        ccls = sorted(ccl, key=lambda x: int(x.split(" - ")[1]))
+        ccl = [ccl.split(" - ")[0] for ccl in ccls]
+        return ccl
+
+    def get_side(self, obj):
+        product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
+
+        valid_products = [p for p in product if re.search(r"/Side.*$", p.name, re.IGNORECASE)]
+        if not valid_products:
+            return []
+
+        side = set([f'{str(p.side)} - {str(p.side.priority)}' for p in product if p.quantity > 0])
+        sides = sorted(side, key=lambda x: int(x.split(" - ")[1]))
+        side = [side.split(" - ")[0] for side in sides]
+        return side
 
 
 class ProductAdminSerializer(serializers.ModelSerializer):
