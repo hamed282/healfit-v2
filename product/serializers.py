@@ -86,12 +86,12 @@ class ProductSerializer(serializers.ModelSerializer):
         all_size = [{'size': size.split(" - ")[0], 'id': size.split(" - ")[1]} for size in sizes]
         return all_size
 
-    # def get_size(self, obj):
-    #     product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
-    #     size = set([f'{str(p.size)} - {str(p.size.priority)}' for p in product if p.quantity > 0])
-    #     sizes = sorted(size, key=lambda x: int(x.split(" - ")[1]))
-    #     size = [size.split(" - ")[0] for size in sizes]
-    #     return size
+    def get_size(self, obj):
+        product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
+        size = set([f'{str(p.size)} - {str(p.size.priority)}' for p in product if p.quantity > 0])
+        sizes = sorted(size, key=lambda x: int(x.split(" - ")[1]))
+        size = [size.split(" - ")[0] for size in sizes]
+        return size
     #
     # def get_compression_class(self, obj):
     #     product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
@@ -100,12 +100,12 @@ class ProductSerializer(serializers.ModelSerializer):
     #     ccl = [ccl.split(" - ")[0] for ccl in ccls]
     #     return ccl
 
-    def get_side(self, obj):
-        product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
-        side = set([f'{str(p.side)} - {str(p.side.priority)}' for p in product if p.quantity > 0])
-        sides = sorted(side, key=lambda x: int(x.split(" - ")[1]))
-        side = [side.split(" - ")[0] for side in sides]
-        return side
+    # def get_side(self, obj):
+    #     product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
+    #     side = set([f'{str(p.side)} - {str(p.side.priority)}' for p in product if p.quantity > 0])
+    #     sides = sorted(side, key=lambda x: int(x.split(" - ")[1]))
+    #     side = [side.split(" - ")[0] for side in sides]
+    #     return side
 
 
 class ProductAdminSerializer(serializers.ModelSerializer):
