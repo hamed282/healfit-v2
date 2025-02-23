@@ -97,6 +97,8 @@ def zoho_product_update():
                 logger.info(name)
                 logger.info(item_id)
                 logger.info(product)
+                if i == 20:
+                    break
 
                 if product_variant.exists():
                     # logger.info(name)
