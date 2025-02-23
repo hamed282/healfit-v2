@@ -162,6 +162,7 @@ class ProductVariantModel(models.Model):
 
 class CompressionClassModel(models.Model):
     compression_class = models.CharField(max_length=8)
+    priority = models.IntegerField(blank=True, null=True)
 
     class Meta:
         verbose_name = 'Compression Class'
@@ -173,6 +174,7 @@ class CompressionClassModel(models.Model):
 
 class SideModel(models.Model):
     side = models.CharField(max_length=8)
+    priority = models.IntegerField(blank=True, null=True)
 
     class Meta:
         verbose_name = 'Side'
@@ -484,6 +486,66 @@ def increment_numbers_after_existing(sender, instance, **kwargs):
             if ProductSubCategoryModel.objects.filter(priority__lte=instance.priority).exists():
                 ProductSubCategoryModel.objects.filter(priority__gte=instance.priority).update(
                     priority=models.F('priority') + 1)
+
+
+@receiver(pre_save, sender=SideModel)
+def increment_numbers_after_existing(sender, instance, **kwargs):
+    if instance.pk:
+        existing_instance = SideModel.objects.get(pk=instance.pk)
+        if not existing_instance.priority:
+            last_number = SideModel.objects.aggregate(max_number=Max('priority'))['max_number']
+            existing_instance.priority = last_number
+        else:
+            current_priority = existing_instance.priority
+            update_priority = instance.priority
+            if current_priority > update_priority:
+                SideModel.objects.filter(priority__lt=current_priority, priority__gte=update_priority).update(
+                    priority=models.F('priority') + 1)
+            if current_priority < update_priority:
+                SideModel.objects.filter(priority__gt=current_priority, priority__lte=update_priority).update(
+                    priority=models.F('priority') - 1)
+
+    elif not instance.pk and not instance.priority:
+        last_number = SideModel.objects.aggregate(max_number=Max('priority'))['max_number']
+        if last_number:
+            instance.priority = last_number + 1
+        else:
+            instance.priority = 1
+
+    elif not instance.pk and instance.priority:
+        if SideModel.objects.filter(priority__lte=instance.priority).exists():
+            SideModel.objects.filter(priority__gte=instance.priority).update(
+                priority=models.F('priority') + 1)
+
+
+@receiver(pre_save, sender=CompressionClassModel)
+def increment_numbers_after_existing(sender, instance, **kwargs):
+    if instance.pk:
+        existing_instance = CompressionClassModel.objects.get(pk=instance.pk)
+        if not existing_instance.priority:
+            last_number = CompressionClassModel.objects.aggregate(max_number=Max('priority'))['max_number']
+            existing_instance.priority = last_number
+        else:
+            current_priority = existing_instance.priority
+            update_priority = instance.priority
+            if current_priority > update_priority:
+                CompressionClassModel.objects.filter(priority__lt=current_priority, priority__gte=update_priority).update(
+                    priority=models.F('priority') + 1)
+            if current_priority < update_priority:
+                CompressionClassModel.objects.filter(priority__gt=current_priority, priority__lte=update_priority).update(
+                    priority=models.F('priority') - 1)
+
+    elif not instance.pk and not instance.priority:
+        last_number = CompressionClassModel.objects.aggregate(max_number=Max('priority'))['max_number']
+        if last_number:
+            instance.priority = last_number + 1
+        else:
+            instance.priority = 1
+
+    elif not instance.pk and instance.priority:
+        if CompressionClassModel.objects.filter(priority__lte=instance.priority).exists():
+            CompressionClassModel.objects.filter(priority__gte=instance.priority).update(
+                priority=models.F('priority') + 1)
 
 
 class AddImageGalleryModel(models.Model):
