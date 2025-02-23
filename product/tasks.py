@@ -90,14 +90,12 @@ def zoho_product_update():
                 # if not product_variant.exists():
                 #     logger.warning(f"No product variant found with name: {name}")
 
-                # logger.info(product_variant)
                 # product_all = ProductVariantModel.objects.all()
-                # logger.info(product_all)
-                # logger.info(product_all.count())
                 # logger.info(name)
                 # logger.info(item_id)
-                # if i >= 20:
-                #     break
+
+                if name == 'REV.PAD03 Revee Pad 03-Skin/One Size':
+                    print(item_id)
 
                 if product_variant.exists():
                     # logger.info(name)
@@ -118,11 +116,10 @@ def zoho_product_update():
                                                        size=size,
                                                        price=price,
                                                        quantity=quantity)
-                i += 1
+
             except Exception as e:
                 logger.exception("An error occurred")
-
-                product = item['group_name']
                 continue
+            i += 1
 
         has_more_page = response_items['page_context']['has_more_page']
