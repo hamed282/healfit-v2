@@ -96,7 +96,6 @@ def zoho_product_update():
                 # logger.info(product_all.count())
                 logger.info(name)
                 logger.info(item_id)
-                logger.info(product)
                 if i >= 20:
                     break
 
