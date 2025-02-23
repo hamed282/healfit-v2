@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 @shared_task
 def zoho_product_update():
-    logger.info("test 0")
     organization_id = settings.ORGANIZATION_ID
     oauth = zoho_refresh_token(settings.SCOPE_READING)
     per_page = '200'
@@ -87,18 +86,10 @@ def zoho_product_update():
                 price = item['rate']
                 product_variant = ProductVariantModel.objects.filter(name=name)
 
-                # if not product_variant.exists():
-                #     logger.warning(f"No product variant found with name: {name}")
-
-                # product_all = ProductVariantModel.objects.all()
-                # logger.info(name)
-                # logger.info(item_id)
-
                 if name == 'REV.PAD03 Revee Pad 03-Skin/One Size':
                     print(item_id)
 
                 if product_variant.exists():
-                    # logger.info(name)
 
                     product_obj = product_variant.get(name=name)
 
@@ -107,13 +98,13 @@ def zoho_product_update():
                     product_obj.save()
 
                 else:
-                    # logger.info(i)
-
                     ProductVariantModel.objects.create(product=product,
                                                        name=name,
                                                        item_id=item_id,
                                                        color=color,
                                                        size=size,
+                                                       # compression_class=compression_class,
+                                                       # side=side,
                                                        price=price,
                                                        quantity=quantity)
 

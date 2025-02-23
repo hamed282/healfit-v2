@@ -57,7 +57,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 class ProductVariantAdmin(admin.ModelAdmin):
-    list_display = ['id', 'product', 'color', 'size', 'quantity', 'price', 'percent_discount', 'compression_class',
+    list_display = ['id', 'name', 'color', 'size', 'quantity', 'price', 'percent_discount', 'compression_class',
                     'side']
     readonly_fields = ["slug"]
 
