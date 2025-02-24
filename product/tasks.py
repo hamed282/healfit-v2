@@ -78,11 +78,9 @@ def zoho_product_update():
 
                     if item['attribute_name3'] == 'Compression Class':
                         ccl = item['attribute_option_name3']
-                        print(ccl)
                         ccl = CompressionClassModel.objects.get(compression_class=ccl)
                     elif item['attribute_name3'] == 'Side':
                         side = item['attribute_option_name3']
-                        print(side)
                         side = SideModel.objects.get(side=side)
                 else:
                     color = 'not color'
