@@ -76,8 +76,10 @@ def zoho_product_update():
                     size = SizeProductModel.objects.get(size=size)
 
                     ccl = item['attribute_option_name3']
-                    ccl = CompressionClassModel.objects.get(compression_class=ccl)
+                    print(ccl)
 
+                    ccl = CompressionClassModel.objects.get(compression_class=ccl)
+                    print(ccl)
                     side = item['attribute_option_name3']
                     side = SideModel.objects.get(side=side)
                 else:
