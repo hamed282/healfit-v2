@@ -59,8 +59,7 @@ def zoho_product_update():
         response_items = requests.get(url=url_items, headers=headers)
         response_items = response_items.json()
         import json
-        logger.info("An error occurred " + json.dumps(response_items, ensure_ascii=False))
-        print('-' * 100)
+        logger.info("An error occurred " + json.dumps(dict(list(response_items.items())[:5]), ensure_ascii=False))
 
         for item in response_items['items']:
 
@@ -88,9 +87,6 @@ def zoho_product_update():
                 item_id = item['item_id']
                 price = item['rate']
                 product_variant = ProductVariantModel.objects.filter(name=name)
-
-                if name == 'REV.PAD03 Revee Pad 03-Skin/One Size':
-                    print(item_id)
 
                 if product_variant.exists():
 
