@@ -58,7 +58,8 @@ def zoho_product_update():
 
         response_items = requests.get(url=url_items, headers=headers)
         response_items = response_items.json()
-        logger.info(f"An error occurred {response_items}")
+        import json
+        logger.info("An error occurred " + json.dumps(response_items, ensure_ascii=False))
 
         for item in response_items['items']:
 
