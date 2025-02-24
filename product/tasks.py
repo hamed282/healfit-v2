@@ -72,9 +72,8 @@ def zoho_product_update():
                 if item['attribute_name1'] == 'Color':
                     color = item['attribute_option_name1'].lower()
                     color = ColorProductModel.objects.get(color=color)
-                    print(name)
+
                     size = item['attribute_option_name2']
-                    print(size)
                     size = SizeProductModel.objects.get(size=size)
 
                     if item['attribute_name3'] == 'Compression Class':
@@ -111,6 +110,10 @@ def zoho_product_update():
                     product_obj.save()
 
                 else:
+                    print(name)
+                    print(ccl)
+                    print(side)
+
                     ProductVariantModel.objects.create(product=product,
                                                        name=name,
                                                        item_id=item_id,
