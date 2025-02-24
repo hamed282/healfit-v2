@@ -60,6 +60,7 @@ def zoho_product_update():
         response_items = response_items.json()
         import json
         logger.info("An error occurred " + json.dumps(response_items, ensure_ascii=False))
+        print('-' * 100)
 
         for item in response_items['items']:
 
