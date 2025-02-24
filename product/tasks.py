@@ -60,7 +60,8 @@ def zoho_product_update():
         response_items = response_items.json()
 
         for item in response_items['items']:
-
+            ccl = None
+            side = None
             try:
                 product = item['group_name']
 
