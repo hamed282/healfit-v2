@@ -1,5 +1,5 @@
 import requests
-from .models import ProductModel, ProductVariantModel, ColorProductModel, SizeProductModel
+from .models import ProductModel, ProductVariantModel, ColorProductModel, SizeProductModel, CompressionClassModel, SideModel
 from celery import shared_task
 from django.conf import settings
 from services.zoho_services import zoho_refresh_token
@@ -68,20 +68,30 @@ def zoho_product_update():
 
                 name = item['name']
 
-                print(item['attribute_name3'])
-
                 if item['attribute_name1'] == 'Color':
                     color = item['attribute_option_name1'].lower()
                     color = ColorProductModel.objects.get(color=color)
 
                     size = item['attribute_option_name2']
                     size = SizeProductModel.objects.get(size=size)
+
+                    ccl = item['attribute_option_name3']
+                    ccl = CompressionClassModel.objects.get(compression_class=ccl)
+
+                    side = item['attribute_option_name3']
+                    side = SideModel.objects.get(side=side)
                 else:
                     color = 'not color'
                     color = ColorProductModel.objects.get(color=color)
 
                     size = item['attribute_option_name1']
                     size = SizeProductModel.objects.get(size=size)
+
+                    ccl = item['attribute_option_name2']
+                    ccl = CompressionClassModel.objects.get(compression_class=ccl)
+
+                    side = item['attribute_option_name2']
+                    side = SideModel.objects.get(side=side)
 
                 quantity = item['stock_on_hand']
                 item_id = item['item_id']
@@ -102,8 +112,8 @@ def zoho_product_update():
                                                        item_id=item_id,
                                                        color=color,
                                                        size=size,
-                                                       # compression_class=compression_class,
-                                                       # side=side,
+                                                       compression_class=ccl,
+                                                       side=side,
                                                        price=price,
                                                        quantity=quantity)
 

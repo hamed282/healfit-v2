@@ -161,6 +161,7 @@ class ProductVariantModel(models.Model):
 
 
 class CompressionClassModel(models.Model):
+    objects = None
     compression_class = models.CharField(max_length=8)
     priority = models.IntegerField(blank=True, null=True)
 
@@ -173,6 +174,7 @@ class CompressionClassModel(models.Model):
 
 
 class SideModel(models.Model):
+    objects = None
     side = models.CharField(max_length=8)
     priority = models.IntegerField(blank=True, null=True)
 
