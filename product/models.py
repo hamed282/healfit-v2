@@ -6,7 +6,7 @@ from django.db.models import Max
 from django.db.models import Q
 from upload_path import (get_cover_image_upload_path, get_gallery_upload_path, get_description_image_upload_path,
                          get_size_table_upload_path, get_category_upload_path, get_subcategory_upload_path,
-                         get_gender_upload_path, get_video_product_upload_path)
+                         get_gender_upload_path, get_video_product_upload_path, get_brand_logo_upload_path)
 from accounts.models import User
 from django.utils import timezone
 
@@ -15,6 +15,7 @@ class ProductModel(models.Model):
     objects = None
     gender = models.ForeignKey('ProductGenderModel', on_delete=models.CASCADE, related_name='gender_product', null=True, blank=True)
     product = models.CharField(max_length=100, unique=True)
+    brand = models.ForeignKey('ProductBrandModel', on_delete=models.CASCADE, null=True, blank=True)
     name_product = models.CharField(max_length=100, blank=True, null=True)
     cover_image = models.ImageField(upload_to=get_cover_image_upload_path, blank=True, null=True)
     cover_image_alt = models.CharField(max_length=125, blank=True, null=True)
@@ -248,9 +249,10 @@ class ProductCategoryModel(models.Model):
 
 class ProductBrandModel(models.Model):
     brand = models.CharField(max_length=32)
+    brand_logo = models.ImageField(upload_to=get_brand_logo_upload_path, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.brand}'
 
 
 class ProductSubCategoryModel(models.Model):

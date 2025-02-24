@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (ProductGenderModel, ProductModel, ProductVariantModel, AddImageGalleryModel, PopularProductModel,
                      ProductCategoryModel, ProductSubCategoryModel, AddProductTagModel, AddSubCategoryModel,
-                     ProductTagModel, FavUserModel, CouponModel)
+                     ProductTagModel, FavUserModel, CouponModel, ProductBrandModel)
 from django.shortcuts import get_object_or_404
 import re
 
@@ -12,7 +12,14 @@ class ProductGenderSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ProductBrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductBrandModel
+        fields = '__all__'
+
+
 class ProductSerializer(serializers.ModelSerializer):
+    brand = ProductBrandSerializer()
     colors = serializers.SerializerMethodField()
     all_size = serializers.SerializerMethodField()
     size = serializers.SerializerMethodField()

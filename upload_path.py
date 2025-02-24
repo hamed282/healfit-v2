@@ -66,3 +66,15 @@ def get_video_product_upload_path(instance, filename):
     product_name = instance.product
 
     return os.path.join('product', product_name, 'video', filename)
+
+
+def get_brand_logo_upload_path(instance, filename):
+    brand_name = instance.brand
+
+    return os.path.join('brand', brand_name, filename)
+
+
+def get_author_upload_path(instance, filename):
+    author_image = instance.author
+
+    return os.path.join('author', author_image, filename)

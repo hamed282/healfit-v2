@@ -1,5 +1,6 @@
 from django.db import models
-from upload_path import get_cover_blog_upload_path, get_title_blog_upload_path, get_banner_blog_upload_path
+from upload_path import (get_cover_blog_upload_path, get_title_blog_upload_path, get_banner_blog_upload_path,
+                         get_author_upload_path)
 from accounts.models import User
 
 
@@ -43,9 +44,11 @@ class BlogModel(models.Model):
     description = models.TextField(null=True, blank=True)
     body = models.TextField()
     author = models.CharField(max_length=64)
+    author_image = models.ImageField(upload_to=get_author_upload_path, null=True, blank=True)
+    read_duration = models.CharField(max_length=16, null=True, blank=True)
     role = models.CharField(max_length=24, null=True, blank=True)
     slug = models.SlugField(unique=True)
-    category = models.ForeignKey(BlogCategoryModel, on_delete=models.CASCADE)
+    # category = models.ForeignKey(BlogCategoryModel, on_delete=models.CASCADE)
 
     # SEO Fields
     follow = models.BooleanField(default=False)
@@ -55,11 +58,21 @@ class BlogModel(models.Model):
     meta_description = models.CharField(max_length=160, null=True, blank=True)
     schema_markup = models.TextField(null=True, blank=True)
 
-    created = models.DateField(auto_now_add=True)
-    updated = models.DateField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self):
         return f'/blog/{self.slug}'
+
+
+class AddCategoryModel(models.Model):
+    objects = None
+    category = models.ForeignKey(BlogCategoryModel, on_delete=models.CASCADE)
+    blog = models.ForeignKey(BlogModel, on_delete=models.CASCADE, related_name='cat_blog')
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.category} - {self.blog}'
 
 
 class AddBlogTagModel(models.Model):
