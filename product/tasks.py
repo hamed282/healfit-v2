@@ -120,7 +120,7 @@ def zoho_product_update():
                                                        quantity=quantity)
 
             except Exception as e:
-                # logger.exception("An error occurred")
+                logger.exception("An error occurred")
                 continue
             i += 1
 
