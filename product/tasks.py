@@ -58,8 +58,6 @@ def zoho_product_update():
 
         response_items = requests.get(url=url_items, headers=headers)
         response_items = response_items.json()
-        import json
-        logger.info("An error occurred " + json.dumps(dict(list(response_items.items())[:5]), ensure_ascii=False))
 
         for item in response_items['items']:
 
@@ -69,6 +67,8 @@ def zoho_product_update():
                 product = ProductModel.objects.get(product=product)
 
                 name = item['name']
+
+                print(item['attribute_name3'])
 
                 if item['attribute_name1'] == 'Color':
                     color = item['attribute_option_name1'].lower()
@@ -111,6 +111,5 @@ def zoho_product_update():
                 # logger.exception("An error occurred")
                 continue
             i += 1
-            break
 
         has_more_page = response_items['page_context']['has_more_page']
