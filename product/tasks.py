@@ -114,5 +114,6 @@ def zoho_product_update():
                 # logger.exception("An error occurred")
                 continue
             i += 1
+            break
 
         has_more_page = response_items['page_context']['has_more_page']
