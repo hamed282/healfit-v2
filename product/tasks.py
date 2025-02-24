@@ -75,13 +75,12 @@ def zoho_product_update():
                     size = item['attribute_option_name2']
                     size = SizeProductModel.objects.get(size=size)
 
-                    ccl = item['attribute_option_name3']
-                    print(ccl)
-
-                    ccl = CompressionClassModel.objects.get(compression_class=ccl)
-                    print(ccl)
-                    side = item['attribute_option_name3']
-                    side = SideModel.objects.get(side=side)
+                    if item['attribute_name3'] == 'Compression Class':
+                        ccl = item['attribute_option_name3']
+                        ccl = CompressionClassModel.objects.get(compression_class=ccl)
+                    elif item['attribute_name3'] == 'Side':
+                        side = item['attribute_option_name3']
+                        side = SideModel.objects.get(side=side)
                 else:
                     color = 'not color'
                     color = ColorProductModel.objects.get(color=color)
@@ -89,11 +88,12 @@ def zoho_product_update():
                     size = item['attribute_option_name1']
                     size = SizeProductModel.objects.get(size=size)
 
-                    ccl = item['attribute_option_name2']
-                    ccl = CompressionClassModel.objects.get(compression_class=ccl)
-
-                    side = item['attribute_option_name2']
-                    side = SideModel.objects.get(side=side)
+                    if item['attribute_name2'] == 'Compression Class':
+                        ccl = item['attribute_option_name2']
+                        ccl = CompressionClassModel.objects.get(compression_class=ccl)
+                    elif item['attribute_name2'] == 'Side':
+                        side = item['attribute_option_name2']
+                        side = SideModel.objects.get(side=side)
 
                 quantity = item['stock_on_hand']
                 item_id = item['item_id']
