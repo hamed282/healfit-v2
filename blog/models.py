@@ -40,7 +40,7 @@ class BlogModel(models.Model):
     title = models.CharField(max_length=250)
     title_image = models.ImageField(upload_to=get_title_blog_upload_path, null=True, blank=True)
     title_image_alt = models.CharField(max_length=125, null=True, blank=True)
-    short_description = models.TextField(max_length=60)
+    short_description = models.TextField(max_length=160)
     description = models.TextField(null=True, blank=True)
     body = models.TextField()
     # author = models.CharField(max_length=64)
