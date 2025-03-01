@@ -25,15 +25,23 @@ class BlogSerializer(serializers.ModelSerializer):
 
 
 class BlogAllSerializer(serializers.ModelSerializer):
-    created = serializers.DateTimeField(format='%d %b %Y')
+    created = serializers.DateTimeField(format="%d. %B %Y", read_only=True)
+    updated = serializers.DateTimeField(format="%d. %B %Y", read_only=True)
+    category = serializers.SerializerMethodField()
 
     class Meta:
         model = BlogModel
-        fields = ['id', 'cover_image', 'title', 'short_description', 'slug', 'created']
+        fields = ['id', 'cover_image', 'title', 'short_description', 'slug', 'created', 'updated', 'author_image',
+                  'read_duration', 'author', 'category']
+
+    def get_category(self, obj):
+        categories = obj.cat_blog.all()
+        categories = [category.category.category for category in categories]
+        return categories
 
 
 class RelatedBlogSerializer(serializers.ModelSerializer):
-    created = serializers.DateField(format='%d %b %Y')
+    created = serializers.DateTimeField(format='%d %b %Y')
 
     class Meta:
         model = BlogModel
