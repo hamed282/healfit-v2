@@ -43,8 +43,9 @@ class BlogModel(models.Model):
     short_description = models.TextField(max_length=60)
     description = models.TextField(null=True, blank=True)
     body = models.TextField()
-    author = models.CharField(max_length=64)
-    author_image = models.ImageField(upload_to=get_author_upload_path, null=True, blank=True)
+    # author = models.CharField(max_length=64)
+    # author_image = models.ImageField(upload_to=get_author_upload_path, null=True, blank=True)
+    author = models.ForeignKey('AuthorBlogModel', on_delete=models.CASCADE, null=True, blank=True)
     read_duration = models.CharField(max_length=16, null=True, blank=True)
     role = models.CharField(max_length=24, null=True, blank=True)
     slug = models.SlugField(unique=True)
@@ -63,6 +64,14 @@ class BlogModel(models.Model):
 
     def get_absolute_url(self):
         return f'/blog/{self.slug}'
+
+
+class AuthorBlogModel(models.Model):
+    author = models.CharField(max_length=64)
+    author_image = models.ImageField(upload_to=get_author_upload_path, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.author}'
 
 
 class AddCategoryModel(models.Model):

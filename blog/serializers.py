@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import BlogModel, AddBlogTagModel, BlogCategoryModel, BlogImageModel, CommentBlogModel
+from .models import BlogModel, AddBlogTagModel, BlogCategoryModel, BlogImageModel, CommentBlogModel, AuthorBlogModel
 
 
 class BlogSerializer(serializers.ModelSerializer):
@@ -24,14 +24,21 @@ class BlogSerializer(serializers.ModelSerializer):
         return tag
 
 
+class BlogAuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AuthorBlogModel
+        fields = '__all__'
+
+
 class BlogAllSerializer(serializers.ModelSerializer):
+    author = BlogAuthorSerializer()
     created = serializers.DateTimeField(format="%d. %B %Y", read_only=True)
     updated = serializers.DateTimeField(format="%d. %B %Y", read_only=True)
     category = serializers.SerializerMethodField()
 
     class Meta:
         model = BlogModel
-        fields = ['id', 'cover_image', 'title', 'short_description', 'slug', 'created', 'updated', 'author_image',
+        fields = ['id', 'cover_image', 'title', 'short_description', 'slug', 'created', 'updated',
                   'read_duration', 'author', 'category']
 
     def get_category(self, obj):
@@ -86,6 +93,7 @@ class RecentBlogSerializer(serializers.ModelSerializer):
 
 
 class GetBlogSerializer(serializers.ModelSerializer):
+    author = BlogAuthorSerializer()
     tag = serializers.SerializerMethodField()
     all_categories = serializers.SerializerMethodField()
     recent_blog = serializers.SerializerMethodField()
@@ -103,7 +111,7 @@ class GetBlogSerializer(serializers.ModelSerializer):
         model = BlogModel
         fields = ['id', 'tag', 'category', 'canonical', 'meta_title', 'meta_description', 'schema_markup', 'banner',
                   'banner_alt', 'title', 'short_description', 'all_categories', 'recent_blog', 'author', 'created',
-                  'updated', 'comments', 'body', 'comments_count', 'author_image', 'read_duration']
+                  'updated', 'comments', 'body', 'comments_count', 'read_duration']
 
     def get_category(self, obj):
         categories = obj.cat_blog.all()
