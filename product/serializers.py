@@ -108,10 +108,10 @@ class ProductSerializer(serializers.ModelSerializer):
         # if not valid_products:
         #     return []
 
-        ccl = set([f'{str(p.compression_class)} - {str(p.compression_class.priority)}' for p in product if p.quantity > 0])
-        ccls = sorted(ccl, key=lambda x: int(x.split(" - ")[1]))
-        ccl = [ccl.split(" - ")[0] for ccl in ccls]
-        return ccl
+        # ccl = set([f'{str(p.compression_class)} - {str(p.compression_class.priority)}' for p in product if p.quantity > 0])
+        # ccls = sorted(ccl, key=lambda x: int(x.split(" - ")[1]))
+        # ccl = [ccl.split(" - ")[0] for ccl in ccls]
+        return 'ccl'
 
     def get_side(self, obj):
         product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
