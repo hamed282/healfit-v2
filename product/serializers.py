@@ -188,7 +188,7 @@ class ProductVariantShopSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductVariantModel
         fields = ['product', 'name', 'price', 'off_price', 'percent_discount',
-                  'quantity', 'size', 'color', 'item_id', 'slug', 'id']
+                  'quantity', 'size', 'color', 'item_id', 'slug', 'id', 'compression_class', 'side']
 
     def get_off_price(self, obj):
         price = int(obj.price)

@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import (ProductGenderModel, ProductModel, SizeProductModel, ColorProductModel, ProductVariantModel,
                      AddImageGalleryModel, PopularProductModel, ProductCategoryModel, ProductSubCategoryModel,
-                     FavUserModel, CouponModel)
+                     FavUserModel, CouponModel, CompressionClassModel, SideModel)
 from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVariantShopSerializer,
                           ProductColorImageSerializer, ColorSizeProductSerializer, ProductListSerializer,
                           UserFavSerializer, PopularProductSerializer, ProductAllSerializer,
@@ -49,19 +49,44 @@ class ProductVariantShopView(APIView):
     2. size
     3. color
     """
+
     def get(self, request):
-        product_name = self.request.query_params.get('product', None)
-        product_size = self.request.query_params.get('size', None)
-        product_color = self.request.query_params.get('color', None)
-        if product_name is not None and product_size is not None and product_color is not None:
-            product_name = ProductModel.objects.get(product=product_name)
-            product_size = SizeProductModel.objects.get(size=product_size)
-            product_color = ColorProductModel.objects.get(color=product_color)
-            product = get_object_or_404(ProductVariantModel, product=product_name, size=product_size, color=product_color)
-            ser_product = ProductVariantShopSerializer(instance=product)
-            return Response(data=ser_product.data)
-        else:
-            return Response(data={'massage': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+        product_name = request.query_params.get('product', None)
+        product_size = request.query_params.get('size', None)
+        product_color = request.query_params.get('color', None)
+        compression_class = request.query_params.get('compression_class', None)
+        side = request.query_params.get('side', None)
+
+        if product_name and product_size and product_color:
+            try:
+                product_name = ProductModel.objects.get(product=product_name)
+                product_size = SizeProductModel.objects.get(size=product_size)
+                product_color = ColorProductModel.objects.get(color=product_color)
+
+                filters = {
+                    "product": product_name,
+                    "size": product_size,
+                    "color": product_color
+                }
+
+                if compression_class:
+                    filters["compression_class"] = CompressionClassModel.objects.get(compression_class=compression_class)
+                if side:
+                    filters["side"] = SideModel.objects.get(side=side)
+
+                product_variants = ProductVariantModel.objects.filter(**filters)
+
+                if not product_variants.exists():
+                    return Response({"message": "No matching product found"}, status=status.HTTP_404_NOT_FOUND)
+
+                ser_product = ProductVariantShopSerializer(instance=product_variants.first())
+                return Response(data=ser_product.data)
+
+            except (ProductModel.DoesNotExist, SizeProductModel.DoesNotExist, ColorProductModel.DoesNotExist,
+                    CompressionClassModel.DoesNotExist, SideModel.DoesNotExist):
+                return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"message": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProductColorImageView(APIView):
