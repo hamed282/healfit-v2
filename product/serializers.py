@@ -125,6 +125,151 @@ class ProductSerializer(serializers.ModelSerializer):
         return side
 
 
+class GetClassSerializer(serializers.ModelSerializer):
+    compression_class = serializers.SerializerMethodField()
+    side = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductModel
+        fields = ['compression_class', 'side']
+
+    def get_compression_class(self, obj):
+        product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
+
+        valid_products = [p for p in product if re.search(r"/CCL.*$", p.name, re.IGNORECASE)]
+        if not valid_products:
+            return []
+        ccl = set([f'{str(p.compression_class)} - {str(p.compression_class.priority)}' for p in product if p.quantity > 0])
+        ccls = sorted(ccl, key=lambda x: int(x.split(" - ")[1]))
+        ccl = [ccl.split(" - ")[0] for ccl in ccls]
+        return ccl
+
+    def get_side(self, obj):
+        product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
+
+        valid_products = [p for p in product if re.search(r"/Side.*$", p.name, re.IGNORECASE)]
+        if not valid_products:
+            return []
+
+        side = set([f'{str(p.side)} - {str(p.side.priority)}' for p in product if p.quantity > 0])
+        sides = sorted(side, key=lambda x: int(x.split(" - ")[1]))
+        side = [side.split(" - ")[0] for side in sides]
+        return side
+
+
+class ProductSerializerTest(serializers.ModelSerializer):
+    brand = ProductBrandSerializer()
+    category = serializers.SerializerMethodField()
+    subcategory = serializers.SerializerMethodField()
+    gender = serializers.SlugRelatedField(read_only=True, slug_field='id')
+    gender_data = serializers.SerializerMethodField()
+    tag = serializers.SerializerMethodField()
+    price = serializers.FloatField()
+    off_price = serializers.SerializerMethodField()
+    group_id = serializers.IntegerField()
+    name_product = serializers.CharField(required=False, allow_null=True)
+    video = serializers.FileField(required=False, allow_null=True)
+    percent_discount = serializers.IntegerField(required=False, allow_null=True)
+    schema_markup = serializers.CharField(required=False, allow_null=True)
+
+    cover_image = serializers.ImageField(required=False, allow_null=True)
+    size_table_image = serializers.ImageField(required=False, allow_null=True)
+    description_image = serializers.ImageField(required=False, allow_null=True)
+
+    colors = serializers.SerializerMethodField()
+    all_size = serializers.SerializerMethodField()
+    size = serializers.SerializerMethodField()
+    compression_class = serializers.SerializerMethodField()
+    side = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductModel
+        fields = '__all__'
+
+    def get_colors(self, obj):
+        compression_class = self.context.get('compression_class', None)
+
+        if compression_class == "":
+            compression_class = None
+
+        product = ProductVariantModel.objects.filter(product=obj, compression_class=compression_class)
+
+        colors = set([f'{str(p.color.color)} - {str(p.color.color_code)} - {str(p.color.id)}' for p in product])
+        all_colors = [{'color': color.split(" - ")[0], 'code': color.split(" - ")[1], 'id': color.split(" - ")[2]} for color in colors]
+        return all_colors
+
+    def get_all_size(self, obj):
+        product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
+        size = set([f'{str(p.size)} - {str(p.size.priority)} - {str(p.size.id)}' for p in product])
+        sizes = sorted(size, key=lambda x: int(x.split(" - ")[1]))
+        all_size = [{'size': size.split(" - ")[0], 'id': size.split(" - ")[1]} for size in sizes]
+        return all_size
+
+    def get_size(self, obj):
+        product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
+        size = set([f'{str(p.size)} - {str(p.size.priority)}' for p in product if p.quantity > 0])
+        sizes = sorted(size, key=lambda x: int(x.split(" - ")[1]))
+        size = [size.split(" - ")[0] for size in sizes]
+        return size
+
+    def get_compression_class(self, obj):
+        product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
+
+        valid_products = [p for p in product if re.search(r"/CCL.*$", p.name, re.IGNORECASE)]
+        if not valid_products:
+            return []
+        ccl = set([f'{str(p.compression_class)} - {str(p.compression_class.priority)}' for p in product if p.quantity > 0])
+        ccls = sorted(ccl, key=lambda x: int(x.split(" - ")[1]))
+        ccl = [ccl.split(" - ")[0] for ccl in ccls]
+        return ccl
+
+    def get_side(self, obj):
+        product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
+
+        valid_products = [p for p in product if re.search(r"/Side.*$", p.name, re.IGNORECASE)]
+        if not valid_products:
+            return []
+
+        side = set([f'{str(p.side)} - {str(p.side.priority)}' for p in product if p.quantity > 0])
+        sides = sorted(side, key=lambda x: int(x.split(" - ")[1]))
+        side = [side.split(" - ")[0] for side in sides]
+        return side
+
+    def get_off_price(self, obj):
+        price = float(obj.price)
+        percent_discount = obj.percent_discount
+        if obj.percent_discount is None:
+            percent_discount = 0
+        return int(price - price * percent_discount / 100)
+
+    def get_gender_data(self, obj):
+        if obj.gender is not None:
+            gender_name = obj.gender.gender
+            gender_slug = obj.gender.slug
+        else:
+            gender_name = None
+            gender_slug = None
+        return {'gender_name': gender_name, 'gender_slug': gender_slug}
+
+    def get_tag(self, product):
+        try:
+            tag = AddProductTagModel.objects.get(product=product)
+            tag = tag.tag.tag
+        except:
+            tag = None
+        return tag
+
+    def get_category(self, obj):
+        categories = obj.cat_product.all()
+        categories = [category.category.category for category in categories]
+        return categories
+
+    def get_subcategory(self, obj):
+        subcategories = obj.sub_product.all()
+        subcategories = [subcategory.subcategory.subcategory for subcategory in subcategories]
+        return subcategories
+
+
 class ProductAdminSerializer(serializers.ModelSerializer):
     colors = serializers.SerializerMethodField()
     all_size = serializers.SerializerMethodField()

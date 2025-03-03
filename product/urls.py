@@ -23,6 +23,10 @@ urlpatterns = [
 
     # Shop
     path('items/<slug:slug_product>/', views.ProductItemView.as_view(), name='product_item'),
+    path('get_class/<slug:slug_product>/', views.GetClassView.as_view(), name='get_class'),
+
+    path('new_items/<slug:slug_product>/', views.ProductNewItemView.as_view(), name='product_new_item'),
+
     path('variant/', views.ProductVariantShopView.as_view(), name='product_variant'),
     path('colorimage/', views.ProductColorImageView.as_view(), name='color_image'),
     path('sizeofcolor/', views.SizeOfColorView.as_view(), name='size_of_color'),

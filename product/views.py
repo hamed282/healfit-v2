@@ -8,7 +8,7 @@ from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVar
                           ProductColorImageSerializer, ColorSizeProductSerializer, ProductListSerializer,
                           UserFavSerializer, PopularProductSerializer, ProductAllSerializer,
                           ProductCategorySerializer, ProductSubCategorySerializer, ProductByCategorySerializer,
-                          FavProductSerializer)
+                          FavProductSerializer, ProductSerializerTest, GetClassSerializer)
 from django.shortcuts import get_object_or_404
 from math import ceil
 from rest_framework import viewsets
@@ -306,6 +306,30 @@ class ProductItemView(APIView):
         try:
             product = ProductModel.objects.get(slug=slug_product)
             ser_data = ProductSerializer(instance=product)
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        except:
+            return Response(data={'message': 'Page Not Found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class GetClassView(APIView):
+    def get(self, request, slug_product):
+        try:
+            product = ProductModel.objects.get(slug=slug_product)
+            ser_data = GetClassSerializer(instance=product)
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        except:
+            return Response(data={'message': 'Page Not Found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class ProductNewItemView(APIView):
+    def get(self, request, slug_product):
+        compression_class = self.request.query_params.get('compression_class', None)
+        side = self.request.query_params.get('side', None)
+
+        try:
+            product = ProductModel.objects.get(slug=slug_product)
+            ser_data = ProductSerializerTest(instance=product, context={'compression_class': compression_class,
+                                                                        'side': side})
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         except:
             return Response(data={'message': 'Page Not Found'}, status=status.HTTP_404_NOT_FOUND)
