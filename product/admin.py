@@ -52,7 +52,7 @@ class TagInline(admin.TabularInline):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['id', 'product', 'priority']
+    list_display = ['id', 'product', 'priority', 'brand']
     inlines = (ImageGalleryInline, CategoryInline, SubCategoryInline, TagInline)
 
 
