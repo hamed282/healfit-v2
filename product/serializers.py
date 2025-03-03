@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (ProductGenderModel, ProductModel, ProductVariantModel, AddImageGalleryModel, PopularProductModel,
                      ProductCategoryModel, ProductSubCategoryModel, AddProductTagModel, AddSubCategoryModel,
-                     ProductTagModel, FavUserModel, CouponModel, ProductBrandModel)
+                     ProductTagModel, FavUserModel, CouponModel, ProductBrandModel,CompressionClassModel, SideModel)
 from django.shortcuts import get_object_or_404
 import re
 
@@ -186,49 +186,46 @@ class NewProductSerializer(serializers.ModelSerializer):
         model = ProductModel
         fields = '__all__'
 
-    def get_colors(self, obj):
+    def get_context_data(self):
         compression_class = self.context.get('compression_class', None)
         side = self.context.get('side', None)
 
         if compression_class == "":
             compression_class = None
+        else:
+            compression_class = CompressionClassModel.objects.filter(compression_class=compression_class).first()
 
         if side == "":
             side = None
+        else:
+            side = SideModel.objects.filter(side=side).first()
 
-        product = ProductVariantModel.objects.filter(product=obj, compression_class=compression_class, side=side)
+        return compression_class, side
+
+    def get_colors(self, obj):
+        compression_class, side = self.get_context_data()
+
+        product = ProductVariantModel.objects.filter(product=obj,
+                                                     compression_class=compression_class,
+                                                     side=side)
 
         colors = set([f'{str(p.color.color)} - {str(p.color.color_code)} - {str(p.color.id)}' for p in product])
         all_colors = [{'color': color.split(" - ")[0], 'code': color.split(" - ")[1], 'id': color.split(" - ")[2]} for color in colors]
         return all_colors
 
     def get_all_size(self, obj):
-        compression_class = self.context.get('compression_class', None)
-        side = self.context.get('side', None)
+        compression_class, side = self.get_context_data()
 
-        if compression_class == "":
-            compression_class = None
-
-        if side == "":
-            side = None
-
-        product = ProductVariantModel.objects.filter(product=obj, compression_class=compression_class, side=side)  # .order_by('-priority')
+        product = ProductVariantModel.objects.filter(product=obj, compression_class=compression_class, side=side)
         size = set([f'{str(p.size)} - {str(p.size.priority)} - {str(p.size.id)}' for p in product])
         sizes = sorted(size, key=lambda x: int(x.split(" - ")[1]))
         all_size = [{'size': size.split(" - ")[0], 'id': size.split(" - ")[1]} for size in sizes]
         return all_size
 
     def get_size(self, obj):
-        compression_class = self.context.get('compression_class', None)
-        side = self.context.get('side', None)
+        compression_class, side = self.get_context_data()
 
-        if compression_class == "":
-            compression_class = None
-
-        if side == "":
-            side = None
-
-        product = ProductVariantModel.objects.filter(product=obj, compression_class=compression_class, side=side)  # .order_by('-priority')
+        product = ProductVariantModel.objects.filter(product=obj, compression_class=compression_class, side=side)
         size = set([f'{str(p.size)} - {str(p.size.priority)}' for p in product if p.quantity > 0])
         sizes = sorted(size, key=lambda x: int(x.split(" - ")[1]))
         size = [size.split(" - ")[0] for size in sizes]
