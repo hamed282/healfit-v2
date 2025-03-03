@@ -8,7 +8,7 @@ from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVar
                           ProductColorImageSerializer, ColorSizeProductSerializer, ProductListSerializer,
                           UserFavSerializer, PopularProductSerializer, ProductAllSerializer,
                           ProductCategorySerializer, ProductSubCategorySerializer, ProductByCategorySerializer,
-                          FavProductSerializer, ProductSerializerTest, GetClassSerializer)
+                          FavProductSerializer, GetClassSerializer, NewProductSerializer)
 from django.shortcuts import get_object_or_404
 from math import ceil
 from rest_framework import viewsets
@@ -328,7 +328,7 @@ class ProductNewItemView(APIView):
 
         try:
             product = ProductModel.objects.get(slug=slug_product)
-            ser_data = ProductSerializerTest(instance=product, context={'compression_class': compression_class,
+            ser_data = NewProductSerializer(instance=product, context={'compression_class': compression_class,
                                                                         'side': side})
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         except:
