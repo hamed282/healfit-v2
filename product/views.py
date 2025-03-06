@@ -58,7 +58,7 @@ class ProductVariantShopView(APIView):
         side = request.query_params.get('side', None)
 
         if product_name and product_size and product_color:
-            try:
+            # try:
                 product_name = ProductModel.objects.get(product=product_name)
                 product_size = SizeProductModel.objects.get(size=product_size)
                 product_color = ColorProductModel.objects.get(color=product_color)
@@ -82,9 +82,9 @@ class ProductVariantShopView(APIView):
                 ser_product = ProductVariantShopSerializer(instance=product_variants.first())
                 return Response(data=ser_product.data)
 
-            except (ProductModel.DoesNotExist, SizeProductModel.DoesNotExist, ColorProductModel.DoesNotExist,
-                    CompressionClassModel.DoesNotExist, SideModel.DoesNotExist):
-                return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
+            # except (ProductModel.DoesNotExist, SizeProductModel.DoesNotExist, ColorProductModel.DoesNotExist,
+            #         CompressionClassModel.DoesNotExist, SideModel.DoesNotExist):
+            #     return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"message": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
 
