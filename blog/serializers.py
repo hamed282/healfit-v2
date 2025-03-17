@@ -87,6 +87,9 @@ class BlogCategorySerializer(serializers.ModelSerializer):
 
 
 class RecentBlogSerializer(serializers.ModelSerializer):
+    author = BlogAuthorSerializer()
+    updated = serializers.DateTimeField(format="%d. %B %Y", read_only=True)
+
     class Meta:
         model = BlogModel
         fields = ['title', 'short_description', 'author', 'updated', 'slug']
