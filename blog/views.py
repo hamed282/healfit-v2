@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from .models import BlogModel, BlogCategoryModel, CommentBlogModel
 from .serializers import (GetBlogSerializer, BlogAllSerializer, RelatedBlogSerializer, MetaCategorySerializer,
-                          CommentBlogSerializer, CommentCreateSerializer)
+                          CommentBlogSerializer, CommentCreateSerializer, BlogCategorySerializer)
 import math
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
@@ -124,3 +124,10 @@ class SearchBlogView(viewsets.ModelViewSet):
         if not search_query:
             return Response({"detail": "Search query is required."}, status=status.HTTP_400_BAD_REQUEST)
         return super().list(request, *args, **kwargs)
+
+
+class CategoryListView(APIView):
+    def get(self, request):
+        categories = BlogCategoryModel.objects.all()
+        ser_data = BlogCategorySerializer(instance=categories, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)

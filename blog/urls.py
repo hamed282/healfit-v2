@@ -12,5 +12,6 @@ urlpatterns = [
     path('comment/reply/<int:blog_id>/<int:comment_id>/', views.ReplyCommentView.as_view(), name='comment_reply'),
     path('comment/create/<int:blog_id>/', views.CommentBlogView.as_view(), name='comment_create'),
     path('search/', views.SearchBlogView.as_view({'get': 'list'}), name='search_blog'),
+    path('categories/', views.CategoryListView.as_view(), name='category_list'),
 
 ]
