@@ -32,6 +32,7 @@ class ProductModel(models.Model):
     size_guide = models.TextField(blank=True, null=True, default='')
     video = models.FileField(upload_to=get_video_product_upload_path, blank=True, null=True)
     group_id = models.CharField(max_length=100)
+    is_best_seller = models.BooleanField(default=False)
     priority = models.IntegerField(blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True, blank=True, null=True)
     is_active = models.BooleanField(default=False)
@@ -81,7 +82,7 @@ class ProductModel(models.Model):
         return str(self.product)
 
     def get_off_price(self):
-        price = self.price
+        price = float(self.price)
         percent_discount = self.percent_discount
         if self.percent_discount is None:
             percent_discount = 0
@@ -154,7 +155,7 @@ class ProductVariantModel(models.Model):
         return str(self.name)
 
     def get_off_price(self):
-        price = self.price
+        price = float(self.price)
         percent_discount = self.percent_discount
         if self.percent_discount is None:
             percent_discount = 0
@@ -649,3 +650,63 @@ class CouponModel(models.Model):
 class ProductCouponModel(models.Model):
     coupon = models.ForeignKey(CouponModel, on_delete=models.CASCADE)
     product = models.ForeignKey(ProductModel, on_delete=models.CASCADE)
+
+
+class CustomerTypeModel(models.Model):
+    customer_type = models.CharField(max_length=32)
+
+    def __str__(self):
+        return f'{self.customer_type}'
+
+
+class ProductTypeModel(models.Model):
+    product_type = models.CharField(max_length=32)
+
+    def __str__(self):
+        return f'{self.product_type}'
+
+
+class BodyAreaModel(models.Model):
+    body_area = models.CharField(max_length=32)
+
+    def __str__(self):
+        return f'{self.body_area}'
+
+
+class ClassNumberModel(models.Model):
+    class_num = models.CharField(max_length=32)
+
+    def __str__(self):
+        return f'{self.class_num}'
+
+
+class TreatmentCategoryModel(models.Model):
+    treatment_category = models.CharField(max_length=32)
+
+    def __str__(self):
+        return f'{self.treatment_category}'
+
+
+class HearAboutUsModel(models.Model):
+    hear_about_us = models.CharField(max_length=32)
+
+    def __str__(self):
+        return f'{self.hear_about_us}'
+
+
+class CustomMadeModel(models.Model):
+    customer_type = models.ForeignKey(CustomerTypeModel, on_delete=models.CASCADE)
+    clinic_name = models.CharField(max_length=32)
+    first_name = models.CharField(max_length=32)
+    last_name = models.CharField(max_length=32)
+    email = models.EmailField()
+    phone_number = models.CharField(max_length=32)
+    product_type = models.ForeignKey(ProductTypeModel, on_delete=models.CASCADE)
+    body_area = models.ForeignKey(BodyAreaModel, on_delete=models.CASCADE)
+    class_num = models.ForeignKey(ClassNumberModel, on_delete=models.CASCADE)
+    treatment_category = models.ForeignKey(TreatmentCategoryModel, on_delete=models.CASCADE)
+    description = models.TextField()
+    hear_about_us = models.ForeignKey(HearAboutUsModel, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.email}'

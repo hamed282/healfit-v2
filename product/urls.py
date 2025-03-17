@@ -9,12 +9,14 @@ urlpatterns = [
     path('fav/', views.FavProductView.as_view(), name='fav_product'),
     path('fav/<int:product_id>/', views.FavProductView.as_view(), name='fav_item'),
     path('user/fav/', views.UserFavView.as_view(), name='fav_user'),
+    path('custom_made/', views.CustomMadeView.as_view(), name='custom_made'),
 
     # Category
     path('categories/', views.CategoryListView.as_view(), name='category_list'),
     path('category/items/<slug:slug_category>/', views.CategoryItemView.as_view(), name='category_item'),
     path('category/<slug:slug_category>/', views.CategoryFilterView.as_view(), name='category'),
     path('category/subcategories/<slug:slug_category>/', views.CategoryBySubcategoryView.as_view(), name='category_subcategory'),
+    path('categories/best_seller/', views.CategoryBestSellerView.as_view(), name='category_best_seller'),
 
     # Subcategory
     path('subcategories/', views.SubcategoryListView.as_view(), name='subcategory_list'),

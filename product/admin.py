@@ -2,7 +2,9 @@ from django.contrib import admin
 from .models import (ProductCategoryModel, ProductModel, PopularProductModel, SizeProductModel, ProductVariantModel,
                      ColorProductModel, ProductSubCategoryModel, AddSubCategoryModel, AddCategoryModel,
                      ProductGenderModel, AddImageGalleryModel, ExtraGroupModel, ProductTagModel, AddProductTagModel,
-                     FavUserModel, CouponModel, ProductCouponModel, CompressionClassModel, SideModel, ProductBrandModel)
+                     FavUserModel, CouponModel, ProductCouponModel, CompressionClassModel, SideModel, ProductBrandModel,
+                     CustomMadeModel, TreatmentCategoryModel, ProductTypeModel, BodyAreaModel, ClassNumberModel,
+                     CustomerTypeModel, HearAboutUsModel)
 from django.utils.html import format_html
 
 
@@ -102,6 +104,13 @@ admin.site.register(AddSubCategoryModel)
 admin.site.register(CompressionClassModel)
 admin.site.register(SideModel)
 admin.site.register(ExtraGroupModel)
+admin.site.register(CustomMadeModel)
+admin.site.register(HearAboutUsModel)
+admin.site.register(ProductTypeModel)
+admin.site.register(ClassNumberModel)
+admin.site.register(TreatmentCategoryModel)
+admin.site.register(CustomerTypeModel)
+admin.site.register(BodyAreaModel)
 admin.site.register(ProductTagModel, ProductTagAdmin)
 admin.site.register(AddProductTagModel)
 admin.site.register(ProductBrandModel)

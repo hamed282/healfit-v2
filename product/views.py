@@ -3,12 +3,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import (ProductGenderModel, ProductModel, SizeProductModel, ColorProductModel, ProductVariantModel,
                      AddImageGalleryModel, PopularProductModel, ProductCategoryModel, ProductSubCategoryModel,
-                     FavUserModel, CouponModel, CompressionClassModel, SideModel)
+                     FavUserModel, CouponModel, CompressionClassModel, SideModel, CustomerTypeModel, ProductTypeModel,
+                     BodyAreaModel, ClassNumberModel, TreatmentCategoryModel, HearAboutUsModel)
 from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVariantShopSerializer,
                           ProductColorImageSerializer, ColorSizeProductSerializer, ProductListSerializer,
                           UserFavSerializer, PopularProductSerializer, ProductAllSerializer,
                           ProductCategorySerializer, ProductSubCategorySerializer, ProductByCategorySerializer,
-                          FavProductSerializer, GetClassSerializer, NewProductSerializer)
+                          FavProductSerializer, GetClassSerializer, NewProductSerializer, CategoryBestSellerSerializer,
+                          CustomMadeSerializer, CustomMadeOptionsSerializer)
 from django.shortcuts import get_object_or_404
 from math import ceil
 from rest_framework import viewsets
@@ -58,7 +60,7 @@ class ProductVariantShopView(APIView):
         side = request.query_params.get('side', None)
 
         if product_name and product_size and product_color:
-            # try:
+            try:
                 product_name = ProductModel.objects.get(product=product_name)
                 product_size = SizeProductModel.objects.get(size=product_size)
                 product_color = ColorProductModel.objects.get(color=product_color)
@@ -82,9 +84,9 @@ class ProductVariantShopView(APIView):
                 ser_product = ProductVariantShopSerializer(instance=product_variants.first())
                 return Response(data=ser_product.data)
 
-            # except (ProductModel.DoesNotExist, SizeProductModel.DoesNotExist, ColorProductModel.DoesNotExist,
-            #         CompressionClassModel.DoesNotExist, SideModel.DoesNotExist):
-            #     return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
+            except (ProductModel.DoesNotExist, SizeProductModel.DoesNotExist, ColorProductModel.DoesNotExist,
+                    CompressionClassModel.DoesNotExist, SideModel.DoesNotExist):
+                return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"message": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -486,3 +488,43 @@ class CartView(APIView):
             )
 
             return response
+
+
+class CategoryBestSellerView(APIView):
+    def get(self, request):
+        categories = ProductCategoryModel.objects.all().order_by('priority')
+        ser_data = CategoryBestSellerSerializer(instance=categories, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class CustomMadeView(APIView):
+    def get(self, request):
+        data = {
+            'customer_types': CustomerTypeModel.objects.all(),
+            'product_types': ProductTypeModel.objects.all(),
+            'body_areas': BodyAreaModel.objects.all(),
+            'class_numbers': ClassNumberModel.objects.all(),
+            'treatment_categories': TreatmentCategoryModel.objects.all(),
+            'hear_about_us_options': HearAboutUsModel.objects.all()
+        }
+        serializer = CustomMadeOptionsSerializer(data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = CustomMadeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    "message": "Your custom made request has been submitted successfully.",
+                    "data": serializer.data
+                },
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            {
+                "message": "Invalid data provided",
+                "errors": serializer.errors
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )

@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from .models import (ProductGenderModel, ProductModel, ProductVariantModel, AddImageGalleryModel, PopularProductModel,
                      ProductCategoryModel, ProductSubCategoryModel, AddProductTagModel, AddSubCategoryModel,
-                     ProductTagModel, FavUserModel, CouponModel, ProductBrandModel,CompressionClassModel, SideModel)
+                     ProductTagModel, FavUserModel, CouponModel, ProductBrandModel, CompressionClassModel, SideModel,
+                     CustomMadeModel, CustomerTypeModel, ProductTypeModel, BodyAreaModel, ClassNumberModel,
+                     TreatmentCategoryModel, HearAboutUsModel)
 from django.shortcuts import get_object_or_404
 import re
 
@@ -392,7 +394,7 @@ class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductModel
         fields = ['gender', 'category', 'subcategory', 'product', 'cover_image', 'price', 'off_price',
-                  'percent_discount', 'group_id', 'slug', 'subtitle']
+                  'percent_discount', 'group_id', 'slug', 'subtitle', 'is_best_seller']
 
     def get_category(self, obj):
         categories = obj.category_product.all()
@@ -425,7 +427,7 @@ class ProductAllSerializer(serializers.ModelSerializer):
         model = ProductModel
         fields = ['id', 'name_product', 'gender', 'category', 'subcategory', 'product', 'cover_image', 'price',
                   'percent_discount', 'group_id', 'slug', 'subtitle', 'fav', 'size_table_image_alt', 'cover_image_alt',
-                  'description_image_alt', 'off_price', 'is_active']
+                  'description_image_alt', 'off_price', 'is_active', 'is_best_seller']
 
     def get_fav(self, obj):
         request = self.context.get('request', None)
@@ -463,7 +465,7 @@ class ProductSearchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductModel
-        fields = ['product', 'price', 'off_price', 'slug', 'group_id', 'id']
+        fields = ['product', 'price', 'off_price', 'slug', 'group_id', 'id', 'is_best_seller']
 
     def get_off_price(self, obj):
         price = int(float(obj.price))
@@ -652,3 +654,80 @@ class CouponCreateSerializer(serializers.ModelSerializer):
 
     def get_products(self, obj):
         return 'products'
+
+
+class CategoryBestSellerSerializer(serializers.ModelSerializer):
+    category = serializers.CharField()
+    category_title = serializers.CharField()
+    best_seller_products = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProductCategoryModel
+        fields = ['category', 'category_title', 'best_seller_products', 'slug']
+
+    def get_best_seller_products(self, obj):
+        best_seller_products = []
+        products = obj.category_product.filter(product__is_best_seller=True)
+        for product in products:
+            product_data = {
+                'id': product.product.id,
+                'product': product.product.product,
+                'name_product': product.product.name_product,
+                'cover_image': product.product.cover_image.url if product.product.cover_image else None,
+                'price': product.product.price,
+                'off_price': product.product.get_off_price(),
+                'slug': product.product.slug,
+            }
+            best_seller_products.append(product_data)
+        return best_seller_products
+
+
+class CustomMadeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomMadeModel
+        fields = '__all__'
+
+
+class CustomerTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomerTypeModel
+        fields = '__all__'
+
+
+class ProductTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductTypeModel
+        fields = '__all__'
+
+
+class BodyAreaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BodyAreaModel
+        fields = '__all__'
+
+
+class ClassNumberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClassNumberModel
+        fields = '__all__'
+
+
+class TreatmentCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TreatmentCategoryModel
+        fields = '__all__'
+
+
+class HearAboutUsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HearAboutUsModel
+        fields = '__all__'
+
+
+class CustomMadeOptionsSerializer(serializers.Serializer):
+    customer_types = CustomerTypeSerializer(many=True, read_only=True)
+    product_types = ProductTypeSerializer(many=True, read_only=True)
+    body_areas = BodyAreaSerializer(many=True, read_only=True)
+    class_numbers = ClassNumberSerializer(many=True, read_only=True)
+    treatment_categories = TreatmentCategorySerializer(many=True, read_only=True)
+    hear_about_us_options = HearAboutUsSerializer(many=True, read_only=True)
