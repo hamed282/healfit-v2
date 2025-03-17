@@ -16,22 +16,28 @@ class BlogListView(APIView):
     def get(self, request):
         limit = self.request.query_params.get('limit', None)
         page = self.request.query_params.get('page', None)
+        category = self.request.query_params.get('category', None)
 
+        blogs = BlogModel.objects.all()
+        
+        if category:
+            # Get blogs that have this category through AddCategoryModel
+            blogs = blogs.filter(cat_blog__category__category=category)
+
+        blog_count = len(blogs)
         per_page = 16
-        blog_count = len(BlogModel.objects.all())
         number_of_pages = math.ceil(blog_count / per_page)
+
         if limit is not None:
-            blog = BlogModel.objects.all()[:int(limit)]
-            ser_data = BlogAllSerializer(instance=blog, many=True)
+            blogs = blogs[:int(limit)]
+            ser_data = BlogAllSerializer(instance=blogs, many=True)
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
         if page is not None:
             page = int(page)
-            blog = BlogModel.objects.all()[per_page*(page-1):per_page*page]
-        else:
-            blog = BlogModel.objects.all()
+            blogs = blogs[per_page*(page-1):per_page*page]
 
-        ser_data = BlogAllSerializer(instance=blog, many=True)
+        ser_data = BlogAllSerializer(instance=blogs, many=True)
         return Response({'data': ser_data.data, 'number_of_pages': number_of_pages}, status=status.HTTP_200_OK)
 
 
