@@ -193,7 +193,7 @@ class ProductCategoryModel(models.Model):
     category = models.CharField(max_length=50)
     category_title = models.CharField(max_length=50)
     short_description = models.TextField()
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     priority = models.IntegerField(blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True)
     image = models.FileField(upload_to=get_category_upload_path)
