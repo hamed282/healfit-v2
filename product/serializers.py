@@ -689,7 +689,7 @@ class CustomMadeSerializer(serializers.ModelSerializer):
 
 
 class CustomerTypeSerializer(serializers.ModelSerializer):
-    value = serializers.CharField(source='name')
+    value = serializers.CharField(source='customer_type')
     
     class Meta:
         model = CustomerTypeModel
@@ -697,7 +697,7 @@ class CustomerTypeSerializer(serializers.ModelSerializer):
 
 
 class ProductTypeSerializer(serializers.ModelSerializer):
-    value = serializers.CharField(source='name')
+    value = serializers.CharField(source='product_type')
     
     class Meta:
         model = ProductTypeModel
@@ -705,7 +705,7 @@ class ProductTypeSerializer(serializers.ModelSerializer):
 
 
 class BodyAreaSerializer(serializers.ModelSerializer):
-    value = serializers.CharField(source='name')
+    value = serializers.CharField(source='body_area')
     
     class Meta:
         model = BodyAreaModel
@@ -713,7 +713,7 @@ class BodyAreaSerializer(serializers.ModelSerializer):
 
 
 class ClassNumberSerializer(serializers.ModelSerializer):
-    value = serializers.CharField(source='name')
+    value = serializers.CharField(source='class_num')
     
     class Meta:
         model = ClassNumberModel
@@ -721,7 +721,7 @@ class ClassNumberSerializer(serializers.ModelSerializer):
 
 
 class TreatmentCategorySerializer(serializers.ModelSerializer):
-    value = serializers.CharField(source='name')
+    value = serializers.CharField(source='treatment_category')
     
     class Meta:
         model = TreatmentCategoryModel
@@ -729,7 +729,7 @@ class TreatmentCategorySerializer(serializers.ModelSerializer):
 
 
 class HearAboutUsSerializer(serializers.ModelSerializer):
-    value = serializers.CharField(source='name')
+    value = serializers.CharField(source='hear_about_us')
     
     class Meta:
         model = HearAboutUsModel
