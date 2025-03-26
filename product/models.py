@@ -701,6 +701,7 @@ class CustomMadeModel(models.Model):
     last_name = models.CharField(max_length=32)
     email = models.EmailField()
     phone_number = models.CharField(max_length=32)
+    phone_prefix = models.CharField(max_length=8, null=True, blank=True)
     product_type = models.ForeignKey(ProductTypeModel, on_delete=models.CASCADE)
     body_area = models.ForeignKey(BodyAreaModel, on_delete=models.CASCADE)
     class_num = models.ForeignKey(ClassNumberModel, on_delete=models.CASCADE)
