@@ -689,39 +689,51 @@ class CustomMadeSerializer(serializers.ModelSerializer):
 
 
 class CustomerTypeSerializer(serializers.ModelSerializer):
+    value = serializers.CharField(source='customer_type')
+    
     class Meta:
         model = CustomerTypeModel
-        fields = '__all__'
+        fields = ['id', 'value']
 
 
 class ProductTypeSerializer(serializers.ModelSerializer):
+    value = serializers.CharField(source='product_type')
+    
     class Meta:
         model = ProductTypeModel
-        fields = '__all__'
+        fields = ['id', 'value']
 
 
 class BodyAreaSerializer(serializers.ModelSerializer):
+    value = serializers.CharField(source='body_area')
+    
     class Meta:
         model = BodyAreaModel
-        fields = '__all__'
+        fields = ['id', 'value']
 
 
 class ClassNumberSerializer(serializers.ModelSerializer):
+    value = serializers.CharField(source='class_number')
+    
     class Meta:
         model = ClassNumberModel
-        fields = '__all__'
+        fields = ['id', 'value']
 
 
 class TreatmentCategorySerializer(serializers.ModelSerializer):
+    value = serializers.CharField(source='treatment_category')
+    
     class Meta:
         model = TreatmentCategoryModel
-        fields = '__all__'
+        fields = ['id', 'value']
 
 
 class HearAboutUsSerializer(serializers.ModelSerializer):
+    value = serializers.CharField(source='hear_about_us')
+    
     class Meta:
         model = HearAboutUsModel
-        fields = '__all__'
+        fields = ['id', 'value']
 
 
 class CustomMadeOptionsSerializer(serializers.Serializer):
