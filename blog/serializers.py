@@ -114,7 +114,7 @@ class GetBlogSerializer(serializers.ModelSerializer):
         model = BlogModel
         fields = ['id', 'tag', 'category', 'canonical', 'meta_title', 'meta_description', 'schema_markup', 'banner',
                   'banner_alt', 'title', 'short_description', 'all_categories', 'recent_blog', 'author', 'created',
-                  'updated', 'comments', 'body', 'comments_count', 'read_duration']
+                  'updated', 'comments', 'body', 'comments_count', 'read_duration', 'slug']
 
     def get_category(self, obj):
         categories = obj.cat_blog.all()
