@@ -9,7 +9,8 @@ from product.models import (ExtraGroupModel, SizeProductModel, ColorProductModel
                             ProductSubCategoryModel, ProductModel, AddProductTagModel, ProductGenderModel,
                             AddSubCategoryModel, ProductVariantModel, AddCategoryModel, ProductCategoryModel,
                             CustomerTypeModel, ProductTypeModel, BodyAreaModel, ClassNumberModel,
-                            TreatmentCategoryModel, HearAboutUsModel)
+                            TreatmentCategoryModel, HearAboutUsModel, CompressionClassModel, SideModel,
+                            ProductBrandModel)
 from product.serializers import ProductSerializer, ProductColorImageSerializer
 from order.models import OrderItemModel, OrderModel, OrderStatusModel, ShippingModel, ShippingCountryModel
 
@@ -659,4 +660,25 @@ class HearAboutUsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HearAboutUsModel
+        fields = '__all__'
+
+
+class CompressionClassSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CompressionClassModel
+        fields = '__all__'
+
+
+class SideSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SideModel
+        fields = '__all__'
+
+
+class BrandSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductBrandModel
         fields = '__all__'

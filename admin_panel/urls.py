@@ -205,4 +205,16 @@ urlpatterns = [
 
     path('product/custom_made/HearAboutUs/', views.HearAboutUsView.as_view()),
     path('product/custom_made/HearAboutUs/<int:hear_about_us_id>/', views.HearAboutUsItemView.as_view()),
+
+    # Compression Class
+    path('product/class/', views.CompressionClassView.as_view()),
+    path('product/class/<int:class_id>/', views.CompressionClassItemView.as_view()),
+
+    # Side
+    path('product/side/', views.SideView.as_view()),
+    path('product/side/<int:side_id>/', views.SideItemView.as_view()),
+
+    # Brand
+    path('product/brand/', views.BrandView.as_view()),
+    path('product/brand/<int:brand_id>/', views.BrandItemView.as_view()),
 ]
