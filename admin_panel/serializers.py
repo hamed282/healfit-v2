@@ -1,7 +1,8 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework import serializers
 from accounts.models import User, RoleUserModel, RoleModel
-from blog.models import BlogTagModel, AddBlogTagModel, BlogCategoryModel, BlogModel, CommentBlogModel
+from blog.models import (BlogTagModel, AddBlogTagModel, BlogCategoryModel, BlogModel, CommentBlogModel,
+                         AddCategoryModel as AddBlogCategoryModel)
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
 from product.models import (ExtraGroupModel, SizeProductModel, ColorProductModel, AddImageGalleryModel, ProductTagModel,
@@ -103,19 +104,10 @@ class AddBlogTagSerializer(ModelSerializer):
 class CombinedBlogSerializer(serializers.Serializer):
     cover_image = serializers.ImageField()
     cover_image_alt = serializers.CharField(max_length=125)
-    # banner = serializers.ImageField(required=False)
-    # banner_alt = serializers.CharField(max_length=125, required=False)
     title = serializers.CharField(max_length=250)
-    # title_image = serializers.ImageField(required=False)
-    # title_image_alt = serializers.CharField(max_length=125, required=False)
     short_description = serializers.CharField(max_length=160)
-    # description = serializers.CharField(required=False)
     body = serializers.CharField()
-    # author = serializers.CharField(max_length=64)
-    # role = serializers.CharField(max_length=60, required=False)
     slug = serializers.SlugField()
-    # category = serializers.PrimaryKeyRelatedField(queryset=BlogCategoryModel.objects.all())
-    # category = serializers.CharField(max_length=100, required=False, allow_blank=True)
     follow = serializers.BooleanField(default=False)
     index = serializers.BooleanField(default=False)
     canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
@@ -123,14 +115,13 @@ class CombinedBlogSerializer(serializers.Serializer):
     schema_markup = serializers.CharField(required=False, allow_blank=True)
     meta_description = serializers.CharField(max_length=160, required=False, allow_blank=True)
     tag = serializers.PrimaryKeyRelatedField(queryset=BlogTagModel.objects.all(), required=False, allow_null=True)
+    categories = serializers.CharField(required=False, allow_blank=True)
+    read_duration = serializers.CharField(max_length=16, required=False, allow_blank=True)
 
     def create(self, validated_data):
-        # Extract tag data
+        # Extract tag and categories data
         tag = validated_data.pop('tag', None)
-
-        category_name = validated_data.pop('category', None)
-        category = get_object_or_404(BlogCategoryModel, category=category_name)
-        validated_data['category'] = category
+        categories_str = validated_data.pop('categories', '')
 
         # Generate unique slug
         original_slug = slugify(validated_data['slug'])
@@ -148,35 +139,59 @@ class CombinedBlogSerializer(serializers.Serializer):
         if tag:
             AddBlogTagModel.objects.create(blog=blog, tag=tag)
 
+        # Create AddCategoryModel instances for each category
+        if categories_str:
+            categories = [cat.strip() for cat in categories_str.split(',') if cat.strip()]
+            for category_name in categories:
+                try:
+                    category = BlogCategoryModel.objects.get(category=category_name)
+                except BlogCategoryModel.DoesNotExist:
+                    category = BlogCategoryModel.objects.create(
+                        category=category_name,
+                        slug=slugify(category_name)
+                    )
+                AddBlogCategoryModel.objects.create(blog=blog, category=category)
+
         return blog
 
     def update(self, instance, validated_data):
         tag = validated_data.pop('tag', None)
-        category_name = validated_data.pop('category', None)
-        if category_name:
-            category, created = BlogCategoryModel.objects.get_or_create(category=category_name)
-            validated_data['category'] = category
-        else:
-            validated_data['category'] = instance.category
+        categories_str = validated_data.pop('categories', '')
 
-        # به روز رسانی فیلدهای BlogModel
+        # Update BlogModel instance
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
-        # به روز رسانی AddBlogTagModel اگر موجود باشد
+        # Update AddBlogTagModel if tag is provided
         if tag:
             AddBlogTagModel.objects.update_or_create(blog=instance, defaults={'tag': tag})
         elif hasattr(instance, 'blog_tag'):
             instance.blog_tag.delete()
 
+        # Update categories
+        if categories_str:
+            # Delete existing categories
+            AddBlogCategoryModel.objects.filter(blog=instance).delete()
+            # Create new category associations
+            categories = [cat.strip() for cat in categories_str.split(',') if cat.strip()]
+            for category_name in categories:
+                try:
+                    category = BlogCategoryModel.objects.get(category=category_name)
+                except BlogCategoryModel.DoesNotExist:
+                    category = BlogCategoryModel.objects.create(
+                        category=category_name,
+                        slug=slugify(category_name)
+                    )
+                AddBlogCategoryModel.objects.create(blog=instance, category=category)
+
         return instance
 
     def to_representation(self, instance):
         blog_data = BlogModelSerializer(instance).data
-        category_data = BlogCategorySerializer(instance.category).data
+        category_data = [cat.category.category for cat in instance.cat_blog.all()]
         tag_data = AddBlogTagSerializer(instance.blog_tag).data if hasattr(instance, 'blog_tag') else None
-        return {**blog_data, 'category': category_data['category'], 'tag': tag_data['tag'] if tag_data else None}
+        return {**blog_data, 'categories': ','.join(category_data), 'tag': tag_data['tag'] if tag_data else None}
 
 
 class ExtraGroupSerializer(serializers.ModelSerializer):
