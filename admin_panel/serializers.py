@@ -2,7 +2,7 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework import serializers
 from accounts.models import User, RoleUserModel, RoleModel
 from blog.models import (BlogTagModel, AddBlogTagModel, BlogCategoryModel, BlogModel, CommentBlogModel,
-                         AddCategoryModel as AddBlogCategoryModel)
+                         AddCategoryModel as AddBlogCategoryModel, AuthorBlogModel)
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
 from product.models import (ExtraGroupModel, SizeProductModel, ColorProductModel, AddImageGalleryModel, ProductTagModel,
@@ -605,3 +605,13 @@ class ShippingSerializer(ModelSerializer):
         data = [{'id': city.id, 'city': city.city, 'threshold_free': city.threshold_free,
                  'shipping_fee': city.shipping_fee, 'delivery_day': city.delivery_day} for city in cities]
         return data
+
+
+class BlogAuthorSerializer(ModelSerializer):
+    canonical = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+    meta_title = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+    meta_description = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+
+    class Meta:
+        model = AuthorBlogModel
+        fields = '__all__'

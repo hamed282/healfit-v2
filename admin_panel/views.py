@@ -8,7 +8,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
                           ProductWithVariantsSerializer, ProductVariantSerializer, OrderSerializer,
                           OrderDetailSerializer, OrderItemSerializer, ChangePasswordSerializer, CommentBlogSerializer,
-                          ShippingCountrySerializer, ShippingSerializer, CityShippingSerializer)
+                          ShippingCountrySerializer, ShippingSerializer, CityShippingSerializer, BlogAuthorSerializer)
 from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
@@ -17,7 +17,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.serializers import UserLoginSerializer
 from blog.serializers import BlogAllSerializer, BlogSerializer, ImageBlogSerializer
-from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel, CommentBlogModel
+from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel, CommentBlogModel, AuthorBlogModel
 from rest_framework.permissions import IsAdminUser
 from home.models import (CommentHomeModel, BannerSliderModel, VideoHomeModel, ContentHomeModel, BannerShopModel,
                          SEOHomeModel, LogoModel, NewsLetterModel, ContactSubmitModel, AboutPageModel, CareerPageModel,
@@ -1885,6 +1885,37 @@ class BlogPageView(APIView):
         form = request.data
         blog = get_object_or_404(BlogPageModel, id=blog_id)
         ser_data = BlogPageSerializer(instance=blog, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BlogAuthorView(APIView):
+    permission_classes = [IsAdminUser, IsBlogAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsBlogAdmin, IsSEOAdmin)]
+        return super().get_permissions()
+
+    def get(self, request):
+        author = AuthorBlogModel.objects.all()
+        ser_data = BlogAuthorSerializer(instance=author, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = BlogAuthorSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, author_id):
+        form = request.data
+        author = AuthorBlogModel.objects.get(id=author_id)
+        ser_data = BlogAuthorSerializer(instance=author, data=form, partial=True)
         if ser_data.is_valid():
             ser_data.save()
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
