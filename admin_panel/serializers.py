@@ -117,6 +117,7 @@ class CombinedBlogSerializer(serializers.Serializer):
     tag = serializers.PrimaryKeyRelatedField(queryset=BlogTagModel.objects.all(), required=False, allow_null=True)
     categories = serializers.CharField(required=False, allow_blank=True)
     read_duration = serializers.CharField(max_length=16, required=False, allow_blank=True)
+    author = serializers.PrimaryKeyRelatedField(queryset=AuthorBlogModel.objects.all(), required=False, allow_null=True)
 
     def create(self, validated_data):
         # Extract tag and categories data
