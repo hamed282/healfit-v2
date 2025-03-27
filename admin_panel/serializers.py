@@ -443,6 +443,8 @@ class ProductVariantSerializer(serializers.Serializer):
     item_id = serializers.CharField()
     color = serializers.PrimaryKeyRelatedField(queryset=ColorProductModel.objects.all())
     size = serializers.PrimaryKeyRelatedField(queryset=SizeProductModel.objects.all())
+    side = serializers.PrimaryKeyRelatedField(queryset=SideModel.objects.all(), required=False, allow_null=True)
+    compression_class = serializers.PrimaryKeyRelatedField(queryset=CompressionClassModel.objects.all(), required=False, allow_null=True)
     percent_discount = serializers.IntegerField()
     price = serializers.IntegerField()
     quantity = serializers.IntegerField()

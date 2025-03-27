@@ -1384,6 +1384,8 @@ class VariantPutView(APIView):
                     variant.color_id = extra['color']  # Assigning the ID directly
                     variant.size_id = extra['size']  # Assigning the ID directly
                     variant.price = extra['price']
+                    variant.side = extra['side']
+                    variant.compression_class = extra['compression_class']
                     variant.percent_discount = extra['percent_discount']
                     variant.quantity = extra['quantity']
                     variant.save()
@@ -1507,6 +1509,18 @@ class ColorImageView(APIView):
         sizes = request.data['sizes']
         colors = request.data['colors']
 
+        side = request.data['side']
+        if side:
+            side = SideModel.objects.get(side=side)
+        else:
+            side = None
+
+        compression_class = request.data['compression_class']
+        if compression_class:
+            compression_class = CompressionClassModel.objects.get(compression_class=compression_class)
+        else:
+            compression_class = None
+
         for color in colors:
             for size in sizes:
                 if not ProductVariantModel.objects.filter(product=product,
@@ -1516,6 +1530,8 @@ class ColorImageView(APIView):
                     ProductVariantModel.objects.create(product=product,
                                                        color=ColorProductModel.objects.get(color=color),
                                                        size=SizeProductModel.objects.get(size=size),
+                                                       side=side,
+                                                       compression_class=compression_class,
                                                        price=0,
                                                        percent_discount=product.percent_discount,
                                                        quantity=0,
