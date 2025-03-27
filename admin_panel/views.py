@@ -31,10 +31,10 @@ from home.serializers import (CommentHomeSerializer, VideoHomeSerializer, Banner
                               BannerSliderMobileSerializer)
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
-                            ProductVariantModel, AddImageGalleryModel, CouponModel)
+                            ProductVariantModel, AddImageGalleryModel, CouponModel, CustomMadeModel)
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer, ProductSerializer,
                                  AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer,
-                                 CouponSerializer, CouponCreateSerializer)
+                                 CouponSerializer, CouponCreateSerializer, CustomMadeSerializer)
 from collections import defaultdict
 from order.models import OrderModel, OrderItemModel, OrderStatusModel, ShippingModel, ShippingCountryModel
 from django.db.models import Subquery
@@ -1916,6 +1916,37 @@ class BlogAuthorView(APIView):
         form = request.data
         author = AuthorBlogModel.objects.get(id=author_id)
         ser_data = BlogAuthorSerializer(instance=author, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomMadeView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin)]
+        return super().get_permissions()
+
+    def get(self, request):
+        custom_made = CustomMadeModel.objects.all()
+        ser_data = CustomMadeSerializer(instance=custom_made, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = CustomMadeSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, custom_id):
+        form = request.data
+        author = CustomMadeModel.objects.get(id=custom_id)
+        ser_data = CustomMadeSerializer(instance=author, data=form, partial=True)
         if ser_data.is_valid():
             ser_data.save()
             return Response(data=ser_data.data, status=status.HTTP_200_OK)

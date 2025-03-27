@@ -180,4 +180,11 @@ urlpatterns = [
 
     path('pages/blog/', views.BlogPageView.as_view(), name='blog'),
     path('pages/blog/<int:blog_id>/', views.BlogPageView.as_view(), name='blog'),
+
+    # Custom Made
+    path('product/custom_made/', views.CustomMadeView.as_view(), name='custom_made'),
+    path('product/custom_made/<int:custom_id>/', views.CustomMadeView.as_view(), name='custom_made_put'),
+
+
+
 ]
