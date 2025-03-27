@@ -92,7 +92,8 @@ class ProductModel(models.Model):
         return f'/shop/{self.slug}'
 
     @classmethod
-    def filter_products(cls, gender=None, color=None, size=None, category=None, subcategory=None, available=None):
+    def filter_products(cls, gender=None, color=None, size=None, category=None, subcategory=None, available=None,
+                        compression_class=None, side=None):
         # شروع با queryset پایه برای ProductVariantModel
         variant_queryset = ProductVariantModel.objects.all()
 
@@ -103,6 +104,10 @@ class ProductModel(models.Model):
             variant_queryset = variant_queryset.filter(size__size__in=size)
         if available is True:
             variant_queryset = variant_queryset.filter(quantity__gt=0)
+        if side:
+            variant_queryset = variant_queryset.filter(side__side__in=side)
+        if compression_class:
+            variant_queryset = variant_queryset.filter(compression_class__compression_class__in=compression_class)
 
         # فیلتر کردن محصولات بر اساس واریانت‌ها
         product_ids = variant_queryset.values_list('product_id', flat=True)

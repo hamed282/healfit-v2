@@ -173,9 +173,20 @@ class ProductAllView(APIView):
         page_number = int(self.request.query_params.get('page_number', 1))
         per_page = int(self.request.query_params.get('limit', 16))
         gender = self.request.query_params.get('gender', None)
-        category = self.request.query_params.get('category', None)
         subcategory = self.request.query_params.get('subcategory', None)
         available = self.request.query_params.get('available', None)
+
+        compression_class = self.request.query_params.get('compression_class', None)
+        if compression_class:
+            compression_class = compression_class.split(',')
+
+        side = self.request.query_params.get('side', None)
+        if side:
+            side = side.split(',')
+
+        category = self.request.query_params.get('category', None)
+        if category:
+            category = category.split(',')
 
         size = self.request.query_params.get('size', None)
         if size:
@@ -189,13 +200,16 @@ class ProductAllView(APIView):
             available = available.lower() in ['true', '1']
         except:
             available = False
+
         products = ProductModel.filter_products(
             gender=gender,
             color=color,
             size=size,
             category=category,
             subcategory=subcategory,
-            available=available
+            available=available,
+            side=side,
+            compression_class=compression_class
         )
 
         products_count = len(products)
