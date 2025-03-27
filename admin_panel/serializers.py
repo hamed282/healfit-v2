@@ -292,6 +292,7 @@ class CombinedProductSerializer(serializers.Serializer):
     group_id = serializers.CharField(required=False, allow_null=True)
     priority = serializers.IntegerField(required=False, allow_null=True)
     is_active = serializers.BooleanField(default=False)
+    is_best_seller = serializers.BooleanField(default=False)
     slug = serializers.SlugField(required=False, allow_null=True)
 
     category = serializers.CharField(required=False, allow_null=True)
