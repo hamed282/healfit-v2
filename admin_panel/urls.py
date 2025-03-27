@@ -185,6 +185,24 @@ urlpatterns = [
     path('product/custom_made/', views.CustomMadeView.as_view(), name='custom_made'),
     path('product/custom_made/<int:custom_id>/', views.CustomMadeView.as_view(), name='custom_made_put'),
 
+    path('product/custom_made/CustomerType/', views.CustomerTypeView.as_view(), name='customer_type'),
+    path('product/custom_made/CustomerType/<int:customer_type_id>/', views.CustomerTypeItemView.as_view(),
+         name='customer_type_put'),
 
+    path('product/custom_made/ProductType/', views.ProductTypeView.as_view(), name='product_type'),
+    path('product/custom_made/ProductType/<int:product_type_id>/', views.ProductTypeItemView.as_view(),
+         name='product_type_put'),
 
+    path('product/custom_made/BodyArea/', views.BodyAreaView.as_view(), name='body_area'),
+    path('product/custom_made/BodyArea/<int:body_area_id>/', views.BodyAreaItemView.as_view(),
+         name='body_area_put'),
+
+    path('product/custom_made/ClassNumber/', views.ClassNumberView.as_view()),
+    path('product/custom_made/ClassNumber/<int:class_num_id>/', views.ClassNumberItemView.as_view()),
+
+    path('product/custom_made/TreatmentCategory/', views.TreatmentCategoryView.as_view()),
+    path('product/custom_made/TreatmentCategory/<int:treatment_category_id>/', views.TreatmentCategoryItemView.as_view()),
+
+    path('product/custom_made/HearAboutUs/', views.HearAboutUsView.as_view()),
+    path('product/custom_made/HearAboutUs/<int:hear_about_us_id>/', views.HearAboutUsItemView.as_view()),
 ]

@@ -8,7 +8,9 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           ColorValueSerializer, ProductTagSerializer, CombinedProductSerializer, GenderSerializer,
                           ProductWithVariantsSerializer, ProductVariantSerializer, OrderSerializer,
                           OrderDetailSerializer, OrderItemSerializer, ChangePasswordSerializer, CommentBlogSerializer,
-                          ShippingCountrySerializer, ShippingSerializer, CityShippingSerializer, BlogAuthorSerializer)
+                          ShippingCountrySerializer, ShippingSerializer, CityShippingSerializer, BlogAuthorSerializer,
+                          CustomerTypeSerializer, ProductTypeSerializer, BodyAreaSerializer, HearAboutUsSerializer,
+                          TreatmentCategorySerializer, ClassNumberSerializer)
 from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
@@ -31,7 +33,8 @@ from home.serializers import (CommentHomeSerializer, VideoHomeSerializer, Banner
                               BannerSliderMobileSerializer)
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
-                            ProductVariantModel, AddImageGalleryModel, CouponModel, CustomMadeModel)
+                            ProductVariantModel, AddImageGalleryModel, CouponModel, CustomMadeModel, CustomerTypeModel,
+                            ProductTypeModel, BodyAreaModel, HearAboutUsModel, TreatmentCategoryModel, ClassNumberModel)
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer, ProductSerializer,
                                  AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer,
                                  CouponSerializer, CouponCreateSerializer, CustomMadeSerializer)
@@ -1947,6 +1950,276 @@ class CustomMadeView(APIView):
         form = request.data
         author = CustomMadeModel.objects.get(id=custom_id)
         ser_data = CustomMadeSerializer(instance=author, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomerTypeView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin)]
+        return super().get_permissions()
+
+    def get(self, request):
+        custom_made = CustomerTypeModel.objects.all()
+        ser_data = CustomerTypeSerializer(instance=custom_made, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = CustomerTypeSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomerTypeItemView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin)]
+        return super().get_permissions()
+
+    def get(self, request, customer_type_id):
+        custom_type = get_object_or_404(CustomerTypeModel, id=customer_type_id)
+        ser_data = CustomerTypeSerializer(instance=custom_type)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, customer_type_id):
+        form = request.data
+        custom_type = CustomerTypeModel.objects.get(id=customer_type_id)
+        ser_data = CustomerTypeSerializer(instance=custom_type, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProductTypeView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin)]
+        return super().get_permissions()
+
+    def get(self, request):
+        product_type = ProductTypeModel.objects.all()
+        ser_data = ProductTypeSerializer(instance=product_type, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = ProductTypeSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProductTypeItemView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin)]
+        return super().get_permissions()
+
+    def get(self, request, product_type_id):
+        custom_type = get_object_or_404(ProductTypeModel, id=product_type_id)
+        ser_data = ProductTypeSerializer(instance=custom_type)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, product_type_id):
+        form = request.data
+        product_type = ProductTypeModel.objects.get(id=product_type_id)
+        ser_data = ProductTypeSerializer(instance=product_type, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BodyAreaView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin)]
+        return super().get_permissions()
+
+    def get(self, request):
+        product_type = BodyAreaModel.objects.all()
+        ser_data = BodyAreaSerializer(instance=product_type, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = BodyAreaSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BodyAreaItemView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin)]
+        return super().get_permissions()
+
+    def get(self, request, body_area_id):
+        custom_type = get_object_or_404(BodyAreaModel, id=body_area_id)
+        ser_data = BodyAreaSerializer(instance=custom_type)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, body_area_id):
+        form = request.data
+        product_type = BodyAreaModel.objects.get(id=body_area_id)
+        ser_data = BodyAreaSerializer(instance=product_type, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ClassNumberView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin)]
+        return super().get_permissions()
+
+    def get(self, request):
+        product_type = ClassNumberModel.objects.all()
+        ser_data = ClassNumberSerializer(instance=product_type, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = ClassNumberSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ClassNumberItemView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin)]
+        return super().get_permissions()
+
+    def get(self, request, class_num_id):
+        custom_type = get_object_or_404(ClassNumberModel, id=class_num_id)
+        ser_data = ClassNumberSerializer(instance=custom_type)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, class_num_id):
+        form = request.data
+        product_type = ClassNumberModel.objects.get(id=class_num_id)
+        ser_data = ClassNumberSerializer(instance=product_type, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TreatmentCategoryView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin)]
+        return super().get_permissions()
+
+    def get(self, request):
+        product_type = TreatmentCategoryModel.objects.all()
+        ser_data = TreatmentCategorySerializer(instance=product_type, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = TreatmentCategorySerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TreatmentCategoryItemView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin)]
+        return super().get_permissions()
+
+    def get(self, request, treatment_category_id):
+        custom_type = get_object_or_404(TreatmentCategoryModel, id=treatment_category_id)
+        ser_data = TreatmentCategorySerializer(instance=custom_type)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, treatment_category_id):
+        form = request.data
+        product_type = TreatmentCategoryModel.objects.get(id=treatment_category_id)
+        ser_data = TreatmentCategorySerializer(instance=product_type, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class HearAboutUsView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin)]
+        return super().get_permissions()
+
+    def get(self, request):
+        product_type = HearAboutUsModel.objects.all()
+        ser_data = HearAboutUsSerializer(instance=product_type, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = HearAboutUsSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class HearAboutUsItemView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin)]
+        return super().get_permissions()
+
+    def get(self, request, hear_about_us_id):
+        custom_type = get_object_or_404(HearAboutUsModel, id=hear_about_us_id)
+        ser_data = HearAboutUsSerializer(instance=custom_type)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, hear_about_us_id):
+        form = request.data
+        product_type = HearAboutUsModel.objects.get(id=hear_about_us_id)
+        ser_data = HearAboutUsSerializer(instance=product_type, data=form, partial=True)
         if ser_data.is_valid():
             ser_data.save()
             return Response(data=ser_data.data, status=status.HTTP_200_OK)

@@ -659,6 +659,7 @@ class ProductCouponModel(models.Model):
 
 class CustomerTypeModel(models.Model):
     customer_type = models.CharField(max_length=32)
+    is_enable = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.customer_type}'
@@ -666,6 +667,7 @@ class CustomerTypeModel(models.Model):
 
 class ProductTypeModel(models.Model):
     product_type = models.CharField(max_length=32)
+    is_enable = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.product_type}'
@@ -673,6 +675,7 @@ class ProductTypeModel(models.Model):
 
 class BodyAreaModel(models.Model):
     body_area = models.CharField(max_length=32)
+    is_enable = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.body_area}'
@@ -680,6 +683,7 @@ class BodyAreaModel(models.Model):
 
 class ClassNumberModel(models.Model):
     class_num = models.CharField(max_length=32)
+    is_enable = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.class_num}'
@@ -687,6 +691,7 @@ class ClassNumberModel(models.Model):
 
 class TreatmentCategoryModel(models.Model):
     treatment_category = models.CharField(max_length=32)
+    is_enable = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.treatment_category}'
@@ -694,6 +699,7 @@ class TreatmentCategoryModel(models.Model):
 
 class HearAboutUsModel(models.Model):
     hear_about_us = models.CharField(max_length=32)
+    is_enable = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.hear_about_us}'

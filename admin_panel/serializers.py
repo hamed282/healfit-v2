@@ -7,7 +7,9 @@ from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
 from product.models import (ExtraGroupModel, SizeProductModel, ColorProductModel, AddImageGalleryModel, ProductTagModel,
                             ProductSubCategoryModel, ProductModel, AddProductTagModel, ProductGenderModel,
-                            AddSubCategoryModel, ProductVariantModel, AddCategoryModel, ProductCategoryModel)
+                            AddSubCategoryModel, ProductVariantModel, AddCategoryModel, ProductCategoryModel,
+                            CustomerTypeModel, ProductTypeModel, BodyAreaModel, ClassNumberModel,
+                            TreatmentCategoryModel, HearAboutUsModel)
 from product.serializers import ProductSerializer, ProductColorImageSerializer
 from order.models import OrderItemModel, OrderModel, OrderStatusModel, ShippingModel, ShippingCountryModel
 
@@ -615,4 +617,46 @@ class BlogAuthorSerializer(ModelSerializer):
 
     class Meta:
         model = AuthorBlogModel
+        fields = '__all__'
+
+
+class CustomerTypeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomerTypeModel
+        fields = '__all__'
+
+
+class ProductTypeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductTypeModel
+        fields = '__all__'
+
+
+class BodyAreaSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BodyAreaModel
+        fields = '__all__'
+
+
+class ClassNumberSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ClassNumberModel
+        fields = '__all__'
+
+
+class TreatmentCategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TreatmentCategoryModel
+        fields = '__all__'
+
+
+class HearAboutUsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = HearAboutUsModel
         fields = '__all__'
