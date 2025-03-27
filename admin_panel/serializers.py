@@ -294,6 +294,7 @@ class CombinedProductSerializer(serializers.Serializer):
     is_active = serializers.BooleanField(default=False)
     is_best_seller = serializers.BooleanField(default=False)
     slug = serializers.SlugField(required=False, allow_null=True)
+    brand = serializers.PrimaryKeyRelatedField(queryset=ProductBrandModel.objects.all(), required=False, allow_null=True)
 
     category = serializers.CharField(required=False, allow_null=True)
     subcategory = serializers.CharField(required=False, allow_null=True)
