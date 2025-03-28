@@ -21,6 +21,7 @@ from .service import Cart
 from django.http import JsonResponse
 from datetime import datetime, timedelta
 import uuid
+from django.db.models import Q
 
 
 class ProductGenderView(APIView):
@@ -201,24 +202,43 @@ class ProductAllView(APIView):
         except:
             available = False
 
-        products = ProductModel.filter_products(
-            gender=gender,
-            color=color,
-            size=size,
-            category=category,
-            subcategory=subcategory,
-            available=available,
-            side=side,
-            compression_class=compression_class
-        )
+        # شروع با queryset پایه برای ProductVariantModel
+        variant_queryset = ProductVariantModel.objects.all()
 
-        products_count = len(products)
+        # اعمال فیلترها در صورت ارائه
+        if color:
+            variant_queryset = variant_queryset.filter(color__color__in=color)
+        if size:
+            variant_queryset = variant_queryset.filter(size__size__in=size)
+        if available is True:
+            variant_queryset = variant_queryset.filter(quantity__gt=0)
+        if side:
+            variant_queryset = variant_queryset.filter(side__side__in=side)
+        if compression_class:
+            variant_queryset = variant_queryset.filter(compression_class__compression_class__in=compression_class)
+
+        # فیلتر کردن محصولات بر اساس واریانت‌ها
+        product_ids = variant_queryset.values_list('product_id', flat=True)
+        queryset = ProductModel.objects.filter(id__in=product_ids, is_active=True)
+
+        # اعمال فیلترهای بیشتر بر روی محصولات
+        if gender:
+            queryset = queryset.filter(Q(gender__gender=gender) | Q(gender__gender='unisex'))
+        if category:
+            queryset = queryset.filter(cat_product__category__category__in=category)
+        if subcategory:
+            queryset = queryset.filter(sub_product__subcategory__subcategory__in=subcategory)
+
+        # استفاده از distinct برای جلوگیری از تکرار
+        queryset = queryset.distinct()
+
+        products_count = len(queryset)
         number_of_pages = ceil(products_count / per_page)
 
         if page_number is not None:
-            product_list = products.order_by('priority')[per_page * (page_number - 1):per_page * page_number]
+            product_list = queryset.order_by('priority')[per_page * (page_number - 1):per_page * page_number]
         else:
-            product_list = products.order_by('priority')
+            product_list = queryset.order_by('priority')
 
         ser_product_list = ProductAllSerializer(instance=product_list, many=True, context={'request': request})
 
