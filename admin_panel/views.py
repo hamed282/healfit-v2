@@ -1989,7 +1989,7 @@ class CustomMadeItemView(APIView):
 
     def get(self, request, custom_id):
         custom_made = get_object_or_404(CustomMadeModel, id=custom_id)
-        ser_data = CustomMadeSerializer(instance=custom_made, many=True)
+        ser_data = CustomMadeSerializer(instance=custom_made)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
     def put(self, request, custom_id):
