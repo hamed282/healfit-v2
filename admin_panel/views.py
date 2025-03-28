@@ -1933,15 +1933,6 @@ class BlogAuthorView(APIView):
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request, author_id):
-        form = request.data
-        author = AuthorBlogModel.objects.get(id=author_id)
-        ser_data = BlogAuthorSerializer(instance=author, data=form, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class BlogAuthorItemView(APIView):
     permission_classes = [IsAdminUser, IsBlogAdmin]
@@ -1986,6 +1977,20 @@ class CustomMadeView(APIView):
             ser_data.save()
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomMadeItemView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsProductAdmin)]
+        return super().get_permissions()
+
+    def get(self, request, custom_id):
+        custom_made = get_object_or_404(CustomMadeModel, id=custom_id)
+        ser_data = CustomMadeSerializer(instance=custom_made, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
     def put(self, request, custom_id):
         form = request.data

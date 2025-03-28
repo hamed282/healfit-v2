@@ -183,7 +183,7 @@ urlpatterns = [
 
     # Custom Made
     path('product/custom_made/', views.CustomMadeView.as_view(), name='custom_made'),
-    path('product/custom_made/<int:custom_id>/', views.CustomMadeView.as_view(), name='custom_made_put'),
+    path('product/custom_made/<int:custom_id>/', views.CustomMadeItemView.as_view(), name='custom_made_put'),
 
     path('product/custom_made/CustomerType/', views.CustomerTypeView.as_view(), name='customer_type'),
     path('product/custom_made/CustomerType/<int:customer_type_id>/', views.CustomerTypeItemView.as_view(),
