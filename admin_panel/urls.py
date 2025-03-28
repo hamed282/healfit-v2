@@ -38,7 +38,7 @@ urlpatterns = [
 
     # Blog Author
     path('blog/author/', views.BlogAuthorView.as_view(), name='author'),
-    path('blog/author/<int:author_id>/', views.BlogAuthorView.as_view(), name='author_put'),
+    path('blog/author/<int:author_id>/', views.BlogAuthorItemView.as_view(), name='author_put'),
 
     # Blog Comment
     path('blog/comments/', views.BlogCommentsView.as_view(), name='blog_comments'),

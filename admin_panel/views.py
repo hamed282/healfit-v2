@@ -1943,6 +1943,29 @@ class BlogAuthorView(APIView):
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class BlogAuthorItemView(APIView):
+    permission_classes = [IsAdminUser, IsBlogAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET']:
+            return [OrPermission(IsBlogAdmin, IsSEOAdmin)]
+        return super().get_permissions()
+
+    def get(self, request, author_id):
+        author = get_object_or_404(AuthorBlogModel, id=author_id)
+        ser_data = BlogAuthorSerializer(instance=author, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, author_id):
+        form = request.data
+        author = AuthorBlogModel.objects.get(id=author_id)
+        ser_data = BlogAuthorSerializer(instance=author, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class CustomMadeView(APIView):
     permission_classes = [IsAdminUser, IsProductAdmin]
 
