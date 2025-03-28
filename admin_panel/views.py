@@ -1953,7 +1953,7 @@ class BlogAuthorItemView(APIView):
 
     def get(self, request, author_id):
         author = get_object_or_404(AuthorBlogModel, id=author_id)
-        ser_data = BlogAuthorSerializer(instance=author, many=True)
+        ser_data = BlogAuthorSerializer(instance=author)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
     def put(self, request, author_id):
