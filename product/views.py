@@ -227,7 +227,10 @@ class ProductAllView(APIView):
         if category:
             queryset = queryset.filter(cat_product__category__category__in=category)
         if subcategory:
-            queryset = queryset.filter(sub_product__subcategory__subcategory__in=subcategory)
+            # ابتدا زیردسته‌بندی را پیدا می‌کنیم
+            subcategory_obj = ProductSubCategoryModel.objects.filter(subcategory=subcategory).first()
+            if subcategory_obj:
+                queryset = queryset.filter(sub_product__subcategory=subcategory_obj)
 
         # استفاده از distinct برای جلوگیری از تکرار
         queryset = queryset.distinct()
