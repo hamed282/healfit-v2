@@ -4,7 +4,7 @@ from .models import BlogModel, AddBlogTagModel, BlogCategoryModel, BlogImageMode
 
 class BlogSerializer(serializers.ModelSerializer):
     tag = serializers.SerializerMethodField()
-    category = serializers.SlugRelatedField(slug_field='category', queryset=BlogCategoryModel.objects.all(),)
+    categories = serializers.SerializerMethodField()
     canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
     meta_title = serializers.CharField(max_length=60, required=False, allow_null=True)
     meta_description = serializers.CharField(max_length=160, required=False, allow_null=True)
@@ -22,6 +22,11 @@ class BlogSerializer(serializers.ModelSerializer):
             tag = None
 
         return tag
+
+    def get_categories(self, obj):
+        categories = obj.cat_blog.all()
+        categories = [category.category.category for category in categories]
+        return categories
 
 
 class BlogAuthorSerializer(serializers.ModelSerializer):
