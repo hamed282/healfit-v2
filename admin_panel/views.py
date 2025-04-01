@@ -1509,33 +1509,56 @@ class ColorImageView(APIView):
         sizes = request.data['sizes']
         colors = request.data['colors']
 
-        side = request.data['side']
-        if side:
-            side = SideModel.objects.get(side=side)
-        else:
-            side = None
+        sides = request.data['side']
+        # if sides:
+        #     sides = SideModel.objects.filter(side=sides)
+        # else:
+        #     sides = None
 
-        compression_class = request.data['compression_class']
-        if compression_class:
-            compression_class = CompressionClassModel.objects.get(compression_class=compression_class)
-        else:
-            compression_class = None
-
+        compression_classes = request.data['compression_class']
+        # if compression_classes:
+        #     compression_classes = CompressionClassModel.objects.filter(compression_class=compression_classes)
+        # else:
+        #     compression_classes = None
+        # print(sides)
+        # print(compression_classes)
         for color in colors:
             for size in sizes:
-                if not ProductVariantModel.objects.filter(product=product,
-                                                          color=ColorProductModel.objects.get(color=color),
-                                                          size=SizeProductModel.objects.get(size=size),
-                                                          ).exists():
-                    ProductVariantModel.objects.create(product=product,
-                                                       color=ColorProductModel.objects.get(color=color),
-                                                       size=SizeProductModel.objects.get(size=size),
-                                                       side=side,
-                                                       compression_class=compression_class,
-                                                       price=0,
-                                                       percent_discount=product.percent_discount,
-                                                       quantity=0,
-                                                       name=f'{product}-{color}-{size}')
+                if sides:
+                    for side in sides:
+                        side = SideModel.objects.get(side=side)
+                        if not ProductVariantModel.objects.filter(product=product,
+                                                                  color=ColorProductModel.objects.get(color=color),
+                                                                  size=SizeProductModel.objects.get(size=size),
+                                                                  side=side
+                                                                  ).exists():
+                            ProductVariantModel.objects.create(product=product,
+                                                               color=ColorProductModel.objects.get(color=color),
+                                                               size=SizeProductModel.objects.get(size=size),
+                                                               side=side,
+                                                               compression_class=None,
+                                                               price=0,
+                                                               percent_discount=product.percent_discount,
+                                                               quantity=0,
+                                                               name=f'{product}-{color}-{size}-{side}')
+                if compression_classes:
+                    for compression_class in compression_classes:
+                        compression_class = CompressionClassModel.objects.get(compression_class=compression_class)
+
+                        if not ProductVariantModel.objects.filter(product=product,
+                                                                  color=ColorProductModel.objects.get(color=color),
+                                                                  size=SizeProductModel.objects.get(size=size),
+                                                                  compression_class=compression_class
+                                                                  ).exists():
+                            ProductVariantModel.objects.create(product=product,
+                                                               color=ColorProductModel.objects.get(color=color),
+                                                               size=SizeProductModel.objects.get(size=size),
+                                                               side=None,
+                                                               compression_class=compression_class,
+                                                               price=0,
+                                                               percent_discount=product.percent_discount,
+                                                               quantity=0,
+                                                               name=f'{product}-{color}-{size}-{compression_class}')
 
         variants = ProductVariantModel.objects.filter(product_id=product_id).exclude(
                                                       color__color__in=colors,

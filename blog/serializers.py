@@ -117,9 +117,9 @@ class GetBlogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BlogModel
-        fields = ['id', 'tag', 'category', 'canonical', 'meta_title', 'meta_description', 'schema_markup',
-                  'title', 'short_description', 'all_categories', 'recent_blog', 'author', 'created',
-                  'updated', 'comments', 'body', 'comments_count', 'read_duration', 'slug', 'cover_image', 'cover_image_alt']
+        fields = ['id', 'tag', 'category', 'canonical', 'meta_title', 'meta_description', 'schema_markup', 'banner',
+                  'banner_alt', 'title', 'short_description', 'all_categories', 'recent_blog', 'author', 'created',
+                  'updated', 'comments', 'body', 'comments_count', 'read_duration', 'slug']
 
     def get_category(self, obj):
         categories = obj.cat_blog.all()
@@ -132,6 +132,7 @@ class GetBlogSerializer(serializers.ModelSerializer):
 
     def get_comments_count(self, obj):
         comments_count = len(obj.blogcomment.filter(is_reply=False))
+
         return comments_count
 
     def get_all_categories(self, obj):
@@ -148,4 +149,5 @@ class GetBlogSerializer(serializers.ModelSerializer):
             tag = tag.tag.id
         except:
             tag = None
+
         return tag
