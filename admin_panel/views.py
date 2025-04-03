@@ -11,7 +11,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           ShippingCountrySerializer, ShippingSerializer, CityShippingSerializer, BlogAuthorSerializer,
                           CustomerTypeSerializer, ProductTypeSerializer, BodyAreaSerializer, HearAboutUsSerializer,
                           TreatmentCategorySerializer, ClassNumberSerializer, CompressionClassSerializer,
-                          SideSerializer, BrandSerializer)
+                          SideSerializer, BrandSerializer, ProductSerializer)
 from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
@@ -37,7 +37,7 @@ from product.models import (ProductCategoryModel, ProductSubCategoryModel, Extra
                             ProductVariantModel, AddImageGalleryModel, CouponModel, CustomMadeModel, CustomerTypeModel,
                             ProductTypeModel, BodyAreaModel, HearAboutUsModel, TreatmentCategoryModel, ClassNumberModel,
                             CompressionClassModel, SideModel, ProductBrandModel)
-from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer, ProductSerializer,
+from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer,
                                  AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer,
                                  CouponSerializer, CouponCreateSerializer, CustomMadeSerializer)
 from collections import defaultdict
