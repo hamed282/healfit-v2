@@ -46,6 +46,8 @@ class BlogView(APIView):
         try:
             blog = get_object_or_404(BlogModel, slug=slug)
             ser_data = GetBlogSerializer(instance=blog)
+            print(ser_data)
+
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         except:
             return Response(data={'message': 'Page Not Found'}, status=status.HTTP_404_NOT_FOUND)
