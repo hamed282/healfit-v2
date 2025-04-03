@@ -238,9 +238,9 @@ SIOD = os.getenv('SIOD')
 
 
 # Google Login
-GOOGLE_CLIENT_ID = '404588717147-739as16dm0mu3n6u3un0d45f99qefmov.apps.googleusercontent.com'  # os.getenv('GOOGLE_CLIENT_ID')
-GOOGLE_CLIENT_SECRET = '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'  # os.getenv('GOOGLE_CLIENT_SECRET')
-GOOGLE_REDIRECT_URI = 'https://healfit.ae/login/'  # os.getenv('GOOGLE_REDIRECT_URI')
+GOOGLE_CLIENT_ID = os.getenv('CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.getenv('CLIENT_ID')
+GOOGLE_REDIRECT_URI = 'https://healfit.ae/login/'
 
 
 # Apple Login
@@ -266,8 +266,8 @@ TELR_API_REQUEST = f"https://secure.telr.com/gateway/order.json"
 TELR_API_VERIFY = f"https://secure.telr.com/gateway/order.json"
 TEST = "0"
 FRAMED = 0
-SOTRE_ID = 29934
-AUTHKEY = 'BnCdX#DGW2P@HHxk'
+SOTRE_ID = os.getenv('SOTRE_ID')
+AUTHKEY = os.getenv('AUTHKEY')
 CURRENCY = "AED"
 AUTHORIZED_URL = "https://healfit.ae/success-pay"  # "https://rest.healfit.ae/api/order/authorised/"
 DECLINED_URL = "https://healfit.ae/unsuccess-pay"  # "https://rest.healfit.ae/api/order/declined/"
@@ -277,8 +277,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.healfit.ae'
 EMAIL_HOST_USER = 'no-reply@healfit.ae'
 # DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = 'Ljho,cP4tD#@'
-EMAIL_PORT = 465
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
 EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
 
