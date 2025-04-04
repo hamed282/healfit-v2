@@ -537,12 +537,12 @@ class CategoryBestSellerView(APIView):
 class CustomMadeView(APIView):
     def get(self, request):
         data = {
-            'customer_types': CustomerTypeModel.objects.all(),
-            'product_types': ProductTypeModel.objects.all(),
-            'body_areas': BodyAreaModel.objects.all(),
-            'class_numbers': ClassNumberModel.objects.all(),
-            'treatment_categories': TreatmentCategoryModel.objects.all(),
-            'hear_about_us_options': HearAboutUsModel.objects.all()
+            'customer_types': CustomerTypeModel.objects.filter(is_enable=True),
+            'product_types': ProductTypeModel.objects.filter(is_enable=True),
+            'body_areas': BodyAreaModel.objects.filter(is_enable=True),
+            'class_numbers': ClassNumberModel.objects.filter(is_enable=True),
+            'treatment_categories': TreatmentCategoryModel.objects.filter(is_enable=True),
+            'hear_about_us_options': HearAboutUsModel.objects.filter(is_enable=True)
         }
         serializer = CustomMadeOptionsSerializer(data)
         return Response(serializer.data, status=status.HTTP_200_OK)
