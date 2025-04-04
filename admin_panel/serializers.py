@@ -362,7 +362,8 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_side(self, obj):
         product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
-        side = set([f'{str(p.side)}' for p in product])
+        sides = set([f'{str(p.side)} - {str(p.side.id)}' for p in product])
+        side = [{'side': side.split(" - ")[0], 'id': side.split(" - ")[1]} for side in sides]
 
         return side
 
