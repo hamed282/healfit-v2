@@ -356,14 +356,21 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_compression_class(self, obj):
         product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
-        ccl = set([f'{str(p.compression_class)}' for p in product])
+        try:
+            ccls = set([f'{str(p.compression_class)} - {str(p.compression_class.id)}' for p in product])
+            ccl = [{'compression_class': ccl.split(" - ")[0], 'id': ccl.split(" - ")[1]} for ccl in ccls]
+        except:
+            ccl = None
 
         return ccl
 
     def get_side(self, obj):
         product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
-        sides = set([f'{str(p.side)} - {str(p.side.id)}' for p in product])
-        side = [{'side': side.split(" - ")[0], 'id': side.split(" - ")[1]} for side in sides]
+        try:
+            sides = set([f'{str(p.side)} - {str(p.side.id)}' for p in product])
+            side = [{'side': side.split(" - ")[0], 'id': side.split(" - ")[1]} for side in sides]
+        except:
+            side = None
 
         return side
 
