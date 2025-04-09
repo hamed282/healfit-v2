@@ -2428,3 +2428,23 @@ class BrandItemView(APIView):
             ser_data.save()
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ManuallyUpdateView(APIView):
+    permission_classes = [IsAdminUser, IsProductAdmin]
+
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'GET', 'POST']:
+            return [OrPermission(IsProductAdmin)]
+        return super().get_permissions()
+
+    def post(self, request):
+        from product.tasks import zoho_product_update
+        # try:
+        zoho_product_update.delay()
+        return Response({'message': 'Product update task started successfully'}, status=status.HTTP_200_OK)
+        # except Exception as e:
+        #     return Response({'message': f'Error starting update task: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+

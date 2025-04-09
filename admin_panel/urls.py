@@ -146,6 +146,9 @@ urlpatterns = [
     # Backup
     path('manually-backup/', views.ManuallyBackupView.as_view(), name='manually_backup'),
 
+    # Update
+    path('manually-update/', views.ManuallyUpdateView.as_view(), name='manually_update'),
+
     # Shipping
     path('shipping/countries', views.ShippingCountryVIew.as_view(), name='shipping_country'),
     path('shipping/countries/<int:country_id>/', views.ShippingCountryVIew.as_view(), name='put_country'),
