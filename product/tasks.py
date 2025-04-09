@@ -63,71 +63,71 @@ def zoho_product_update():
         for item in response_items['items']:
             ccl = None
             side = None
-            try:
-                product = item['group_name']
+            # try:
+            product = item['group_name']
 
-                product = ProductModel.objects.get(product=product)
+            product = ProductModel.objects.get(product=product)
 
-                name = item['name']
+            name = item['name']
 
-                if item['attribute_name1'] == 'Color':
-                    color = item['attribute_option_name1'].lower()
-                    color = ColorProductModel.objects.get(color=color)
+            if item['attribute_name1'] == 'Color':
+                color = item['attribute_option_name1'].lower()
+                color = ColorProductModel.objects.get(color=color)
 
-                    size = item['attribute_option_name2']
-                    size = SizeProductModel.objects.get(size=size)
+                size = item['attribute_option_name2']
+                size = SizeProductModel.objects.get(size=size)
 
-                    if item['attribute_name3'] == 'Compression Class':
-                        ccl = item['attribute_option_name3']
-                        ccl = CompressionClassModel.objects.get(compression_class=ccl)
-                    elif item['attribute_name3'] == 'Side':
-                        side = item['attribute_option_name3']
-                        side = SideModel.objects.get(side=side)
-                else:
-                    color = 'not color'
-                    color = ColorProductModel.objects.get(color=color)
+                if item['attribute_name3'] == 'Compression Class':
+                    ccl = item['attribute_option_name3']
+                    ccl = CompressionClassModel.objects.get(compression_class=ccl)
+                elif item['attribute_name3'] == 'Side':
+                    side = item['attribute_option_name3']
+                    side = SideModel.objects.get(side=side)
+            else:
+                color = 'not color'
+                color = ColorProductModel.objects.get(color=color)
 
-                    size = item['attribute_option_name1']
-                    size = SizeProductModel.objects.get(size=size)
+                size = item['attribute_option_name1']
+                size = SizeProductModel.objects.get(size=size)
 
-                    if item['attribute_name2'] == 'Compression Class':
-                        ccl = item['attribute_option_name2']
-                        ccl = CompressionClassModel.objects.get(compression_class=ccl)
-                    elif item['attribute_name2'] == 'Side':
-                        side = item['attribute_option_name2']
-                        side = SideModel.objects.get(side=side)
+                if item['attribute_name2'] == 'Compression Class':
+                    ccl = item['attribute_option_name2']
+                    ccl = CompressionClassModel.objects.get(compression_class=ccl)
+                elif item['attribute_name2'] == 'Side':
+                    side = item['attribute_option_name2']
+                    side = SideModel.objects.get(side=side)
 
-                quantity = item['stock_on_hand']
-                item_id = item['item_id']
-                price = item['rate']
-                product_variant = ProductVariantModel.objects.filter(name=name)
+            quantity = item['stock_on_hand']
+            item_id = item['item_id']
+            price = item['rate']
+            product_variant = ProductVariantModel.objects.filter(name=name)
 
-                if product_variant.exists():
+            if product_variant.exists():
 
-                    product_obj = product_variant.get(name=name)
+                product_obj = product_variant.get(name=name)
 
-                    product_obj.quantity = quantity
-                    product_obj.price = price
-                    product_obj.save()
+                product_obj.quantity = quantity
+                product_obj.price = price
+                product_obj.save()
 
-                else:
-                    print(name)
-                    print(ccl)
-                    print(side)
+            else:
+                print(name)
+                print(ccl)
+                print(side)
 
-                    ProductVariantModel.objects.create(product=product,
-                                                       name=name,
-                                                       item_id=item_id,
-                                                       color=color,
-                                                       size=size,
-                                                       compression_class=ccl,
-                                                       side=side,
-                                                       price=price,
-                                                       quantity=quantity)
+                ProductVariantModel.objects.create(product=product,
+                                                   name=name,
+                                                   item_id=item_id,
+                                                   color=color,
+                                                   size=size,
+                                                   compression_class=ccl,
+                                                   side=side,
+                                                   price=price,
+                                                   quantity=quantity)
 
-            except Exception as e:
-                logger.exception("An error occurred")
-                continue
+            # except Exception as e:
+            #     logger.exception("An error occurred")
+            #     continue
             i += 1
 
         has_more_page = response_items['page_context']['has_more_page']

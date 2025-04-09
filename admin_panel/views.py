@@ -2441,10 +2441,10 @@ class ManuallyUpdateView(APIView):
     def post(self, request):
         from product.tasks import zoho_product_update
         # try:
-        zoho_product_update.delay()
-        return Response({'message': 'Product update task started successfully'}, status=status.HTTP_200_OK)
+        zoho_product_update()
+        return Response({'message': 'Products updated successfully'}, status=status.HTTP_200_OK)
         # except Exception as e:
-        #     return Response({'message': f'Error starting update task: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        #     return Response({'message': f'Error updating products: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
