@@ -171,81 +171,75 @@ class ProductGenderListView(APIView):
 
 class ProductAllView(APIView):
     def get(self, request):
-        page_number = int(self.request.query_params.get('page_number', 1))
-        per_page = int(self.request.query_params.get('limit', 16))
-        gender = self.request.query_params.get('gender', None)
-        subcategory = self.request.query_params.get('subcategory', None)
-        available = self.request.query_params.get('available', None)
-
-        compression_class = self.request.query_params.get('compression_class', None)
-        if compression_class:
-            compression_class = compression_class.split(',')
-
-        side = self.request.query_params.get('side', None)
-        if side:
-            side = side.split(',')
-
-        category = self.request.query_params.get('category', None)
-        if category:
-            category = category.split(',')
-
-        size = self.request.query_params.get('size', None)
-        if size:
-            size = size.split(',')
-
-        color = self.request.query_params.get('color', None)
-        if color:
-            color = color.split(',')
-
-        try:
-            available = available.lower() in ['true', '1']
-        except:
-            available = False
-
-        # شروع با queryset پایه برای ProductVariantModel
+        # دریافت پارامترهای فیلتر
+        color = request.query_params.get('color', None)
+        size = request.query_params.get('size', None)
+        gender = request.query_params.get('gender', None)
+        category = request.query_params.get('category', None)
+        subcategory = request.query_params.get('subcategory', None)
+        is_available = request.query_params.get('is_available', None)
+        side = request.query_params.get('side', None)
+        compression_class = request.query_params.get('compression_class', None)
+        
+        # دریافت پارامتر مرتب‌سازی
+        sort_by = request.query_params.get('sort_by', None)
+        
+        # فیلتر کردن واریانت‌ها
         variant_queryset = ProductVariantModel.objects.all()
-
-        # اعمال فیلترها در صورت ارائه
+        
         if color:
-            variant_queryset = variant_queryset.filter(color__color__in=color)
+            variant_queryset = variant_queryset.filter(color__color=color)
         if size:
-            variant_queryset = variant_queryset.filter(size__size__in=size)
-        if available is True:
+            variant_queryset = variant_queryset.filter(size__size=size)
+        if is_available:
             variant_queryset = variant_queryset.filter(quantity__gt=0)
         if side:
-            variant_queryset = variant_queryset.filter(side__side__in=side)
+            variant_queryset = variant_queryset.filter(side__side=side)
         if compression_class:
-            variant_queryset = variant_queryset.filter(compression_class__compression_class__in=compression_class)
-
-        # فیلتر کردن محصولات بر اساس واریانت‌ها
-        product_ids = variant_queryset.values_list('product_id', flat=True)
-        queryset = ProductModel.objects.filter(id__in=product_ids, is_active=True)
-
-        # اعمال فیلترهای بیشتر بر روی محصولات
+            variant_queryset = variant_queryset.filter(compression_class__compression_class=compression_class)
+            
+        # استخراج شناسه‌های محصول از واریانت‌های فیلتر شده
+        product_ids = variant_queryset.values_list('product_id', flat=True).distinct()
+        
+        # فیلتر کردن محصولات
+        queryset = ProductModel.objects.filter(id__in=product_ids)
+        
         if gender:
-            queryset = queryset.filter(Q(gender__gender=gender) | Q(gender__gender='unisex'))
+            queryset = queryset.filter(gender__gender=gender)
         if category:
-            queryset = queryset.filter(cat_product__category__category__in=category)
+            queryset = queryset.filter(cat_product__category__category__in=category.split(','))
         if subcategory:
-            # ابتدا زیردسته‌بندی را پیدا می‌کنیم
-            subcategory_obj = ProductSubCategoryModel.objects.filter(subcategory=subcategory).first()
-            if subcategory_obj:
-                queryset = queryset.filter(sub_product__subcategory=subcategory_obj)
-
-        # استفاده از distinct برای جلوگیری از تکرار
-        queryset = queryset.distinct()
-
-        products_count = len(queryset)
-        number_of_pages = ceil(products_count / per_page)
-
-        if page_number is not None:
-            product_list = queryset.order_by('priority')[per_page * (page_number - 1):per_page * page_number]
-        else:
-            product_list = queryset.order_by('priority')
-
-        ser_product_list = ProductAllSerializer(instance=product_list, many=True, context={'request': request})
-
-        return Response(data={'data': ser_product_list.data, 'number_of_pages': number_of_pages})
+            queryset = queryset.filter(sub_product__subcategory__subcategory__in=subcategory.split(','))
+            
+        # مرتب‌سازی بر اساس پارامتر sort_by
+        if sort_by:
+            if sort_by == 'price_high':
+                queryset = queryset.order_by('-price')
+            elif sort_by == 'price_low':
+                queryset = queryset.order_by('price')
+            elif sort_by == 'newest':
+                queryset = queryset.order_by('-created')
+            elif sort_by == 'discount_high':
+                queryset = queryset.order_by('-percent_discount')
+                
+        # صفحه‌بندی
+        page = int(request.query_params.get('page', 1))
+        per_page = 16
+        start = (page - 1) * per_page
+        end = start + per_page
+        
+        total_products = queryset.count()
+        total_pages = (total_products + per_page - 1) // per_page
+        
+        products = queryset[start:end]
+        ser_data = ProductAllSerializer(instance=products, many=True)
+        
+        return Response({
+            'data': ser_data.data,
+            'total_pages': total_pages,
+            'current_page': page,
+            'total_products': total_products
+        }, status=status.HTTP_200_OK)
 
 
 class SearchProductView(viewsets.ModelViewSet):
