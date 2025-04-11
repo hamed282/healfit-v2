@@ -233,13 +233,14 @@ class ProductAllView(APIView):
         start = (page - 1) * per_page
         end = start + per_page
         
-        # اگر مرتب‌سازی با قیمت انجام شده، از slice استفاده می‌کنیم
+        # محاسبه تعداد کل محصولات فیلتر شده
         if sort_by in ['price_high', 'price_low']:
+            total_products = len(queryset)
             products = queryset[start:end]
         else:
+            total_products = queryset.count()
             products = queryset[start:end]
             
-        total_products = len(queryset)
         total_pages = (total_products + per_page - 1) // per_page
         
         ser_data = ProductAllSerializer(instance=products, many=True)
