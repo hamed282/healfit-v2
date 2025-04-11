@@ -201,8 +201,8 @@ class ProductAllView(APIView):
         # استخراج شناسه‌های محصول از واریانت‌های فیلتر شده
         product_ids = variant_queryset.values_list('product_id', flat=True).distinct()
         
-        # فیلتر کردن محصولات
-        queryset = ProductModel.objects.filter(id__in=product_ids)
+        # فیلتر کردن محصولات - فقط محصولات فعال
+        queryset = ProductModel.objects.filter(id__in=product_ids, is_active=True)
         
         if gender:
             queryset = queryset.filter(gender__gender=gender)
@@ -211,8 +211,8 @@ class ProductAllView(APIView):
         if subcategory:
             queryset = queryset.filter(sub_product__subcategory__subcategory__in=subcategory.split(','))
             
-        # محاسبه تعداد کل محصولات (قبل از فیلتر)
-        total_all_products = ProductModel.objects.count()
+        # محاسبه تعداد کل محصولات فعال (قبل از فیلتر)
+        total_all_products = ProductModel.objects.filter(is_active=True).count()
             
         # مرتب‌سازی بر اساس پارامتر sort_by
         if sort_by:
@@ -239,7 +239,7 @@ class ProductAllView(APIView):
         else:
             products = queryset[start:end]
             
-        total_products = len(queryset)
+        total_products = len(queryset) if sort_by in ['price_high', 'price_low'] else queryset.count()
         total_pages = (total_products + per_page - 1) // per_page
         
         ser_data = ProductAllSerializer(instance=products, many=True)
@@ -249,7 +249,7 @@ class ProductAllView(APIView):
             'total_pages': total_pages,
             'current_page': page,
             'total_products': total_products,
-            'total_all_products': total_all_products  # تعداد کل محصولات قبل از فیلتر
+            'total_all_products': total_all_products  # تعداد کل محصولات فعال قبل از فیلتر
         }, status=status.HTTP_200_OK)
 
 
