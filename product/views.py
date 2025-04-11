@@ -239,7 +239,7 @@ class ProductAllView(APIView):
         else:
             products = queryset[start:end]
             
-        total_products = len(queryset) if sort_by in ['price_high', 'price_low'] else queryset.count()
+        total_products = len(queryset)
         total_pages = (total_products + per_page - 1) // per_page
         
         ser_data = ProductAllSerializer(instance=products, many=True)
