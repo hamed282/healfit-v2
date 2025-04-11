@@ -211,6 +211,9 @@ class ProductAllView(APIView):
         if subcategory:
             queryset = queryset.filter(sub_product__subcategory__subcategory__in=subcategory.split(','))
             
+        # محاسبه تعداد کل محصولات (قبل از فیلتر)
+        total_all_products = ProductModel.objects.count()
+            
         # مرتب‌سازی بر اساس پارامتر sort_by
         if sort_by:
             if sort_by == 'price_high':
@@ -245,7 +248,8 @@ class ProductAllView(APIView):
             'data': ser_data.data,
             'total_pages': total_pages,
             'current_page': page,
-            'total_products': total_products
+            'total_products': total_products,
+            'total_all_products': total_all_products  # تعداد کل محصولات قبل از فیلتر
         }, status=status.HTTP_200_OK)
 
 
