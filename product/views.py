@@ -214,9 +214,11 @@ class ProductAllView(APIView):
         # مرتب‌سازی بر اساس پارامتر sort_by
         if sort_by:
             if sort_by == 'price_high':
-                queryset = queryset.order_by('-price')
+                # تبدیل قیمت به عدد و مرتب‌سازی نزولی
+                queryset = sorted(queryset, key=lambda x: int(x.price.replace(',', '')), reverse=True)
             elif sort_by == 'price_low':
-                queryset = queryset.order_by('price')
+                # تبدیل قیمت به عدد و مرتب‌سازی صعودی
+                queryset = sorted(queryset, key=lambda x: int(x.price.replace(',', '')))
             elif sort_by == 'newest':
                 queryset = queryset.order_by('-created')
             elif sort_by == 'discount_high':
@@ -228,10 +230,15 @@ class ProductAllView(APIView):
         start = (page - 1) * per_page
         end = start + per_page
         
-        total_products = queryset.count()
+        # اگر مرتب‌سازی با قیمت انجام شده، از slice استفاده می‌کنیم
+        if sort_by in ['price_high', 'price_low']:
+            products = queryset[start:end]
+        else:
+            products = queryset[start:end]
+            
+        total_products = len(queryset) if sort_by in ['price_high', 'price_low'] else queryset.count()
         total_pages = (total_products + per_page - 1) // per_page
         
-        products = queryset[start:end]
         ser_data = ProductAllSerializer(instance=products, many=True)
         
         return Response({
