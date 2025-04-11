@@ -184,32 +184,39 @@ class ProductAllView(APIView):
         # دریافت پارامتر مرتب‌سازی
         sort_by = request.query_params.get('sort_by', None)
         
-        # فیلتر کردن واریانت‌ها
-        variant_queryset = ProductVariantModel.objects.all()
+        # بررسی وجود فیلتر
+        has_filters = any([color, size, gender, category, subcategory, is_available, side, compression_class])
         
-        if color:
-            variant_queryset = variant_queryset.filter(color__color=color)
-        if size:
-            variant_queryset = variant_queryset.filter(size__size=size)
-        if is_available:
-            variant_queryset = variant_queryset.filter(quantity__gt=0)
-        if side:
-            variant_queryset = variant_queryset.filter(side__side=side)
-        if compression_class:
-            variant_queryset = variant_queryset.filter(compression_class__compression_class=compression_class)
+        if has_filters:
+            # فیلتر کردن واریانت‌ها
+            variant_queryset = ProductVariantModel.objects.all()
             
-        # استخراج شناسه‌های محصول از واریانت‌های فیلتر شده
-        product_ids = variant_queryset.values_list('product_id', flat=True).distinct()
-        
-        # فیلتر کردن محصولات - فقط محصولات فعال
-        queryset = ProductModel.objects.filter(id__in=product_ids, is_active=True)
-        
-        if gender:
-            queryset = queryset.filter(gender__gender=gender)
-        if category:
-            queryset = queryset.filter(cat_product__category__category__in=category.split(','))
-        if subcategory:
-            queryset = queryset.filter(sub_product__subcategory__subcategory__in=subcategory.split(','))
+            if color:
+                variant_queryset = variant_queryset.filter(color__color=color)
+            if size:
+                variant_queryset = variant_queryset.filter(size__size=size)
+            if is_available:
+                variant_queryset = variant_queryset.filter(quantity__gt=0)
+            if side:
+                variant_queryset = variant_queryset.filter(side__side=side)
+            if compression_class:
+                variant_queryset = variant_queryset.filter(compression_class__compression_class=compression_class)
+                
+            # استخراج شناسه‌های محصول از واریانت‌های فیلتر شده
+            product_ids = variant_queryset.values_list('product_id', flat=True).distinct()
+            
+            # فیلتر کردن محصولات - فقط محصولات فعال
+            queryset = ProductModel.objects.filter(id__in=product_ids, is_active=True)
+            
+            if gender:
+                queryset = queryset.filter(gender__gender=gender)
+            if category:
+                queryset = queryset.filter(cat_product__category__category__in=category.split(','))
+            if subcategory:
+                queryset = queryset.filter(sub_product__subcategory__subcategory__in=subcategory.split(','))
+        else:
+            # اگر هیچ فیلتری وجود نداشت، فقط محصولات فعال را برگردان
+            queryset = ProductModel.objects.filter(is_active=True)
             
         # محاسبه تعداد کل محصولات فعال (قبل از فیلتر)
         total_all_products = ProductModel.objects.filter(is_active=True).count()
