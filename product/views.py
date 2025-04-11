@@ -214,11 +214,11 @@ class ProductAllView(APIView):
         # مرتب‌سازی بر اساس پارامتر sort_by
         if sort_by:
             if sort_by == 'price_high':
-                # تبدیل قیمت به عدد و مرتب‌سازی نزولی
-                queryset = sorted(queryset, key=lambda x: int(x.price.replace(',', '')), reverse=True)
+                # تبدیل قیمت به عدد اعشاری و مرتب‌سازی نزولی
+                queryset = sorted(queryset, key=lambda x: float(x.price.replace(',', '')), reverse=True)
             elif sort_by == 'price_low':
-                # تبدیل قیمت به عدد و مرتب‌سازی صعودی
-                queryset = sorted(queryset, key=lambda x: int(x.price.replace(',', '')))
+                # تبدیل قیمت به عدد اعشاری و مرتب‌سازی صعودی
+                queryset = sorted(queryset, key=lambda x: float(x.price.replace(',', '')))
             elif sort_by == 'newest':
                 queryset = queryset.order_by('-created')
             elif sort_by == 'discount_high':
