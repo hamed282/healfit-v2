@@ -72,6 +72,8 @@ def zoho_product_update():
 
             if item['attribute_name1'] == 'Color':
                 color = item['attribute_option_name1'].lower()
+                print(f"color: {color}")
+
                 color = ColorProductModel.objects.get(color=color)
 
                 size = item['attribute_option_name2']
@@ -79,7 +81,6 @@ def zoho_product_update():
 
                 if item['attribute_name3'] == 'Compression Class':
                     ccl = item['attribute_option_name3']
-                    print(f"ccl: {ccl}")
                     ccl = str(ccl).strip()
                     if ccl.isdigit() or (not ccl.upper().startswith('CCL') and ccl.replace('CCL', '').replace('ccl', '').isdigit()):
                         ccl = f"CCL{ccl.replace('CCL', '').replace('ccl', '')}"
