@@ -69,7 +69,7 @@ def zoho_product_update():
             product = ProductModel.objects.get(product=product)
 
             name = item['name']
-            print(f"name: {name}")
+
             if item['attribute_name1'] == 'Color':
                 color = item['attribute_option_name1'].lower()
                 print(f"color: {color}")
@@ -77,6 +77,7 @@ def zoho_product_update():
                 color = ColorProductModel.objects.get(color=color)
 
                 size = item['attribute_option_name2']
+                print(f"product: {product}")
                 print(f"size: {size}")
 
                 size = SizeProductModel.objects.get(size=size)
