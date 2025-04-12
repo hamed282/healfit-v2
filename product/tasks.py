@@ -77,6 +77,8 @@ def zoho_product_update():
                 color = ColorProductModel.objects.get(color=color)
 
                 size = item['attribute_option_name2']
+                print(f"size: {size}")
+
                 size = SizeProductModel.objects.get(size=size)
 
                 if item['attribute_name3'] == 'Compression Class':
