@@ -80,6 +80,9 @@ def zoho_product_update():
                 if item['attribute_name3'] == 'Compression Class':
                     ccl = item['attribute_option_name3']
                     print(f"ccl: {ccl}")
+                    ccl = str(ccl).strip()
+                    if ccl.isdigit() or (not ccl.startswith('ccl') and ccl.replace('ccl', '').isdigit()):
+                        ccl = f"ccl{ccl.replace('ccl', '')}"
                     ccl = CompressionClassModel.objects.get(compression_class=ccl)
                 elif item['attribute_name3'] == 'Side':
                     side = item['attribute_option_name3']
@@ -93,6 +96,9 @@ def zoho_product_update():
 
                 if item['attribute_name2'] == 'Compression Class':
                     ccl = item['attribute_option_name2']
+                    ccl = str(ccl).strip()
+                    if ccl.isdigit() or (not ccl.startswith('ccl') and ccl.replace('ccl', '').isdigit()):
+                        ccl = f"ccl{ccl.replace('ccl', '')}"
                     ccl = CompressionClassModel.objects.get(compression_class=ccl)
                 elif item['attribute_name2'] == 'Side':
                     side = item['attribute_option_name2']
