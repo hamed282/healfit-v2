@@ -18,7 +18,7 @@ class BlogListView(APIView):
         page = self.request.query_params.get('page', None)
         category = self.request.query_params.get('category', None)
 
-        blogs = BlogModel.objects.all()
+        blogs = BlogModel.objects.filter(is_active=True)
         
         if category:
             # Get blogs that have this category through AddCategoryModel
@@ -44,7 +44,7 @@ class BlogListView(APIView):
 class BlogView(APIView):
     def get(self, request, slug):
         try:
-            blog = get_object_or_404(BlogModel, slug=slug)
+            blog = get_object_or_404(BlogModel, slug=slug, is_active=True)
             ser_data = GetBlogSerializer(instance=blog)
             print(ser_data)
 
@@ -60,14 +60,14 @@ class RelatedPostView(APIView):
         page = self.request.query_params.get('page', None)
 
         per_page = 10
-        blog_count = len(BlogModel.objects.all())
+        blog_count = len(BlogModel.objects.filter(is_active=True))
         number_of_pages = math.ceil(blog_count / per_page)
 
         category = get_object_or_404(BlogCategoryModel, category=category)
         if limit is not None:
-            blog = BlogModel.objects.filter(category=category)[:int(limit)]
+            blog = BlogModel.objects.filter(is_active=True, category=category)[:int(limit)]
         else:
-            blog = BlogModel.objects.filter(category=category)
+            blog = BlogModel.objects.filter(is_active=True, category=category)
 
         if page is not None:
             page = int(page)
@@ -91,7 +91,7 @@ class CommentBlogView(APIView):
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
     def post(self, request, blog_id):
-        blog = get_object_or_404(BlogModel, id=blog_id)
+        blog = get_object_or_404(BlogModel, id=blog_id, is_active=True)
         form = request.data
         ser_data = CommentCreateSerializer(data=form)
         if ser_data.is_valid():
@@ -106,7 +106,7 @@ class ReplyCommentView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, blog_id, comment_id):
-        blog = get_object_or_404(BlogModel, id=blog_id)
+        blog = get_object_or_404(BlogModel, id=blog_id, is_active=True)
         comment = get_object_or_404(CommentBlogModel, id=comment_id)
         form = request.data
         ser_data = CommentCreateSerializer(data=form)
@@ -121,7 +121,7 @@ class ReplyCommentView(APIView):
 
 
 class SearchBlogView(viewsets.ModelViewSet):
-    queryset = BlogModel.objects.all()
+    queryset = BlogModel.objects.filter(is_active=True)
     serializer_class = GetBlogSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['body', 'short_description', 'title']
