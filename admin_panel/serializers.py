@@ -111,6 +111,7 @@ class CombinedBlogSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=250)
     short_description = serializers.CharField(max_length=160)
     body = serializers.CharField()
+    is_active = serializers.BooleanField()
     slug = serializers.SlugField()
     follow = serializers.BooleanField(default=False)
     index = serializers.BooleanField(default=False)

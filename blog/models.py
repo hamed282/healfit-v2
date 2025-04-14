@@ -47,6 +47,7 @@ class BlogModel(models.Model):
     # author_image = models.ImageField(upload_to=get_author_upload_path, null=True, blank=True)
     author = models.ForeignKey('AuthorBlogModel', on_delete=models.CASCADE, null=True, blank=True)
     read_duration = models.CharField(max_length=16, null=True, blank=True)
+    is_active = models.BooleanField(default=False)
     # role = models.CharField(max_length=24, null=True, blank=True)
     slug = models.SlugField(unique=True)
     # category = models.ForeignKey(BlogCategoryModel, on_delete=models.CASCADE)
