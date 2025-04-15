@@ -44,7 +44,7 @@ class BlogAllSerializer(serializers.ModelSerializer):
     class Meta:
         model = BlogModel
         fields = ['id', 'cover_image', 'title', 'short_description', 'slug', 'created', 'updated',
-                  'read_duration', 'author', 'category']
+                  'read_duration', 'author', 'category', 'is_active']
 
     def get_category(self, obj):
         categories = obj.cat_blog.all()
@@ -57,7 +57,7 @@ class RelatedBlogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BlogModel
-        fields = ['id', 'cover_image', 'title', 'short_description', 'slug', 'created']
+        fields = ['id', 'cover_image', 'title', 'short_description', 'slug', 'created', 'is_active']
 
 
 class MetaCategorySerializer(serializers.ModelSerializer):
@@ -97,7 +97,7 @@ class RecentBlogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BlogModel
-        fields = ['title', 'short_description', 'author', 'updated', 'slug']
+        fields = ['title', 'short_description', 'author', 'updated', 'slug', 'is_active']
 
 
 class GetBlogSerializer(serializers.ModelSerializer):
@@ -119,7 +119,7 @@ class GetBlogSerializer(serializers.ModelSerializer):
         model = BlogModel
         fields = ['id', 'tag', 'category', 'canonical', 'meta_title', 'meta_description', 'schema_markup',
                   'title', 'short_description', 'all_categories', 'recent_blog', 'author', 'created',
-                  'updated', 'comments', 'body', 'comments_count', 'read_duration', 'slug']
+                  'updated', 'comments', 'body', 'comments_count', 'read_duration', 'slug', 'is_active']
 
     def get_category(self, obj):
         categories = obj.cat_blog.all()
