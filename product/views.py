@@ -172,6 +172,8 @@ class ProductGenderListView(APIView):
 class ProductAllView(APIView):
     def get(self, request):
         # دریافت پارامترهای فیلتر
+        page_number = request.query_params.get('page_number', 1)
+        limit = request.query_params.get('limit', 15)
         color = request.query_params.get('color', None)
         size = request.query_params.get('size', None)
         gender = request.query_params.get('gender', None)
@@ -235,8 +237,8 @@ class ProductAllView(APIView):
                 queryset = queryset.order_by('-percent_discount')
                 
         # صفحه‌بندی
-        page = int(request.query_params.get('page', 1))
-        per_page = 16
+        page = int(page_number)
+        per_page = int(limit)
         start = (page - 1) * per_page
         end = start + per_page
         
