@@ -669,15 +669,7 @@ class CategoryBestSellerSerializer(serializers.ModelSerializer):
         best_seller_products = []
         products = obj.category_product.filter(product__is_best_seller=True)
         for product in products:
-            product_data = {
-                'id': product.product.id,
-                'product': product.product.product,
-                'name_product': product.product.name_product,
-                'cover_image': product.product.cover_image.url if product.product.cover_image else None,
-                'price': product.product.price,
-                'off_price': product.product.get_off_price(),
-                'slug': product.product.slug,
-            }
+            product_data = ProductAllSerializer(product.product, context=self.context).data
             best_seller_products.append(product_data)
         return best_seller_products
 

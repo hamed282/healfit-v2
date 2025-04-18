@@ -545,7 +545,7 @@ class CartView(APIView):
 class CategoryBestSellerView(APIView):
     def get(self, request):
         categories = ProductCategoryModel.objects.all().order_by('priority')
-        ser_data = CategoryBestSellerSerializer(instance=categories, many=True)
+        ser_data = CategoryBestSellerSerializer(instance=categories, many=True, context={'request': request})
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 
