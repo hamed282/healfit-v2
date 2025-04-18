@@ -250,7 +250,7 @@ class ProductAllView(APIView):
             
         total_pages = (total_products + per_page - 1) // per_page
         
-        ser_data = ProductAllSerializer(instance=products, many=True)
+        ser_data = ProductAllSerializer(instance=products, many=True, context={'request': request.user})
         
         return Response({
             'data': ser_data.data,
