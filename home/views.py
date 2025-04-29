@@ -1,16 +1,17 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import (BannerSliderModel, CommentHomeModel, VideoHomeModel, Content1Model, Content2Model, Content3Model, BannerShopModel, LogoModel,
+from .models import (BannerSliderModel, CommentHomeModel, VideoHomeModel, Content1Model, Content2Model, Content3Model,
+                     BannerShopModel, LogoModel,
                      SEOHomeModel, ContactSubmitModel, TelegramBotModel, AboutPageModel, CareerPageModel, BlogPageModel,
                      ShopPageModel, SitemapPageModel, WholesaleInquiryPageModel, CustomerCarePageModel,
-                     RefundPolicyPageModel, ContactUsPageModel, BannerSliderMobileModel)
+                     RefundPolicyPageModel, ContactUsPageModel, BannerSliderMobileModel, FAQModel)
 from .serializers import (BannerSliderSerializer, CommentHomeSerializer, VideoHomeSerializer, ContentHome1Serializer,
                           BannerShopSerializer, SEOHomeSerializer, LogoHomeSerializer, NewsLetterSerializer,
                           ContactSubmitSerializer, AboutPageSerializer, ShopPageSerializer, BlogPageSerializer,
                           CareerPageSerializer, SitemapPageSerializer, ContactUsPageSerializer,
                           RefundPolicyPageSerializer, WholesaleInquiryPageSerializer, CustomerCarePageSerializer,
-                          ContentHome2Serializer, ContentHome3Serializer)
+                          ContentHome2Serializer, ContentHome3Serializer, FAQSerializer)
 from django.conf import settings
 from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
@@ -220,4 +221,11 @@ class BlogPageView(APIView):
     def get(self, request):
         blog = BlogPageModel.objects.all().first()
         ser_data = BlogPageSerializer(instance=blog)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class FAQView(APIView):
+    def get(self, request):
+        faq = FAQModel.objects.all()
+        ser_data = FAQSerializer(instance=faq, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)

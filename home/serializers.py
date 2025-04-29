@@ -3,7 +3,7 @@ from .models import (BannerSliderModel, VideoHomeModel, CommentHomeModel, Banner
                      SEOHomeModel, LogoModel, NewsLetterModel, ContactSubmitModel, AboutPageModel, ShopPageModel,
                      CareerPageModel, RefundPolicyPageModel, SitemapPageModel, ContactUsPageModel, BlogPageModel,
                      CustomerCarePageModel, WholesaleInquiryPageModel, BannerSliderMobileModel, Content1Model,
-                     Content2Model, Content3Model)
+                     Content2Model, Content3Model, FAQModel)
 
 
 class BannerSliderSerializer(serializers.ModelSerializer):
@@ -129,4 +129,10 @@ class ShopPageSerializer(serializers.ModelSerializer):
 class BlogPageSerializer(serializers.ModelSerializer):
     class Meta:
         model = BlogPageModel
+        fields = '__all__'
+
+
+class FAQSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FAQModel
         fields = '__all__'

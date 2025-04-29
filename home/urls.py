@@ -23,5 +23,6 @@ urlpatterns = [
     path('career/', views.CareerPageView.as_view(), name='career'),
     path('shop/', views.ShopPageView.as_view(), name='shop'),
     path('blog/', views.BlogPageView.as_view(), name='blog'),
+    path('faq/', views.FAQView.as_view(), name='faq'),
 ]
 
