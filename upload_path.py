@@ -87,7 +87,7 @@ def get_content_upload_path(instance, filename):
 
 
 def get_custom_made_upload_path(instance, filename):
-    content_image = instance.custom
+    content_image = instance.image_alt
 
     return os.path.join('custom', content_image, filename)
 

@@ -727,6 +727,7 @@ class CustomMadeModel(models.Model):
 
 class CustomMadePageModel(models.Model):
     image = models.ImageField(upload_to=get_custom_made_upload_path)
+    image_alt = models.CharField(max_length=64)
 
     content1_text = models.TextField()
     content1_right_image = models.ImageField(upload_to=get_custom_made_upload_path)

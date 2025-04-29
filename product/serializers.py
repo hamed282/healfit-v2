@@ -3,7 +3,7 @@ from .models import (ProductGenderModel, ProductModel, ProductVariantModel, AddI
                      ProductCategoryModel, ProductSubCategoryModel, AddProductTagModel, AddSubCategoryModel,
                      ProductTagModel, FavUserModel, CouponModel, ProductBrandModel, CompressionClassModel, SideModel,
                      CustomMadeModel, CustomerTypeModel, ProductTypeModel, BodyAreaModel, ClassNumberModel,
-                     TreatmentCategoryModel, HearAboutUsModel)
+                     TreatmentCategoryModel, HearAboutUsModel, CustomMadePageModel)
 from django.shortcuts import get_object_or_404
 import re
 
@@ -735,3 +735,9 @@ class CustomMadeOptionsSerializer(serializers.Serializer):
     class_numbers = ClassNumberSerializer(many=True, read_only=True)
     treatment_categories = TreatmentCategorySerializer(many=True, read_only=True)
     hear_about_us_options = HearAboutUsSerializer(many=True, read_only=True)
+
+
+class CustomMadePageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomMadePageModel
+        fields = '__all__'

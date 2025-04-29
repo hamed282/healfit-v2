@@ -4,13 +4,13 @@ from rest_framework.views import APIView
 from .models import (ProductGenderModel, ProductModel, SizeProductModel, ColorProductModel, ProductVariantModel,
                      AddImageGalleryModel, PopularProductModel, ProductCategoryModel, ProductSubCategoryModel,
                      FavUserModel, CouponModel, CompressionClassModel, SideModel, CustomerTypeModel, ProductTypeModel,
-                     BodyAreaModel, ClassNumberModel, TreatmentCategoryModel, HearAboutUsModel)
+                     BodyAreaModel, ClassNumberModel, TreatmentCategoryModel, HearAboutUsModel, CustomMadePageModel)
 from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVariantShopSerializer,
                           ProductColorImageSerializer, ColorSizeProductSerializer, ProductListSerializer,
                           UserFavSerializer, PopularProductSerializer, ProductAllSerializer,
                           ProductCategorySerializer, ProductSubCategorySerializer, ProductByCategorySerializer,
                           FavProductSerializer, GetClassSerializer, NewProductSerializer, CategoryBestSellerSerializer,
-                          CustomMadeSerializer, CustomMadeOptionsSerializer)
+                          CustomMadeSerializer, CustomMadeOptionsSerializer, CustomMadePageSerializer)
 from django.shortcuts import get_object_or_404
 from math import ceil
 from rest_framework import viewsets
@@ -580,3 +580,17 @@ class CustomMadeView(APIView):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class CustomMadePageView(APIView):
+    def get(self, request):
+        custom_made = CustomMadePageModel.objects.all().first()
+        ser_data = CustomMadePageSerializer(instance=custom_made)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class BrandPageView(APIView):
+    def get(self, request):
+        categories = ProductCategoryModel.objects.all().order_by('priority')
+        ser_data = CategoryBestSellerSerializer(instance=categories, many=True, context={'request': request})
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
