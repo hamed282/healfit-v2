@@ -36,6 +36,18 @@ class ContentHome1Serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ContentHome2Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Content2Model
+        fields = '__all__'
+
+
+class ContentHome3Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Content3Model
+        fields = '__all__'
+
+
 class BannerShopSerializer(serializers.ModelSerializer):
     class Meta:
         model = BannerShopModel

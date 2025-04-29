@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import (BannerSliderModel, CommentHomeModel, VideoHomeModel, Content1Model, BannerShopModel, LogoModel,
+from .models import (BannerSliderModel, CommentHomeModel, VideoHomeModel, Content1Model, Content2Model, Content3Model, BannerShopModel, LogoModel,
                      SEOHomeModel, ContactSubmitModel, TelegramBotModel, AboutPageModel, CareerPageModel, BlogPageModel,
                      ShopPageModel, SitemapPageModel, WholesaleInquiryPageModel, CustomerCarePageModel,
                      RefundPolicyPageModel, ContactUsPageModel, BannerSliderMobileModel)
@@ -9,7 +9,8 @@ from .serializers import (BannerSliderSerializer, CommentHomeSerializer, VideoHo
                           BannerShopSerializer, SEOHomeSerializer, LogoHomeSerializer, NewsLetterSerializer,
                           ContactSubmitSerializer, AboutPageSerializer, ShopPageSerializer, BlogPageSerializer,
                           CareerPageSerializer, SitemapPageSerializer, ContactUsPageSerializer,
-                          RefundPolicyPageSerializer, WholesaleInquiryPageSerializer, CustomerCarePageSerializer)
+                          RefundPolicyPageSerializer, WholesaleInquiryPageSerializer, CustomerCarePageSerializer,
+                          ContentHome2Serializer, ContentHome3Serializer)
 from django.conf import settings
 from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
@@ -45,9 +46,19 @@ class CommentHomeView(APIView):
 
 class HomeContentView(APIView):
     def get(self, request):
-        content = Content1Model.objects.all().first()
-        ser_data = ContentHome1Serializer(instance=content)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        content1 = Content1Model.objects.all().first()
+        content2 = Content2Model.objects.all().first()
+        content3 = Content3Model.objects.all().first()
+        
+        ser_data1 = ContentHome1Serializer(instance=content1)
+        ser_data2 = ContentHome2Serializer(instance=content2)
+        ser_data3 = ContentHome3Serializer(instance=content3)
+        
+        return Response(data={
+            'content1': ser_data1.data,
+            'content2': ser_data2.data,
+            'content3': ser_data3.data
+        }, status=status.HTTP_200_OK)
 
 
 class BannerShopView(APIView):
