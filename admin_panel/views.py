@@ -22,16 +22,17 @@ from accounts.serializers import UserLoginSerializer
 from blog.serializers import BlogAllSerializer, BlogSerializer, ImageBlogSerializer
 from blog.models import BlogModel, BlogTagModel, AddBlogTagModel, BlogCategoryModel, CommentBlogModel, AuthorBlogModel
 from rest_framework.permissions import IsAdminUser
-from home.models import (CommentHomeModel, BannerSliderModel, VideoHomeModel, ContentHomeModel, BannerShopModel,
+from home.models import (CommentHomeModel, BannerSliderModel, VideoHomeModel, BannerShopModel,
                          SEOHomeModel, LogoModel, NewsLetterModel, ContactSubmitModel, AboutPageModel, CareerPageModel,
                          BlogPageModel, ShopPageModel, SitemapPageModel, WholesaleInquiryPageModel,
-                         CustomerCarePageModel, RefundPolicyPageModel, ContactUsPageModel, BannerSliderMobileModel)
-from home.serializers import (CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer, ContentHomeSerializer,
+                         CustomerCarePageModel, RefundPolicyPageModel, ContactUsPageModel, BannerSliderMobileModel,
+                         Content1Model, Content2Model, Content3Model)
+from home.serializers import (CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer,
                               BannerShopSerializer, LogoHomeSerializer, SEOHomeSerializer, NewsLetterSerializer,
                               ContactSubmitSerializer, AboutPageSerializer, ShopPageSerializer, BlogPageSerializer,
                               CareerPageSerializer, SitemapPageSerializer, ContactUsPageSerializer,
                               RefundPolicyPageSerializer, WholesaleInquiryPageSerializer, CustomerCarePageSerializer,
-                              BannerSliderMobileSerializer)
+                              BannerSliderMobileSerializer, ContentHome1Serializer)
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel, CouponModel, CustomMadeModel, CustomerTypeModel,

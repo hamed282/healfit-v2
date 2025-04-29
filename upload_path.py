@@ -78,3 +78,21 @@ def get_author_upload_path(instance, filename):
     author_image = instance.author
 
     return os.path.join('author', author_image, filename)
+
+
+def get_content_upload_path(instance, filename):
+    content_image = instance.content
+
+    return os.path.join('content', content_image, filename)
+
+
+def get_custom_made_upload_path(instance, filename):
+    content_image = instance.custom
+
+    return os.path.join('custom', content_image, filename)
+
+
+def get_brand_upload_path(instance, filename):
+    content_image = instance.brand
+
+    return os.path.join('brand', content_image, filename)

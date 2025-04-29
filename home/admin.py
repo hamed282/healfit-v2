@@ -1,8 +1,9 @@
 from django.contrib import admin
-from .models import (BannerSliderModel, VideoHomeModel, CommentHomeModel, ContentHomeModel, BannerShopModel, LogoModel,
+from .models import (BannerSliderModel, VideoHomeModel, CommentHomeModel, BannerShopModel, LogoModel,
                      SEOHomeModel, NewsLetterModel, ContactSubmitModel, TelegramBotModel, AboutPageModel,
                      CareerPageModel, SitemapPageModel, CustomerCarePageModel, BlogPageModel, ShopPageModel,
-                     RefundPolicyPageModel, ContactUsPageModel, WholesaleInquiryPageModel, BannerSliderMobileModel)
+                     RefundPolicyPageModel, ContactUsPageModel, WholesaleInquiryPageModel, BannerSliderMobileModel,
+                     Content1Model, Content2Model, Content3Model, FAQModel)
 
 
 class BannerSliderAdmin(admin.ModelAdmin):
@@ -17,7 +18,9 @@ admin.site.register(BannerSliderModel, BannerSliderAdmin)
 admin.site.register(BannerSliderMobileModel, BannerSliderMobileAdmin)
 admin.site.register(VideoHomeModel)
 admin.site.register(CommentHomeModel)
-admin.site.register(ContentHomeModel)
+admin.site.register(Content1Model)
+admin.site.register(Content2Model)
+admin.site.register(Content3Model)
 admin.site.register(BannerShopModel)
 admin.site.register(LogoModel)
 admin.site.register(SEOHomeModel)
@@ -33,3 +36,4 @@ admin.site.register(BlogPageModel)
 admin.site.register(ShopPageModel)
 admin.site.register(WholesaleInquiryPageModel)
 admin.site.register(AboutPageModel)
+admin.site.register(FAQModel)

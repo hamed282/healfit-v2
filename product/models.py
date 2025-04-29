@@ -6,7 +6,8 @@ from django.db.models import Max
 from django.db.models import Q
 from upload_path import (get_cover_image_upload_path, get_gallery_upload_path, get_description_image_upload_path,
                          get_size_table_upload_path, get_category_upload_path, get_subcategory_upload_path,
-                         get_gender_upload_path, get_video_product_upload_path, get_brand_logo_upload_path)
+                         get_gender_upload_path, get_video_product_upload_path, get_brand_logo_upload_path,
+                         get_custom_made_upload_path, get_brand_upload_path)
 from accounts.models import User
 from django.utils import timezone
 
@@ -722,3 +723,77 @@ class CustomMadeModel(models.Model):
 
     def __str__(self):
         return f'{self.email}'
+
+
+class CustomMadePageModel(models.Model):
+    image = models.ImageField(upload_to=get_custom_made_upload_path)
+
+    content1_text = models.TextField()
+    content1_right_image = models.ImageField(upload_to=get_custom_made_upload_path)
+    content1_mid_image = models.ImageField(upload_to=get_custom_made_upload_path)
+    content1_left_image = models.ImageField(upload_to=get_custom_made_upload_path)
+
+    content2_text = models.TextField()
+    content2_image = models.ImageField(upload_to=get_custom_made_upload_path)
+    content2_link = models.CharField(max_length=128)
+
+    content3_text = models.TextField()
+    content3_right = models.TextField()
+    content3_mid = models.TextField()
+    content3_left = models.TextField()
+
+    content4_text = models.TextField()
+    content4_image = models.ImageField(upload_to=get_custom_made_upload_path)
+    content4_right = models.TextField()
+    content4_mid = models.TextField()
+    content4_left = models.TextField()
+    content4_link_explore = models.CharField(max_length=128)
+    content4_link_place_order = models.CharField(max_length=128)
+
+    customer_testimonials = models.TextField()
+
+    def __str__(self):
+        return f'CustomMadePage'
+
+
+class CustomerTestimonialsModel(models.Model):
+    name = models.CharField(max_length=32)
+    testimonial = models.TextField
+
+    def __str__(self):
+        return f'{self.name}'
+
+
+class BrandPageModel(models.Model):
+    brand = models.ForeignKey(ProductBrandModel, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=get_brand_upload_path)
+
+    content1_title = models.CharField(max_length=64)
+    content1_image = models.ImageField(upload_to=get_brand_upload_path)
+    content1_text = models.TextField()
+
+    content2_text = models.TextField()
+    content2_right_image = models.ImageField(upload_to=get_brand_upload_path)
+    content2_right = models.TextField()
+    content2_mid_image = models.ImageField(upload_to=get_brand_upload_path)
+    content2_mid = models.TextField()
+    content2_left_image = models.ImageField(upload_to=get_brand_upload_path)
+    content2_left = models.TextField()
+
+    contact_image = models.ImageField(upload_to=get_brand_upload_path)
+    contact_text = models.TextField()
+
+    def __str__(self):
+        return f'{self.brand}'
+
+
+class BrandCartModel(models.Model):
+    brand = models.ForeignKey(ProductBrandModel, on_delete=models.CASCADE)
+    image1 = models.ImageField(upload_to=get_brand_upload_path)
+    image2 = models.ImageField(upload_to=get_brand_upload_path)
+    image3 = models.ImageField(upload_to=get_brand_upload_path)
+
+    content = models.TextField()
+
+    def __str__(self):
+        return f'{self.brand}'

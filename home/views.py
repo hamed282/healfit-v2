@@ -1,11 +1,11 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import (BannerSliderModel, CommentHomeModel, VideoHomeModel, ContentHomeModel, BannerShopModel, LogoModel,
+from .models import (BannerSliderModel, CommentHomeModel, VideoHomeModel, Content1Model, BannerShopModel, LogoModel,
                      SEOHomeModel, ContactSubmitModel, TelegramBotModel, AboutPageModel, CareerPageModel, BlogPageModel,
                      ShopPageModel, SitemapPageModel, WholesaleInquiryPageModel, CustomerCarePageModel,
                      RefundPolicyPageModel, ContactUsPageModel, BannerSliderMobileModel)
-from .serializers import (BannerSliderSerializer, CommentHomeSerializer, VideoHomeSerializer, ContentHomeSerializer,
+from .serializers import (BannerSliderSerializer, CommentHomeSerializer, VideoHomeSerializer, ContentHome1Serializer,
                           BannerShopSerializer, SEOHomeSerializer, LogoHomeSerializer, NewsLetterSerializer,
                           ContactSubmitSerializer, AboutPageSerializer, ShopPageSerializer, BlogPageSerializer,
                           CareerPageSerializer, SitemapPageSerializer, ContactUsPageSerializer,
@@ -45,8 +45,8 @@ class CommentHomeView(APIView):
 
 class HomeContentView(APIView):
     def get(self, request):
-        content = ContentHomeModel.objects.all().first()
-        ser_data = ContentHomeSerializer(instance=content)
+        content = Content1Model.objects.all().first()
+        ser_data = ContentHome1Serializer(instance=content)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 

@@ -1,8 +1,9 @@
 from rest_framework import serializers
-from .models import (BannerSliderModel, VideoHomeModel, CommentHomeModel, ContentHomeModel, BannerShopModel,
+from .models import (BannerSliderModel, VideoHomeModel, CommentHomeModel, BannerShopModel,
                      SEOHomeModel, LogoModel, NewsLetterModel, ContactSubmitModel, AboutPageModel, ShopPageModel,
                      CareerPageModel, RefundPolicyPageModel, SitemapPageModel, ContactUsPageModel, BlogPageModel,
-                     CustomerCarePageModel, WholesaleInquiryPageModel, BannerSliderMobileModel)
+                     CustomerCarePageModel, WholesaleInquiryPageModel, BannerSliderMobileModel, Content1Model,
+                     Content2Model, Content3Model)
 
 
 class BannerSliderSerializer(serializers.ModelSerializer):
@@ -29,9 +30,9 @@ class VideoHomeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ContentHomeSerializer(serializers.ModelSerializer):
+class ContentHome1Serializer(serializers.ModelSerializer):
     class Meta:
-        model = ContentHomeModel
+        model = Content1Model
         fields = '__all__'
 
 
