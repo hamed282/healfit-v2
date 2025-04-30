@@ -4,13 +4,15 @@ from rest_framework.views import APIView
 from .models import (ProductGenderModel, ProductModel, SizeProductModel, ColorProductModel, ProductVariantModel,
                      AddImageGalleryModel, PopularProductModel, ProductCategoryModel, ProductSubCategoryModel,
                      FavUserModel, CouponModel, CompressionClassModel, SideModel, CustomerTypeModel, ProductTypeModel,
-                     BodyAreaModel, ClassNumberModel, TreatmentCategoryModel, HearAboutUsModel, CustomMadePageModel)
+                     BodyAreaModel, ClassNumberModel, TreatmentCategoryModel, HearAboutUsModel, CustomMadePageModel,
+                     BrandPageModel, BrandCartModel, ProductBrandModel)
 from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVariantShopSerializer,
                           ProductColorImageSerializer, ColorSizeProductSerializer, ProductListSerializer,
                           UserFavSerializer, PopularProductSerializer, ProductAllSerializer,
                           ProductCategorySerializer, ProductSubCategorySerializer, ProductByCategorySerializer,
                           FavProductSerializer, GetClassSerializer, NewProductSerializer, CategoryBestSellerSerializer,
-                          CustomMadeSerializer, CustomMadeOptionsSerializer, CustomMadePageSerializer)
+                          CustomMadeSerializer, CustomMadeOptionsSerializer, CustomMadePageSerializer,
+                          BrandPageSerializer, BrandCartSerializer)
 from django.shortcuts import get_object_or_404
 from math import ceil
 from rest_framework import viewsets
@@ -590,7 +592,19 @@ class CustomMadePageView(APIView):
 
 
 class BrandPageView(APIView):
-    def get(self, request):
-        categories = ProductCategoryModel.objects.all().order_by('priority')
-        ser_data = CategoryBestSellerSerializer(instance=categories, many=True, context={'request': request})
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+    def get(self, request, brand_id):
+        try:
+            # Get brand page data
+            brand_page = BrandPageModel.objects.get(brand=ProductBrandModel.objects.get(id=brand_id))
+            brand_page_serializer = BrandPageSerializer(instance=brand_page)
+            
+            # Get brand cart data
+            brand_cart = BrandCartModel.objects.filter(brand=ProductBrandModel.objects.get(id=brand_id))
+            brand_cart_serializer = BrandCartSerializer(instance=brand_cart, many=True)
+            
+            return Response({
+                'brand_page': brand_page_serializer.data,
+                'brand_cart': brand_cart_serializer.data
+            }, status=status.HTTP_200_OK)
+        except (BrandPageModel.DoesNotExist, BrandCartModel.DoesNotExist):
+            return Response({'message': 'Brand not found'}, status=status.HTTP_404_NOT_FOUND)

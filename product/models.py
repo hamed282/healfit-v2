@@ -7,7 +7,7 @@ from django.db.models import Q
 from upload_path import (get_cover_image_upload_path, get_gallery_upload_path, get_description_image_upload_path,
                          get_size_table_upload_path, get_category_upload_path, get_subcategory_upload_path,
                          get_gender_upload_path, get_video_product_upload_path, get_brand_logo_upload_path,
-                         get_custom_made_upload_path, get_brand_upload_path)
+                         get_custom_made_upload_path, get_brand_upload_path, get_brand_cart_upload_path)
 from accounts.models import User
 from django.utils import timezone
 
@@ -768,6 +768,7 @@ class CustomerTestimonialsModel(models.Model):
 class BrandPageModel(models.Model):
     brand = models.ForeignKey(ProductBrandModel, on_delete=models.CASCADE)
     image = models.ImageField(upload_to=get_brand_upload_path)
+    image_alt = models.CharField(max_length=64)
 
     content1_title = models.CharField(max_length=64)
     content1_image = models.ImageField(upload_to=get_brand_upload_path)
@@ -790,9 +791,12 @@ class BrandPageModel(models.Model):
 
 class BrandCartModel(models.Model):
     brand = models.ForeignKey(ProductBrandModel, on_delete=models.CASCADE)
-    image1 = models.ImageField(upload_to=get_brand_upload_path)
-    image2 = models.ImageField(upload_to=get_brand_upload_path)
-    image3 = models.ImageField(upload_to=get_brand_upload_path)
+
+    image1 = models.ImageField(upload_to=get_brand_cart_upload_path)
+    image1_alt = models.CharField(max_length=64)
+
+    image2 = models.ImageField(upload_to=get_brand_cart_upload_path)
+    image3 = models.ImageField(upload_to=get_brand_cart_upload_path)
 
     content = models.TextField()
 

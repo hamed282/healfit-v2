@@ -11,7 +11,7 @@ urlpatterns = [
     path('user/fav/', views.UserFavView.as_view(), name='fav_user'),
     path('custom_made/', views.CustomMadeView.as_view(), name='custom_made'),
     path('custom_made_page/', views.CustomMadePageView.as_view(), name='custom_made_page'),
-    path('brand_page/', views.BrandPageView.as_view(), name='brand_page'),
+    path('brand_page/<int:brand_id>/', views.BrandPageView.as_view(), name='brand_page'),
 
     # Category
     path('categories/', views.CategoryListView.as_view(), name='category_list'),
