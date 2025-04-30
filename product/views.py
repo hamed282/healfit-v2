@@ -184,12 +184,13 @@ class ProductAllView(APIView):
         is_available = request.query_params.get('is_available', None)
         side = request.query_params.get('side', None)
         compression_class = request.query_params.get('compression_class', None)
+        brand = request.query_params.get('brand', None)
         
         # دریافت پارامتر مرتب‌سازی
         sort_by = request.query_params.get('sort_by', None)
         
         # بررسی وجود فیلتر
-        has_filters = any([color, size, gender, category, subcategory, is_available, side, compression_class])
+        has_filters = any([color, size, gender, category, subcategory, is_available, side, compression_class, brand])
         
         if has_filters:
             # فیلتر کردن واریانت‌ها
@@ -218,6 +219,8 @@ class ProductAllView(APIView):
                 queryset = queryset.filter(cat_product__category__category__in=category.split(','))
             if subcategory:
                 queryset = queryset.filter(sub_product__subcategory__subcategory__in=subcategory.split(','))
+            if brand:
+                queryset = queryset.filter(brand__brand=brand)
         else:
             # اگر هیچ فیلتری وجود نداشت، فقط محصولات فعال را برگردان
             queryset = ProductModel.objects.filter(is_active=True)
