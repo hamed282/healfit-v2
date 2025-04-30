@@ -428,94 +428,104 @@ class BlogPageModel(models.Model):
 
 class Content1Model(models.Model):
     objects = None
+    title = models.CharField(max_length=64)
+    description = models.TextField()
     image = models.ImageField(upload_to=get_content_upload_path)
-    content = models.TextField()
-    
-    right_content_icon = models.ImageField(upload_to=get_content_upload_path)
-    right_content_title = models.CharField(max_length=64)
-    right_content = models.TextField()
-    
-    left_content_icon = models.ImageField(upload_to=get_content_upload_path)
-    left_content_title = models.CharField(max_length=64)
-    left_content = models.TextField()
-    
+    image_alt = models.CharField(max_length=64)
     explore_link = models.CharField(max_length=128)
-    place_order_link = models.CharField(max_length=128)
+    priority = models.IntegerField(blank=True, null=True)
 
     class Meta:
         verbose_name = 'Content 1'
         verbose_name_plural = 'Content 1'
 
-    def __str__(self):
-        return f'Content 1'
+    def save(self, *args, **kwargs):
+        if self.priority is None:
+            last_priority = Content1Model.objects.count()
+            self.priority = last_priority + 1
 
-    def clean(self):
-        if not self.pk and Content1Model.objects.exists():
-            # This below line will render error by breaking page, you will see
-            raise ValidationError(
-                "There can be only one Video you can not add another"
-            )
+        super(Content1Model, self).save(*args, **kwargs)
+
+        all_content = Content1Model.objects.all().order_by('priority')
+        for index, content in enumerate(all_content, start=1):
+            if content.priority != index:
+                content.priority = index
+                content.save(update_fields=['priority'])
+
+    def __str__(self):
+        return f'{self.title}'
 
 
 class Content2Model(models.Model):
     objects = None
+    title = models.CharField(max_length=64)
+    description = models.TextField()
     image = models.ImageField(upload_to=get_content_upload_path)
-    content = models.TextField()
-
-    right_content = models.TextField()
-    mid_content = models.TextField()
-    left_content = models.TextField()
-
-    learn_more_link = models.CharField(max_length=128)
-    custom_made_link = models.CharField(max_length=128)
+    image_alt = models.CharField(max_length=64)
+    explore_link = models.CharField(max_length=128)
+    priority = models.IntegerField(blank=True, null=True)
 
     class Meta:
         verbose_name = 'Content 2'
         verbose_name_plural = 'Content 2'
 
-    def __str__(self):
-        return f'Content 2'
+    def save(self, *args, **kwargs):
+        if self.priority is None:
+            last_priority = Content2Model.objects.count()
+            self.priority = last_priority + 1
 
-    def clean(self):
-        if not self.pk and Content2Model.objects.exists():
-            # This below line will render error by breaking page, you will see
-            raise ValidationError(
-                "There can be only one Video you can not add another"
-            )
+        super(Content2Model, self).save(*args, **kwargs)
+
+        all_content = Content2Model.objects.all().order_by('priority')
+        for index, content in enumerate(all_content, start=1):
+            if content.priority != index:
+                content.priority = index
+                content.save(update_fields=['priority'])
+
+    def __str__(self):
+        return f'{self.title}'
 
 
 class Content3Model(models.Model):
     objects = None
+    title = models.CharField(max_length=64)
+    description = models.TextField()
     right_image = models.ImageField(upload_to=get_content_upload_path)
-    mid_image = models.ImageField(upload_to=get_content_upload_path)
-    left_image = models.ImageField(upload_to=get_content_upload_path)
-
-    content = models.TextField()
-
-    right_content_icon = models.ImageField(upload_to=get_content_upload_path)
+    right_image_alt = models.CharField(max_length=64)
     right_content_title = models.CharField(max_length=64)
     right_content = models.TextField()
-
-    left_content_icon = models.ImageField(upload_to=get_content_upload_path)
+    right_content_icon = models.ImageField(upload_to=get_content_upload_path)
+    right_content_icon_alt = models.CharField(max_length=64)
+    mid_image = models.ImageField(upload_to=get_content_upload_path)
+    mid_image_alt = models.CharField(max_length=64)
+    left_image = models.ImageField(upload_to=get_content_upload_path)
+    left_image_alt = models.CharField(max_length=64)
     left_content_title = models.CharField(max_length=64)
     left_content = models.TextField()
-
-    discover_link = models.CharField(max_length=128)
+    left_content_icon = models.ImageField(upload_to=get_content_upload_path)
+    left_content_icon_alt = models.CharField(max_length=64)
     request_link = models.CharField(max_length=128)
+    priority = models.IntegerField(blank=True, null=True)
 
     class Meta:
         verbose_name = 'Content 3'
         verbose_name_plural = 'Content 3'
 
-    def __str__(self):
-        return f'Content 3'
+    def save(self, *args, **kwargs):
+        if self.priority is None:
+            last_priority = Content3Model.objects.count()
+            self.priority = last_priority + 1
 
-    def clean(self):
-        if not self.pk and Content3Model.objects.exists():
-            # This below line will render error by breaking page, you will see
-            raise ValidationError(
-                "There can be only one Video you can not add another"
-            )
+        super(Content3Model, self).save(*args, **kwargs)
+
+        all_content = Content3Model.objects.all().order_by('priority')
+        for index, content in enumerate(all_content, start=1):
+            if content.priority != index:
+                content.priority = index
+                content.save(update_fields=['priority'])
+
+    def __str__(self):
+        return f'{self.title}'
 
 
 class FAQModel(models.Model):

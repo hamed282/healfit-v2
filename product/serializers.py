@@ -75,13 +75,27 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_category(self, obj):
         categories = obj.cat_product.all()
-        categories = [category.category.category for category in categories]
-        return categories
+        categories_data = []
+        for category in categories:
+            cat = category.category
+            categories_data.append({
+                'slug': cat.slug,
+                'category': cat.category,
+                'category_title': cat.category_title
+            })
+        return categories_data
 
     def get_subcategory(self, obj):
         subcategories = obj.sub_product.all()
-        subcategories = [subcategory.subcategory.subcategory for subcategory in subcategories]
-        return subcategories
+        subcategories_data = []
+        for subcategory in subcategories:
+            sub = subcategory.subcategory
+            subcategories_data.append({
+                'slug': sub.slug,
+                'subcategory': sub.subcategory,
+                'subcategory_title': sub.subcategory_title
+            })
+        return subcategories_data
 
     def get_colors(self, obj):
         product = ProductVariantModel.objects.filter(product=obj)
@@ -283,13 +297,27 @@ class NewProductSerializer(serializers.ModelSerializer):
 
     def get_category(self, obj):
         categories = obj.cat_product.all()
-        categories = [category.category.category for category in categories]
-        return categories
+        categories_data = []
+        for category in categories:
+            cat = category.category
+            categories_data.append({
+                'slug': cat.slug,
+                'category': cat.category,
+                'category_title': cat.category_title
+            })
+        return categories_data
 
     def get_subcategory(self, obj):
         subcategories = obj.sub_product.all()
-        subcategories = [subcategory.subcategory.subcategory for subcategory in subcategories]
-        return subcategories
+        subcategories_data = []
+        for subcategory in subcategories:
+            sub = subcategory.subcategory
+            subcategories_data.append({
+                'slug': sub.slug,
+                'subcategory': sub.subcategory,
+                'subcategory_title': sub.subcategory_title
+            })
+        return subcategories_data
 
 
 class ProductAdminSerializer(serializers.ModelSerializer):
@@ -315,13 +343,27 @@ class ProductAdminSerializer(serializers.ModelSerializer):
 
     def get_category(self, obj):
         categories = obj.cat_product.all()
-        categories = [category.category.category for category in categories]
-        return categories
+        categories_data = []
+        for category in categories:
+            cat = category.category
+            categories_data.append({
+                'slug': cat.slug,
+                'category': cat.category,
+                'category_title': cat.category_title
+            })
+        return categories_data
 
     def get_subcategory(self, obj):
         subcategories = obj.sub_product.all()
-        subcategories = [subcategory.subcategory.subcategory for subcategory in subcategories]
-        return subcategories
+        subcategories_data = []
+        for subcategory in subcategories:
+            sub = subcategory.subcategory
+            subcategories_data.append({
+                'slug': sub.slug,
+                'subcategory': sub.subcategory,
+                'subcategory_title': sub.subcategory_title
+            })
+        return subcategories_data
 
     def get_colors(self, obj):
         product = ProductVariantModel.objects.filter(product=obj)
@@ -399,15 +441,27 @@ class ProductListSerializer(serializers.ModelSerializer):
 
     def get_category(self, obj):
         categories = obj.category_product.all()
-        categories = [category.category.category for category in categories]
-
-        return categories
+        categories_data = []
+        for category in categories:
+            cat = category.category
+            categories_data.append({
+                'slug': cat.slug,
+                'category': cat.category,
+                'category_title': cat.category_title
+            })
+        return categories_data
 
     def get_subcategory(self, obj):
         subcategories = obj.subcategory_product.all()
-        subcategories = [subcategory.subcategory.subcategory for subcategory in subcategories]
-
-        return subcategories
+        subcategories_data = []
+        for subcategory in subcategories:
+            sub = subcategory.subcategory
+            subcategories_data.append({
+                'slug': sub.slug,
+                'subcategory': sub.subcategory,
+                'subcategory_title': sub.subcategory_title
+            })
+        return subcategories_data
 
     def get_off_price(self, obj):
         price = int(obj.price)
@@ -442,15 +496,27 @@ class ProductAllSerializer(serializers.ModelSerializer):
 
     def get_category(self, obj):
         categories = obj.cat_product.all()
-        categories = [category.category.category for category in categories]
-
-        return categories
+        categories_data = []
+        for category in categories:
+            cat = category.category
+            categories_data.append({
+                'slug': cat.slug,
+                'category': cat.category,
+                'category_title': cat.category_title
+            })
+        return categories_data
 
     def get_subcategory(self, obj):
         subcategories = obj.sub_product.all()
-        subcategories = [subcategory.subcategory.subcategory for subcategory in subcategories]
-
-        return subcategories
+        subcategories_data = []
+        for subcategory in subcategories:
+            sub = subcategory.subcategory
+            subcategories_data.append({
+                'slug': sub.slug,
+                'subcategory': sub.subcategory,
+                'subcategory_title': sub.subcategory_title
+            })
+        return subcategories_data
 
     def get_off_price(self, obj):
         price = float(obj.price)

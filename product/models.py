@@ -203,6 +203,7 @@ class ProductCategoryModel(models.Model):
     priority = models.IntegerField(blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True)
     image = models.FileField(upload_to=get_category_upload_path)
+    image_alt = models.CharField(max_length=64)
 
     # SEO Fields
     follow = models.BooleanField(default=False)
@@ -257,6 +258,7 @@ class ProductCategoryModel(models.Model):
 class ProductBrandModel(models.Model):
     brand = models.CharField(max_length=32)
     brand_logo = models.ImageField(upload_to=get_brand_logo_upload_path, null=True, blank=True)
+    brand_logo_alt = models.CharField(max_length=64, null=True, blank=True)
     slug = models.SlugField(unique=True)
 
     def __str__(self):
@@ -271,6 +273,7 @@ class ProductSubCategoryModel(models.Model):
     short_description = models.TextField()
     description = models.TextField()
     image = models.FileField(upload_to=get_subcategory_upload_path)
+    image_alt = models.CharField(max_length=64)
     priority = models.IntegerField(blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True)
 
@@ -350,6 +353,7 @@ class ProductGenderModel(models.Model):
     description = models.TextField()
     slug = models.SlugField(max_length=100, unique=True)
     image = models.FileField(upload_to=get_gender_upload_path)
+    image_alt = models.CharField(max_length=64)
 
     class Meta:
         verbose_name = 'Product Gender'
@@ -565,6 +569,7 @@ class AddImageGalleryModel(models.Model):
     product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='image_gallery_product')
     color = models.ForeignKey('ColorProductModel', on_delete=models.CASCADE)
     image = models.ImageField(upload_to=get_gallery_upload_path, blank=True, null=True)
+    image_alt = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Product Image Gallery'
@@ -734,11 +739,15 @@ class CustomMadePageModel(models.Model):
 
     content1_text = models.TextField()
     content1_right_image = models.ImageField(upload_to=get_custom_made_upload_path)
+    content1_right_image_alt = models.CharField(max_length=64)
     content1_mid_image = models.ImageField(upload_to=get_custom_made_upload_path)
+    content1_mid_image_alt = models.CharField(max_length=64)
     content1_left_image = models.ImageField(upload_to=get_custom_made_upload_path)
+    content1_left_image_alt = models.CharField(max_length=64)
 
     content2_text = models.TextField()
     content2_image = models.ImageField(upload_to=get_custom_made_upload_path)
+    content2_image_alt = models.CharField(max_length=64)
     content2_link = models.CharField(max_length=128)
 
     content3_text = models.TextField()
@@ -748,6 +757,7 @@ class CustomMadePageModel(models.Model):
 
     content4_text = models.TextField()
     content4_image = models.ImageField(upload_to=get_custom_made_upload_path)
+    content4_image_alt = models.CharField(max_length=64)
     content4_right = models.TextField()
     content4_mid = models.TextField()
     content4_left = models.TextField()
@@ -776,17 +786,22 @@ class BrandPageModel(models.Model):
 
     content1_title = models.CharField(max_length=64)
     content1_image = models.ImageField(upload_to=get_brand_upload_path)
+    content1_image_alt = models.CharField(max_length=64)
     content1_text = models.TextField()
 
     content2_text = models.TextField()
     content2_right_image = models.ImageField(upload_to=get_brand_upload_path)
+    content2_right_image_alt = models.CharField(max_length=64)
     content2_right = models.TextField()
     content2_mid_image = models.ImageField(upload_to=get_brand_upload_path)
+    content2_mid_image_alt = models.CharField(max_length=64)
     content2_mid = models.TextField()
     content2_left_image = models.ImageField(upload_to=get_brand_upload_path)
+    content2_left_image_alt = models.CharField(max_length=64)
     content2_left = models.TextField()
 
     contact_image = models.ImageField(upload_to=get_brand_upload_path)
+    contact_image_alt = models.CharField(max_length=64)
     contact_text = models.TextField()
 
     def __str__(self):
