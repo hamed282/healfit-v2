@@ -728,7 +728,8 @@ class CustomMadeModel(models.Model):
 
 
 class CustomMadePageModel(models.Model):
-    image = models.ImageField(upload_to=get_custom_made_upload_path)
+    image_desktop = models.ImageField(upload_to=get_custom_made_upload_path)
+    image_mobile = models.ImageField(upload_to=get_custom_made_upload_path)
     image_alt = models.CharField(max_length=64)
 
     content1_text = models.TextField()
@@ -769,7 +770,8 @@ class CustomerTestimonialsModel(models.Model):
 
 class BrandPageModel(models.Model):
     brand = models.ForeignKey(ProductBrandModel, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to=get_brand_upload_path)
+    image_desktop = models.ImageField(upload_to=get_brand_upload_path)
+    image_mobile = models.ImageField(upload_to=get_brand_upload_path)
     image_alt = models.CharField(max_length=64)
 
     content1_title = models.CharField(max_length=64)
