@@ -592,14 +592,14 @@ class CustomMadePageView(APIView):
 
 
 class BrandPageView(APIView):
-    def get(self, request, brand_id):
+    def get(self, request, brand_slug):
         try:
             # Get brand page data
-            brand_page = BrandPageModel.objects.get(brand=ProductBrandModel.objects.get(id=brand_id))
+            brand_page = BrandPageModel.objects.get(brand=ProductBrandModel.objects.get(slug=brand_slug))
             brand_page_serializer = BrandPageSerializer(instance=brand_page)
             
             # Get brand cart data
-            brand_cart = BrandCartModel.objects.filter(brand=ProductBrandModel.objects.get(id=brand_id))
+            brand_cart = BrandCartModel.objects.filter(brand=ProductBrandModel.objects.get(slug=brand_slug))
             brand_cart_serializer = BrandCartSerializer(instance=brand_cart, many=True)
             
             return Response({

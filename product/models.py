@@ -257,6 +257,7 @@ class ProductCategoryModel(models.Model):
 class ProductBrandModel(models.Model):
     brand = models.CharField(max_length=32)
     brand_logo = models.ImageField(upload_to=get_brand_logo_upload_path, null=True, blank=True)
+    slug = models.SlugField(unique=True)
 
     def __str__(self):
         return f'{self.brand}'
@@ -708,6 +709,7 @@ class HearAboutUsModel(models.Model):
 
 class CustomMadeModel(models.Model):
     customer_type = models.ForeignKey(CustomerTypeModel, on_delete=models.CASCADE)
+    other_customer_type = models.CharField(max_length=64)
     clinic_name = models.CharField(max_length=32)
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
