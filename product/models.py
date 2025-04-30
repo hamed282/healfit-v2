@@ -709,7 +709,7 @@ class HearAboutUsModel(models.Model):
 
 class CustomMadeModel(models.Model):
     customer_type = models.ForeignKey(CustomerTypeModel, on_delete=models.CASCADE)
-    other_customer_type = models.CharField(max_length=64)
+    other_customer_type = models.CharField(max_length=64, blank=True, null=True)
     clinic_name = models.CharField(max_length=32)
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
