@@ -793,14 +793,20 @@ class BrandPageModel(models.Model):
 
 class BrandCartModel(models.Model):
     brand = models.ForeignKey(ProductBrandModel, on_delete=models.CASCADE)
-
-    image1 = models.ImageField(upload_to=get_brand_cart_upload_path)
-    image1_alt = models.CharField(max_length=64)
-
-    image2 = models.ImageField(upload_to=get_brand_cart_upload_path)
-    image3 = models.ImageField(upload_to=get_brand_cart_upload_path)
-
     content = models.TextField()
 
     def __str__(self):
         return f'{self.brand}'
+
+
+class BrandCartImageModel(models.Model):
+    brand_cart = models.ForeignKey(BrandCartModel, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to=get_brand_cart_upload_path)
+    image_alt = models.CharField(max_length=64)
+    priority = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['priority']
+
+    def __str__(self):
+        return f'{self.brand_cart.brand} - Image {self.priority}'

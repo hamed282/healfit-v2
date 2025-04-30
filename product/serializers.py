@@ -3,7 +3,8 @@ from .models import (ProductGenderModel, ProductModel, ProductVariantModel, AddI
                      ProductCategoryModel, ProductSubCategoryModel, AddProductTagModel, AddSubCategoryModel,
                      ProductTagModel, FavUserModel, CouponModel, ProductBrandModel, CompressionClassModel, SideModel,
                      CustomMadeModel, CustomerTypeModel, ProductTypeModel, BodyAreaModel, ClassNumberModel,
-                     TreatmentCategoryModel, HearAboutUsModel, CustomMadePageModel, BrandPageModel, BrandCartModel)
+                     TreatmentCategoryModel, HearAboutUsModel, CustomMadePageModel, BrandPageModel, BrandCartModel,
+                     BrandCartImageModel)
 from django.shortcuts import get_object_or_404
 import re
 
@@ -751,8 +752,15 @@ class BrandPageSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class BrandCartImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BrandCartImageModel
+        fields = ['id', 'image', 'image_alt', 'priority']
+
+
 class BrandCartSerializer(serializers.ModelSerializer):
     brand = ProductBrandSerializer()
+    images = BrandCartImageSerializer(many=True, read_only=True)
     
     class Meta:
         model = BrandCartModel

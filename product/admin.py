@@ -5,7 +5,7 @@ from .models import (ProductCategoryModel, ProductModel, PopularProductModel, Si
                      FavUserModel, CouponModel, ProductCouponModel, CompressionClassModel, SideModel, ProductBrandModel,
                      CustomMadeModel, TreatmentCategoryModel, ProductTypeModel, BodyAreaModel, ClassNumberModel,
                      CustomerTypeModel, HearAboutUsModel, CustomMadePageModel, CustomerTestimonialsModel,
-                     BrandPageModel, BrandCartModel)
+                     BrandPageModel, BrandCartModel, BrandCartImageModel)
 from django.utils.html import format_html
 
 
@@ -91,6 +91,25 @@ class CouponAdmin(admin.ModelAdmin):
     inlines = (CouponInline,)
 
 
+class BrandCartImageInline(admin.TabularInline):
+    model = BrandCartImageModel
+    extra = 1
+    fields = ['image', 'image_alt', 'priority']
+    readonly_fields = ['image_tag']
+
+    def image_tag(self, obj):
+        if obj.image and hasattr(obj.image, 'url'):
+            return format_html('<img src="{}" style="max-width:200px; max-height:200px"/>'.format(obj.image.url))
+        else:
+            return "No Image Available"
+    image_tag.short_description = 'Preview'
+
+
+class BrandCartAdmin(admin.ModelAdmin):
+    list_display = ['brand', 'content']
+    inlines = [BrandCartImageInline]
+
+
 admin.site.register(ProductCategoryModel, ProductCategoryAdmin)
 admin.site.register(ProductGenderModel, ProductGenderAdmin)
 admin.site.register(ProductSubCategoryModel, ProductSubCategoryAdmin)
@@ -118,6 +137,7 @@ admin.site.register(ProductBrandModel)
 admin.site.register(CustomMadePageModel)
 admin.site.register(CustomerTestimonialsModel)
 admin.site.register(BrandPageModel)
-admin.site.register(BrandCartModel)
+admin.site.register(BrandCartModel, BrandCartAdmin)
+admin.site.register(BrandCartImageModel)
 admin.site.register(FavUserModel, FavUserAdmin)
 admin.site.register(CouponModel, CouponAdmin)
