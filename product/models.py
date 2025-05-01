@@ -259,7 +259,7 @@ class ProductBrandModel(models.Model):
     brand = models.CharField(max_length=32)
     brand_logo = models.ImageField(upload_to=get_brand_logo_upload_path, null=True, blank=True)
     brand_logo_alt = models.CharField(max_length=64, null=True, blank=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField()
 
     def __str__(self):
         return f'{self.brand}'
