@@ -8,10 +8,11 @@ from .models import OrderModel, OrderItemModel, OrderStatusModel, ShippingModel,
 from product.models import ProductVariantModel, CouponModel
 from order.models import UserProductModel
 from accounts.models import AddressModel
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from .serializers import OrderUserSerializer
 from services.zoho_services import zoho_invoice_quantity_update
 from services.send_order_message import send_order_email, send_order_telegram
+from .tabby_payment import TabbyPayment
 
 
 class OrderPayView(APIView):
@@ -435,3 +436,51 @@ class ShippingView(APIView):
                                   'total_amount_without_discount': int(amount_total) + 300,
                                   'total_with_shipping': int(amount) + 300
                                   })
+
+
+class TabbyPaymentView(APIView):
+    def post(self, request, order_id):
+        try:
+            tabby = TabbyPayment(order_id)
+            payment_session = tabby.create_payment_session()
+            return Response({
+                'status': 'success',
+                'payment_url': payment_session['configuration']['available_products'][0]['web_url']
+            })
+        except Exception as e:
+            return Response({
+                'status': 'error',
+                'message': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TabbyPaymentSuccessView(APIView):
+    def get(self, request):
+        payment_id = request.GET.get('payment_id')
+        order_id = request.GET.get('order_id')
+        
+        try:
+            tabby = TabbyPayment(order_id)
+            if tabby.verify_payment(payment_id):
+                return redirect(f'{settings.FRONTEND_URL}/payment/success/')
+            return redirect(f'{settings.FRONTEND_URL}/payment/failure/')
+        except Exception as e:
+            return redirect(f'{settings.FRONTEND_URL}/payment/failure/')
+
+
+class TabbyPaymentFailureView(APIView):
+    def get(self, request):
+        return redirect(f'{settings.FRONTEND_URL}/payment/failure/')
+
+
+class TabbyPaymentCancelView(APIView):
+    def get(self, request):
+        payment_id = request.GET.get('payment_id')
+        order_id = request.GET.get('order_id')
+        
+        try:
+            tabby = TabbyPayment(order_id)
+            tabby.cancel_payment(payment_id)
+            return redirect(f'{settings.FRONTEND_URL}/payment/cancel/')
+        except Exception as e:
+            return redirect(f'{settings.FRONTEND_URL}/payment/cancel/')
