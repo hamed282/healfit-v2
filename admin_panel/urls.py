@@ -80,6 +80,9 @@ urlpatterns = [
     path('newsletter/', views.NewsLetterView.as_view(), name='newsletter'),
     path('newsletter/<int:newsletter_id>/', views.NewsLetterView.as_view(), name='newsletter'),
 
+    path('faq/', views.FAQView.as_view(), name='faq'),
+    path('faq/<int:faq_id>/', views.FAQView.as_view(), name='faq_detail'),
+
     # Category
     path('product/category/', views.ProductCategoryView.as_view(), name='product_category'),
     path('product/category/item/', views.ProductCategoryItemView.as_view(), name='category_item'),

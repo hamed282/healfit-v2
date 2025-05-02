@@ -26,14 +26,14 @@ from home.models import (CommentHomeModel, BannerSliderModel, VideoHomeModel, Ba
                          SEOHomeModel, LogoModel, NewsLetterModel, ContactSubmitModel, AboutPageModel, CareerPageModel,
                          BlogPageModel, ShopPageModel, SitemapPageModel, WholesaleInquiryPageModel,
                          CustomerCarePageModel, RefundPolicyPageModel, ContactUsPageModel, BannerSliderMobileModel,
-                         Content1Model, Content2Model, Content3Model)
+                         Content1Model, Content2Model, Content3Model, FAQModel)
 from home.serializers import (CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer,
                               BannerShopSerializer, LogoHomeSerializer, SEOHomeSerializer, NewsLetterSerializer,
                               ContactSubmitSerializer, AboutPageSerializer, ShopPageSerializer, BlogPageSerializer,
                               CareerPageSerializer, SitemapPageSerializer, ContactUsPageSerializer,
                               RefundPolicyPageSerializer, WholesaleInquiryPageSerializer, CustomerCarePageSerializer,
                               BannerSliderMobileSerializer, ContentHome1Serializer, ContentHome2Serializer,
-                              ContentHome3Serializer)
+                              ContentHome3Serializer, FAQSerializer)
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel, CouponModel, CustomMadeModel, CustomerTypeModel,
@@ -2544,6 +2544,47 @@ class ManuallyUpdateView(APIView):
         return Response({'message': 'Products updated successfully'}, status=status.HTTP_200_OK)
         # except Exception as e:
         #     return Response({'message': f'Error updating products: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class FAQView(APIView):
+    def get(self, request, faq_id=None):
+        if faq_id:
+            try:
+                faq = FAQModel.objects.get(id=faq_id)
+                serializer = FAQSerializer(faq)
+                return Response(serializer.data)
+            except FAQModel.DoesNotExist:
+                return Response({'error': 'FAQ not found'}, status=404)
+        
+        faqs = FAQModel.objects.all().order_by('priority')
+        serializer = FAQSerializer(faqs, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = FAQSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def put(self, request, faq_id):
+        try:
+            faq = FAQModel.objects.get(id=faq_id)
+            serializer = FAQSerializer(faq, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=400)
+        except FAQModel.DoesNotExist:
+            return Response({'error': 'FAQ not found'}, status=404)
+
+    def delete(self, request, faq_id):
+        try:
+            faq = FAQModel.objects.get(id=faq_id)
+            faq.delete()
+            return Response(status=204)
+        except FAQModel.DoesNotExist:
+            return Response({'error': 'FAQ not found'}, status=404)
 
 
 
