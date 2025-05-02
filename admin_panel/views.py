@@ -11,7 +11,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           ShippingCountrySerializer, ShippingSerializer, CityShippingSerializer, BlogAuthorSerializer,
                           CustomerTypeSerializer, ProductTypeSerializer, BodyAreaSerializer, HearAboutUsSerializer,
                           TreatmentCategorySerializer, ClassNumberSerializer, CompressionClassSerializer,
-                          SideSerializer, BrandSerializer, ProductSerializer)
+                          SideSerializer, BrandSerializer, ProductSerializer, BrandPageSerializer, BrandCartSerializer)
 from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
@@ -38,7 +38,8 @@ from product.models import (ProductCategoryModel, ProductSubCategoryModel, Extra
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel, CouponModel, CustomMadeModel, CustomerTypeModel,
                             ProductTypeModel, BodyAreaModel, HearAboutUsModel, TreatmentCategoryModel, ClassNumberModel,
-                            CompressionClassModel, SideModel, ProductBrandModel, CustomMadePageModel)
+                            CompressionClassModel, SideModel, ProductBrandModel, CustomMadePageModel, BrandPageModel,
+                            BrandCartModel)
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer,
                                  AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer,
                                  CouponSerializer, CouponCreateSerializer, CustomMadeSerializer,
@@ -2627,6 +2628,108 @@ class CustomMadePageView(APIView):
             return Response(status=204)
         except CustomMadePageModel.DoesNotExist:
             return Response({"error": "صفحه سفارشی یافت نشد"}, status=404)
+
+
+class BrandPageView(APIView):
+    def get(self, request, brand_id=None):
+        if brand_id:
+            try:
+                brand_page = BrandPageModel.objects.get(brand_id=brand_id)
+                brand_cart = BrandCartModel.objects.filter(brand_id=brand_id)
+                
+                brand_page_serializer = BrandPageSerializer(brand_page)
+                brand_cart_serializer = BrandCartSerializer(brand_cart, many=True)
+                
+                response_data = {
+                    "brand_page": brand_page_serializer.data,
+                    "brand_cart": brand_cart_serializer.data
+                }
+                return Response(response_data)
+            except BrandPageModel.DoesNotExist:
+                return Response({"error": "not found"}, status=404)
+        
+        brand_pages = BrandPageModel.objects.all()
+        brand_carts = BrandCartModel.objects.all()
+        
+        brand_page_serializer = BrandPageSerializer(brand_pages, many=True)
+        brand_cart_serializer = BrandCartSerializer(brand_carts, many=True)
+        
+        response_data = {
+            "brand_pages": brand_page_serializer.data,
+            "brand_carts": brand_cart_serializer.data
+        }
+        return Response(response_data)
+
+    def post(self, request):
+        # Handle BrandPage data
+        brand_page_data = request.data.get('brand_page', {})
+        brand_page_serializer = BrandPageSerializer(data=brand_page_data)
+        
+        # Handle BrandCart data
+        brand_cart_data = request.data.get('brand_cart', {})
+        brand_cart_serializer = BrandCartSerializer(data=brand_cart_data)
+        
+        if brand_page_serializer.is_valid() and brand_cart_serializer.is_valid():
+            brand_page = brand_page_serializer.save()
+            brand_cart = brand_cart_serializer.save()
+            
+            response_data = {
+                "brand_page": BrandPageSerializer(brand_page).data,
+                "brand_cart": BrandCartSerializer(brand_cart).data
+            }
+            return Response(response_data, status=201)
+        
+        errors = {}
+        if not brand_page_serializer.is_valid():
+            errors['brand_page'] = brand_page_serializer.errors
+        if not brand_cart_serializer.is_valid():
+            errors['brand_cart'] = brand_cart_serializer.errors
+        return Response(errors, status=400)
+
+    def put(self, request, brand_id):
+        try:
+            brand_page = BrandPageModel.objects.get(brand_id=brand_id)
+            brand_cart = BrandCartModel.objects.get(brand_id=brand_id)
+            
+            # Update BrandPage
+            brand_page_data = request.data.get('brand_page', {})
+            brand_page_serializer = BrandPageSerializer(brand_page, data=brand_page_data)
+            
+            # Update BrandCart
+            brand_cart_data = request.data.get('brand_cart', {})
+            brand_cart_serializer = BrandCartSerializer(brand_cart, data=brand_cart_data)
+            
+            if brand_page_serializer.is_valid() and brand_cart_serializer.is_valid():
+                updated_brand_page = brand_page_serializer.save()
+                updated_brand_cart = brand_cart_serializer.save()
+                
+                response_data = {
+                    "brand_page": BrandPageSerializer(updated_brand_page).data,
+                    "brand_cart": BrandCartSerializer(updated_brand_cart).data
+                }
+                return Response(response_data)
+            
+            errors = {}
+            if not brand_page_serializer.is_valid():
+                errors['brand_page'] = brand_page_serializer.errors
+            if not brand_cart_serializer.is_valid():
+                errors['brand_cart'] = brand_cart_serializer.errors
+            return Response(errors, status=400)
+            
+        except (BrandPageModel.DoesNotExist, BrandCartModel.DoesNotExist):
+            return Response({"error": "not found"}, status=404)
+
+    def delete(self, request, brand_id):
+        try:
+            brand_page = BrandPageModel.objects.get(brand_id=brand_id)
+            brand_cart = BrandCartModel.objects.get(brand_id=brand_id)
+            
+            brand_page.delete()
+            brand_cart.delete()
+            
+            return Response(status=204)
+        except (BrandPageModel.DoesNotExist, BrandCartModel.DoesNotExist):
+            return Response({"error": "not found"}, status=404)
 
 
 

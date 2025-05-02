@@ -226,4 +226,7 @@ urlpatterns = [
 
     path('pages/custom_made/', views.CustomMadePageView.as_view(), name='custom_made_page'),
     path('pages/custom_made/<int:page_id>/', views.CustomMadePageView.as_view(), name='custom_made_page_detail'),
+
+    path('pages/brand/', views.BrandPageView.as_view(), name='brand_page'),
+    path('pages/brand/<int:brand_id>/', views.BrandPageView.as_view(), name='brand_page_detail'),
 ]
