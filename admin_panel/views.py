@@ -39,11 +39,12 @@ from product.models import (ProductCategoryModel, ProductSubCategoryModel, Extra
                             ProductVariantModel, AddImageGalleryModel, CouponModel, CustomMadeModel, CustomerTypeModel,
                             ProductTypeModel, BodyAreaModel, HearAboutUsModel, TreatmentCategoryModel, ClassNumberModel,
                             CompressionClassModel, SideModel, ProductBrandModel, CustomMadePageModel, BrandPageModel,
-                            BrandCartModel)
+                            BrandCartModel, BrandCartImageModel)
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer,
                                  AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer,
                                  CouponSerializer, CouponCreateSerializer, CustomMadeSerializer,
-                                 CustomMadePageSerializer, BrandPageSerializer, BrandCartSerializer)
+                                 CustomMadePageSerializer, BrandPageSerializer, BrandCartSerializer,
+                                 BrandCartImageSerializer)
 from collections import defaultdict
 from order.models import OrderModel, OrderItemModel, OrderStatusModel, ShippingModel, ShippingCountryModel
 from django.db.models import Subquery
@@ -2645,13 +2646,16 @@ class BrandPageView(APIView):
             try:
                 brand_page = BrandPageModel.objects.get(brand_id=brand_id)
                 brand_cart = BrandCartModel.objects.filter(brand_id=brand_id)
+                brand_cart_images = BrandCartImageModel.objects.filter(brand_cart__brand_id=brand_id)
                 
                 brand_page_serializer = BrandPageSerializer(brand_page)
                 brand_cart_serializer = BrandCartSerializer(brand_cart, many=True)
+                brand_cart_images_serializer = BrandCartImageSerializer(brand_cart_images, many=True)
                 
                 response_data = {
                     "brand_page": brand_page_serializer.data,
-                    "brand_cart": brand_cart_serializer.data
+                    "brand_cart": brand_cart_serializer.data,
+                    "brand_cart_images": brand_cart_images_serializer.data
                 }
                 return Response(response_data)
             except BrandPageModel.DoesNotExist:
@@ -2659,13 +2663,16 @@ class BrandPageView(APIView):
         
         brand_pages = BrandPageModel.objects.all()
         brand_carts = BrandCartModel.objects.all()
+        brand_cart_images = BrandCartImageModel.objects.all()
         
         brand_page_serializer = BrandPageSerializer(brand_pages, many=True)
         brand_cart_serializer = BrandCartSerializer(brand_carts, many=True)
+        brand_cart_images_serializer = BrandCartImageSerializer(brand_cart_images, many=True)
         
         response_data = {
             "brand_pages": brand_page_serializer.data,
-            "brand_carts": brand_cart_serializer.data
+            "brand_carts": brand_cart_serializer.data,
+            "brand_cart_images": brand_cart_images_serializer.data
         }
         return Response(response_data)
 
@@ -2678,13 +2685,25 @@ class BrandPageView(APIView):
         brand_cart_data = request.data.get('brand_cart', {})
         brand_cart_serializer = BrandCartSerializer(data=brand_cart_data)
         
-        if brand_page_serializer.is_valid() and brand_cart_serializer.is_valid():
+        # Handle BrandCartImage data
+        brand_cart_images_data = request.data.get('brand_cart_images', [])
+        brand_cart_images_serializer = BrandCartImageSerializer(data=brand_cart_images_data, many=True)
+        
+        if brand_page_serializer.is_valid() and brand_cart_serializer.is_valid() and brand_cart_images_serializer.is_valid():
             brand_page = brand_page_serializer.save()
             brand_cart = brand_cart_serializer.save()
             
+            # Save images with the created brand_cart
+            for image_data in brand_cart_images_data:
+                image_data['brand_cart'] = brand_cart.id
+            brand_cart_images_serializer = BrandCartImageSerializer(data=brand_cart_images_data, many=True)
+            if brand_cart_images_serializer.is_valid():
+                brand_cart_images_serializer.save()
+            
             response_data = {
                 "brand_page": BrandPageSerializer(brand_page).data,
-                "brand_cart": BrandCartSerializer(brand_cart).data
+                "brand_cart": BrandCartSerializer(brand_cart).data,
+                "brand_cart_images": brand_cart_images_serializer.data
             }
             return Response(response_data, status=201)
         
@@ -2693,12 +2712,15 @@ class BrandPageView(APIView):
             errors['brand_page'] = brand_page_serializer.errors
         if not brand_cart_serializer.is_valid():
             errors['brand_cart'] = brand_cart_serializer.errors
+        if not brand_cart_images_serializer.is_valid():
+            errors['brand_cart_images'] = brand_cart_images_serializer.errors
         return Response(errors, status=400)
 
     def put(self, request, brand_id):
         try:
             brand_page = BrandPageModel.objects.get(brand_id=brand_id)
             brand_cart = BrandCartModel.objects.get(brand_id=brand_id)
+            brand_cart_images = BrandCartImageModel.objects.filter(brand_cart__brand_id=brand_id)
             
             # Update BrandPage
             brand_page_data = request.data.get('brand_page', {})
@@ -2708,13 +2730,19 @@ class BrandPageView(APIView):
             brand_cart_data = request.data.get('brand_cart', {})
             brand_cart_serializer = BrandCartSerializer(brand_cart, data=brand_cart_data)
             
-            if brand_page_serializer.is_valid() and brand_cart_serializer.is_valid():
+            # Update BrandCartImages
+            brand_cart_images_data = request.data.get('brand_cart_images', [])
+            brand_cart_images_serializer = BrandCartImageSerializer(brand_cart_images, data=brand_cart_images_data, many=True)
+            
+            if brand_page_serializer.is_valid() and brand_cart_serializer.is_valid() and brand_cart_images_serializer.is_valid():
                 updated_brand_page = brand_page_serializer.save()
                 updated_brand_cart = brand_cart_serializer.save()
+                updated_brand_cart_images = brand_cart_images_serializer.save()
                 
                 response_data = {
                     "brand_page": BrandPageSerializer(updated_brand_page).data,
-                    "brand_cart": BrandCartSerializer(updated_brand_cart).data
+                    "brand_cart": BrandCartSerializer(updated_brand_cart).data,
+                    "brand_cart_images": BrandCartImageSerializer(updated_brand_cart_images, many=True).data
                 }
                 return Response(response_data)
             
@@ -2723,6 +2751,8 @@ class BrandPageView(APIView):
                 errors['brand_page'] = brand_page_serializer.errors
             if not brand_cart_serializer.is_valid():
                 errors['brand_cart'] = brand_cart_serializer.errors
+            if not brand_cart_images_serializer.is_valid():
+                errors['brand_cart_images'] = brand_cart_images_serializer.errors
             return Response(errors, status=400)
             
         except (BrandPageModel.DoesNotExist, BrandCartModel.DoesNotExist):
@@ -2732,9 +2762,11 @@ class BrandPageView(APIView):
         try:
             brand_page = BrandPageModel.objects.get(brand_id=brand_id)
             brand_cart = BrandCartModel.objects.get(brand_id=brand_id)
+            brand_cart_images = BrandCartImageModel.objects.filter(brand_cart__brand_id=brand_id)
             
-            brand_page.delete()
+            brand_cart_images.delete()  # Delete images first due to foreign key constraint
             brand_cart.delete()
+            brand_page.delete()
             
             return Response(status=204)
         except (BrandPageModel.DoesNotExist, BrandCartModel.DoesNotExist):
