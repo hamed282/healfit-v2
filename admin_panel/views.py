@@ -11,7 +11,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           ShippingCountrySerializer, ShippingSerializer, CityShippingSerializer, BlogAuthorSerializer,
                           CustomerTypeSerializer, ProductTypeSerializer, BodyAreaSerializer, HearAboutUsSerializer,
                           TreatmentCategorySerializer, ClassNumberSerializer, CompressionClassSerializer,
-                          SideSerializer, BrandSerializer, ProductSerializer, BrandPageSerializer, BrandCartSerializer)
+                          SideSerializer, BrandSerializer, ProductSerializer)
 from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
@@ -43,7 +43,7 @@ from product.models import (ProductCategoryModel, ProductSubCategoryModel, Extra
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer,
                                  AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer,
                                  CouponSerializer, CouponCreateSerializer, CustomMadeSerializer,
-                                 CustomMadePageSerializer)
+                                 CustomMadePageSerializer, BrandPageSerializer, BrandCartSerializer)
 from collections import defaultdict
 from order.models import OrderModel, OrderItemModel, OrderStatusModel, ShippingModel, ShippingCountryModel
 from django.db.models import Subquery
@@ -328,33 +328,42 @@ class BlogView(APIView):
 
 class BlogCategoryView(APIView):
     permission_classes = [IsAdminUser, IsBlogAdmin]
-
+    
     def get_permissions(self):
-        if self.request.method in ['PUT', 'GET']:
-            return [OrPermission(IsBlogAdmin, IsSEOAdmin)]
+        if self.request.method == 'GET':
+            return [IsAdminUser(), IsBlogAdmin() | IsSEOAdmin()]
         return super().get_permissions()
 
     def get(self, request):
-        category = BlogCategoryModel.objects.all()
-        ser_data = BlogCategorySerializer(instance=category, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        categories = BlogCategoryModel.objects.all()
+        serializer = BlogCategorySerializer(categories, many=True)
+        return Response(serializer.data)
 
     def post(self, request):
-        form = request.data
-        ser_data = BlogCategorySerializer(data=form)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = BlogCategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
 
     def put(self, request, category_id):
-        form = request.data
-        category = BlogCategoryModel.objects.get(id=category_id)
-        ser_data = BlogCategorySerializer(instance=category, data=form, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            category = BlogCategoryModel.objects.get(id=category_id)
+            serializer = BlogCategorySerializer(category, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=400)
+        except BlogCategoryModel.DoesNotExist:
+            return Response({"error": "not found"}, status=404)
+
+    def delete(self, request, category_id):
+        try:
+            category = BlogCategoryModel.objects.get(id=category_id)
+            category.delete()
+            return Response(status=204)
+        except BlogCategoryModel.DoesNotExist:
+            return Response({"error": "not found"}, status=404)
 
 
 class BLogTagListView(APIView):
