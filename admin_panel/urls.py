@@ -63,7 +63,7 @@ urlpatterns = [
     path('home/video/item/<int:video_id>/', views.VideoHomeView.as_view(), name='video_id'),
 
     path('home/content/', views.HomeContentView.as_view(), name='content'),
-    path('home/content/<int:content_id>/', views.HomeContentView.as_view(), name='video_id'),
+    path('home/content/<int:content_id>/', views.HomeContentView.as_view(), name='content_id'),
 
     path('home/contactus/', views.ContactUsView.as_view(), name='contactus'),
     path('home/contactus/<int:contact_id>/', views.ContactUsItemView.as_view(), name='contactus_item'),

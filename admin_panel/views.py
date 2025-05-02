@@ -32,7 +32,8 @@ from home.serializers import (CommentHomeSerializer, VideoHomeSerializer, Banner
                               ContactSubmitSerializer, AboutPageSerializer, ShopPageSerializer, BlogPageSerializer,
                               CareerPageSerializer, SitemapPageSerializer, ContactUsPageSerializer,
                               RefundPolicyPageSerializer, WholesaleInquiryPageSerializer, CustomerCarePageSerializer,
-                              BannerSliderMobileSerializer, ContentHome1Serializer)
+                              BannerSliderMobileSerializer, ContentHome1Serializer, ContentHome2Serializer,
+                              ContentHome3Serializer)
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel, CouponModel, CustomMadeModel, CustomerTypeModel,
@@ -677,21 +678,118 @@ class VideoHomeView(APIView):
 
 
 class HomeContentView(APIView):
-    permission_classes = [IsAdminUser, IsModeratorAdmin, IsSEOAdmin]
-
     def get(self, request):
-        content = ContentHomeModel.objects.all()
-        ser_data = ContentHomeSerializer(instance=content, many=True)
-        return Response(data=ser_data.data)
+        content1 = Content1Model.objects.all().first()
+        content2 = Content2Model.objects.all().first()
+        content3 = Content3Model.objects.all().first()
 
-    def put(self, request, content_id):
-        form = request.data
-        content = get_object_or_404(ContentHomeModel, id=content_id)
-        ser_data = ContentHomeSerializer(instance=content, data=form, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        content1_serializer = ContentHome1Serializer(content1)
+        content2_serializer = ContentHome2Serializer(content2)
+        content3_serializer = ContentHome3Serializer(content3)
+
+        return Response({
+            'content1': content1_serializer.data,
+            'content2': content2_serializer.data,
+            'content3': content3_serializer.data,
+        })
+
+    def post(self, request):
+        response_data = {}
+        
+        # Handle content1
+        if 'content1' in request.data:
+            content1_data = request.data['content1']
+            content1_serializer = ContentHome1Serializer(data=content1_data)
+            if content1_serializer.is_valid():
+                content1_serializer.save()
+                response_data['content1'] = content1_serializer.data
+            else:
+                response_data['content1_errors'] = content1_serializer.errors
+
+        # Handle content2
+        if 'content2' in request.data:
+            content2_data = request.data['content2']
+            content2_serializer = ContentHome2Serializer(data=content2_data)
+            if content2_serializer.is_valid():
+                content2_serializer.save()
+                response_data['content2'] = content2_serializer.data
+            else:
+                response_data['content2_errors'] = content2_serializer.errors
+
+        # Handle content3
+        if 'content3' in request.data:
+            content3_data = request.data['content3']
+            content3_serializer = ContentHome3Serializer(data=content3_data)
+            if content3_serializer.is_valid():
+                content3_serializer.save()
+                response_data['content3'] = content3_serializer.data
+            else:
+                response_data['content3_errors'] = content3_serializer.errors
+
+        # Check if any content was processed
+        if not any(key in response_data for key in ['content1', 'content2', 'content3']):
+            return Response({'error': 'No valid content data provided'}, status=400)
+
+        # Check if there were any errors
+        if any('_errors' in key for key in response_data):
+            return Response(response_data, status=400)
+
+        return Response(response_data, status=201)
+
+    def put(self, request):
+        response_data = {}
+        
+        # Handle content1
+        if 'content1' in request.data:
+            content1_data = request.data['content1']
+            try:
+                content1_instance = Content1Model.objects.get(id=content1_data.get('id'))
+                content1_serializer = ContentHome1Serializer(content1_instance, data=content1_data)
+                if content1_serializer.is_valid():
+                    content1_serializer.save()
+                    response_data['content1'] = content1_serializer.data
+                else:
+                    response_data['content1_errors'] = content1_serializer.errors
+            except Content1Model.DoesNotExist:
+                response_data['content1_errors'] = {'error': 'Content1 not found'}
+
+        # Handle content2
+        if 'content2' in request.data:
+            content2_data = request.data['content2']
+            try:
+                content2_instance = Content2Model.objects.get(id=content2_data.get('id'))
+                content2_serializer = ContentHome2Serializer(content2_instance, data=content2_data)
+                if content2_serializer.is_valid():
+                    content2_serializer.save()
+                    response_data['content2'] = content2_serializer.data
+                else:
+                    response_data['content2_errors'] = content2_serializer.errors
+            except Content2Model.DoesNotExist:
+                response_data['content2_errors'] = {'error': 'Content2 not found'}
+
+        # Handle content3
+        if 'content3' in request.data:
+            content3_data = request.data['content3']
+            try:
+                content3_instance = Content3Model.objects.get(id=content3_data.get('id'))
+                content3_serializer = ContentHome3Serializer(content3_instance, data=content3_data)
+                if content3_serializer.is_valid():
+                    content3_serializer.save()
+                    response_data['content3'] = content3_serializer.data
+                else:
+                    response_data['content3_errors'] = content3_serializer.errors
+            except Content3Model.DoesNotExist:
+                response_data['content3_errors'] = {'error': 'Content3 not found'}
+
+        # Check if any content was processed
+        if not any(key in response_data for key in ['content1', 'content2', 'content3']):
+            return Response({'error': 'No valid content data provided'}, status=400)
+
+        # Check if there were any errors
+        if any('_errors' in key for key in response_data):
+            return Response(response_data, status=400)
+
+        return Response(response_data, status=200)
 
 
 class BannerShopView(APIView):
