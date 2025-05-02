@@ -223,4 +223,7 @@ urlpatterns = [
     # Brand
     path('product/brand/', views.BrandView.as_view()),
     path('product/brand/<int:brand_id>/', views.BrandItemView.as_view()),
+
+    path('pages/custom_made/', views.CustomMadePageView.as_view(), name='custom_made_page'),
+    path('pages/custom_made/<int:page_id>/', views.CustomMadePageView.as_view(), name='custom_made_page_detail'),
 ]

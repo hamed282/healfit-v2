@@ -38,10 +38,11 @@ from product.models import (ProductCategoryModel, ProductSubCategoryModel, Extra
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel, CouponModel, CustomMadeModel, CustomerTypeModel,
                             ProductTypeModel, BodyAreaModel, HearAboutUsModel, TreatmentCategoryModel, ClassNumberModel,
-                            CompressionClassModel, SideModel, ProductBrandModel)
+                            CompressionClassModel, SideModel, ProductBrandModel, CustomMadePageModel)
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer,
                                  AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer,
-                                 CouponSerializer, CouponCreateSerializer, CustomMadeSerializer)
+                                 CouponSerializer, CouponCreateSerializer, CustomMadeSerializer,
+                                 CustomMadePageSerializer)
 from collections import defaultdict
 from order.models import OrderModel, OrderItemModel, OrderStatusModel, ShippingModel, ShippingCountryModel
 from django.db.models import Subquery
@@ -2585,6 +2586,47 @@ class FAQView(APIView):
             return Response(status=204)
         except FAQModel.DoesNotExist:
             return Response({'error': 'FAQ not found'}, status=404)
+
+
+class CustomMadePageView(APIView):
+    def get(self, request, page_id=None):
+        if page_id:
+            try:
+                page = CustomMadePageModel.objects.get(id=page_id)
+                serializer = CustomMadePageSerializer(page)
+                return Response(serializer.data)
+            except CustomMadePageModel.DoesNotExist:
+                return Response({"error": "not found"}, status=404)
+        
+        pages = CustomMadePageModel.objects.all().first()
+        serializer = CustomMadePageSerializer(pages)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = CustomMadePageSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def put(self, request, page_id):
+        try:
+            page = CustomMadePageModel.objects.get(id=page_id)
+            serializer = CustomMadePageSerializer(page, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=400)
+        except CustomMadePageModel.DoesNotExist:
+            return Response({"error": "صفحه سفارشی یافت نشد"}, status=404)
+
+    def delete(self, request, page_id):
+        try:
+            page = CustomMadePageModel.objects.get(id=page_id)
+            page.delete()
+            return Response(status=204)
+        except CustomMadePageModel.DoesNotExist:
+            return Response({"error": "صفحه سفارشی یافت نشد"}, status=404)
 
 
 
