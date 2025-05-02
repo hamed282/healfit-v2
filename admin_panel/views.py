@@ -2672,7 +2672,6 @@ class BrandPageView(APIView):
         response_data = {
             "brand_pages": brand_page_serializer.data,
             "brand_carts": brand_cart_serializer.data,
-            "brand_cart_images": brand_cart_images_serializer.data
         }
         return Response(response_data)
 
@@ -2703,7 +2702,6 @@ class BrandPageView(APIView):
             response_data = {
                 "brand_page": BrandPageSerializer(brand_page).data,
                 "brand_cart": BrandCartSerializer(brand_cart).data,
-                "brand_cart_images": brand_cart_images_serializer.data
             }
             return Response(response_data, status=201)
         
