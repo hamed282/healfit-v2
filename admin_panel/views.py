@@ -350,7 +350,7 @@ class BlogCategoryView(APIView):
     def put(self, request, category_id):
         try:
             category = BlogCategoryModel.objects.get(id=category_id)
-            serializer = BlogCategorySerializer(category, data=request.data)
+            serializer = BlogCategorySerializer(category, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -756,7 +756,7 @@ class HomeContentView(APIView):
             content1_data = request.data['content1']
             try:
                 content1_instance = Content1Model.objects.get(id=content1_data.get('id'))
-                content1_serializer = ContentHome1Serializer(content1_instance, data=content1_data)
+                content1_serializer = ContentHome1Serializer(content1_instance, data=content1_data, partial=True)
                 if content1_serializer.is_valid():
                     content1_serializer.save()
                     response_data['content1'] = content1_serializer.data
@@ -770,7 +770,7 @@ class HomeContentView(APIView):
             content2_data = request.data['content2']
             try:
                 content2_instance = Content2Model.objects.get(id=content2_data.get('id'))
-                content2_serializer = ContentHome2Serializer(content2_instance, data=content2_data)
+                content2_serializer = ContentHome2Serializer(content2_instance, data=content2_data, partial=True)
                 if content2_serializer.is_valid():
                     content2_serializer.save()
                     response_data['content2'] = content2_serializer.data
@@ -784,7 +784,7 @@ class HomeContentView(APIView):
             content3_data = request.data['content3']
             try:
                 content3_instance = Content3Model.objects.get(id=content3_data.get('id'))
-                content3_serializer = ContentHome3Serializer(content3_instance, data=content3_data)
+                content3_serializer = ContentHome3Serializer(content3_instance, data=content3_data, partial=True)
                 if content3_serializer.is_valid():
                     content3_serializer.save()
                     response_data['content3'] = content3_serializer.data
@@ -2582,7 +2582,7 @@ class FAQView(APIView):
     def put(self, request, faq_id):
         try:
             faq = FAQModel.objects.get(id=faq_id)
-            serializer = FAQSerializer(faq, data=request.data)
+            serializer = FAQSerializer(faq, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -2623,7 +2623,7 @@ class CustomMadePageView(APIView):
     def put(self, request, page_id):
         try:
             page = CustomMadePageModel.objects.get(id=page_id)
-            serializer = CustomMadePageSerializer(page, data=request.data)
+            serializer = CustomMadePageSerializer(page, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -2721,11 +2721,11 @@ class BrandPageView(APIView):
             
             # Update BrandPage
             brand_page_data = request.data.get('brand_page', {})
-            brand_page_serializer = BrandPageSerializer(brand_page, data=brand_page_data)
+            brand_page_serializer = BrandPageSerializer(brand_page, data=brand_page_data, partial=True)
             
             # Update BrandCart
             brand_cart_data = request.data.get('brand_cart', {})
-            brand_cart_serializer = BrandCartSerializer(brand_cart, data=brand_cart_data)
+            brand_cart_serializer = BrandCartSerializer(brand_cart, data=brand_cart_data, partial=True)
             
             if brand_page_serializer.is_valid() and brand_cart_serializer.is_valid():
                 updated_brand_page = brand_page_serializer.save()
