@@ -331,8 +331,8 @@ class BlogCategoryView(APIView):
     permission_classes = [IsAdminUser, IsBlogAdmin]
     
     def get_permissions(self):
-        if self.request.method == 'GET':
-            return [IsAdminUser(), IsBlogAdmin() | IsSEOAdmin()]
+        if self.request.method in ['PUT', 'GET', 'POST', 'DELETE']:
+            return [IsAdminUser(), IsBlogAdmin() , IsSEOAdmin()]
         return super().get_permissions()
 
     def get(self, request):

@@ -23,7 +23,7 @@ class IsOrderAdmin(BasePermission):
 
 class IsSEOAdmin(BasePermission):
     def has_permission(self, request, view):
-        return (RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='seo')).exists() or
+            return (RoleUserModel.objects.filter(user=request.user, role=RoleModel.objects.get(role='seo')).exists() or
                 request.user.is_superuser)
 
 
