@@ -39,9 +39,12 @@ def send_order_email(order, order_items, recipient_list):
                    f'Cart Id: {order.cart_id}'
 
     email_from = settings.EMAIL_HOST_USER
-    # recipient_list = ['hamed.alizadegan@gmail.com']
+    
+    # Split the recipient list - customer email is the main recipient, others go to BCC
+    customer_email = recipient_list[-1]  # Last email is the customer's email
+    bcc_list = recipient_list[:-1]  # All other emails go to BCC
 
-    email = EmailMultiAlternatives(subject, text_content, email_from, recipient_list)
+    email = EmailMultiAlternatives(subject, text_content, email_from, [customer_email], bcc=bcc_list)
 
     # اضافه کردن نسخه HTML
     email.attach_alternative(html_content, "text/html")
