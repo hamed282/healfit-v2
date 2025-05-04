@@ -269,11 +269,6 @@ class OrderPayAuthorisedView(APIView):
                 product_variant.quantity = product_variant.quantity - quantity
                 product_variant.save()
 
-                line_items = [{'item_id': item.product.item_id, 'quantity': item.quantity} for item in order_items]
-                zoho_invoice_quantity_update(order.user.first_name, order.user.last_name, order.user.email,
-                                             order.address.address, order.address.city, line_items,
-                                             country='United Arab Emirates', customer_id=order.user.zoho_customer_id)
-
                 item.trace = response['trace']
                 item.save()
 
@@ -285,6 +280,12 @@ class OrderPayAuthorisedView(APIView):
 
                 order.error_note = 'Error 06'
                 order.save()
+
+            # Move zoho_invoice_quantity_update outside the loop
+            line_items = [{'item_id': item.product.item_id, 'quantity': item.quantity} for item in order_items]
+            zoho_invoice_quantity_update(order.user.first_name, order.user.last_name, order.user.email,
+                                         order.address.address, order.address.city, line_items,
+                                         country='United Arab Emirates', customer_id=order.user.zoho_customer_id)
 
             recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae', order.user.email]
             send_order_email(order, order_items, recipient_list)
