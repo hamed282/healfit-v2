@@ -12,6 +12,7 @@ urlpatterns = [
     path('custom_made/', views.CustomMadeView.as_view(), name='custom_made'),
     path('custom_made_page/', views.CustomMadePageView.as_view(), name='custom_made_page'),
     path('brand_page/<slug:brand_slug>/', views.BrandPageView.as_view(), name='brand_page'),
+    path('brand_all/', views.BrandPageView.as_view(), name='brand'),
 
     # Category
     path('categories/', views.CategoryListView.as_view(), name='category_list'),

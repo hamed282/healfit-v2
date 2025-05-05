@@ -12,7 +12,7 @@ from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVar
                           ProductCategorySerializer, ProductSubCategorySerializer, ProductByCategorySerializer,
                           FavProductSerializer, GetClassSerializer, NewProductSerializer, CategoryBestSellerSerializer,
                           CustomMadeSerializer, CustomMadeOptionsSerializer, CustomMadePageSerializer,
-                          BrandPageSerializer, BrandCartSerializer)
+                          BrandPageSerializer, BrandCartSerializer, ProductBrandSerializer)
 from django.shortcuts import get_object_or_404
 from math import ceil
 from rest_framework import viewsets
@@ -609,5 +609,16 @@ class BrandPageView(APIView):
                 'brand_page': brand_page_serializer.data,
                 'brand_cart': brand_cart_serializer.data
             }, status=status.HTTP_200_OK)
+        except (BrandPageModel.DoesNotExist, BrandCartModel.DoesNotExist):
+            return Response({'message': 'Brand not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class BrandAllView(APIView):
+    def get(self, request, brand_slug):
+        try:
+            brands = ProductBrandModel.objects.all()
+            brands_serializer = ProductBrandSerializer(instance=brands, many=True)
+
+            return Response(brands_serializer.data, status=status.HTTP_200_OK)
         except (BrandPageModel.DoesNotExist, BrandCartModel.DoesNotExist):
             return Response({'message': 'Brand not found'}, status=status.HTTP_404_NOT_FOUND)
