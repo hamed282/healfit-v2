@@ -203,7 +203,7 @@ class ProductCategoryModel(models.Model):
     priority = models.IntegerField(blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True)
     image = models.FileField(upload_to=get_category_upload_path)
-    image_alt = models.CharField(max_length=64)
+    image_alt = models.CharField(max_length=64, blank=True, null=True)
 
     # SEO Fields
     follow = models.BooleanField(default=False)
@@ -273,7 +273,7 @@ class ProductSubCategoryModel(models.Model):
     short_description = models.TextField()
     description = models.TextField()
     image = models.FileField(upload_to=get_subcategory_upload_path)
-    image_alt = models.CharField(max_length=64)
+    image_alt = models.CharField(max_length=64, blank=True, null=True)
     priority = models.IntegerField(blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True)
 
@@ -353,7 +353,7 @@ class ProductGenderModel(models.Model):
     description = models.TextField()
     slug = models.SlugField(max_length=100, unique=True)
     image = models.FileField(upload_to=get_gender_upload_path)
-    image_alt = models.CharField(max_length=64)
+    image_alt = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Product Gender'
@@ -735,22 +735,22 @@ class CustomMadeModel(models.Model):
 class CustomMadePageModel(models.Model):
     image_desktop = models.ImageField(upload_to=get_custom_made_upload_path)
     image_mobile = models.ImageField(upload_to=get_custom_made_upload_path)
-    image_alt = models.CharField(max_length=64)
+    image_alt = models.CharField(max_length=64, blank=True, null=True)
 
     content1_text = models.TextField()
     content1_right_title = models.CharField(max_length=16)
     content1_right_image = models.ImageField(upload_to=get_custom_made_upload_path)
-    content1_right_image_alt = models.CharField(max_length=64)
+    content1_right_image_alt = models.CharField(max_length=64, blank=True, null=True)
     content1_mid_title = models.CharField(max_length=16)
     content1_mid_image = models.ImageField(upload_to=get_custom_made_upload_path)
-    content1_mid_image_alt = models.CharField(max_length=64)
+    content1_mid_image_alt = models.CharField(max_length=64, blank=True, null=True)
     content1_left_title = models.CharField(max_length=16)
     content1_left_image = models.ImageField(upload_to=get_custom_made_upload_path)
-    content1_left_image_alt = models.CharField(max_length=64)
+    content1_left_image_alt = models.CharField(max_length=64, blank=True, null=True)
 
     content2_text = models.TextField()
     content2_image = models.ImageField(upload_to=get_custom_made_upload_path)
-    content2_image_alt = models.CharField(max_length=64)
+    content2_image_alt = models.CharField(max_length=64, blank=True, null=True)
     content2_link = models.CharField(max_length=128)
 
     content3_text = models.TextField()
@@ -760,7 +760,7 @@ class CustomMadePageModel(models.Model):
 
     content4_text = models.TextField()
     content4_image = models.ImageField(upload_to=get_custom_made_upload_path)
-    content4_image_alt = models.CharField(max_length=64)
+    content4_image_alt = models.CharField(max_length=64, blank=True, null=True)
     content4_right = models.TextField()
     content4_mid = models.TextField()
     content4_left = models.TextField()
@@ -785,26 +785,26 @@ class BrandPageModel(models.Model):
     brand = models.ForeignKey(ProductBrandModel, on_delete=models.CASCADE)
     image_desktop = models.ImageField(upload_to=get_brand_upload_path)
     image_mobile = models.ImageField(upload_to=get_brand_upload_path)
-    image_alt = models.CharField(max_length=64)
+    image_alt = models.CharField(max_length=64, blank=True, null=True)
 
     content1_title = models.CharField(max_length=64)
     content1_image = models.ImageField(upload_to=get_brand_upload_path)
-    content1_image_alt = models.CharField(max_length=64)
+    content1_image_alt = models.CharField(max_length=64, blank=True, null=True)
     content1_text = models.TextField()
 
     content2_text = models.TextField()
     content2_right_image = models.ImageField(upload_to=get_brand_upload_path)
-    content2_right_image_alt = models.CharField(max_length=64)
+    content2_right_image_alt = models.CharField(max_length=64, blank=True, null=True)
     content2_right = models.TextField()
     content2_mid_image = models.ImageField(upload_to=get_brand_upload_path)
-    content2_mid_image_alt = models.CharField(max_length=64)
+    content2_mid_image_alt = models.CharField(max_length=64, blank=True, null=True)
     content2_mid = models.TextField()
     content2_left_image = models.ImageField(upload_to=get_brand_upload_path)
-    content2_left_image_alt = models.CharField(max_length=64)
+    content2_left_image_alt = models.CharField(max_length=64, blank=True, null=True)
     content2_left = models.TextField()
 
     contact_image = models.ImageField(upload_to=get_brand_upload_path)
-    contact_image_alt = models.CharField(max_length=64)
+    contact_image_alt = models.CharField(max_length=64, blank=True, null=True)
     contact_text = models.TextField()
 
     def __str__(self):
@@ -822,7 +822,7 @@ class BrandCartModel(models.Model):
 class BrandCartImageModel(models.Model):
     brand_cart = models.ForeignKey(BrandCartModel, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to=get_brand_cart_upload_path)
-    image_alt = models.CharField(max_length=64)
+    image_alt = models.CharField(max_length=64, blank=True, null=True)
     priority = models.IntegerField(blank=True, null=True)
 
     class Meta:
