@@ -614,7 +614,7 @@ class BrandPageView(APIView):
 
 
 class BrandAllView(APIView):
-    def get(self, request, brand_slug):
+    def get(self, request):
         try:
             brands = ProductBrandModel.objects.all()
             brands_serializer = ProductBrandSerializer(instance=brands, many=True)
