@@ -62,8 +62,14 @@ urlpatterns = [
     path('home/video/', views.VideoHomeView.as_view(), name='video'),
     path('home/video/item/<int:video_id>/', views.VideoHomeView.as_view(), name='video_id'),
 
-    path('home/content/', views.HomeContentView.as_view(), name='content'),
-    path('home/content/<int:content_id>/', views.HomeContentView.as_view(), name='content_id'),
+    path('home/content1/', views.HomeContent1View.as_view(), name='content'),
+    # path('home/content1/<int:content_id>/', views.HomeContentView.as_view(), name='content_id'),
+
+    path('home/content2/', views.HomeContent2View.as_view(), name='content'),
+    # path('home/content2/<int:content_id>/', views.HomeContentView.as_view(), name='content_id'),
+
+    path('home/content3/', views.HomeContent3View.as_view(), name='content'),
+    # path('home/content3/<int:content_id>/', views.HomeContentView.as_view(), name='content_id'),
 
     path('home/contactus/', views.ContactUsView.as_view(), name='contactus'),
     path('home/contactus/<int:contact_id>/', views.ContactUsItemView.as_view(), name='contactus_item'),
