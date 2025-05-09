@@ -738,13 +738,13 @@ class CustomMadePageModel(models.Model):
     image_alt = models.CharField(max_length=64, blank=True, null=True)
 
     content1_text = models.TextField()
-    content1_right_title = models.CharField(max_length=16)
+    content1_right_title = models.CharField(max_length=32)
     content1_right_image = models.ImageField(upload_to=get_custom_made_upload_path)
     content1_right_image_alt = models.CharField(max_length=64, blank=True, null=True)
-    content1_mid_title = models.CharField(max_length=16)
+    content1_mid_title = models.CharField(max_length=326)
     content1_mid_image = models.ImageField(upload_to=get_custom_made_upload_path)
     content1_mid_image_alt = models.CharField(max_length=64, blank=True, null=True)
-    content1_left_title = models.CharField(max_length=16)
+    content1_left_title = models.CharField(max_length=32)
     content1_left_image = models.ImageField(upload_to=get_custom_made_upload_path)
     content1_left_image_alt = models.CharField(max_length=64, blank=True, null=True)
 
