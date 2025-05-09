@@ -2605,17 +2605,34 @@ class BrandPageView(APIView):
         if brand_id:
             try:
                 brand_page = BrandPageModel.objects.get(brand_id=brand_id)
-                brand_cart = BrandCartModel.objects.filter(brand_id=brand_id)
-                brand_cart_images = BrandCartImageModel.objects.filter(brand_cart__brand_id=brand_id)
+                brand_carts = BrandCartModel.objects.filter(brand_id=brand_id)
                 
                 brand_page_serializer = BrandPageSerializer(brand_page)
-                brand_cart_serializer = BrandCartSerializer(brand_cart, many=True)
-                brand_cart_images_serializer = BrandCartImageSerializer(brand_cart_images, many=True)
+                brand_cart_serializer = BrandCartSerializer(brand_carts, many=True)
                 
                 response_data = {
-                    "brand_page": brand_page_serializer.data,
-                    "brand_cart": brand_cart_serializer.data,
-                    "brand_cart_images": brand_cart_images_serializer.data
+                    "brand_id": brand_page.brand.id,
+                    "image_alt": brand_page.image_alt,
+                    "content1_title": brand_page.content1_title,
+                    "content1_image_alt": brand_page.content1_image_alt,
+                    "content2_right_image_alt": brand_page.content2_right_image_alt,
+                    "content2_mid_image_alt": brand_page.content2_mid_image_alt,
+                    "content2_left_image_alt": brand_page.content2_left_image_alt,
+                    "contact_image_alt": brand_page.contact_image_alt,
+                    "content1_text": brand_page.content1_text,
+                    "content2_text": brand_page.content2_text,
+                    "content2_right": brand_page.content2_right,
+                    "content2_mid": brand_page.content2_mid,
+                    "content2_left": brand_page.content2_left,
+                    "contact_text": brand_page.contact_text,
+                    "image_desktop": brand_page.image_desktop,
+                    "image_mobile": brand_page.image_mobile,
+                    "content1_image": brand_page.content1_image,
+                    "content2_right_image": brand_page.content2_right_image,
+                    "content2_mid_image": brand_page.content2_mid_image,
+                    "content2_left_image": brand_page.content2_left_image,
+                    "contact_image": brand_page.contact_image,
+                    "brand_carts": brand_cart_serializer.data
                 }
                 return Response(response_data)
             except BrandPageModel.DoesNotExist:
@@ -2623,11 +2640,9 @@ class BrandPageView(APIView):
         
         brand_pages = BrandPageModel.objects.all()
         brand_carts = BrandCartModel.objects.all()
-        brand_cart_images = BrandCartImageModel.objects.all()
         
         brand_page_serializer = BrandPageSerializer(brand_pages, many=True)
         brand_cart_serializer = BrandCartSerializer(brand_carts, many=True)
-        brand_cart_images_serializer = BrandCartImageSerializer(brand_cart_images, many=True)
         
         response_data = {
             "brand_pages": brand_page_serializer.data,
@@ -2637,86 +2652,112 @@ class BrandPageView(APIView):
 
     def post(self, request):
         # Handle BrandPage data
-        brand_page_data = request.data.get('brand_page', {})
+        brand_page_data = request.data
         brand_page_serializer = BrandPageSerializer(data=brand_page_data)
         
-        # Handle BrandCart data
-        brand_cart_data = request.data.get('brand_cart', {})
-        brand_cart_serializer = BrandCartSerializer(data=brand_cart_data)
-        
-        # Handle BrandCartImage data
-        brand_cart_images_data = request.data.get('brand_cart_images', [])
-        brand_cart_images_serializer = BrandCartImageSerializer(data=brand_cart_images_data, many=True)
-        
-        if brand_page_serializer.is_valid() and brand_cart_serializer.is_valid() and brand_cart_images_serializer.is_valid():
+        if brand_page_serializer.is_valid():
             brand_page = brand_page_serializer.save()
-            brand_cart = brand_cart_serializer.save()
             
-            # Save images with the created brand_cart
-            for image_data in brand_cart_images_data:
-                image_data['brand_cart'] = brand_cart.id
-            brand_cart_images_serializer = BrandCartImageSerializer(data=brand_cart_images_data, many=True)
-            if brand_cart_images_serializer.is_valid():
-                brand_cart_images_serializer.save()
+            # Handle BrandCart data if provided
+            brand_carts_data = request.data.get('brand_carts', [])
+            brand_carts = []
+            
+            for cart_data in brand_carts_data:
+                cart_data['brand'] = brand_page.brand.id
+                cart_serializer = BrandCartSerializer(data=cart_data)
+                if cart_serializer.is_valid():
+                    cart = cart_serializer.save()
+                    brand_carts.append(cart)
             
             response_data = {
-                "brand_page": BrandPageSerializer(brand_page).data,
-                "brand_cart": BrandCartSerializer(brand_cart).data,
+                "brand_id": brand_page.brand.id,
+                "image_alt": brand_page.image_alt,
+                "content1_title": brand_page.content1_title,
+                "content1_image_alt": brand_page.content1_image_alt,
+                "content2_right_image_alt": brand_page.content2_right_image_alt,
+                "content2_mid_image_alt": brand_page.content2_mid_image_alt,
+                "content2_left_image_alt": brand_page.content2_left_image_alt,
+                "contact_image_alt": brand_page.contact_image_alt,
+                "content1_text": brand_page.content1_text,
+                "content2_text": brand_page.content2_text,
+                "content2_right": brand_page.content2_right,
+                "content2_mid": brand_page.content2_mid,
+                "content2_left": brand_page.content2_left,
+                "contact_text": brand_page.contact_text,
+                "image_desktop": brand_page.image_desktop,
+                "image_mobile": brand_page.image_mobile,
+                "content1_image": brand_page.content1_image,
+                "content2_right_image": brand_page.content2_right_image,
+                "content2_mid_image": brand_page.content2_mid_image,
+                "content2_left_image": brand_page.content2_left_image,
+                "contact_image": brand_page.contact_image,
+                "brand_carts": BrandCartSerializer(brand_carts, many=True).data
             }
             return Response(response_data, status=201)
         
-        errors = {}
-        if not brand_page_serializer.is_valid():
-            errors['brand_page'] = brand_page_serializer.errors
-        if not brand_cart_serializer.is_valid():
-            errors['brand_cart'] = brand_cart_serializer.errors
-        if not brand_cart_images_serializer.is_valid():
-            errors['brand_cart_images'] = brand_cart_images_serializer.errors
-        return Response(errors, status=400)
+        return Response(brand_page_serializer.errors, status=400)
 
     def put(self, request, brand_id):
         try:
             brand_page = BrandPageModel.objects.get(brand_id=brand_id)
-            brand_cart = BrandCartModel.objects.get(brand_id=brand_id)
+            brand_page_serializer = BrandPageSerializer(brand_page, data=request.data, partial=True)
             
-            # Update BrandPage
-            brand_page_data = request.data.get('brand_page', {})
-            brand_page_serializer = BrandPageSerializer(brand_page, data=brand_page_data, partial=True)
-            
-            # Update BrandCart
-            brand_cart_data = request.data.get('brand_cart', {})
-            brand_cart_serializer = BrandCartSerializer(brand_cart, data=brand_cart_data, partial=True)
-            
-            if brand_page_serializer.is_valid() and brand_cart_serializer.is_valid():
-                updated_brand_page = brand_page_serializer.save()
-                updated_brand_cart = brand_cart_serializer.save()
+            if brand_page_serializer.is_valid():
+                brand_page = brand_page_serializer.save()
+                
+                # Handle BrandCart updates if provided
+                brand_carts_data = request.data.get('brand_carts', [])
+                brand_carts = []
+                
+                # Delete existing carts
+                BrandCartModel.objects.filter(brand_id=brand_id).delete()
+                
+                # Create new carts
+                for cart_data in brand_carts_data:
+                    cart_data['brand'] = brand_page.brand.id
+                    cart_serializer = BrandCartSerializer(data=cart_data)
+                    if cart_serializer.is_valid():
+                        cart = cart_serializer.save()
+                        brand_carts.append(cart)
                 
                 response_data = {
-                    "brand_page": BrandPageSerializer(updated_brand_page).data,
-                    "brand_cart": BrandCartSerializer(updated_brand_cart).data
+                    "brand_id": brand_page.brand.id,
+                    "image_alt": brand_page.image_alt,
+                    "content1_title": brand_page.content1_title,
+                    "content1_image_alt": brand_page.content1_image_alt,
+                    "content2_right_image_alt": brand_page.content2_right_image_alt,
+                    "content2_mid_image_alt": brand_page.content2_mid_image_alt,
+                    "content2_left_image_alt": brand_page.content2_left_image_alt,
+                    "contact_image_alt": brand_page.contact_image_alt,
+                    "content1_text": brand_page.content1_text,
+                    "content2_text": brand_page.content2_text,
+                    "content2_right": brand_page.content2_right,
+                    "content2_mid": brand_page.content2_mid,
+                    "content2_left": brand_page.content2_left,
+                    "contact_text": brand_page.contact_text,
+                    "image_desktop": brand_page.image_desktop,
+                    "image_mobile": brand_page.image_mobile,
+                    "content1_image": brand_page.content1_image,
+                    "content2_right_image": brand_page.content2_right_image,
+                    "content2_mid_image": brand_page.content2_mid_image,
+                    "content2_left_image": brand_page.content2_left_image,
+                    "contact_image": brand_page.contact_image,
+                    "brand_carts": BrandCartSerializer(brand_carts, many=True).data
                 }
                 return Response(response_data)
             
-            errors = {}
-            if not brand_page_serializer.is_valid():
-                errors['brand_page'] = brand_page_serializer.errors
-            if not brand_cart_serializer.is_valid():
-                errors['brand_cart'] = brand_cart_serializer.errors
-            return Response(errors, status=400)
+            return Response(brand_page_serializer.errors, status=400)
             
-        except (BrandPageModel.DoesNotExist, BrandCartModel.DoesNotExist):
+        except BrandPageModel.DoesNotExist:
             return Response({"error": "not found"}, status=404)
 
     def delete(self, request, brand_id):
         try:
             brand_page = BrandPageModel.objects.get(brand_id=brand_id)
-            brand_cart = BrandCartModel.objects.get(brand_id=brand_id)
-            
+            BrandCartModel.objects.filter(brand_id=brand_id).delete()
             brand_page.delete()
-            brand_cart.delete()
-            
             return Response(status=204)
-        except (BrandPageModel.DoesNotExist, BrandCartModel.DoesNotExist):
+        except BrandPageModel.DoesNotExist:
             return Response({"error": "not found"}, status=404)
 
 

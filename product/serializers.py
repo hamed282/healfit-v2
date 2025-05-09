@@ -815,7 +815,29 @@ class BrandPageSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = BrandPageModel
-        fields = '__all__'
+        fields = [
+            'brand',
+            'image_desktop',
+            'image_mobile',
+            'image_alt',
+            'content1_title',
+            'content1_image',
+            'content1_image_alt',
+            'content1_text',
+            'content2_text',
+            'content2_right_image',
+            'content2_right_image_alt',
+            'content2_right',
+            'content2_mid_image',
+            'content2_mid_image_alt',
+            'content2_mid',
+            'content2_left_image',
+            'content2_left_image_alt',
+            'content2_left',
+            'contact_image',
+            'contact_image_alt',
+            'contact_text'
+        ]
 
 
 class BrandCartImageSerializer(serializers.ModelSerializer):
@@ -830,4 +852,4 @@ class BrandCartSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = BrandCartModel
-        fields = '__all__'
+        fields = ['id', 'brand', 'content', 'images']
