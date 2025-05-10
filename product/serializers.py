@@ -44,10 +44,21 @@ class ProductSerializer(serializers.ModelSerializer):
     cover_image = serializers.ImageField(required=False, allow_null=True)
     size_table_image = serializers.ImageField(required=False, allow_null=True)
     description_image = serializers.ImageField(required=False, allow_null=True)
+    fav = serializers.SerializerMethodField()
 
     class Meta:
         model = ProductModel
         fields = '__all__'
+
+    def get_fav(self, obj):
+        request = self.context.get('request', None)
+
+        if request and request.user.is_authenticated:
+            fav = FavUserModel.objects.filter(user=request.user, product=obj).exists()
+        else:
+            fav = False
+
+        return fav
 
     def get_off_price(self, obj):
         price = float(obj.price)
