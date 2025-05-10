@@ -823,6 +823,13 @@ class CustomMadePageSerializer(serializers.ModelSerializer):
 
 class BrandPageSerializer(serializers.ModelSerializer):
     brand = ProductBrandSerializer()
+    image_desktop = serializers.SerializerMethodField()
+    image_mobile = serializers.SerializerMethodField()
+    content1_image = serializers.SerializerMethodField()
+    content2_right_image = serializers.SerializerMethodField()
+    content2_mid_image = serializers.SerializerMethodField()
+    content2_left_image = serializers.SerializerMethodField()
+    contact_image = serializers.SerializerMethodField()
     
     class Meta:
         model = BrandPageModel
@@ -849,6 +856,41 @@ class BrandPageSerializer(serializers.ModelSerializer):
             'contact_image_alt',
             'contact_text'
         ]
+
+    def get_image_desktop(self, obj):
+        if obj.image_desktop:
+            return obj.image_desktop.url
+        return None
+
+    def get_image_mobile(self, obj):
+        if obj.image_mobile:
+            return obj.image_mobile.url
+        return None
+
+    def get_content1_image(self, obj):
+        if obj.content1_image:
+            return obj.content1_image.url
+        return None
+
+    def get_content2_right_image(self, obj):
+        if obj.content2_right_image:
+            return obj.content2_right_image.url
+        return None
+
+    def get_content2_mid_image(self, obj):
+        if obj.content2_mid_image:
+            return obj.content2_mid_image.url
+        return None
+
+    def get_content2_left_image(self, obj):
+        if obj.content2_left_image:
+            return obj.content2_left_image.url
+        return None
+
+    def get_contact_image(self, obj):
+        if obj.contact_image:
+            return obj.contact_image.url
+        return None
 
 
 class BrandCartImageSerializer(serializers.ModelSerializer):
