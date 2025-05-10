@@ -2603,7 +2603,7 @@ class CustomMadePageView(APIView):
 class BrandPageView(APIView):
     def get(self, request, brand_id=None):
         if brand_id:
-            # try:
+            try:
                 brand = get_object_or_404(ProductBrandModel, id=brand_id)
                 brand_page = BrandPageModel.objects.get(brand=brand)
                 brand_carts = BrandCartModel.objects.filter(brand=brand)
@@ -2611,33 +2611,15 @@ class BrandPageView(APIView):
                 brand_page_serializer = BrandPageSerializer(brand_page)
                 brand_cart_serializer = BrandCartSerializer(brand_carts, many=True)
                 
-                response_data = {
-                    "brand_id": brand_page.brand.id,
-                    "image_alt": brand_page.image_alt,
-                    "content1_title": brand_page.content1_title,
-                    "content1_image_alt": brand_page.content1_image_alt,
-                    "content2_right_image_alt": brand_page.content2_right_image_alt,
-                    "content2_mid_image_alt": brand_page.content2_mid_image_alt,
-                    "content2_left_image_alt": brand_page.content2_left_image_alt,
-                    "contact_image_alt": brand_page.contact_image_alt,
-                    "content1_text": brand_page.content1_text,
-                    "content2_text": brand_page.content2_text,
-                    "content2_right": brand_page.content2_right,
-                    "content2_mid": brand_page.content2_mid,
-                    "content2_left": brand_page.content2_left,
-                    "contact_text": brand_page.contact_text,
-                    "image_desktop": brand_page.image_desktop,
-                    "image_mobile": brand_page.image_mobile,
-                    "content1_image": brand_page.content1_image,
-                    "content2_right_image": brand_page.content2_right_image,
-                    "content2_mid_image": brand_page.content2_mid_image,
-                    "content2_left_image": brand_page.content2_left_image,
-                    "contact_image": brand_page.contact_image,
-                    "brand_carts": brand_cart_serializer.data
-                }
+                response_data = brand_page_serializer.data
+                response_data['brand_carts'] = brand_cart_serializer.data
                 return Response(response_data)
-            # except BrandPageModel.DoesNotExist:
-            #     return Response({"error": "Brand page not found"}, status=404)
+            except BrandPageModel.DoesNotExist:
+                return Response({
+                    "error": "Brand page not found",
+                    "message": "No brand page exists for this brand. Please create one using POST request.",
+                    "brand_id": brand_id
+                }, status=404)
         
         brand_pages = BrandPageModel.objects.all()
         brand_carts = BrandCartModel.objects.all()
@@ -2670,30 +2652,8 @@ class BrandPageView(APIView):
                     cart = cart_serializer.save()
                     brand_carts.append(cart)
             
-            response_data = {
-                "brand_id": brand_page.brand.id,
-                "image_alt": brand_page.image_alt,
-                "content1_title": brand_page.content1_title,
-                "content1_image_alt": brand_page.content1_image_alt,
-                "content2_right_image_alt": brand_page.content2_right_image_alt,
-                "content2_mid_image_alt": brand_page.content2_mid_image_alt,
-                "content2_left_image_alt": brand_page.content2_left_image_alt,
-                "contact_image_alt": brand_page.contact_image_alt,
-                "content1_text": brand_page.content1_text,
-                "content2_text": brand_page.content2_text,
-                "content2_right": brand_page.content2_right,
-                "content2_mid": brand_page.content2_mid,
-                "content2_left": brand_page.content2_left,
-                "contact_text": brand_page.contact_text,
-                "image_desktop": brand_page.image_desktop,
-                "image_mobile": brand_page.image_mobile,
-                "content1_image": brand_page.content1_image,
-                "content2_right_image": brand_page.content2_right_image,
-                "content2_mid_image": brand_page.content2_mid_image,
-                "content2_left_image": brand_page.content2_left_image,
-                "contact_image": brand_page.contact_image,
-                "brand_carts": BrandCartSerializer(brand_carts, many=True).data
-            }
+            response_data = brand_page_serializer.data
+            response_data['brand_carts'] = BrandCartSerializer(brand_carts, many=True).data
             return Response(response_data, status=201)
         
         return Response(brand_page_serializer.errors, status=400)
@@ -2721,30 +2681,8 @@ class BrandPageView(APIView):
                         cart = cart_serializer.save()
                         brand_carts.append(cart)
                 
-                response_data = {
-                    "brand_id": brand_page.brand.id,
-                    "image_alt": brand_page.image_alt,
-                    "content1_title": brand_page.content1_title,
-                    "content1_image_alt": brand_page.content1_image_alt,
-                    "content2_right_image_alt": brand_page.content2_right_image_alt,
-                    "content2_mid_image_alt": brand_page.content2_mid_image_alt,
-                    "content2_left_image_alt": brand_page.content2_left_image_alt,
-                    "contact_image_alt": brand_page.contact_image_alt,
-                    "content1_text": brand_page.content1_text,
-                    "content2_text": brand_page.content2_text,
-                    "content2_right": brand_page.content2_right,
-                    "content2_mid": brand_page.content2_mid,
-                    "content2_left": brand_page.content2_left,
-                    "contact_text": brand_page.contact_text,
-                    "image_desktop": brand_page.image_desktop,
-                    "image_mobile": brand_page.image_mobile,
-                    "content1_image": brand_page.content1_image,
-                    "content2_right_image": brand_page.content2_right_image,
-                    "content2_mid_image": brand_page.content2_mid_image,
-                    "content2_left_image": brand_page.content2_left_image,
-                    "contact_image": brand_page.contact_image,
-                    "brand_carts": BrandCartSerializer(brand_carts, many=True).data
-                }
+                response_data = brand_page_serializer.data
+                response_data['brand_carts'] = BrandCartSerializer(brand_carts, many=True).data
                 return Response(response_data)
             
             return Response(brand_page_serializer.errors, status=400)
