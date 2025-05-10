@@ -2604,8 +2604,8 @@ class BrandPageView(APIView):
     def get(self, request, brand_id=None):
         if brand_id:
             try:
-                brand_page = BrandPageModel.objects.get(brand_id=brand_id)
-                brand_carts = BrandCartModel.objects.filter(brand_id=brand_id)
+                brand_page = BrandPageModel.objects.get(brand=brand_id)
+                brand_carts = BrandCartModel.objects.filter(brand=brand_id)
                 
                 brand_page_serializer = BrandPageSerializer(brand_page)
                 brand_cart_serializer = BrandCartSerializer(brand_carts, many=True)
