@@ -2604,8 +2604,9 @@ class BrandPageView(APIView):
     def get(self, request, brand_id=None):
         if brand_id:
             # try:
-                brand_page = BrandPageModel.objects.get(brand=brand_id)
-                brand_carts = BrandCartModel.objects.filter(brand=brand_id)
+                brand = get_object_or_404(ProductBrandModel, id=brand_id)
+                brand_page = BrandPageModel.objects.get(brand=brand)
+                brand_carts = BrandCartModel.objects.filter(brand=brand)
                 
                 brand_page_serializer = BrandPageSerializer(brand_page)
                 brand_cart_serializer = BrandCartSerializer(brand_carts, many=True)
@@ -2636,7 +2637,7 @@ class BrandPageView(APIView):
                 }
                 return Response(response_data)
             # except BrandPageModel.DoesNotExist:
-            #     return Response({"error": "not found"}, status=404)
+            #     return Response({"error": "Brand page not found"}, status=404)
         
         brand_pages = BrandPageModel.objects.all()
         brand_carts = BrandCartModel.objects.all()
