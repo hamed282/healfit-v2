@@ -110,7 +110,7 @@ class GetBlogSerializer(serializers.ModelSerializer):
     recent_blog = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
     comments_count = serializers.SerializerMethodField()
-    category = serializers.SerializerMethodField()
+    categories = serializers.SerializerMethodField()
     canonical = serializers.CharField(max_length=256, required=False, allow_blank=True)
     meta_title = serializers.CharField(max_length=60, required=False, allow_null=True)
     meta_description = serializers.CharField(max_length=160, required=False, allow_null=True)
@@ -120,15 +120,18 @@ class GetBlogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BlogModel
-        fields = ['id', 'tag', 'category', 'canonical', 'meta_title', 'meta_description', 'schema_markup',
+        fields = ['id', 'tag', 'categories', 'canonical', 'meta_title', 'meta_description', 'schema_markup',
                   'title', 'short_description', 'all_categories', 'recent_blog', 'author', 'created',
                   'updated', 'comments', 'body', 'comments_count', 'read_duration', 'slug', 'is_active', 'cover_image',
                   'cover_image_alt']
 
-    def get_category(self, obj):
+    def get_categories(self, obj):
         categories = obj.cat_blog.all()
-        categories = [category.category.category for category in categories]
-        return categories
+        return [{
+            'id': category.category.id,
+            'name': category.category.category,
+            'slug': category.category.slug
+        } for category in categories]
 
     def get_comments(self, obj):
         comments = obj.blogcomment.filter(is_active=True)
@@ -136,7 +139,6 @@ class GetBlogSerializer(serializers.ModelSerializer):
 
     def get_comments_count(self, obj):
         comments_count = len(obj.blogcomment.filter(is_reply=False))
-
         return comments_count
 
     def get_all_categories(self, obj):
@@ -153,5 +155,4 @@ class GetBlogSerializer(serializers.ModelSerializer):
             tag = tag.tag.id
         except:
             tag = None
-
         return tag
