@@ -18,7 +18,7 @@ class BlogListView(APIView):
         page = self.request.query_params.get('page', None)
         category = self.request.query_params.get('category', None)
 
-        blogs = BlogModel.objects.filter(is_active=True)
+        blogs = BlogModel.objects.filter(is_active=True).order_by('-created')
         
         if category:
             # Get blogs that have this category through AddCategoryModel
