@@ -2604,100 +2604,86 @@ class BrandPageView(APIView):
     def get(self, request, brand_id=None):
         if brand_id:
             try:
-                brand = get_object_or_404(ProductBrandModel, id=brand_id)
-                brand_page = BrandPageModel.objects.get(brand=brand)
-                brand_carts = BrandCartModel.objects.filter(brand=brand)
-                
+                brand_page = BrandPageModel.objects.get(brand=brand_id)
+                brand_cart = BrandCartModel.objects.filter(brand=brand_id)
                 brand_page_serializer = BrandPageSerializer(brand_page)
-                brand_cart_serializer = BrandCartSerializer(brand_carts, many=True)
-                
-                response_data = brand_page_serializer.data
-                response_data['brand_carts'] = brand_cart_serializer.data
-                return Response(response_data)
-            except BrandPageModel.DoesNotExist:
+                brand_cart_serializer = BrandCartSerializer(brand_cart, many=True)
                 return Response({
-                    "error": "Brand page not found",
-                    "message": "No brand page exists for this brand. Please create one using POST request.",
-                    "brand_id": brand_id
-                }, status=404)
-        
-        brand_pages = BrandPageModel.objects.all()
-        brand_carts = BrandCartModel.objects.all()
-        
-        brand_page_serializer = BrandPageSerializer(brand_pages, many=True)
-        brand_cart_serializer = BrandCartSerializer(brand_carts, many=True)
-        
-        response_data = {
-            "brand_pages": brand_page_serializer.data,
-            "brand_carts": brand_cart_serializer.data,
-        }
-        return Response(response_data)
+                    'brand_page': brand_page_serializer.data,
+                    'brand_cart': brand_cart_serializer.data
+                })
+            except BrandPageModel.DoesNotExist:
+                return Response({'error': 'Brand page not found'}, status=404)
+        else:
+            brand_pages = BrandPageModel.objects.all()
+            brand_page_serializer = BrandPageSerializer(brand_pages, many=True)
+            return Response(brand_page_serializer.data)
 
     def post(self, request):
-        # Handle BrandPage data
-        brand_page_data = request.data
+        brand_id = request.data.get('brand')
+        if not brand_id:
+            return Response({'error': 'Brand ID is required'}, status=400)
+            
+        try:
+            brand = ProductBrandModel.objects.get(id=brand_id)
+        except ProductBrandModel.DoesNotExist:
+            return Response({'error': 'Brand not found'}, status=404)
+
+        # Check if brand page already exists
+        if BrandPageModel.objects.filter(brand=brand).exists():
+            return Response({'error': 'Brand page already exists'}, status=400)
+
+        # Create brand page with default values
+        brand_page_data = {
+            'brand': brand,
+            'image_desktop': request.FILES.get('image_desktop'),
+            'image_mobile': request.FILES.get('image_mobile'),
+            'image_alt': request.data.get('image_alt', ''),
+            'content1_title': request.data.get('content1_title', ''),
+            'content1_image': request.FILES.get('content1_image'),
+            'content1_image_alt': request.data.get('content1_image_alt', ''),
+            'content1_text': request.data.get('content1_text', ''),
+            'content2_text': request.data.get('content2_text', ''),
+            'content2_right_image': request.FILES.get('content2_right_image'),
+            'content2_right_image_alt': request.data.get('content2_right_image_alt', ''),
+            'content2_right': request.data.get('content2_right', ''),
+            'content2_mid_image': request.FILES.get('content2_mid_image'),
+            'content2_mid_image_alt': request.data.get('content2_mid_image_alt', ''),
+            'content2_mid': request.data.get('content2_mid', ''),
+            'content2_left_image': request.FILES.get('content2_left_image'),
+            'content2_left_image_alt': request.data.get('content2_left_image_alt', ''),
+            'content2_left': request.data.get('content2_left', ''),
+            'contact_image': request.FILES.get('contact_image'),
+            'contact_image_alt': request.data.get('contact_image_alt', ''),
+            'contact_text': request.data.get('contact_text', '')
+        }
+
         brand_page_serializer = BrandPageSerializer(data=brand_page_data)
-        
         if brand_page_serializer.is_valid():
-            brand_page = brand_page_serializer.save()
-            
-            # Handle BrandCart data if provided
-            brand_carts_data = request.data.get('brand_carts', [])
-            brand_carts = []
-            
-            for cart_data in brand_carts_data:
-                cart_data['brand'] = brand_page.brand.id
-                cart_serializer = BrandCartSerializer(data=cart_data)
-                if cart_serializer.is_valid():
-                    cart = cart_serializer.save()
-                    brand_carts.append(cart)
-            
-            response_data = brand_page_serializer.data
-            response_data['brand_carts'] = BrandCartSerializer(brand_carts, many=True).data
-            return Response(response_data, status=201)
-        
+            brand_page_serializer.save()
+            return Response(brand_page_serializer.data, status=201)
         return Response(brand_page_serializer.errors, status=400)
 
     def put(self, request, brand_id):
         try:
-            brand_page = BrandPageModel.objects.get(brand_id=brand_id)
-            brand_page_serializer = BrandPageSerializer(brand_page, data=request.data, partial=True)
-            
-            if brand_page_serializer.is_valid():
-                brand_page = brand_page_serializer.save()
-                
-                # Handle BrandCart updates if provided
-                brand_carts_data = request.data.get('brand_carts', [])
-                brand_carts = []
-                
-                # Delete existing carts
-                BrandCartModel.objects.filter(brand_id=brand_id).delete()
-                
-                # Create new carts
-                for cart_data in brand_carts_data:
-                    cart_data['brand'] = brand_page.brand.id
-                    cart_serializer = BrandCartSerializer(data=cart_data)
-                    if cart_serializer.is_valid():
-                        cart = cart_serializer.save()
-                        brand_carts.append(cart)
-                
-                response_data = brand_page_serializer.data
-                response_data['brand_carts'] = BrandCartSerializer(brand_carts, many=True).data
-                return Response(response_data)
-            
-            return Response(brand_page_serializer.errors, status=400)
-            
+            brand_page = BrandPageModel.objects.get(brand=brand_id)
         except BrandPageModel.DoesNotExist:
-            return Response({"error": "not found"}, status=404)
+            return Response({'error': 'Brand page not found'}, status=404)
+
+        brand_page_serializer = BrandPageSerializer(brand_page, data=request.data, partial=True)
+        if brand_page_serializer.is_valid():
+            brand_page_serializer.save()
+            return Response(brand_page_serializer.data)
+        return Response(brand_page_serializer.errors, status=400)
 
     def delete(self, request, brand_id):
         try:
-            brand_page = BrandPageModel.objects.get(brand_id=brand_id)
-            BrandCartModel.objects.filter(brand_id=brand_id).delete()
-            brand_page.delete()
-            return Response(status=204)
+            brand_page = BrandPageModel.objects.get(brand=brand_id)
         except BrandPageModel.DoesNotExist:
-            return Response({"error": "not found"}, status=404)
+            return Response({'error': 'Brand page not found'}, status=404)
+
+        brand_page.delete()
+        return Response(status=204)
 
 
 
