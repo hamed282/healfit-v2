@@ -2603,7 +2603,7 @@ class CustomMadePageView(APIView):
 class BrandPageView(APIView):
     def get(self, request, brand_id=None):
         if brand_id:
-            try:
+            # try:
                 brand_page = BrandPageModel.objects.get(brand=brand_id)
                 brand_carts = BrandCartModel.objects.filter(brand=brand_id)
                 
@@ -2635,8 +2635,8 @@ class BrandPageView(APIView):
                     "brand_carts": brand_cart_serializer.data
                 }
                 return Response(response_data)
-            except BrandPageModel.DoesNotExist:
-                return Response({"error": "not found"}, status=404)
+            # except BrandPageModel.DoesNotExist:
+            #     return Response({"error": "not found"}, status=404)
         
         brand_pages = BrandPageModel.objects.all()
         brand_carts = BrandCartModel.objects.all()
