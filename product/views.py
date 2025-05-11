@@ -398,7 +398,7 @@ class FavProductView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, product_id):
-        fav = FavUserModel.objects.get(product=ProductModel.objects.get(id=product_id), user=request.user)
+        fav = FavUserModel.objects.get(product=ProductModel.objects.get(id=product_id), user=request.user, fav=True)
         ser_data = FavProductSerializer(instance=fav)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
