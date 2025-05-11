@@ -826,18 +826,26 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        # جدا کردن brand_carts از داده‌ها، چون در مدل وجود ندارد
-        brand_carts = validated_data.pop('brand_carts', [])
+        brand_carts_data = validated_data.pop('brand_carts', [])
 
-        # ساخت برند
         brand = super().create(validated_data)
 
-        # حالا brand_carts را پردازش کنید (مثلاً ذخیره ارتباط)
-        # این قسمت به مدل و نیاز پروژه شما بستگی دارد
-        # مثلا:
-        # for cart_id in brand_carts:
-        #     BrandCartModel.objects.create(brand=brand, cart_id=cart_id)
+        request = self.context.get('request')
+        if brand_carts_data and request:
+            for i, cart in enumerate(brand_carts_data):
+                images = cart.pop('images', [])
+                brand_cart = BrandCartModel.objects.create(brand=brand, content=cart.get('content', ''))
 
+                for j, image_info in enumerate(images):
+                    image_field = f'brand_carts[{i}].images[{j}].image'
+                    image_file = request.FILES.get(image_field)
+
+                    BrandCartImageModel.objects.create(
+                        brand_cart=brand_cart,
+                        image=image_file,
+                        image_alt=image_info.get('image_alt'),
+                        priority=image_info.get('priority'),
+                    )
         return brand
 
 
