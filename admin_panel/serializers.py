@@ -827,27 +827,35 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         brand_carts_data = validated_data.pop('brand_carts', [])
-
         brand = super().create(validated_data)
 
         request = self.context.get('request')
         if brand_carts_data and request:
             for i, cart in enumerate(brand_carts_data):
-                images = cart.pop('images', [])
-                brand_cart = BrandCartModel.objects.create(brand=brand, content=cart.get('content', ''))
+                content = cart.get('content', '')
+                images = cart.get('images', [])
 
+                # ایجاد brand_cart برای برند
+                brand_cart = BrandCartModel.objects.create(
+                    brand=brand,
+                    content=content,
+                )
+
+                # اضافه کردن تصاویر به brand_cart
                 for j, image_info in enumerate(images):
-                    image_field = f'brand_carts[{i}].images[{j}].image'
-                    image_file = request.FILES.get(image_field)
+                    # گرفتن فایل تصویر از request.FILES
+                    image_field_name = f'brand_carts[{i}].images[{j}].image'
+                    image_file = request.FILES.get(image_field_name)
 
-                    BrandCartImageModel.objects.create(
-                        brand_cart=brand_cart,
-                        image=image_file,
-                        image_alt=image_info.get('image_alt'),
-                        priority=image_info.get('priority'),
-                    )
+                    if image_file:
+                        BrandCartImageModel.objects.create(
+                            brand_cart=brand_cart,
+                            image=image_file,
+                            image_alt=image_info.get('image_alt', ''),
+                            priority=image_info.get('priority', 1),
+                        )
+
         return brand
-
 
 class ProductBrandUpdateSerializer(serializers.ModelSerializer):
 
