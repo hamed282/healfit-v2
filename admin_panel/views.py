@@ -45,7 +45,7 @@ from product.serializers import (ProductCategorySerializer, ProductSubCategorySe
                                  AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer,
                                  CouponSerializer, CouponCreateSerializer, CustomMadeSerializer,
                                  CustomMadePageSerializer, BrandCartSerializer,
-                                 BrandCartImageSerializer)
+                                 BrandCartImageSerializer, ProductBrandSerializer)
 from collections import defaultdict
 from order.models import OrderModel, OrderItemModel, OrderStatusModel, ShippingModel, ShippingCountryModel
 from django.db.models import Subquery
@@ -57,6 +57,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from django.http import JsonResponse
 from django.core.management import call_command
+from rest_framework.parsers import MultiPartParser
+import json
+from collections import defaultdict
 
 
 # Account Section
@@ -2465,17 +2468,52 @@ class BrandView(APIView):
     #         return [OrPermission(IsProductAdmin)]
     #     return super().get_permissions()
 
+    parser_classes = [MultiPartParser]
+
     def get(self, request):
         product_type = ProductBrandModel.objects.all()
         ser_data = BrandSerializer(instance=product_type, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
-    def post(self, request, *args, **kwargs):
-        serializer = ProductBrandCreateSerializer(data=request.data)
+    def post(self, request):
+        brand_data = request.data.copy()
+        brand_carts_data = self._extract_brand_carts_data(request)
+
+        serializer = ProductBrandCreateSerializer(data=brand_data)
         if serializer.is_valid():
             brand = serializer.save()
+            self._create_brand_carts(brand, brand_carts_data)
             return Response(ProductBrandCreateSerializer(brand).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def _extract_brand_carts_data(self, request):
+        brand_carts = defaultdict(lambda: {'images': []})
+
+        for key in request.data:
+            if key.startswith('brand_carts'):
+                parts = key.replace(']', '').split('[')
+                try:
+                    _, cart_index, field_type, *rest = parts
+                except ValueError:
+                    continue
+
+                if field_type == 'content':
+                    brand_carts[int(cart_index)]['content'] = request.data[key]
+                elif field_type == 'images':
+                    img_index, image_field = rest
+                    cart = brand_carts[int(cart_index)]
+                    while len(cart['images']) <= int(img_index):
+                        cart['images'].append({})
+                    cart['images'][int(img_index)][image_field] = request.data[key]
+
+        return list(brand_carts.values())
+
+    def _create_brand_carts(self, brand, brand_carts_data):
+        for cart_data in brand_carts_data:
+            images = cart_data.pop('images', [])
+            cart = BrandCartModel.objects.create(brand=brand, **cart_data)
+            for image_data in images:
+                BrandCartImageModel.objects.create(brand_cart=cart, **image_data)
 
 
 class BrandItemView(APIView):
@@ -2485,23 +2523,46 @@ class BrandItemView(APIView):
     #     if self.request.method in ['PUT', 'GET']:
     #         return [OrPermission(IsProductAdmin)]
     #     return super().get_permissions()
+    parser_classes = [MultiPartParser]
 
     def get(self, request, brand_id):
         custom_type = get_object_or_404(ProductBrandModel, id=brand_id)
         ser_data = BrandSerializer(instance=custom_type)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
-    def put(self, request, brand_id):
-        try:
-            brand = ProductBrandModel.objects.get(pk=brand_id)
-        except ProductBrandModel.DoesNotExist:
-            return Response({'error': 'برند مورد نظر یافت نشد'}, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = ProductBrandUpdateSerializer(brand, data=request.data, context={'request': request})
+    def post(self, request, *args, **kwargs):
+        serializer = ProductBrandCreateSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+            brand = serializer.save()
+
+            # پردازش brand_carts از JSON
+            brand_carts_data_raw = request.data.get('brand_carts')
+            if brand_carts_data_raw:
+                try:
+                    brand_carts_data = json.loads(brand_carts_data_raw)
+                    self._create_brand_carts(brand, brand_carts_data, request)
+                except json.JSONDecodeError:
+                    return Response({'brand_carts': ['فرمت JSON نامعتبر است.']}, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response(ProductBrandSerializer(brand).data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def _create_brand_carts(self, brand, brand_carts_data, request):
+        for i, cart_data in enumerate(brand_carts_data):
+            images = cart_data.pop('images', [])
+            cart = BrandCartModel.objects.create(brand=brand, **cart_data)
+
+            for j, image_data in enumerate(images):
+                image_field = f'brand_carts[{i}][images][{j}][image]'
+                image_file = request.FILES.get(image_field)
+
+                BrandCartImageModel.objects.create(
+                    brand_cart=cart,
+                    image=image_file,
+                    image_alt=image_data.get('image_alt'),
+                    priority=image_data.get('priority'),
+                )
 
 
 class ManuallyUpdateView(APIView):
