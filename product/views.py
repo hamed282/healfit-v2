@@ -388,7 +388,7 @@ class ProductNewItemView(APIView):
         try:
             product = ProductModel.objects.get(slug=slug_product)
             ser_data = NewProductSerializer(instance=product, context={'compression_class': compression_class,
-                                                                        'side': side})
+                                                                        'side': side, 'request': request})
             return Response(data=ser_data.data, status=status.HTTP_200_OK)
         except:
             return Response(data={'message': 'Page Not Found'}, status=status.HTTP_404_NOT_FOUND)
