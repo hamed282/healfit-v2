@@ -5,7 +5,7 @@ from .models import (ProductCategoryModel, ProductModel, PopularProductModel, Si
                      FavUserModel, CouponModel, ProductCouponModel, CompressionClassModel, SideModel, ProductBrandModel,
                      CustomMadeModel, TreatmentCategoryModel, ProductTypeModel, BodyAreaModel, ClassNumberModel,
                      CustomerTypeModel, HearAboutUsModel, CustomMadePageModel, CustomerTestimonialsModel,
-                     BrandPageModel, BrandCartModel, BrandCartImageModel)
+                     BrandCartModel, BrandCartImageModel)
 from django.utils.html import format_html
 
 
@@ -136,7 +136,6 @@ admin.site.register(AddProductTagModel)
 admin.site.register(ProductBrandModel)
 admin.site.register(CustomMadePageModel)
 admin.site.register(CustomerTestimonialsModel)
-admin.site.register(BrandPageModel)
 admin.site.register(BrandCartModel, BrandCartAdmin)
 admin.site.register(BrandCartImageModel)
 admin.site.register(FavUserModel, FavUserAdmin)

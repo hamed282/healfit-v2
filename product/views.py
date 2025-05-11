@@ -5,14 +5,14 @@ from .models import (ProductGenderModel, ProductModel, SizeProductModel, ColorPr
                      AddImageGalleryModel, PopularProductModel, ProductCategoryModel, ProductSubCategoryModel,
                      FavUserModel, CouponModel, CompressionClassModel, SideModel, CustomerTypeModel, ProductTypeModel,
                      BodyAreaModel, ClassNumberModel, TreatmentCategoryModel, HearAboutUsModel, CustomMadePageModel,
-                     BrandPageModel, BrandCartModel, ProductBrandModel)
+                     BrandCartModel, ProductBrandModel)
 from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVariantShopSerializer,
                           ProductColorImageSerializer, ColorSizeProductSerializer, ProductListSerializer,
                           UserFavSerializer, PopularProductSerializer, ProductAllSerializer,
                           ProductCategorySerializer, ProductSubCategorySerializer, ProductByCategorySerializer,
                           FavProductSerializer, GetClassSerializer, NewProductSerializer, CategoryBestSellerSerializer,
                           CustomMadeSerializer, CustomMadeOptionsSerializer, CustomMadePageSerializer,
-                          BrandPageSerializer, BrandCartSerializer, ProductBrandSerializer)
+                          BrandCartSerializer, ProductBrandSerializer)
 from django.shortcuts import get_object_or_404
 from math import ceil
 from rest_framework import viewsets

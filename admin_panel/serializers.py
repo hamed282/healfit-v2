@@ -10,7 +10,7 @@ from product.models import (ExtraGroupModel, SizeProductModel, ColorProductModel
                             AddSubCategoryModel, ProductVariantModel, AddCategoryModel, ProductCategoryModel,
                             CustomerTypeModel, ProductTypeModel, BodyAreaModel, ClassNumberModel,
                             TreatmentCategoryModel, HearAboutUsModel, CompressionClassModel, SideModel,
-                            ProductBrandModel)
+                            ProductBrandModel, BrandCartImageModel, BrandCartModel)
 from product.serializers import ProductColorImageSerializer, ProductBrandSerializer
 from order.models import OrderItemModel, OrderModel, OrderStatusModel, ShippingModel, ShippingCountryModel
 import re
@@ -794,3 +794,50 @@ class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductBrandModel
         fields = '__all__'
+
+
+class BrandCartImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BrandCartImageModel
+        fields = ['id', 'image', 'image_alt', 'priority']
+
+
+class BrandCartSerializer(serializers.ModelSerializer):
+    images = BrandCartImageSerializer(many=True)
+
+    class Meta:
+        model = BrandCartModel
+        fields = ['id', 'content', 'images']
+
+    def create(self, validated_data):
+        images_data = validated_data.pop('images')
+        brand_cart = BrandCartModel.objects.create(**validated_data)
+        for image_data in images_data:
+            BrandCartImageModel.objects.create(brand_cart=brand_cart, **image_data)
+        return brand_cart
+
+
+class ProductBrandCreateSerializer(serializers.ModelSerializer):
+    brand_carts = BrandCartSerializer(many=True)
+
+    class Meta:
+        model = ProductBrandModel
+        fields = ['id', 'brand', 'brand_logo', 'brand_logo_alt', 'slug',
+                  'image_desktop', 'image_mobile', 'image_alt',
+                  'content1_title', 'content1_image', 'content1_image_alt', 'content1_text',
+                  'content2_text', 'content2_right_image', 'content2_right_image_alt', 'content2_right',
+                  'content2_mid_image', 'content2_mid_image_alt', 'content2_mid',
+                  'content2_left_image', 'content2_left_image_alt', 'content2_left',
+                  'contact_image', 'contact_image_alt', 'contact_text',
+                  'brand_carts']
+
+    def create(self, validated_data):
+        carts_data = validated_data.pop('brand_carts')
+        brand = ProductBrandModel.objects.create(**validated_data)
+        for cart_data in carts_data:
+            images_data = cart_data.pop('images')
+            brand_cart = BrandCartModel.objects.create(brand=brand, **cart_data)
+            for image_data in images_data:
+                BrandCartImageModel.objects.create(brand_cart=brand_cart, **image_data)
+        return brand
+

@@ -255,16 +255,6 @@ class ProductCategoryModel(models.Model):
         return f'/category/{self.slug}'
 
 
-class ProductBrandModel(models.Model):
-    brand = models.CharField(max_length=32)
-    brand_logo = models.ImageField(upload_to=get_brand_logo_upload_path, null=True, blank=True)
-    brand_logo_alt = models.CharField(max_length=64, null=True, blank=True)
-    slug = models.SlugField(unique=True)
-
-    def __str__(self):
-        return f'{self.brand}'
-
-
 class ProductSubCategoryModel(models.Model):
     objects = None
     category = models.ForeignKey(ProductCategoryModel, on_delete=models.CASCADE)
@@ -781,8 +771,42 @@ class CustomerTestimonialsModel(models.Model):
         return f'{self.name}'
 
 
-class BrandPageModel(models.Model):
-    brand = models.ForeignKey(ProductBrandModel, on_delete=models.CASCADE)
+# class BrandPageModel(models.Model):
+#     brand = models.ForeignKey(ProductBrandModel, on_delete=models.CASCADE)
+#     image_desktop = models.ImageField(upload_to=get_brand_upload_path)
+#     image_mobile = models.ImageField(upload_to=get_brand_upload_path)
+#     image_alt = models.CharField(max_length=64, blank=True, null=True)
+#
+#     content1_title = models.CharField(max_length=64)
+#     content1_image = models.ImageField(upload_to=get_brand_upload_path)
+#     content1_image_alt = models.CharField(max_length=64, blank=True, null=True)
+#     content1_text = models.TextField()
+#
+#     content2_text = models.TextField()
+#     content2_right_image = models.ImageField(upload_to=get_brand_upload_path)
+#     content2_right_image_alt = models.CharField(max_length=64, blank=True, null=True)
+#     content2_right = models.TextField()
+#     content2_mid_image = models.ImageField(upload_to=get_brand_upload_path)
+#     content2_mid_image_alt = models.CharField(max_length=64, blank=True, null=True)
+#     content2_mid = models.TextField()
+#     content2_left_image = models.ImageField(upload_to=get_brand_upload_path)
+#     content2_left_image_alt = models.CharField(max_length=64, blank=True, null=True)
+#     content2_left = models.TextField()
+#
+#     contact_image = models.ImageField(upload_to=get_brand_upload_path)
+#     contact_image_alt = models.CharField(max_length=64, blank=True, null=True)
+#     contact_text = models.TextField()
+#
+#     def __str__(self):
+#         return f'{self.brand}'
+
+
+class ProductBrandModel(models.Model):
+    brand = models.CharField(max_length=32)
+    brand_logo = models.ImageField(upload_to=get_brand_logo_upload_path, null=True, blank=True)
+    brand_logo_alt = models.CharField(max_length=64, null=True, blank=True)
+    slug = models.SlugField(unique=True)
+
     image_desktop = models.ImageField(upload_to=get_brand_upload_path)
     image_mobile = models.ImageField(upload_to=get_brand_upload_path)
     image_alt = models.CharField(max_length=64, blank=True, null=True)
