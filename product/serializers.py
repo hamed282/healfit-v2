@@ -54,7 +54,7 @@ class ProductSerializer(serializers.ModelSerializer):
         request = self.context.get('request', None)
 
         if request and request.user.is_authenticated:
-            fav = FavUserModel.objects.filter(user=request.user, product=obj).exists()
+            fav = FavUserModel.objects.filter(user=request.user, product=obj, fav=True).exists()
         else:
             fav = False
 
@@ -499,7 +499,7 @@ class ProductAllSerializer(serializers.ModelSerializer):
         request = self.context.get('request', None)
 
         if request and request.user.is_authenticated:
-            fav = FavUserModel.objects.filter(user=request.user, product=obj).exists()
+            fav = FavUserModel.objects.filter(user=request.user, product=obj, fav=True).exists()
         else:
             fav = False
 
