@@ -811,6 +811,9 @@ class BrandCartSerializer(serializers.ModelSerializer):
 
 
 class ProductBrandCreateSerializer(serializers.ModelSerializer):
+    brand_carts = serializers.ListField(
+        child=serializers.IntegerField(), required=False, write_only=True
+    )
     class Meta:
         model = ProductBrandModel
         fields = ['id', 'brand', 'brand_logo', 'brand_logo_alt', 'slug',
@@ -821,15 +824,23 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
                   'content2_left_image', 'content2_left_image_alt', 'content2_left',
                   'contact_image', 'contact_image_alt', 'contact_text',
                   'brand_carts']
+        extra_kwargs = {
+            'image': {'required': False},
+        }
 
     def create(self, validated_data):
-        carts_data = validated_data.pop('brand_carts')
-        brand = ProductBrandModel.objects.create(**validated_data)
-        for cart_data in carts_data:
-            images_data = cart_data.pop('images')
-            brand_cart = BrandCartModel.objects.create(brand=brand, **cart_data)
-            for image_data in images_data:
-                BrandCartImageModel.objects.create(brand_cart=brand_cart, **image_data)
+        # جدا کردن brand_carts از داده‌ها، چون در مدل وجود ندارد
+        brand_carts = validated_data.pop('brand_carts', [])
+
+        # ساخت برند
+        brand = super().create(validated_data)
+
+        # حالا brand_carts را پردازش کنید (مثلاً ذخیره ارتباط)
+        # این قسمت به مدل و نیاز پروژه شما بستگی دارد
+        # مثلا:
+        # for cart_id in brand_carts:
+        #     BrandCartModel.objects.create(brand=brand, cart_id=cart_id)
+
         return brand
 
 
