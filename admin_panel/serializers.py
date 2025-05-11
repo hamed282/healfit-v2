@@ -811,6 +811,7 @@ class BrandCartSerializer(serializers.ModelSerializer):
 
 
 class ProductBrandCreateSerializer(serializers.ModelSerializer):
+    brand_carts = serializers.JSONField(write_only=True, required=False)
 
     class Meta:
         model = ProductBrandModel
@@ -820,10 +821,8 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
                   'content2_text', 'content2_right_image', 'content2_right_image_alt', 'content2_right',
                   'content2_mid_image', 'content2_mid_image_alt', 'content2_mid',
                   'content2_left_image', 'content2_left_image_alt', 'content2_left',
-                  'contact_image', 'contact_image_alt', 'contact_text']
-        extra_kwargs = {
-            'image': {'required': False},
-        }
+                  'contact_image', 'contact_image_alt', 'contact_text',
+                  'brand_carts']  # 👈 اینجا اضافه شود
 
     def create(self, validated_data):
         brand_carts_data = validated_data.pop('brand_carts', [])
@@ -835,15 +834,9 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
                 content = cart.get('content', '')
                 images = cart.get('images', [])
 
-                # ایجاد brand_cart برای برند
-                brand_cart = BrandCartModel.objects.create(
-                    brand=brand,
-                    content=content,
-                )
+                brand_cart = BrandCartModel.objects.create(brand=brand, content=content)
 
-                # اضافه کردن تصاویر به brand_cart
                 for j, image_info in enumerate(images):
-                    # گرفتن فایل تصویر از request.FILES
                     image_field_name = f'brand_carts[{i}].images[{j}].image'
                     image_file = request.FILES.get(image_field_name)
 
@@ -856,6 +849,7 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
                         )
 
         return brand
+
 
 class ProductBrandUpdateSerializer(serializers.ModelSerializer):
 

@@ -2468,8 +2468,6 @@ class BrandView(APIView):
     #         return [OrPermission(IsProductAdmin)]
     #     return super().get_permissions()
 
-    parser_classes = [MultiPartParser]
-
     def get(self, request):
         product_type = ProductBrandModel.objects.all()
         ser_data = BrandSerializer(instance=product_type, many=True)
@@ -2479,30 +2477,6 @@ class BrandView(APIView):
         serializer = ProductBrandCreateSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             brand = serializer.save()
-
-            # پردازش brand_carts
-            carts_raw = request.data.get('brand_carts')
-            if carts_raw:
-                try:
-                    carts_data = json.loads(carts_raw)
-                    for i, cart in enumerate(carts_data):
-                        images = cart.pop('images', [])
-                        brand_cart = BrandCartModel.objects.create(brand=brand, content=cart.get('content', ''))
-
-                        for j, image_info in enumerate(images):
-                            # نام دقیق فایل بر اساس کلید ارسالی از فرانت
-                            image_field = f'brand_carts[{i}].images[{j}].image'
-                            image_file = request.FILES.get(image_field)
-
-                            BrandCartImageModel.objects.create(
-                                brand_cart=brand_cart,
-                                image=image_file,
-                                image_alt=image_info.get('image_alt'),
-                                priority=image_info.get('priority'),
-                            )
-                except json.JSONDecodeError:
-                    return Response({'brand_carts': ['فرمت JSON نامعتبر است.']}, status=status.HTTP_400_BAD_REQUEST)
-
             return Response(ProductBrandSerializer(brand).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
