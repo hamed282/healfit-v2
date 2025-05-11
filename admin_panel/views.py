@@ -2476,7 +2476,7 @@ class BrandView(APIView):
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
-        serializer = ProductBrandCreateSerializer(data=request.data)
+        serializer = ProductBrandCreateSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             brand = serializer.save()
 
