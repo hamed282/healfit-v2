@@ -418,7 +418,7 @@ class FavProductView(APIView):
         except:
             return Response(data={'message': 'product is not exist'})
 
-        product.fav = false
+        product.fav = False
         product.save()
 
         return Response(data={'message': f'The fav product ID {product} was deleted'}, status=status.HTTP_200_OK)
