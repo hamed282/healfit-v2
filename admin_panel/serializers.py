@@ -811,8 +811,6 @@ class BrandCartSerializer(serializers.ModelSerializer):
 
 
 class ProductBrandCreateSerializer(serializers.ModelSerializer):
-    brand_carts = BrandCartSerializer(many=True, required=False)
-
     class Meta:
         model = ProductBrandModel
         fields = ['id', 'brand', 'brand_logo', 'brand_logo_alt', 'slug',
@@ -836,7 +834,6 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
 
 
 class ProductBrandUpdateSerializer(serializers.ModelSerializer):
-    brand_carts = BrandCartSerializer(many=True, required=False)
 
     class Meta:
         model = ProductBrandModel
