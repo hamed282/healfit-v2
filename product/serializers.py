@@ -656,9 +656,16 @@ class FavProductSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['request'].user
         product = self.context['product_id']
-        return FavUserModel.objects.create(user=user,
-                                           product=ProductModel.objects.get(id=product),
-                                           **validated_data)
+        if FavUserModel.objects.filter(user=user, product=ProductModel.objects.get(id=product)).exists():
+            product_fav = FavUserModel.objects.filter(user=user, product=ProductModel.objects.get(id=product)).first()
+            product_fav.fav = True
+            product_fav.save()
+            return "add product to fav"
+
+        else:
+            return FavUserModel.objects.create(user=user,
+                                               product=ProductModel.objects.get(id=product),
+                                               **validated_data)
 
 
 class UserFavSerializer(serializers.ModelSerializer):
