@@ -403,7 +403,8 @@ class FavProductView(APIView):
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        serializer = FavProductSerializer(data=request.data, context={'request': request, 'product_id': request.data['product']})
+        serializer = FavProductSerializer(data=request.data,
+                                          context={'request': request, 'product_id': request.data['product']})
         if serializer.is_valid():
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)

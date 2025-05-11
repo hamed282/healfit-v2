@@ -658,7 +658,6 @@ class FavProductSerializer(serializers.ModelSerializer):
         product = self.context['product_id']
         return FavUserModel.objects.create(user=user,
                                            product=ProductModel.objects.get(id=product),
-                                           fav=True,
                                            **validated_data)
 
 
