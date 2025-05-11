@@ -209,10 +209,21 @@ class NewProductSerializer(serializers.ModelSerializer):
     size = serializers.SerializerMethodField()
     # compression_class = serializers.SerializerMethodField()
     # side = serializers.SerializerMethodField()
+    fav = serializers.SerializerMethodField()
 
     class Meta:
         model = ProductModel
         fields = '__all__'
+
+    def get_fav(self, obj):
+        request = self.context.get('request', None)
+
+        if request and request.user.is_authenticated:
+            fav = FavUserModel.objects.filter(user=request.user, product=obj, fav=True).exists()
+        else:
+            fav = False
+
+        return fav
 
     def get_context_data(self):
         compression_class = self.context.get('compression_class', None)
