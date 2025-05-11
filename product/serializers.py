@@ -671,7 +671,7 @@ class FavProductSerializer(serializers.ModelSerializer):
             product_fav = FavUserModel.objects.filter(user=user, product=ProductModel.objects.get(id=product)).first()
             product_fav.fav = True
             product_fav.save()
-            return "add product to fav"
+            return product_fav
 
         else:
             return FavUserModel.objects.create(user=user,
