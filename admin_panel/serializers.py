@@ -789,13 +789,6 @@ class SideSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class BrandSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = ProductBrandModel
-        fields = '__all__'
-
-
 class BrandCartImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = BrandCartImageModel
@@ -841,3 +834,70 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
                 BrandCartImageModel.objects.create(brand_cart=brand_cart, **image_data)
         return brand
 
+
+class ProductBrandUpdateSerializer(serializers.ModelSerializer):
+    brand_carts = BrandCartSerializer(many=True)
+
+    class Meta:
+        model = ProductBrandModel
+        fields = '__all__'
+
+    def update(self, instance, validated_data):
+        brand_carts_data = validated_data.pop('brand_carts', [])
+
+        # به‌روزرسانی فیلدهای اصلی برند
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # کارت‌های موجود این برند
+        existing_cart_ids = [cart.id for cart in instance.brandcartmodel_set.all()]
+
+        # پیگیری کارت‌هایی که کاربر فرستاده
+        sent_cart_ids = []
+
+        for cart_data in brand_carts_data:
+            images_data = cart_data.pop('images', [])
+            cart_id = cart_data.get('id', None)
+
+            if cart_id and BrandCartModel.objects.filter(id=cart_id, brand=instance).exists():
+                cart = BrandCartModel.objects.get(id=cart_id, brand=instance)
+                for attr, value in cart_data.items():
+                    setattr(cart, attr, value)
+                cart.save()
+                sent_cart_ids.append(cart.id)
+            else:
+                cart = BrandCartModel.objects.create(brand=instance, **cart_data)
+                sent_cart_ids.append(cart.id)
+
+            # بروزرسانی تصاویر مربوط به کارت
+            existing_image_ids = [img.id for img in cart.images.all()]
+            sent_image_ids = []
+
+            for image_data in images_data:
+                image_id = image_data.get('id', None)
+                if image_id and BrandCartImageModel.objects.filter(id=image_id, brand_cart=cart).exists():
+                    image = BrandCartImageModel.objects.get(id=image_id, brand_cart=cart)
+                    for attr, value in image_data.items():
+                        setattr(image, attr, value)
+                    image.save()
+                    sent_image_ids.append(image.id)
+                else:
+                    image = BrandCartImageModel.objects.create(brand_cart=cart, **image_data)
+                    sent_image_ids.append(image.id)
+
+            # حذف تصاویر حذف‌شده
+            BrandCartImageModel.objects.filter(brand_cart=cart).exclude(id__in=sent_image_ids).delete()
+
+        # حذف کارت‌های حذف‌شده
+        BrandCartModel.objects.filter(brand=instance).exclude(id__in=sent_cart_ids).delete()
+
+        return instance
+
+
+class BrandSerializer(serializers.ModelSerializer):
+    brand_carts = BrandCartSerializer(source='brandcartmodel_set', many=True, read_only=True)
+
+    class Meta:
+        model = ProductBrandModel
+        fields = '__all__'

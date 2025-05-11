@@ -11,7 +11,8 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           ShippingCountrySerializer, ShippingSerializer, CityShippingSerializer, BlogAuthorSerializer,
                           CustomerTypeSerializer, ProductTypeSerializer, BodyAreaSerializer, HearAboutUsSerializer,
                           TreatmentCategorySerializer, ClassNumberSerializer, CompressionClassSerializer,
-                          SideSerializer, BrandSerializer, ProductSerializer, ProductBrandCreateSerializer)
+                          SideSerializer, BrandSerializer, ProductSerializer, ProductBrandCreateSerializer,
+                          ProductBrandUpdateSerializer)
 from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
@@ -2457,12 +2458,12 @@ class SideItemView(APIView):
 
 
 class BrandView(APIView):
-    permission_classes = [IsAdminUser, IsProductAdmin]
-
-    def get_permissions(self):
-        if self.request.method in ['PUT', 'GET']:
-            return [OrPermission(IsProductAdmin)]
-        return super().get_permissions()
+    # permission_classes = [IsAdminUser, IsProductAdmin]
+    #
+    # def get_permissions(self):
+    #     if self.request.method in ['PUT', 'GET']:
+    #         return [OrPermission(IsProductAdmin)]
+    #     return super().get_permissions()
 
     def get(self, request):
         product_type = ProductBrandModel.objects.all()
@@ -2478,12 +2479,12 @@ class BrandView(APIView):
 
 
 class BrandItemView(APIView):
-    permission_classes = [IsAdminUser, IsProductAdmin]
-
-    def get_permissions(self):
-        if self.request.method in ['PUT', 'GET']:
-            return [OrPermission(IsProductAdmin)]
-        return super().get_permissions()
+    # permission_classes = [IsAdminUser, IsProductAdmin]
+    #
+    # def get_permissions(self):
+    #     if self.request.method in ['PUT', 'GET']:
+    #         return [OrPermission(IsProductAdmin)]
+    #     return super().get_permissions()
 
     def get(self, request, brand_id):
         custom_type = get_object_or_404(ProductBrandModel, id=brand_id)
@@ -2491,13 +2492,16 @@ class BrandItemView(APIView):
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
     def put(self, request, brand_id):
-        form = request.data
-        product_type = ProductBrandModel.objects.get(id=brand_id)
-        ser_data = BrandSerializer(instance=product_type, data=form, partial=True)
-        if ser_data.is_valid():
-            ser_data.save()
-            return Response(data=ser_data.data, status=status.HTTP_200_OK)
-        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            brand = ProductBrandModel.objects.get(pk=brand_id)
+        except ProductBrandModel.DoesNotExist:
+            return Response({'error': 'برند مورد نظر یافت نشد'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ProductBrandUpdateSerializer(brand, data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ManuallyUpdateView(APIView):
