@@ -852,6 +852,7 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
 
 
 class ProductBrandUpdateSerializer(serializers.ModelSerializer):
+    brand_carts = serializers.JSONField(write_only=True, required=False)
 
     class Meta:
         model = ProductBrandModel
