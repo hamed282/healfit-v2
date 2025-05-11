@@ -811,9 +811,7 @@ class BrandCartSerializer(serializers.ModelSerializer):
 
 
 class ProductBrandCreateSerializer(serializers.ModelSerializer):
-    brand_carts = serializers.ListField(
-        child=serializers.IntegerField(), required=False, write_only=True
-    )
+
     class Meta:
         model = ProductBrandModel
         fields = ['id', 'brand', 'brand_logo', 'brand_logo_alt', 'slug',
@@ -822,8 +820,7 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
                   'content2_text', 'content2_right_image', 'content2_right_image_alt', 'content2_right',
                   'content2_mid_image', 'content2_mid_image_alt', 'content2_mid',
                   'content2_left_image', 'content2_left_image_alt', 'content2_left',
-                  'contact_image', 'contact_image_alt', 'contact_text',
-                  'brand_carts']
+                  'contact_image', 'contact_image_alt', 'contact_text']
         extra_kwargs = {
             'image': {'required': False},
         }
