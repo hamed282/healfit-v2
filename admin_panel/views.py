@@ -2498,38 +2498,37 @@ class BrandItemView(APIView):
         try:
             brand = ProductBrandModel.objects.get(pk=brand_id)
         except ProductBrandModel.DoesNotExist:
-            return Response({'error': 'برند یافت نشد'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        # مدیریت رشته JSON برای brand_carts در صورت ارسال
-        if isinstance(request.data.get('brand_carts'), str):
-            try:
-                request.data._mutable = True  # قابل تغییر کردن QueryDict
-            except AttributeError:
-                pass  # در صورت غیر QueryDict، مشکلی نیست
+        # استفاده از serializer با پارامتر partial=True برای ویرایش تنها فیلدهای ارسال شده
+        serializer = ProductBrandUpdateSerializer(brand, data=request.data, partial=True, context={'request': request})
 
-            try:
-                request.data['brand_carts'] = json.loads(request.data['brand_carts'])
-            except json.JSONDecodeError:
-                return Response(
-                    {'brand_carts': ['فرمت JSON نامعتبر است.']},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-        # راه‌اندازی سریالایزر با پشتیبانی از به‌روزرسانی جزئی
-        serializer = ProductBrandUpdateSerializer(
-            brand,
-            data=request.data,
-            partial=True,
-            context={'request': request}
-        )
-
-        # اعتبارسنجی و ذخیره داده‌ها
         if serializer.is_valid():
-            updated_brand = serializer.save()
-            return Response(
-                BrandSerializer(updated_brand).data,
-                status=status.HTTP_200_OK
-            )
+            brand = serializer.save()
+
+            # حذف کارت‌های قبلی برند و پردازش کارت‌های جدید
+            carts_raw = request.data.get('brand_carts')
+            if carts_raw:
+                try:
+                    carts_data = json.loads(carts_raw)
+                    for i, cart in enumerate(carts_data):
+                        images = cart.pop('images', [])
+                        brand_cart = BrandCartModel.objects.create(brand=brand, content=cart.get('content', ''))
+
+                        for j, image_info in enumerate(images):
+                            image_field = f'brand_carts[{i}].images[{j}].image'
+                            image_file = request.FILES.get(image_field)
+
+                            BrandCartImageModel.objects.create(
+                                brand_cart=brand_cart,
+                                image=image_file,
+                                image_alt=image_info.get('image_alt'),
+                                priority=image_info.get('priority'),
+                            )
+                except json.JSONDecodeError:
+                    return Response({'brand_carts': ['فرمت JSON نامعتبر است.']}, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response(ProductBrandSerializer(brand).data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

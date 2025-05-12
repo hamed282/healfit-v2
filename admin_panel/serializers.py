@@ -852,77 +852,61 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
 
 
 class ProductBrandUpdateSerializer(serializers.ModelSerializer):
-    brand_carts = BrandCartSerializer(many=True, required=False)
+    brand_carts = serializers.JSONField(write_only=True, required=False)
 
     class Meta:
         model = ProductBrandModel
         fields = '__all__'
 
     def update(self, instance, validated_data):
-        # دریافت داده‌های brand_carts برای آپدیت
-        brand_carts_data = validated_data.pop('brand_carts', None)
-        request = self.context.get('request')
+        brand_carts_data = validated_data.pop('brand_carts', [])
 
-        # آپدیت فیلدهای برند
+        # به‌روزرسانی فیلدهای اصلی برند
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
-        if brand_carts_data is not None:
-            existing_carts = {c.id: c for c in instance.brandcartmodel_set.all()}
-            sent_cart_ids = []
+        # کارت‌های موجود این برند
+        existing_cart_ids = [cart.id for cart in instance.brandcartmodel_set.all()]
 
-            for cart_data in brand_carts_data:
-                images_data = cart_data.pop('images', [])
-                cart_id = cart_data.get('id')
+        # پیگیری کارت‌هایی که کاربر فرستاده
+        sent_cart_ids = []
 
-                # اگر id کارت موجود است، آن را آپدیت می‌کنیم
-                if cart_id and cart_id in existing_carts:
-                    cart = existing_carts[cart_id]
-                    for attr, value in cart_data.items():
-                        setattr(cart, attr, value)
-                    cart.save()
-                    sent_cart_ids.append(cart_id)
+        for cart_data in brand_carts_data:
+            images_data = cart_data.pop('images', [])
+            cart_id = cart_data.get('id', None)
+
+            if cart_id and BrandCartModel.objects.filter(id=cart_id, brand=instance).exists():
+                cart = BrandCartModel.objects.get(id=cart_id, brand=instance)
+                for attr, value in cart_data.items():
+                    setattr(cart, attr, value)
+                cart.save()
+                sent_cart_ids.append(cart.id)
+            else:
+                cart = BrandCartModel.objects.create(brand=instance, **cart_data)
+                sent_cart_ids.append(cart.id)
+
+            # بروزرسانی تصاویر مربوط به کارت
+            existing_image_ids = [img.id for img in cart.images.all()]
+            sent_image_ids = []
+
+            for image_data in images_data:
+                image_id = image_data.get('id', None)
+                if image_id and BrandCartImageModel.objects.filter(id=image_id, brand_cart=cart).exists():
+                    image = BrandCartImageModel.objects.get(id=image_id, brand_cart=cart)
+                    for attr, value in image_data.items():
+                        setattr(image, attr, value)
+                    image.save()
+                    sent_image_ids.append(image.id)
                 else:
-                    # در غیر این صورت، یک کارت جدید می‌سازیم
-                    cart = BrandCartModel.objects.create(brand=instance, **cart_data)
-                    sent_cart_ids.append(cart.id)
+                    image = BrandCartImageModel.objects.create(brand_cart=cart, **image_data)
+                    sent_image_ids.append(image.id)
 
-                # آپدیت تصاویر مربوط به این کارت
-                existing_images = {img.id: img for img in cart.images.all()}
-                sent_image_ids = []
+            # حذف تصاویر حذف‌شده
+            BrandCartImageModel.objects.filter(brand_cart=cart).exclude(id__in=sent_image_ids).delete()
 
-                for j, image_data in enumerate(images_data):
-                    image_id = image_data.get('id')
-                    image_field_name = f'brand_carts[{brand_carts_data.index(cart_data)}].images[{j}].image'
-                    image_file = request.FILES.get(image_field_name)
-
-                    if image_id and image_id in existing_images:
-                        image = existing_images[image_id]
-                        image.image_alt = image_data.get('image_alt', image.image_alt)
-                        image.priority = image_data.get('priority', image.priority)
-                        if image_file:
-                            image.image = image_file
-                        image.save()
-                        sent_image_ids.append(image_id)
-                    else:
-                        if image_file:  # در صورتی که فایل تصویر جدید باشد، آن را ایجاد می‌کنیم
-                            BrandCartImageModel.objects.create(
-                                brand_cart=cart,
-                                image=image_file,
-                                image_alt=image_data.get('image_alt', ''),
-                                priority=image_data.get('priority', 1)
-                            )
-
-                # حذف تصاویر حذف شده
-                for img_id in existing_images:
-                    if img_id not in sent_image_ids:
-                        existing_images[img_id].delete()
-
-            # حذف کارت‌هایی که دیگر ارسال نشده‌اند
-            for cart_id in existing_carts:
-                if cart_id not in sent_cart_ids:
-                    existing_carts[cart_id].delete()
+        # حذف کارت‌های حذف‌شده
+        BrandCartModel.objects.filter(brand=instance).exclude(id__in=sent_cart_ids).delete()
 
         return instance
 
