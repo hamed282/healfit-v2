@@ -853,7 +853,7 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
 
 class ProductBrandUpdateSerializer(serializers.ModelSerializer):
     brand_carts = BrandCartSerializer(many=True)
-    images = ProductImageSerializer(many=True, required=False)
+    images = BrandCartImageSerializer(many=True, required=False)
 
     class Meta:
         model = ProductModel
