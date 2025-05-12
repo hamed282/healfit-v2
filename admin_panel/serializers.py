@@ -868,9 +868,7 @@ class ProductBrandUpdateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def update(self, instance, validated_data):
-        request = self.context.get('request')
-
-        # Manage direct image fields
+        # Manage files
         image_fields = [
             'brand_logo', 'image_desktop', 'image_mobile',
             'content1_image', 'content2_right_image', 'content2_mid_image',
@@ -881,45 +879,44 @@ class ProductBrandUpdateSerializer(serializers.ModelSerializer):
             if field in validated_data:
                 setattr(instance, field, validated_data.pop(field))
 
-        # Update main model
+        # Update the ProductBrandModel fields
         instance = super().update(instance, validated_data)
 
         brand_carts_data = validated_data.pop('brand_carts', None)
+        brand_cart_images_data = validated_data.pop('brand_cart_images', None)
 
-        if brand_carts_data and request:
-            for i, cart_data in enumerate(brand_carts_data):
+        # Update or add BrandCartModel entries
+        if brand_carts_data is not None:
+            for cart_data in brand_carts_data:
                 cart_id = cart_data.get('id')
-                if cart_id:
+                if cart_id:  # If cart_id exists, update existing cart
                     brand_cart = BrandCartModel.objects.get(id=cart_id, brand=instance)
                     brand_cart.content = cart_data.get('content', brand_cart.content)
                     brand_cart.save()
-                else:
-                    brand_cart = BrandCartModel.objects.create(
-                        brand=instance,
-                        content=cart_data.get('content', '')
-                    )
+                else:  # If no cart_id, create a new BrandCartModel
+                    brand_cart = BrandCartModel.objects.create(brand=instance, content=cart_data.get('content'))
 
-                # Process images
-                for j, image_data in enumerate(cart_data.get('images', [])):
+                # Update or add images for the cart
+                brand_cart_images = cart_data.get('images', [])
+                for image_data in brand_cart_images:
                     image_id = image_data.get('id')
-                    image_field_name = f'brand_carts[{i}].images[{j}].image'
-                    image_file = request.FILES.get(image_field_name)
-
-                    if image_id:
+                    if image_id:  # If image_id exists, update existing image
                         brand_cart_image = BrandCartImageModel.objects.get(id=image_id, brand_cart=brand_cart)
                         brand_cart_image.image_alt = image_data.get('image_alt', brand_cart_image.image_alt)
                         brand_cart_image.priority = image_data.get('priority', brand_cart_image.priority)
-                        if image_file:
-                            brand_cart_image.image = image_file
                         brand_cart_image.save()
-                    else:
-                        if image_file:
-                            BrandCartImageModel.objects.create(
-                                brand_cart=brand_cart,
-                                image=image_file,
-                                image_alt=image_data.get('image_alt', ''),
-                                priority=image_data.get('priority', 1),
-                            )
+                    else:  # If no image_id, create a new BrandCartImageModel
+                        image = image_data.get('image')
+                        image_alt = image_data.get('image_alt')
+                        priority = image_data.get('priority')
+
+                        # Saving image and creating object
+                        image_instance = BrandCartImageModel.objects.create(
+                            brand_cart=brand_cart,
+                            image=image,
+                            image_alt=image_alt,
+                            priority=priority
+                        )
 
         return instance
 
