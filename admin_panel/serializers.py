@@ -922,7 +922,6 @@ class ProductBrandUpdateSerializer(serializers.ModelSerializer):
 
         return instance
 
-
 class BrandSerializer(serializers.ModelSerializer):
     brand_carts = BrandCartSerializer(source='brandcartmodel_set', many=True, read_only=True)
 
