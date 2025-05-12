@@ -2500,6 +2500,18 @@ class BrandItemView(APIView):
         except ProductBrandModel.DoesNotExist:
             return Response({'error': 'not found'}, status=status.HTTP_404_NOT_FOUND)
 
+        # اگر brand_carts به صورت JSON string فرستاده شده، به دیکشنری تبدیلش کن
+        if isinstance(request.data.get('brand_carts'), str):
+            try:
+                request.data._mutable = True  # اگر از QueryDict استفاده می‌کنید
+            except AttributeError:
+                pass  # اگر معمولی بود مشکلی نیست
+
+            try:
+                request.data['brand_carts'] = json.loads(request.data['brand_carts'])
+            except json.JSONDecodeError:
+                return Response({'brand_carts': ['فرمت JSON نامعتبر است.']}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = ProductBrandUpdateSerializer(brand, data=request.data, partial=True, context={'request': request})
 
         if serializer.is_valid():
