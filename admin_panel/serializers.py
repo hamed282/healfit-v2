@@ -1,5 +1,3 @@
-import json
-
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework import serializers
 from accounts.models import User, RoleUserModel, RoleModel
@@ -870,70 +868,58 @@ class ProductBrandUpdateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def update(self, instance, validated_data):
-        request = self.context.get('request')
-        brand_carts_data_raw = request.data.get('brand_carts')
+        # Manage files
+        image_fields = [
+            'brand_logo', 'image_desktop', 'image_mobile',
+            'content1_image', 'content2_right_image', 'content2_mid_image',
+            'content2_left_image', 'contact_image'
+        ]
 
-        if brand_carts_data_raw:
-            try:
-                brand_carts_data = (
-                    json.loads(brand_carts_data_raw))
-            except json.JSONDecodeError:
-                raise serializers.ValidationError({"brand_carts": "Invalid JSON format."})
-        else:
-            brand_carts_data = None
+        for field in image_fields:
+            if field in validated_data:
+                setattr(instance, field, validated_data.pop(field))
 
-        # حذف این دو فیلد از validated_data چون به صورت جداگانه پردازش می‌شوند
-        validated_data.pop('brand_carts', None)
-        validated_data.pop('brand_cart_images', None)
-
-        # آپدیت خود مدل ProductBrandModel
+        # Update the ProductBrandModel fields
         instance = super().update(instance, validated_data)
 
-        # آپدیت یا اضافه‌کردن brand_cart و brand_cart_image
+        brand_carts_data = validated_data.pop('brand_carts', None)
+        brand_cart_images_data = validated_data.pop('brand_cart_images', None)
+
+        # Update or add BrandCartModel entries
         if brand_carts_data is not None:
             for cart_data in brand_carts_data:
                 cart_id = cart_data.get('id')
-                if cart_id:
+                if cart_id:  # If cart_id exists, update existing cart
                     brand_cart = BrandCartModel.objects.get(id=cart_id, brand=instance)
                     brand_cart.content = cart_data.get('content', brand_cart.content)
                     brand_cart.save()
-                else:
-                    brand_cart = BrandCartModel.objects.create(
-                        brand=instance,
-                        content=cart_data.get('content', '')
-                    )
+                else:  # If no cart_id, create a new BrandCartModel
+                    brand_cart = BrandCartModel.objects.create(brand=instance, content=cart_data.get('content'))
 
-                # پردازش تصاویر مربوط به هر cart
+                # Update or add images for the cart
                 brand_cart_images = cart_data.get('images', [])
                 for image_data in brand_cart_images:
                     image_id = image_data.get('id')
-                    image_alt = image_data.get('image_alt')
-                    priority = image_data.get('priority')
-                    image_key = image_data.get('image_key')  # کلیدی که فایل با آن ارسال شده
+                    if image_id:  # If image_id exists, update existing image
+                        brand_cart_image = BrandCartImageModel.objects.get(id=image_id, brand_cart=brand_cart)
+                        brand_cart_image.image_alt = image_data.get('image_alt', brand_cart_image.image_alt)
+                        brand_cart_image.priority = image_data.get('priority', brand_cart_image.priority)
+                        brand_cart_image.save()
+                    else:  # If no image_id, create a new BrandCartImageModel
+                        image = image_data.get('image')
+                        image_alt = image_data.get('image_alt')
+                        priority = image_data.get('priority')
 
-                    # گرفتن فایل تصویر از فایل‌های ارسال‌شده
-                    image_file = request.FILES.get(image_key)
-
-                    if image_id:
-                        try:
-                            brand_cart_image = BrandCartImageModel.objects.get(id=image_id, brand_cart=brand_cart)
-                            if image_file:
-                                brand_cart_image.image = image_file
-                            brand_cart_image.image_alt = image_alt
-                            brand_cart_image.priority = priority
-                            brand_cart_image.save()
-                        except BrandCartImageModel.DoesNotExist:
-                            pass
-                    else:
-                        if image_file:  # فقط در صورت وجود تصویر، ایجاد کن
-                            BrandCartImageModel.objects.create(
-                                brand_cart=brand_cart,
-                                image=image_file,
-                                image_alt=image_alt,
-                                priority=priority
-                            )
+                        # Saving image and creating object
+                        image_instance = BrandCartImageModel.objects.create(
+                            brand_cart=brand_cart,
+                            image=image,
+                            image_alt=image_alt,
+                            priority=priority
+                        )
 
         return instance
+
 
 class BrandSerializer(serializers.ModelSerializer):
     brand_carts = BrandCartSerializer(source='brandcartmodel_set', many=True, read_only=True)
