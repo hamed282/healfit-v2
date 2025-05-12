@@ -2532,64 +2532,6 @@ class BrandItemView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def update(self, instance, validated_data):
-        brand_carts_data = validated_data.pop('brand_carts', None)
-
-        # به‌روزرسانی فیلدهای اصلی برند
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
-
-        request = self.context.get('request')
-
-        if brand_carts_data is not None:
-            for cart_data in brand_carts_data:
-                images_data = cart_data.pop('images', [])
-
-                cart_id = cart_data.get('id', None)
-
-                if cart_id:
-                    try:
-                        cart = BrandCartModel.objects.get(id=cart_id, brand=instance)
-                        for attr, value in cart_data.items():
-                            setattr(cart, attr, value)
-                        cart.save()
-                    except BrandCartModel.DoesNotExist:
-                        continue  # یا خطا بده
-                else:
-                    cart = BrandCartModel.objects.create(brand=instance, **cart_data)
-
-                sent_image_ids = []
-                for j, image_info in enumerate(images_data):
-                    image_id = image_info.get('id', None)
-                    image_field_name = f'brand_carts[{j}].images[{j}].image'
-                    image_file = request.FILES.get(image_field_name)
-
-                    if image_id:
-                        try:
-                            img = BrandCartImageModel.objects.get(id=image_id, brand_cart=cart)
-                            if image_file:
-                                img.image = image_file
-                            img.image_alt = image_info.get('image_alt', img.image_alt)
-                            img.priority = image_info.get('priority', img.priority)
-                            img.save()
-                            sent_image_ids.append(img.id)
-                        except BrandCartImageModel.DoesNotExist:
-                            continue
-                    else:
-                        new_img = BrandCartImageModel.objects.create(
-                            brand_cart=cart,
-                            image=image_file,
-                            image_alt=image_info.get('image_alt', ''),
-                            priority=image_info.get('priority', 1),
-                        )
-                        sent_image_ids.append(new_img.id)
-
-                # حذف تصاویر حذف شده (اختیاری)
-                if sent_image_ids:
-                    BrandCartImageModel.objects.filter(brand_cart=cart).exclude(id__in=sent_image_ids).delete()
-
-        return instance
 
 class ManuallyUpdateView(APIView):
     permission_classes = [IsAdminUser, IsProductAdmin]
