@@ -897,26 +897,26 @@ class ProductBrandUpdateSerializer(serializers.ModelSerializer):
                     brand_cart = BrandCartModel.objects.create(brand=instance, content=cart_data.get('content'))
 
                 # Update or add images for the cart
-                # brand_cart_images = cart_data.get('images', [])
-                # for image_data in brand_cart_images:
-                #     image_id = image_data.get('id')
-                #     if image_id:  # If image_id exists, update existing image
-                #         brand_cart_image = BrandCartImageModel.objects.get(id=image_id, brand_cart=brand_cart)
-                #         brand_cart_image.image_alt = image_data.get('image_alt', brand_cart_image.image_alt)
-                #         brand_cart_image.priority = image_data.get('priority', brand_cart_image.priority)
-                #         brand_cart_image.save()
-                #     else:  # If no image_id, create a new BrandCartImageModel
-                #         image = image_data.get('image')
-                #         image_alt = image_data.get('image_alt')
-                #         priority = image_data.get('priority')
-                #
-                #         # Saving image and creating object
-                #         image_instance = BrandCartImageModel.objects.create(
-                #             brand_cart=brand_cart,
-                #             image=image,
-                #             image_alt=image_alt,
-                #             priority=priority
-                #         )
+                brand_cart_images = cart_data.get('images', [])
+                for image_data in brand_cart_images:
+                    image_id = image_data.get('id')
+                    if image_id:  # If image_id exists, update existing image
+                        brand_cart_image = BrandCartImageModel.objects.get(id=image_id, brand_cart=brand_cart)
+                        brand_cart_image.image_alt = image_data.get('image_alt', brand_cart_image.image_alt)
+                        brand_cart_image.priority = image_data.get('priority', brand_cart_image.priority)
+                        brand_cart_image.save()
+                    else:  # If no image_id, create a new BrandCartImageModel
+                        image = image_data.get('image')
+                        image_alt = image_data.get('image_alt')
+                        priority = image_data.get('priority')
+
+                        # Saving image and creating object
+                        image_instance = BrandCartImageModel.objects.create(
+                            brand_cart=brand_cart,
+                            image=image,
+                            image_alt=image_alt,
+                            priority=priority
+                        )
 
         return instance
 
