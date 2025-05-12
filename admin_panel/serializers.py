@@ -854,17 +854,36 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
 class ProductBrandUpdateSerializer(serializers.ModelSerializer):
     brand_carts = serializers.JSONField(write_only=True, required=False)
     brand_cart_images = serializers.JSONField(write_only=True, required=False)
+    brand_logo = serializers.ImageField(write_only=True, required=False)
+    image_desktop = serializers.ImageField(write_only=True, required=False)
+    image_mobile = serializers.ImageField(write_only=True, required=False)
+    content1_image = serializers.ImageField(write_only=True, required=False)
+    content2_right_image = serializers.ImageField(write_only=True, required=False)
+    content2_mid_image = serializers.ImageField(write_only=True, required=False)
+    content2_left_image = serializers.ImageField(write_only=True, required=False)
+    contact_image = serializers.ImageField(write_only=True, required=False)
 
     class Meta:
         model = ProductBrandModel
         fields = '__all__'
 
     def update(self, instance, validated_data):
-        brand_carts_data = validated_data.pop('brand_carts', None)
-        brand_cart_images_data = validated_data.pop('brand_cart_images', None)
+        # Manage files
+        image_fields = [
+            'brand_logo', 'image_desktop', 'image_mobile',
+            'content1_image', 'content2_right_image', 'content2_mid_image',
+            'content2_left_image', 'contact_image'
+        ]
+
+        for field in image_fields:
+            if field in validated_data:
+                setattr(instance, field, validated_data.pop(field))
 
         # Update the ProductBrandModel fields
         instance = super().update(instance, validated_data)
+
+        brand_carts_data = validated_data.pop('brand_carts', None)
+        brand_cart_images_data = validated_data.pop('brand_cart_images', None)
 
         # Update or add BrandCartModel entries
         if brand_carts_data is not None:
@@ -875,7 +894,7 @@ class ProductBrandUpdateSerializer(serializers.ModelSerializer):
                     brand_cart.content = cart_data.get('content', brand_cart.content)
                     brand_cart.save()
                 else:  # If no cart_id, create a new BrandCartModel
-                    BrandCartModel.objects.create(brand=instance, content=cart_data.get('content'))
+                    brand_cart = BrandCartModel.objects.create(brand=instance, content=cart_data.get('content'))
 
                 # Update or add images for the cart
                 brand_cart_images = cart_data.get('images', [])
@@ -887,15 +906,19 @@ class ProductBrandUpdateSerializer(serializers.ModelSerializer):
                         brand_cart_image.priority = image_data.get('priority', brand_cart_image.priority)
                         brand_cart_image.save()
                     else:  # If no image_id, create a new BrandCartImageModel
-                        BrandCartImageModel.objects.create(
+                        image = image_data.get('image')
+                        image_alt = image_data.get('image_alt')
+                        priority = image_data.get('priority')
+
+                        # Saving image and creating object
+                        image_instance = BrandCartImageModel.objects.create(
                             brand_cart=brand_cart,
-                            image=image_data.get('image'),
-                            image_alt=image_data.get('image_alt'),
-                            priority=image_data.get('priority')
+                            image=image,
+                            image_alt=image_alt,
+                            priority=priority
                         )
 
         return instance
-
 
 class BrandSerializer(serializers.ModelSerializer):
     brand_carts = BrandCartSerializer(source='brandcartmodel_set', many=True, read_only=True)
