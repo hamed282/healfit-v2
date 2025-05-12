@@ -2494,32 +2494,62 @@ class BrandItemView(APIView):
         ser_data = BrandSerializer(instance=custom_type)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
-    def put(self, request, brand_id):
-        try:
-            brand = ProductBrandModel.objects.get(pk=brand_id)
-        except ProductBrandModel.DoesNotExist:
-            return Response({'error': 'not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        # تبدیل `brand_carts` از JSON string به دیکشنری
-        if isinstance(request.data.get('brand_carts'), str):
-            try:
-                request.data._mutable = True  # برای QueryDict
-            except AttributeError:
-                pass  # اگر معمولی بود مشکلی نیست
-
-            try:
-                request.data['brand_carts'] = json.loads(request.data['brand_carts'])
-            except json.JSONDecodeError:
-                return Response({'brand_carts': ['فرمت JSON نامعتبر است.']}, status=status.HTTP_400_BAD_REQUEST)
-
-        serializer = ProductBrandUpdateSerializer(
-            brand, data=request.data, partial=True, context={'request': request}
-        )
+    def put(self, request, *args, **kwargs):
+        # پیدا کردن برند مورد نظر برای به‌روزرسانی
+        brand = get_object_or_404(ProductBrandModel, id=kwargs.get('brand_id'))
+        serializer = ProductBrandCreateSerializer(brand, data=request.data, partial=True, context={'request': request})
 
         if serializer.is_valid():
-            brand = serializer.save()
-            return Response(ProductBrandSerializer(brand).data, status=status.HTTP_200_OK)
+            updated_brand = serializer.save()
 
+            # به‌روزرسانی برندکارت‌ها اگر موجود باشد
+            brand_carts_data = request.data.get('brand_carts', [])
+            if brand_carts_data:
+                for i, cart in enumerate(brand_carts_data):
+                    cart_instance = BrandCartModel.objects.filter(brand=updated_brand, id=cart.get('id')).first()
+
+                    if cart_instance:
+                        # به‌روزرسانی برندکارت موجود
+                        cart_instance.content = cart.get('content', cart_instance.content)
+                        cart_instance.save()
+
+                        # به‌روزرسانی تصاویر برندکارت
+                        for image_info in cart.get('images', []):
+                            image_instance = BrandCartImageModel.objects.filter(brand_cart=cart_instance,
+                                                                                id=image_info.get('id')).first()
+                            if image_instance:
+                                image_instance.image_alt = image_info.get('image_alt', image_instance.image_alt)
+                                image_instance.priority = image_info.get('priority', image_instance.priority)
+                                # به‌روزرسانی تصویر
+                                image_file = request.FILES.get(f'brand_carts[{i}].images[{image_info.get("id")}].image')
+                                if image_file:
+                                    image_instance.image = image_file
+                                image_instance.save()
+                            else:
+                                # ایجاد تصویر جدید برای برندکارت
+                                image_file = request.FILES.get(f'brand_carts[{i}].images[{image_info.get("id")}].image')
+                                if image_file:
+                                    BrandCartImageModel.objects.create(
+                                        brand_cart=cart_instance,
+                                        image=image_file,
+                                        image_alt=image_info.get('image_alt', ''),
+                                        priority=image_info.get('priority', 1),
+                                    )
+                    else:
+                        # اگر برندکارت وجود ندارد، ایجاد یک برندکارت جدید
+                        content = cart.get('content', '')
+                        new_cart = BrandCartModel.objects.create(brand=updated_brand, content=content)
+                        for j, image_info in enumerate(cart.get('images', [])):
+                            image_file = request.FILES.get(f'brand_carts[{i}].images[{j}].image')
+                            if image_file:
+                                BrandCartImageModel.objects.create(
+                                    brand_cart=new_cart,
+                                    image=image_file,
+                                    image_alt=image_info.get('image_alt', ''),
+                                    priority=image_info.get('priority', 1),
+                                )
+
+            return Response(ProductBrandSerializer(updated_brand).data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
