@@ -2494,43 +2494,63 @@ class BrandItemView(APIView):
         ser_data = BrandSerializer(instance=custom_type)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
-    def put(self, request, brand_id):
-        try:
-            brand = ProductBrandModel.objects.get(pk=brand_id)
-        except ProductBrandModel.DoesNotExist:
-            return Response({'error': 'not found'}, status=status.HTTP_404_NOT_FOUND)
+    def update(self, instance, validated_data):
+        brand_carts_data = validated_data.pop('brand_carts', None)
 
-        # استفاده از serializer با پارامتر partial=True برای ویرایش تنها فیلدهای ارسال شده
-        serializer = ProductBrandUpdateSerializer(brand, data=request.data, partial=True, context={'request': request})
+        # به‌روزرسانی فیلدهای اصلی برند
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
 
-        if serializer.is_valid():
-            brand = serializer.save()
+        request = self.context.get('request')
 
-            # حذف کارت‌های قبلی برند و پردازش کارت‌های جدید
-            carts_raw = request.data.get('brand_carts')
-            if carts_raw:
-                try:
-                    carts_data = json.loads(carts_raw)
-                    for i, cart in enumerate(carts_data):
-                        images = cart.pop('images', [])
-                        brand_cart = BrandCartModel.objects.create(brand=brand, content=cart.get('content', ''))
+        if brand_carts_data is not None:
+            for cart_data in brand_carts_data:
+                images_data = cart_data.pop('images', [])
 
-                        for j, image_info in enumerate(images):
-                            image_field = f'brand_carts[{i}].images[{j}].image'
-                            image_file = request.FILES.get(image_field)
+                cart_id = cart_data.get('id', None)
 
-                            BrandCartImageModel.objects.create(
-                                brand_cart=brand_cart,
-                                image=image_file,
-                                image_alt=image_info.get('image_alt'),
-                                priority=image_info.get('priority'),
-                            )
-                except json.JSONDecodeError:
-                    return Response({'brand_carts': ['فرمت JSON نامعتبر است.']}, status=status.HTTP_400_BAD_REQUEST)
+                if cart_id:
+                    try:
+                        cart = BrandCartModel.objects.get(id=cart_id, brand=instance)
+                        for attr, value in cart_data.items():
+                            setattr(cart, attr, value)
+                        cart.save()
+                    except BrandCartModel.DoesNotExist:
+                        continue  # یا خطا بده
+                else:
+                    cart = BrandCartModel.objects.create(brand=instance, **cart_data)
 
-            return Response(ProductBrandSerializer(brand).data, status=status.HTTP_200_OK)
+                sent_image_ids = []
+                for j, image_info in enumerate(images_data):
+                    image_id = image_info.get('id', None)
+                    image_field_name = f'brand_carts[{j}].images[{j}].image'
+                    image_file = request.FILES.get(image_field_name)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    if image_id:
+                        try:
+                            img = BrandCartImageModel.objects.get(id=image_id, brand_cart=cart)
+                            if image_file:
+                                img.image = image_file
+                            img.image_alt = image_info.get('image_alt', img.image_alt)
+                            img.priority = image_info.get('priority', img.priority)
+                            img.save()
+                            sent_image_ids.append(img.id)
+                        except BrandCartImageModel.DoesNotExist:
+                            continue
+                    else:
+                        new_img = BrandCartImageModel.objects.create(
+                            brand_cart=cart,
+                            image=image_file,
+                            image_alt=image_info.get('image_alt', ''),
+                            priority=image_info.get('priority', 1),
+                        )
+                        sent_image_ids.append(new_img.id)
+
+                if sent_image_ids:
+                    BrandCartImageModel.objects.filter(brand_cart=cart).exclude(id__in=sent_image_ids).delete()
+
+        return instance
 
 
 class ManuallyUpdateView(APIView):
