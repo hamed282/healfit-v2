@@ -2500,34 +2500,22 @@ class BrandItemView(APIView):
         except ProductBrandModel.DoesNotExist:
             return Response({'error': 'not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        # استفاده از serializer با پارامتر partial=True برای ویرایش تنها فیلدهای ارسال شده
+        # اگر brand_carts به صورت JSON string فرستاده شده، به دیکشنری تبدیلش کن
+        if isinstance(request.data.get('brand_carts'), str):
+            try:
+                request.data._mutable = True  # اگر از QueryDict استفاده می‌کنید
+            except AttributeError:
+                pass  # اگر معمولی بود مشکلی نیست
+
+            try:
+                request.data['brand_carts'] = json.loads(request.data['brand_carts'])
+            except json.JSONDecodeError:
+                return Response({'brand_carts': ['فرمت JSON نامعتبر است.']}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = ProductBrandUpdateSerializer(brand, data=request.data, partial=True, context={'request': request})
 
         if serializer.is_valid():
             brand = serializer.save()
-
-            # حذف کارت‌های قبلی برند و پردازش کارت‌های جدید
-            carts_raw = request.data.get('brand_carts')
-            if carts_raw:
-                try:
-                    carts_data = json.loads(carts_raw)
-                    for i, cart in enumerate(carts_data):
-                        images = cart.pop('images', [])
-                        brand_cart = BrandCartModel.objects.create(brand=brand, content=cart.get('content', ''))
-
-                        for j, image_info in enumerate(images):
-                            image_field = f'brand_carts[{i}].images[{j}].image'
-                            image_file = request.FILES.get(image_field)
-
-                            BrandCartImageModel.objects.create(
-                                brand_cart=brand_cart,
-                                image=image_file,
-                                image_alt=image_info.get('image_alt'),
-                                priority=image_info.get('priority'),
-                            )
-                except json.JSONDecodeError:
-                    return Response({'brand_carts': ['فرمت JSON نامعتبر است.']}, status=status.HTTP_400_BAD_REQUEST)
-
             return Response(ProductBrandSerializer(brand).data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

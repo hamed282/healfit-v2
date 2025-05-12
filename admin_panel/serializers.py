@@ -852,75 +852,51 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
 
 
 class ProductBrandUpdateSerializer(serializers.ModelSerializer):
-    brand_carts = BrandCartSerializer(many=True, required=False)
+    brand_carts = BrandCartSerializer(many=True)
+    images = ProductImageSerializer(many=True, required=False)
 
     class Meta:
-        model = ProductBrandModel
+        model = ProductModel
         fields = '__all__'
 
     def update(self, instance, validated_data):
-        brand_carts_data = validated_data.pop('brand_carts', None)
-        request = self.context.get('request')
+        # جدا کردن brand_carts و images از داده‌های اصلی
+        brand_carts_data = validated_data.pop('brand_carts', [])
+        images_data = validated_data.pop('images', [])
 
-        # آپدیت فیلدهای خود برند
+        # به‌روزرسانی خود ProductModel
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
-        if brand_carts_data is not None:
-            existing_carts = {c.id: c for c in instance.brandcartmodel_set.all()}
-            sent_cart_ids = []
+        # پردازش brand_carts
+        for cart_data in brand_carts_data:
+            cart_id = cart_data.pop('id', None)  # حذف id از داده
 
-            for cart_data in brand_carts_data:
-                images_data = cart_data.pop('images', [])
-                cart_id = cart_data.get('id')
+            if cart_id and BrandCartModel.objects.filter(id=cart_id, brand=instance).exists():
+                # اگر cart موجود بود، به‌روزرسانی کن
+                cart = BrandCartModel.objects.get(id=cart_id, brand=instance)
+                for attr, value in cart_data.items():
+                    setattr(cart, attr, value)
+                cart.save()
+            else:
+                # در غیر این صورت، نمونه جدید بساز
+                BrandCartModel.objects.create(brand=instance, **cart_data)
 
-                if cart_id and cart_id in existing_carts:
-                    cart = existing_carts[cart_id]
-                    for attr, value in cart_data.items():
-                        setattr(cart, attr, value)
-                    cart.save()
-                    sent_cart_ids.append(cart_id)
-                else:
-                    cart = BrandCartModel.objects.create(brand=instance, **cart_data)
-                    sent_cart_ids.append(cart.id)
+        # پردازش تصاویر
+        for image_data in images_data:
+            image_id = image_data.pop('id', None)  # حذف id از داده
 
-                # تصاویر
-                existing_images = {img.id: img for img in cart.images.all()}
-                sent_image_ids = []
-
-                for j, image_data in enumerate(images_data):
-                    image_id = image_data.get('id')
-                    image_field_name = f'brand_carts[{brand_carts_data.index(cart_data)}].images[{j}].image'
-                    image_file = request.FILES.get(image_field_name)
-
-                    if image_id and image_id in existing_images:
-                        image = existing_images[image_id]
-                        image.image_alt = image_data.get('image_alt', image.image_alt)
-                        image.priority = image_data.get('priority', image.priority)
-                        if image_file:
-                            image.image = image_file
-                        image.save()
-                        sent_image_ids.append(image_id)
-                    else:
-                        BrandCartImageModel.objects.create(
-                            brand_cart=cart,
-                            image=image_file,
-                            image_alt=image_data.get('image_alt', ''),
-                            priority=image_data.get('priority', 1)
-                        )
-
-                # حذف عکس‌هایی که فرستاده نشدن
-                for img_id in existing_images:
-                    if img_id not in sent_image_ids:
-                        existing_images[img_id].delete()
-
-            # حذف کارت‌هایی که فرستاده نشدن
-            for cart_id in existing_carts:
-                if cart_id not in sent_cart_ids:
-                    existing_carts[cart_id].delete()
+            if image_id and ProductImageModel.objects.filter(id=image_id, product=instance).exists():
+                image = ProductImageModel.objects.get(id=image_id, product=instance)
+                for attr, value in image_data.items():
+                    setattr(image, attr, value)
+                image.save()
+            else:
+                ProductImageModel.objects.create(product=instance, **image_data)
 
         return instance
+
 
 class BrandSerializer(serializers.ModelSerializer):
     brand_carts = BrandCartSerializer(source='brandcartmodel_set', many=True, read_only=True)
