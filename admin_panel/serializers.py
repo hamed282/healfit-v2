@@ -885,7 +885,7 @@ class ProductBrandUpdateSerializer(serializers.ModelSerializer):
                     cart = BrandCartModel.objects.create(brand=instance, **cart_data)
                     sent_cart_ids.append(cart.id)
 
-                # تصاویر
+                # تصاویر:
                 existing_images = {img.id: img for img in cart.images.all()}
                 sent_image_ids = []
 
@@ -903,19 +903,20 @@ class ProductBrandUpdateSerializer(serializers.ModelSerializer):
                         image.save()
                         sent_image_ids.append(image_id)
                     else:
-                        BrandCartImageModel.objects.create(
-                            brand_cart=cart,
-                            image=image_file,
-                            image_alt=image_data.get('image_alt', ''),
-                            priority=image_data.get('priority', 1)
-                        )
+                        if image_file:  # برای ایجاد تصویر جدید باید عکس هم ارسال شود
+                            BrandCartImageModel.objects.create(
+                                brand_cart=cart,
+                                image=image_file,
+                                image_alt=image_data.get('image_alt', ''),
+                                priority=image_data.get('priority', 1)
+                            )
 
-                # حذف عکس‌هایی که فرستاده نشدن
+                # حذف تصاویر حذف شده
                 for img_id in existing_images:
                     if img_id not in sent_image_ids:
                         existing_images[img_id].delete()
 
-            # حذف کارت‌هایی که فرستاده نشدن
+            # حذف کارت‌هایی که دیگر فرستاده نشدن
             for cart_id in existing_carts:
                 if cart_id not in sent_cart_ids:
                     existing_carts[cart_id].delete()
