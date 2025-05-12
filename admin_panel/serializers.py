@@ -863,3 +863,4 @@ class BrandProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductBrandModel
         fields = '__all__'
+
