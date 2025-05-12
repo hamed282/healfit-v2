@@ -12,7 +12,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           CustomerTypeSerializer, ProductTypeSerializer, BodyAreaSerializer, HearAboutUsSerializer,
                           TreatmentCategorySerializer, ClassNumberSerializer, CompressionClassSerializer,
                           SideSerializer, BrandSerializer, ProductSerializer, ProductBrandCreateSerializer,
-                          ProductBrandUpdateSerializer)
+                          ProductBrandUpdateSerializer, BrandProductSerializer)
 from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
@@ -2495,43 +2495,13 @@ class BrandItemView(APIView):
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
     def put(self, request, brand_id):
-        try:
-            brand = ProductBrandModel.objects.get(pk=brand_id)
-        except ProductBrandModel.DoesNotExist:
-            return Response({'error': 'برند یافت نشد'}, status=status.HTTP_404_NOT_FOUND)
-
-        # مدیریت رشته JSON برای brand_carts در صورت ارسال
-        if isinstance(request.data.get('brand_carts'), str):
-            try:
-                request.data._mutable = True  # قابل تغییر کردن QueryDict
-            except AttributeError:
-                pass  # در صورت غیر QueryDict، مشکلی نیست
-
-            try:
-                request.data['brand_carts'] = json.loads(request.data['brand_carts'])
-            except json.JSONDecodeError:
-                return Response(
-                    {'brand_carts': ['فرمت JSON نامعتبر است.']},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-        # راه‌اندازی سریالایزر با پشتیبانی از به‌روزرسانی جزئی
-        serializer = ProductBrandUpdateSerializer(
-            brand,
-            data=request.data,
-            partial=True,
-            context={'request': request}
-        )
-
-        # اعتبارسنجی و ذخیره داده‌ها
-        if serializer.is_valid():
-            updated_brand = serializer.save()
-            return Response(
-                BrandSerializer(updated_brand).data,
-                status=status.HTTP_200_OK
-            )
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        form = request.data
+        product_type = ProductBrandModel.objects.get(id=brand_id)
+        ser_data = BrandProductSerializer(instance=product_type, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ManuallyUpdateView(APIView):
