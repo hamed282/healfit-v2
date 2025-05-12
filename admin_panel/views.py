@@ -2480,20 +2480,6 @@ class BrandView(APIView):
             return Response(ProductBrandSerializer(brand).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class BrandItemView(APIView):
-    # permission_classes = [IsAdminUser, IsProductAdmin]
-    #
-    # def get_permissions(self):
-    #     if self.request.method in ['PUT', 'GET']:
-    #         return [OrPermission(IsProductAdmin)]
-    #     return super().get_permissions()
-
-    def get(self, request, brand_id):
-        custom_type = get_object_or_404(ProductBrandModel, id=brand_id)
-        ser_data = BrandSerializer(instance=custom_type)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
-
     def put(self, request, *args, **kwargs):
         # پیدا کردن برند مورد نظر برای به‌روزرسانی
         brand = get_object_or_404(ProductBrandModel, id=kwargs.get('brand_id'))
@@ -2551,6 +2537,21 @@ class BrandItemView(APIView):
 
             return Response(ProductBrandSerializer(updated_brand).data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class BrandItemView(APIView):
+    # permission_classes = [IsAdminUser, IsProductAdmin]
+    #
+    # def get_permissions(self):
+    #     if self.request.method in ['PUT', 'GET']:
+    #         return [OrPermission(IsProductAdmin)]
+    #     return super().get_permissions()
+
+    def get(self, request, brand_id):
+        custom_type = get_object_or_404(ProductBrandModel, id=brand_id)
+        ser_data = BrandSerializer(instance=custom_type)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 
 class ManuallyUpdateView(APIView):
