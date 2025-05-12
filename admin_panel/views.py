@@ -2500,12 +2500,12 @@ class BrandItemView(APIView):
         except ProductBrandModel.DoesNotExist:
             return Response({'error': 'not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        # اگر brand_carts به صورت string آمده، تبدیل به JSON کنیم
+        # تبدیل `brand_carts` از JSON string به دیکشنری
         if isinstance(request.data.get('brand_carts'), str):
             try:
-                request.data._mutable = True  # فقط اگر QueryDict باشد
+                request.data._mutable = True  # برای QueryDict
             except AttributeError:
-                pass
+                pass  # اگر معمولی بود مشکلی نیست
 
             try:
                 request.data['brand_carts'] = json.loads(request.data['brand_carts'])
