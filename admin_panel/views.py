@@ -2509,6 +2509,13 @@ class BrandItemView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, brand_id):
+        try:
+            brand = ProductBrandModel.objects.get(id=brand_id)
+            brand.delete()
+            return Response(status=204)
+        except CustomMadePageModel.DoesNotExist:
+            return Response({"error": "page not found"}, status=404)
 
 class ManuallyUpdateView(APIView):
     permission_classes = [IsAdminUser, IsProductAdmin]
