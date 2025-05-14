@@ -220,7 +220,7 @@ class ProductAllView(APIView):
             if subcategory:
                 queryset = queryset.filter(sub_product__subcategory__subcategory__in=subcategory.split(','))
             if brand:
-                queryset = queryset.filter(brand__brand__brand__in=brand.split(','))
+                queryset = queryset.filter(brand__brand__in=brand.split(','))
         else:
             # اگر هیچ فیلتری وجود نداشت، فقط محصولات فعال را برگردان
             queryset = ProductModel.objects.filter(is_active=True)
