@@ -807,29 +807,31 @@ class ProductBrandModel(models.Model):
     brand_logo_alt = models.CharField(max_length=64, null=True, blank=True)
     slug = models.SlugField(unique=True)
 
-    image_desktop = models.ImageField(upload_to=get_brand_upload_path)
-    image_mobile = models.ImageField(upload_to=get_brand_upload_path)
+    image_desktop = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
+    image_mobile = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
     image_alt = models.CharField(max_length=64, blank=True, null=True)
 
-    content1_title = models.CharField(max_length=64)
-    content1_image = models.ImageField(upload_to=get_brand_upload_path)
+    content1_title = models.CharField(max_length=64, blank=True, null=True)
+    content1_image = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
     content1_image_alt = models.CharField(max_length=64, blank=True, null=True)
-    content1_text = models.TextField()
+    content1_text = models.TextField(blank=True, null=True)
 
-    content2_text = models.TextField()
-    content2_right_image = models.ImageField(upload_to=get_brand_upload_path)
+    content2_text = models.TextField(blank=True, null=True)
+    content2_right_image = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
     content2_right_image_alt = models.CharField(max_length=64, blank=True, null=True)
-    content2_right = models.TextField()
-    content2_mid_image = models.ImageField(upload_to=get_brand_upload_path)
+    content2_right = models.TextField(blank=True, null=True)
+    content2_mid_image = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
     content2_mid_image_alt = models.CharField(max_length=64, blank=True, null=True)
-    content2_mid = models.TextField()
-    content2_left_image = models.ImageField(upload_to=get_brand_upload_path)
+    content2_mid = models.TextField(blank=True, null=True)
+    content2_left_image = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
     content2_left_image_alt = models.CharField(max_length=64, blank=True, null=True)
-    content2_left = models.TextField()
+    content2_left = models.TextField(blank=True, null=True)
 
-    contact_image = models.ImageField(upload_to=get_brand_upload_path)
+    contact_image = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
     contact_image_alt = models.CharField(max_length=64, blank=True, null=True)
-    contact_text = models.TextField()
+    contact_text = models.TextField(blank=True, null=True)
+
+    active_page = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.brand}'
