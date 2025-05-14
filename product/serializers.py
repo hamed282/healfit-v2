@@ -270,29 +270,6 @@ class NewProductSerializer(serializers.ModelSerializer):
         size = [size.split(" - ")[0] for size in sizes]
         return size
 
-    # def get_compression_class(self, obj):
-    #     product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
-    #
-    #     valid_products = [p for p in product if re.search(r"/CCL.*$", p.name, re.IGNORECASE)]
-    #     if not valid_products:
-    #         return []
-    #     ccl = set([f'{str(p.compression_class)} - {str(p.compression_class.priority)}' for p in product if p.quantity > 0])
-    #     ccls = sorted(ccl, key=lambda x: int(x.split(" - ")[1]))
-    #     ccl = [ccl.split(" - ")[0] for ccl in ccls]
-    #     return ccl
-    #
-    # def get_side(self, obj):
-    #     product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
-    #
-    #     valid_products = [p for p in product if re.search(r"/Side.*$", p.name, re.IGNORECASE)]
-    #     if not valid_products:
-    #         return []
-    #
-    #     side = set([f'{str(p.side)} - {str(p.side.priority)}' for p in product if p.quantity > 0])
-    #     sides = sorted(side, key=lambda x: int(x.split(" - ")[1]))
-    #     side = [side.split(" - ")[0] for side in sides]
-    #     return side
-
     def get_off_price(self, obj):
         price = float(obj.price)
         percent_discount = obj.percent_discount
@@ -337,7 +314,8 @@ class NewProductSerializer(serializers.ModelSerializer):
             subcategories_data.append({
                 'slug': sub.slug,
                 'subcategory': sub.subcategory,
-                'subcategory_title': sub.subcategory_title
+                'subcategory_title': sub.subcategory_title,
+                'category_slug': sub.category.slug,
             })
         return subcategories_data
 
