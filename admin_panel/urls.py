@@ -228,7 +228,6 @@ urlpatterns = [
 
     # Brand
     path('product/brand/', views.BrandView.as_view()),
-    path('product/brand/<int:brand_id>/', views.BrandItemView.as_view()),
     path('product/brand/cart/<int:cart_id>/', views.BrandCartDeleteView.as_view()),
     path('product/brand/cart_image/<int:cart_image_id>/', views.BrandCartImageDeleteView.as_view()),
 
