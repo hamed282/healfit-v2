@@ -134,8 +134,11 @@ class SizeOfColorView(APIView):
         color_query = self.request.query_params.get('color', None)
         color = ColorProductModel.objects.get(color=color_query)
 
-        compression_class_query = self.request.query_params.get('compression_class', None)
-        compression_class = CompressionClassModel.objects.get(compression_class=compression_class_query)
+        if self.request.query_params.get('compression_class'):
+            compression_class_query = self.request.query_params.get('compression_class', None)
+            compression_class = CompressionClassModel.objects.get(compression_class=compression_class_query)
+        else:
+            compression_class = None
 
         products = ProductVariantModel.objects.filter(product=product, color=color,
                                                       compression_class=compression_class, quantity__gt=0)
