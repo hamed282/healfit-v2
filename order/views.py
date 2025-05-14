@@ -405,22 +405,22 @@ class ShippingView(APIView):
                     return Response(data={'shipping_fee': shipping.shipping_fee,
                                           'delivery_time': delivery_date(int(shipping.delivery_day), city),
                                           'total_amount': int(amount),
-                                          'subtotal': amount - round(int(amount)/1.05),
+                                          'subtotal': int(amount) - round(int(amount)/1.05),
                                           'vat': round(int(amount)/1.05),
 
                                           'total_amount_without_discount': int(amount_total) + int(shipping.shipping_fee),
-                                          'subtotal_without_discount': amount_total - round(int(amount_total)/1.05),
+                                          'subtotal_without_discount': int(amount_total) - round(int(amount_total)/1.05),
                                           'vat_without_discount': round(int(amount_total)/1.05),
 
                                           'total_with_shipping': int(amount) + int(shipping.shipping_fee)})
                 return Response(data={'shipping_fee': '0',
                                       'delivery_time': delivery_date(int(shipping.delivery_day), city),
                                       'total_amount': int(amount),
-                                      'subtotal': amount - round(int(amount) / 1.05),
+                                      'subtotal': int(amount) - round(int(amount) / 1.05),
                                       'vat': round(int(amount) / 1.05),
 
                                       'total_amount_without_discount': int(amount_total) + 0,
-                                      'subtotal_without_discount': amount_total - round(int(amount_total) / 1.05),
+                                      'subtotal_without_discount': int(amount_total) - round(int(amount_total) / 1.05),
                                       'vat_without_discount': round(int(amount_total) / 1.05),
 
                                       'total_with_shipping': int(amount) + 0
@@ -431,11 +431,11 @@ class ShippingView(APIView):
                     return Response(data={'shipping_fee': shipping.shipping_fee,
                                           'delivery_time': delivery_date(int(shipping.delivery_day), city),
                                           'total_amount': int(amount),
-                                          'subtotal': amount - round(int(amount) / 1.05),
+                                          'subtotal': int(amount) - round(int(amount) / 1.05),
                                           'vat': round(int(amount) / 1.05),
 
                                           'total_amount_without_discount': int(amount_total) + int(shipping.shipping_fee),
-                                          'subtotal_without_discount': amount_total - round(int(amount_total) / 1.05),
+                                          'subtotal_without_discount': int(amount_total) - round(int(amount_total) / 1.05),
                                           'vat_without_discount': round(int(amount_total) / 1.05),
 
                                           'total_with_shipping': int(amount) + int(shipping.shipping_fee)
@@ -443,11 +443,11 @@ class ShippingView(APIView):
                 return Response(data={'shipping_fee': '0',
                                       'delivery_time': delivery_date(int(shipping.delivery_day), city),
                                       'total_amount': int(amount),
-                                      'subtotal': amount - round(int(amount) / 1.05),
+                                      'subtotal': int(amount) - round(int(amount) / 1.05),
                                       'vat': round(int(amount) / 1.05),
 
                                       'total_amount_without_discount': int(amount_total) + 0,
-                                      'subtotal_without_discount': amount_total - round(int(amount_total) / 1.05),
+                                      'subtotal_without_discount': int(amount_total) - round(int(amount_total) / 1.05),
                                       'vat_without_discount': round(int(amount_total) / 1.05),
 
                                       'total_with_shipping': int(amount) + 0
@@ -456,11 +456,11 @@ class ShippingView(APIView):
             return Response(data={'shipping_fee': '300',
                                   'delivery_day': delivery_date(7),
                                   'total_amount': int(amount),
-                                  'subtotal': amount - round(int(amount) / 1.05),
+                                  'subtotal': int(amount) - round(int(amount) / 1.05),
                                   'vat': round(int(amount) / 1.05),
 
                                   'total_amount_without_discount': int(amount_total) + 300,
-                                  'subtotal_without_discount': amount_total - round(int(amount_total) / 1.05),
+                                  'subtotal_without_discount': int(amount_total) - round(int(amount_total) / 1.05),
                                   'vat_without_discount': round(int(amount_total) / 1.05),
 
                                   'total_with_shipping': int(amount) + 300
