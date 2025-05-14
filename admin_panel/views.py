@@ -2606,93 +2606,24 @@ class CustomMadePageView(APIView):
             page.delete()
             return Response(status=204)
         except CustomMadePageModel.DoesNotExist:
-            return Response({"error": "صفحه سفارشی یافت نشد"}, status=404)
+            return Response({"error": "page not found"}, status=404)
 
 
-# class BrandPageView(APIView):
-#     def get(self, request, brand_id=None):
-#         if brand_id:
-#             try:
-#                 brand_page = BrandPageModel.objects.get(brand=brand_id)
-#                 brand_cart = BrandCartModel.objects.filter(brand=brand_id)
-#                 brand_page_serializer = BrandPageSerializer(brand_page)
-#                 brand_cart_serializer = BrandCartSerializer(brand_cart, many=True)
-#                 return Response({
-#                     'brand_page': brand_page_serializer.data,
-#                     'brand_cart': brand_cart_serializer.data
-#                 })
-#             except BrandPageModel.DoesNotExist:
-#                 return Response({'error': 'Brand page not found'}, status=404)
-#         else:
-#             brand_pages = BrandPageModel.objects.all()
-#             brand_page_serializer = BrandPageSerializer(brand_pages, many=True)
-#             return Response(brand_page_serializer.data)
-#
-#     def post(self, request):
-#         brand_id = request.data.get('brand')
-#         if not brand_id:
-#             return Response({'error': 'Brand ID is required'}, status=400)
-#
-#         try:
-#             brand = ProductBrandModel.objects.get(id=brand_id)
-#         except ProductBrandModel.DoesNotExist:
-#             return Response({'error': 'Brand not found'}, status=404)
-#
-#         # Check if brand page already exists
-#         if BrandPageModel.objects.filter(brand=brand).exists():
-#             return Response({'error': 'Brand page already exists'}, status=400)
-#
-#         # Create brand page with default values
-#         brand_page_data = {
-#             'brand': brand,
-#             'image_desktop': request.FILES.get('image_desktop'),
-#             'image_mobile': request.FILES.get('image_mobile'),
-#             'image_alt': request.data.get('image_alt', ''),
-#             'content1_title': request.data.get('content1_title', ''),
-#             'content1_image': request.FILES.get('content1_image'),
-#             'content1_image_alt': request.data.get('content1_image_alt', ''),
-#             'content1_text': request.data.get('content1_text', ''),
-#             'content2_text': request.data.get('content2_text', ''),
-#             'content2_right_image': request.FILES.get('content2_right_image'),
-#             'content2_right_image_alt': request.data.get('content2_right_image_alt', ''),
-#             'content2_right': request.data.get('content2_right', ''),
-#             'content2_mid_image': request.FILES.get('content2_mid_image'),
-#             'content2_mid_image_alt': request.data.get('content2_mid_image_alt', ''),
-#             'content2_mid': request.data.get('content2_mid', ''),
-#             'content2_left_image': request.FILES.get('content2_left_image'),
-#             'content2_left_image_alt': request.data.get('content2_left_image_alt', ''),
-#             'content2_left': request.data.get('content2_left', ''),
-#             'contact_image': request.FILES.get('contact_image'),
-#             'contact_image_alt': request.data.get('contact_image_alt', ''),
-#             'contact_text': request.data.get('contact_text', '')
-#         }
-#
-#         brand_page_serializer = BrandPageSerializer(data=brand_page_data)
-#         if brand_page_serializer.is_valid():
-#             brand_page_serializer.save()
-#             return Response(brand_page_serializer.data, status=201)
-#         return Response(brand_page_serializer.errors, status=400)
-#
-#     def put(self, request, brand_id):
-#         try:
-#             brand_page = BrandPageModel.objects.get(brand=brand_id)
-#         except BrandPageModel.DoesNotExist:
-#             return Response({'error': 'Brand page not found'}, status=404)
-#
-#         brand_page_serializer = BrandPageSerializer(brand_page, data=request.data, partial=True)
-#         if brand_page_serializer.is_valid():
-#             brand_page_serializer.save()
-#             return Response(brand_page_serializer.data)
-#         return Response(brand_page_serializer.errors, status=400)
-#
-#     def delete(self, request, brand_id):
-#         try:
-#             brand_page = BrandPageModel.objects.get(brand=brand_id)
-#         except BrandPageModel.DoesNotExist:
-#             return Response({'error': 'Brand page not found'}, status=404)
-#
-#         brand_page.delete()
-#         return Response(status=204)
+class BrandCartDeleteView(APIView):
+    def delete(self, request, cart_id):
+        try:
+            cart = BrandCartModel.objects.get(id=cart_id)
+            cart.delete()
+            return Response(status=204)
+        except CustomMadePageModel.DoesNotExist:
+            return Response({"error": "page not found"}, status=404)
 
 
-
+class BrandCartImageDeleteView(APIView):
+    def delete(self, request, cart_image_id):
+        try:
+            image = BrandCartImageModel.objects.get(id=cart_image_id)
+            image.delete()
+            return Response(status=204)
+        except CustomMadePageModel.DoesNotExist:
+            return Response({"error": "page not found"}, status=404)
