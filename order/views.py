@@ -408,7 +408,13 @@ class ShippingView(APIView):
                     return Response(data={'shipping_fee': shipping.shipping_fee,
                                           'delivery_time': delivery_date(int(shipping.delivery_day), city),
                                           'total_amount': int(amount),
+                                          'subtotal': amount - round(int(amount)/1.05, 2),
+                                          'vat': round(int(amount)/1.05, 2),
+
                                           'total_amount_without_discount': int(amount_total) + int(shipping.shipping_fee),
+                                          'subtotal_without_discount': amount_total - round(int(amount_total)/1.05, 2),
+                                          'vat_without_discount': round(int(amount_total)/1.05, 2),
+
                                           'total_with_shipping': int(amount) + int(shipping.shipping_fee)})
                 return Response(data={'shipping_fee': '0',
                                       'delivery_time': delivery_date(int(shipping.delivery_day), city),
