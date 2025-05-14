@@ -351,9 +351,6 @@ class OrderPayCancelledView(APIView):
 
     def get(self, request):
         user = request.user
-        # from accounts.models import User
-        # user = User.objects.get(id=1)
-
         try:
             order = OrderModel.objects.filter(user=user).first()
         except:
