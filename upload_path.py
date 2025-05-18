@@ -1,4 +1,5 @@
 import os
+from django.db.models.fields.files import FieldFile
 
 
 def get_cover_image_upload_path(instance, filename):
@@ -104,5 +105,7 @@ def get_brand_cart_upload_path(instance, filename):
 
 def get_attach_file_upload_path(instance, filename):
     attach_file = instance.attach_file
+    if isinstance(attach_file, FieldFile):
+        attach_file = attach_file.name
     return os.path.join('attach_file', attach_file, filename)
 
