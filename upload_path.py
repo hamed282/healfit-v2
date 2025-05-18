@@ -100,3 +100,9 @@ def get_brand_upload_path(instance, filename):
 def get_brand_cart_upload_path(instance, filename):
     brand_name = instance.brand_cart.brand.brand
     return os.path.join('brand_cart', brand_name, filename)
+
+
+def get_attach_file_upload_path(instance, filename):
+    attach_file = instance.attach_file
+    return os.path.join('attach_file', attach_file, filename)
+

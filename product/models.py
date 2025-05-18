@@ -7,7 +7,8 @@ from django.db.models import Q
 from upload_path import (get_cover_image_upload_path, get_gallery_upload_path, get_description_image_upload_path,
                          get_size_table_upload_path, get_category_upload_path, get_subcategory_upload_path,
                          get_gender_upload_path, get_video_product_upload_path, get_brand_logo_upload_path,
-                         get_custom_made_upload_path, get_brand_upload_path, get_brand_cart_upload_path)
+                         get_custom_made_upload_path, get_brand_upload_path, get_brand_cart_upload_path,
+                         get_attach_file_upload_path)
 from accounts.models import User
 from django.utils import timezone
 
@@ -717,6 +718,7 @@ class CustomMadeModel(models.Model):
     treatment_category = models.ForeignKey(TreatmentCategoryModel, on_delete=models.CASCADE)
     description = models.TextField()
     hear_about_us = models.ForeignKey(HearAboutUsModel, on_delete=models.CASCADE)
+    attach_file = models.FileField(upload_to=get_attach_file_upload_path)
 
     def __str__(self):
         return f'{self.email}'
