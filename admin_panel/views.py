@@ -2589,9 +2589,9 @@ class CustomMadePageView(APIView):
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
 
-    def put(self, request, page_id):
+    def put(self, request):
         try:
-            page = CustomMadePageModel.objects.get(id=page_id)
+            page = CustomMadePageModel.objects.all().first()
             serializer = CustomMadePageSerializer(page, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
@@ -2600,13 +2600,13 @@ class CustomMadePageView(APIView):
         except CustomMadePageModel.DoesNotExist:
             return Response({"error": "صفحه سفارشی یافت نشد"}, status=404)
 
-    def delete(self, request, page_id):
-        try:
-            page = CustomMadePageModel.objects.get(id=page_id)
-            page.delete()
-            return Response(status=204)
-        except CustomMadePageModel.DoesNotExist:
-            return Response({"error": "page not found"}, status=404)
+    # def delete(self, request, page_id):
+    #     try:
+    #         page = CustomMadePageModel.objects.get(id=page_id)
+    #         page.delete()
+    #         return Response(status=204)
+    #     except CustomMadePageModel.DoesNotExist:
+    #         return Response({"error": "page not found"}, status=404)
 
 
 class BrandCartDeleteView(APIView):
