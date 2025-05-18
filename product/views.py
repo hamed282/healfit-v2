@@ -335,7 +335,7 @@ class CategoryBySubcategoryView(APIView):
 
 class SubcategoryListView(APIView):
     def get(self, request):
-        subcategories = ProductSubCategoryModel.objects.all()
+        subcategories = ProductSubCategoryModel.objects.all().order_by('priority')
         ser_data = ProductSubCategorySerializer(instance=subcategories, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
@@ -602,32 +602,3 @@ class CustomMadePageView(APIView):
         ser_data = CustomMadePageSerializer(instance=custom_made)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
-
-class BrandPageView(APIView):
-    def get(self, request, brand_slug):
-        try:
-            # Get brand page data
-            brand_page = BrandPageModel.objects.get(brand=ProductBrandModel.objects.get(slug=brand_slug))
-            brand_page_serializer = BrandPageSerializer(instance=brand_page)
-            
-            # Get brand cart data
-            brand_cart = BrandCartModel.objects.filter(brand=ProductBrandModel.objects.get(slug=brand_slug))
-            brand_cart_serializer = BrandCartSerializer(instance=brand_cart, many=True)
-            
-            return Response({
-                'brand_page': brand_page_serializer.data,
-                'brand_cart': brand_cart_serializer.data
-            }, status=status.HTTP_200_OK)
-        except (BrandPageModel.DoesNotExist, BrandCartModel.DoesNotExist):
-            return Response({'message': 'Brand not found'}, status=status.HTTP_404_NOT_FOUND)
-
-
-class BrandAllView(APIView):
-    def get(self, request):
-        try:
-            brands = ProductBrandModel.objects.all()
-            brands_serializer = ProductBrandSerializer(instance=brands, many=True)
-
-            return Response(brands_serializer.data, status=status.HTTP_200_OK)
-        except (BrandPageModel.DoesNotExist, BrandCartModel.DoesNotExist):
-            return Response({'message': 'Brand not found'}, status=status.HTTP_404_NOT_FOUND)
