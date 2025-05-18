@@ -602,3 +602,11 @@ class CustomMadePageView(APIView):
         ser_data = CustomMadePageSerializer(instance=custom_made)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
+
+class BrandAllView(APIView):
+    def get(self, request):
+
+        brands = ProductBrandModel.objects.all()
+        brands_serializer = ProductBrandSerializer(instance=brands, many=True)
+
+        return Response(brands_serializer.data, status=status.HTTP_200_OK)
