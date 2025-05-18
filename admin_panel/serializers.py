@@ -236,7 +236,7 @@ class ColorValueCUDSerializer(serializers.ModelSerializer):
 class SizeValueSerializer(serializers.ModelSerializer):
     value = serializers.SerializerMethodField()
     type = serializers.SerializerMethodField()
-    priority = serializers.SerializerMethodField()
+    priority = serializers.SerializerMethodField(required=False, allow_null=True)
 
     class Meta:
         model = SizeProductModel
