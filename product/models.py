@@ -718,7 +718,7 @@ class CustomMadeModel(models.Model):
     treatment_category = models.ForeignKey(TreatmentCategoryModel, on_delete=models.CASCADE)
     description = models.TextField()
     hear_about_us = models.ForeignKey(HearAboutUsModel, on_delete=models.CASCADE)
-    attach_file = models.FileField(upload_to=get_attach_file_upload_path)
+    attach_file = models.FileField(upload_to=get_attach_file_upload_path, null=True, blank=True)
 
     def __str__(self):
         return f'{self.email}'
