@@ -2490,7 +2490,7 @@ class BrandItemView(APIView):
     #     return super().get_permissions()
 
     def get(self, request, brand_id):
-        custom_type = get_object_or_404(ProductBrandModel, id=brand_id, active_page=True)
+        custom_type = get_object_or_404(ProductBrandModel, id=brand_id)
         ser_data = BrandSerializer(instance=custom_type)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
