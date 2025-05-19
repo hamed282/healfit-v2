@@ -206,7 +206,9 @@ class ProductAllView(APIView):
             if color:
                 variant_queryset = variant_queryset.filter(color__color=color)
             if size:
-                variant_queryset = variant_queryset.filter(size__size=size)
+                # تبدیل رشته سایزها به لیست و حذف فضاهای خالی
+                size_list = [s.strip() for s in size.split(',')]
+                variant_queryset = variant_queryset.filter(size__size__in=size_list)
             if is_available:
                 variant_queryset = variant_queryset.filter(quantity__gt=0)
             if side:
