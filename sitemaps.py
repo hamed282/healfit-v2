@@ -100,6 +100,7 @@ class ProductSitemap(Sitemap):
         # بازگرداندن مقدار به فرمت ISO
         return date_time  # .isoformat()
 
+
 class ProductCategorySitemap(Sitemap):
     changefreq = 'weekly'
     priority = 0.8
@@ -301,7 +302,7 @@ class ReturnRefundSitemap(Sitemap):
         return ['home:seo']
 
     def location(self, item):
-        return '/return-refund'
+        return '/return-refund-policy'
 
     def lastmod(self, item):
         return datetime(2024, 9, 11)
