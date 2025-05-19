@@ -248,8 +248,34 @@ class NewProductSerializer(serializers.ModelSerializer):
                                                      compression_class=compression_class,
                                                      side=side)
 
-        colors = set([f'{str(p.color.color)} - {str(p.color.color_code)} - {str(p.color.id)}' for p in product])
-        all_colors = [{'color': color.split(" - ")[0], 'code': color.split(" - ")[1], 'id': color.split(" - ")[2]} for color in colors]
+        # Create a dictionary to store color info and count available sizes
+        color_info = {}
+        for p in product:
+            color_key = f'{str(p.color.color)} - {str(p.color.color_code)} - {str(p.color.id)}'
+            if color_key not in color_info:
+                color_info[color_key] = {
+                    'color': p.color.color,
+                    'code': p.color.color_code,
+                    'id': p.color.id,
+                    'available_sizes': 0
+                }
+            # Count available sizes for this color
+            if p.quantity > 0:
+                color_info[color_key]['available_sizes'] += 1
+
+        # Convert to list and sort by available sizes
+        all_colors = [
+            {
+                'color': info['color'],
+                'code': info['code'],
+                'id': info['id']
+            }
+            for color_key, info in sorted(
+                color_info.items(),
+                key=lambda x: x[1]['available_sizes'],
+                reverse=True
+            )
+        ]
         return all_colors
 
     def get_all_size(self, obj):
