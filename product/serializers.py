@@ -582,7 +582,6 @@ class ProductSubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductSubCategoryModel
         fields = '__all__'
-        ordering = ['-priority', 'id']
 
     def get_category_name(self, obj):
         return obj.category.category_title
@@ -592,11 +591,15 @@ class ProductSubCategorySerializer(serializers.ModelSerializer):
 
 
 class ProductCategorySerializer(serializers.ModelSerializer):
-    subcategories = ProductSubCategorySerializer(many=True, read_only=True, source='productsubcategorymodel_set')
+    subcategories = serializers.SerializerMethodField()
 
     class Meta:
         model = ProductCategoryModel
         fields = '__all__'
+
+    def get_subcategories(self, obj):
+        subcategories = obj.productsubcategorymodel_set.all().order_by('priority')
+        return ProductSubCategorySerializer(subcategories, many=True, read_only=True).data
 
 
 class ProductByCategorySerializer(serializers.Serializer):
