@@ -591,8 +591,7 @@ class ProductSubCategorySerializer(serializers.ModelSerializer):
 
 
 class ProductCategorySerializer(serializers.ModelSerializer):
-    subcategories = ProductSubCategorySerializer(many=True, read_only=True, source='productsubcategorymodel_set',
-                                                 sorted='priority')
+    subcategories = ProductSubCategorySerializer(many=True, read_only=True, source='productsubcategorymodel_set')
 
     class Meta:
         model = ProductCategoryModel
