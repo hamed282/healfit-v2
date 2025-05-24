@@ -339,7 +339,7 @@ class CategoryBySubcategoryView(APIView):
 
 class SubcategoryListView(APIView):
     def get(self, request):
-        subcategories = ProductSubCategoryModel.objects.all().order_by('priority')
+        subcategories = ProductSubCategoryModel.objects.all().order_by('-priority')
         ser_data = ProductSubCategorySerializer(instance=subcategories, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
