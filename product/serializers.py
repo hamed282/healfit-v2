@@ -582,6 +582,7 @@ class ProductSubCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductSubCategoryModel
         fields = '__all__'
+        ordering = ['priority', 'id']
 
     def get_category_name(self, obj):
         return obj.category.category_title
