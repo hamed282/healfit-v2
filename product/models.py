@@ -259,7 +259,7 @@ class ProductCategoryModel(models.Model):
 class ProductSubCategoryModel(models.Model):
     objects = None
     category = models.ForeignKey(ProductCategoryModel, on_delete=models.CASCADE)
-    subcategory = models.CharField(max_length=50)
+    subcategory = models.CharField(max_length=50, blank=True, null=True)
     subcategory_title = models.CharField(max_length=50)
     short_description = models.TextField()
     description = models.TextField()
