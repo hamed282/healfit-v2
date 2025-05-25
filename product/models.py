@@ -718,10 +718,18 @@ class CustomMadeModel(models.Model):
     treatment_category = models.ForeignKey(TreatmentCategoryModel, on_delete=models.CASCADE)
     description = models.TextField()
     hear_about_us = models.ForeignKey(HearAboutUsModel, on_delete=models.CASCADE)
-    attach_file = models.FileField(upload_to=get_attach_file_upload_path, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.email}'
+
+
+class CustomMadeAttachFileModel(models.Model):
+    custom_made = models.ForeignKey(CustomMadeModel, on_delete=models.CASCADE)
+    attach_file = models.FileField(upload_to=get_attach_file_upload_path, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.custom_made}'
 
 
 class CustomMadePageModel(models.Model):

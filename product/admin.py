@@ -5,7 +5,7 @@ from .models import (ProductCategoryModel, ProductModel, PopularProductModel, Si
                      FavUserModel, CouponModel, ProductCouponModel, CompressionClassModel, SideModel, ProductBrandModel,
                      CustomMadeModel, TreatmentCategoryModel, ProductTypeModel, BodyAreaModel, ClassNumberModel,
                      CustomerTypeModel, HearAboutUsModel, CustomMadePageModel, CustomerTestimonialsModel,
-                     BrandCartModel, BrandCartImageModel)
+                     BrandCartModel, BrandCartImageModel, CustomMadeAttachFileModel)
 from django.utils.html import format_html
 
 
@@ -110,6 +110,16 @@ class BrandCartAdmin(admin.ModelAdmin):
     inlines = [BrandCartImageInline]
 
 
+class CustomMadeInline(admin.TabularInline):
+    model = CustomMadeAttachFileModel
+    extra = 1
+
+
+class CustomMadeAdmin(admin.ModelAdmin):
+    # list_display = ['brand', 'content']
+    inlines = [BrandCartImageInline]
+
+
 admin.site.register(ProductCategoryModel, ProductCategoryAdmin)
 admin.site.register(ProductGenderModel, ProductGenderAdmin)
 admin.site.register(ProductSubCategoryModel, ProductSubCategoryAdmin)
@@ -124,7 +134,7 @@ admin.site.register(AddSubCategoryModel)
 admin.site.register(CompressionClassModel)
 admin.site.register(SideModel)
 admin.site.register(ExtraGroupModel)
-admin.site.register(CustomMadeModel)
+admin.site.register(CustomMadeModel, CustomMadeAdmin)
 admin.site.register(HearAboutUsModel)
 admin.site.register(ProductTypeModel)
 admin.site.register(ClassNumberModel)
