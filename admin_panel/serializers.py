@@ -621,6 +621,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(read_only=True, slug_field='first_name')
     status = serializers.SlugRelatedField(slug_field='status', queryset=OrderStatusModel.objects.all())
     address = serializers.SlugRelatedField(read_only=True, slug_field='address')
+    phone_number = serializers.SerializerMethodField()
     number_of_products = serializers.SerializerMethodField()
     amount = serializers.SerializerMethodField()
     coupon = serializers.SerializerMethodField()
@@ -629,6 +630,11 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderModel
         fields = '__all__'
+
+    def get_phone_number(self, obj):
+        if obj.address:
+            return f'{obj.address.prefix_number} {obj.address.phone_number}'
+        return None
 
     def get_coupon(self, obj):
         if obj.coupon:
