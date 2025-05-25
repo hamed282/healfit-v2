@@ -117,7 +117,7 @@ class CustomMadeInline(admin.TabularInline):
 
 class CustomMadeAdmin(admin.ModelAdmin):
     # list_display = ['brand', 'content']
-    inlines = [BrandCartImageInline]
+    inlines = [CustomMadeInline]
 
 
 admin.site.register(ProductCategoryModel, ProductCategoryAdmin)
