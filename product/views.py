@@ -5,7 +5,7 @@ from .models import (ProductGenderModel, ProductModel, SizeProductModel, ColorPr
                      AddImageGalleryModel, PopularProductModel, ProductCategoryModel, ProductSubCategoryModel,
                      FavUserModel, CouponModel, CompressionClassModel, SideModel, CustomerTypeModel, ProductTypeModel,
                      BodyAreaModel, ClassNumberModel, TreatmentCategoryModel, HearAboutUsModel, CustomMadePageModel,
-                     BrandCartModel, ProductBrandModel)
+                     BrandCartModel, ProductBrandModel, CustomMadeAttachFileModel)
 from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVariantShopSerializer,
                           ProductColorImageSerializer, ColorSizeProductSerializer, ProductListSerializer,
                           UserFavSerializer, PopularProductSerializer, ProductAllSerializer,
@@ -24,6 +24,7 @@ from django.http import JsonResponse
 from datetime import datetime, timedelta
 import uuid
 from django.db.models import Q
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class ProductGenderView(APIView):
@@ -568,6 +569,8 @@ class CategoryBestSellerView(APIView):
 
 
 class CustomMadeView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
     def get(self, request):
         data = {
             'customer_types': CustomerTypeModel.objects.filter(is_enable=True),
@@ -581,9 +584,16 @@ class CustomMadeView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        serializer = CustomMadeSerializer(data=request.data)
+        data = request.data.copy()
+        files = request.FILES.getlist('attach_file')
+
+        serializer = CustomMadeSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
+            custom_made = serializer.save()
+
+            for file in files:
+                CustomMadeAttachFileModel.objects.create(custom_made=custom_made, attach_file=file)
+
             return Response(
                 {
                     "message": "Your custom made request has been submitted successfully.",

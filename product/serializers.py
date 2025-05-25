@@ -785,18 +785,11 @@ class CustomMadeAttachFileSerializer(serializers.ModelSerializer):
 
 
 class CustomMadeSerializer(serializers.ModelSerializer):
-    attach_files = CustomMadeAttachFileSerializer(many=True, required=False)
+    attach_file = CustomMadeAttachFileSerializer(many=True, required=False)
 
     class Meta:
         model = CustomMadeModel
         fields = '__all__'
-
-    def create(self, validated_data):
-        attach_files_data = validated_data.pop('attach_files', [])
-        custom_made = CustomMadeModel.objects.create(**validated_data)
-        for file_data in attach_files_data:
-            CustomMadeAttachFileModel.objects.create(custom_made=custom_made, **file_data)
-        return custom_made
 
 
 class CustomerTypeSerializer(serializers.ModelSerializer):
