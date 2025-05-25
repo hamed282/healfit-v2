@@ -4,7 +4,7 @@ from .models import (ProductGenderModel, ProductModel, ProductVariantModel, AddI
                      ProductTagModel, FavUserModel, CouponModel, ProductBrandModel, CompressionClassModel, SideModel,
                      CustomMadeModel, CustomerTypeModel, ProductTypeModel, BodyAreaModel, ClassNumberModel,
                      TreatmentCategoryModel, HearAboutUsModel, CustomMadePageModel, BrandCartModel,
-                     BrandCartImageModel)
+                     BrandCartImageModel, CustomMadeAttachFileModel)
 from django.shortcuts import get_object_or_404
 import re
 
@@ -778,10 +778,25 @@ class CategoryBestSellerSerializer(serializers.ModelSerializer):
         return best_seller_products
 
 
+class CustomMadeAttachFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomMadeAttachFileModel
+        fields = ['attach_file']
+
+
 class CustomMadeSerializer(serializers.ModelSerializer):
+    attach_files = CustomMadeAttachFileSerializer(many=True, required=False)
+
     class Meta:
         model = CustomMadeModel
         fields = '__all__'
+
+    def create(self, validated_data):
+        attach_files_data = validated_data.pop('attach_files', [])
+        custom_made = CustomMadeModel.objects.create(**validated_data)
+        for file_data in attach_files_data:
+            CustomMadeAttachFileModel.objects.create(custom_made=custom_made, **file_data)
+        return custom_made
 
 
 class CustomerTypeSerializer(serializers.ModelSerializer):
