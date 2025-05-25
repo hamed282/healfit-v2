@@ -144,7 +144,7 @@ class VideoHomeModel(models.Model):
 
 class CommentHomeModel(models.Model):
     objects = None
-    name = models.CharField(max_length=32)
+    name = models.CharField(max_length=100)
     comment = models.TextField()
     active = models.BooleanField(default=False)
     created = models.DateField(auto_now_add=True)
