@@ -781,11 +781,12 @@ class CategoryBestSellerSerializer(serializers.ModelSerializer):
 class CustomMadeAttachFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomMadeAttachFileModel
-        fields = ['attach_file']
+        fields = ['id', 'attach_file']
 
 
 class CustomMadeSerializer(serializers.ModelSerializer):
-    attach_file = CustomMadeAttachFileSerializer(many=True, required=False)
+    attach_file = CustomMadeAttachFileSerializer(many=True, required=False, read_only=True,
+                                                 source='custommadeattachfilemodel_set')
 
     class Meta:
         model = CustomMadeModel
