@@ -223,7 +223,7 @@ class ProductAllView(APIView):
             product_ids = variant_queryset.values_list('product_id', flat=True).distinct()
             
             # فیلتر کردن محصولات - فقط محصولات فعال
-            queryset = ProductModel.objects.filter(id__in=product_ids, is_active=True)
+            queryset = ProductModel.objects.filter(id__in=product_ids, is_active=True).order_by('priority')
             
             if gender:
                 queryset = queryset.filter(gender__gender=gender)
@@ -235,7 +235,7 @@ class ProductAllView(APIView):
                 queryset = queryset.filter(brand__brand__in=brand.split(','))
         else:
             # اگر هیچ فیلتری وجود نداشت، فقط محصولات فعال را برگردان
-            queryset = ProductModel.objects.filter(is_active=True)
+            queryset = ProductModel.objects.filter(is_active=True).order_by('priority')
             
         # محاسبه تعداد کل محصولات فعال (قبل از فیلتر)
         total_all_products = ProductModel.objects.filter(is_active=True).count()
@@ -281,7 +281,7 @@ class ProductAllView(APIView):
 
 
 class SearchProductView(viewsets.ModelViewSet):
-    queryset = ProductModel.objects.all()
+    queryset = ProductModel.objects.all().order_by('priority')
     serializer_class = ProductAllSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['product', 'name_product', 'application_fields']
