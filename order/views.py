@@ -469,18 +469,18 @@ class ShippingView(APIView):
 
 class TabbyPaymentView(APIView):
     def post(self, request, order_id):
-        try:
+        # try:
             tabby = TabbyPayment(order_id)
             payment_session = tabby.create_payment_session()
             return Response({
                 'status': 'success',
                 'payment_url': payment_session['configuration']['available_products'][0]['web_url']
             })
-        except Exception as e:
-            return Response({
-                'status': 'error',
-                'message': str(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+        # except Exception as e:
+        #     return Response({
+        #         'status': 'error',
+        #         'message': str(e)
+        #     }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TabbyPaymentSuccessView(APIView):

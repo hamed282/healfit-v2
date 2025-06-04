@@ -36,37 +36,12 @@ class TabbyPayment:
                     "phone": self.order.address.phone_number,
                     "email": self.order.user.email,
                     "name": f"{self.order.user.first_name} {self.order.user.last_name}",
-                    "dob": "2000-01-20",
-                },
-                "shipping_address": {
-                    "city": "Dubai",
-                    "address": "Dubai",
-                    "zip": "1111"
                 },
                 "order": {
-                    "tax_amount": "0.00",
-                    "shipping_amount": "0.00",
-                    "discount_amount": "0.00",
-                    "updated_at": "2023-11-07T05:31:56Z",
                     "reference_id": str(self.order.id),
-
                     "items": [
                         {
-                            "description": "Description of the product",
-                            "discount_amount": "0.00",
-                            "reference_id": "SKU123",
-                            "image_url": "https://example.com/",
-                            "product_url": "https://example.com/",
-                            "gender": "Kids",
-                            "category": "Clothes",
-                            "color": "white",
-                            "product_material": "cotton",
-                            "size_type": "EU",
-                            "size": "M",
-                            "brand": "Name of the Brand",
-                            "is_refundable": True,
                             "title": item.product.name,
-
                             "quantity": item.quantity,
                             "unit_price": str(item.price),
                         } for item in self.order.items.all()
