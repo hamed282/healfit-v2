@@ -34,7 +34,7 @@ class BlogTagModel(models.Model):
 
 class BlogModel(models.Model):
     cover_image = models.ImageField(upload_to=get_cover_blog_upload_path, max_length=500)
-    cover_image_alt = models.CharField(max_length=125)
+    cover_image_alt = models.CharField(max_length=256)
     # banner = models.ImageField(upload_to=get_banner_blog_upload_path, null=True, blank=True)
     # banner_alt = models.CharField(max_length=125, null=True, blank=True)
     title = models.CharField(max_length=250)
@@ -70,7 +70,7 @@ class BlogModel(models.Model):
 class AuthorBlogModel(models.Model):
     author = models.CharField(max_length=64)
     author_image = models.ImageField(upload_to=get_author_upload_path, null=True, blank=True)
-    author_image_alt = models.CharField(max_length=64, null=True, blank=True)
+    author_image_alt = models.CharField(max_length=256, null=True, blank=True)
 
     def __str__(self):
         return f'{self.author}'
@@ -97,7 +97,7 @@ class AddBlogTagModel(models.Model):
 
 class BlogImageModel(models.Model):
     image = models.ImageField(upload_to='blog/blog/', max_length=500)
-    image_alt = models.CharField(max_length=64)
+    image_alt = models.CharField(max_length=256)
     type = models.CharField(max_length=32)
 
 

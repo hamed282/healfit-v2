@@ -20,11 +20,11 @@ class ProductModel(models.Model):
     brand = models.ForeignKey('ProductBrandModel', on_delete=models.CASCADE, null=True, blank=True)
     name_product = models.CharField(max_length=100, blank=True, null=True)
     cover_image = models.ImageField(upload_to=get_cover_image_upload_path, blank=True, null=True)
-    cover_image_alt = models.CharField(max_length=125, blank=True, null=True)
+    cover_image_alt = models.CharField(max_length=256, blank=True, null=True)
     size_table_image = models.ImageField(upload_to=get_size_table_upload_path, blank=True, null=True)
-    size_table_image_alt = models.CharField(max_length=125, blank=True, null=True)
+    size_table_image_alt = models.CharField(max_length=256, blank=True, null=True)
     description_image = models.ImageField(upload_to=get_description_image_upload_path, blank=True, null=True)
-    description_image_alt = models.CharField(max_length=125, blank=True, null=True)
+    description_image_alt = models.CharField(max_length=256, blank=True, null=True)
     price = models.CharField(max_length=8)
     percent_discount = models.IntegerField(null=True, blank=True)
     subtitle = models.CharField(max_length=256, blank=True, null=True)
@@ -204,7 +204,7 @@ class ProductCategoryModel(models.Model):
     priority = models.IntegerField(blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True)
     image = models.FileField(upload_to=get_category_upload_path)
-    image_alt = models.CharField(max_length=64, blank=True, null=True)
+    image_alt = models.CharField(max_length=256, blank=True, null=True)
 
     # SEO Fields
     follow = models.BooleanField(default=False)
@@ -264,7 +264,7 @@ class ProductSubCategoryModel(models.Model):
     short_description = models.TextField()
     description = models.TextField()
     image = models.FileField(upload_to=get_subcategory_upload_path)
-    image_alt = models.CharField(max_length=64, blank=True, null=True)
+    image_alt = models.CharField(max_length=256, blank=True, null=True)
     priority = models.IntegerField(blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True)
 
@@ -344,7 +344,7 @@ class ProductGenderModel(models.Model):
     description = models.TextField()
     slug = models.SlugField(max_length=100, unique=True)
     image = models.FileField(upload_to=get_gender_upload_path)
-    image_alt = models.CharField(max_length=64, blank=True, null=True)
+    image_alt = models.CharField(max_length=256, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Product Gender'
@@ -560,7 +560,7 @@ class AddImageGalleryModel(models.Model):
     product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='image_gallery_product')
     color = models.ForeignKey('ColorProductModel', on_delete=models.CASCADE)
     image = models.ImageField(upload_to=get_gallery_upload_path, blank=True, null=True)
-    image_alt = models.CharField(max_length=64, blank=True, null=True)
+    image_alt = models.CharField(max_length=256, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Product Image Gallery'
@@ -706,12 +706,12 @@ class HearAboutUsModel(models.Model):
 class CustomMadeModel(models.Model):
     customer_type = models.ForeignKey(CustomerTypeModel, on_delete=models.CASCADE)
     other_customer_type = models.CharField(max_length=64, blank=True, null=True)
-    clinic_name = models.CharField(max_length=32)
+    clinic_name = models.CharField(max_length=32, blank=True, null=True)
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
     email = models.EmailField()
     phone_number = models.CharField(max_length=32)
-    phone_prefix = models.CharField(max_length=8, null=True, blank=True)
+    phone_prefix = models.CharField(max_length=8)
     product_type = models.ForeignKey(ProductTypeModel, on_delete=models.CASCADE)
     body_area = models.ForeignKey(BodyAreaModel, on_delete=models.CASCADE)
     class_num = models.ForeignKey(ClassNumberModel, on_delete=models.CASCADE)
@@ -735,22 +735,22 @@ class CustomMadeAttachFileModel(models.Model):
 class CustomMadePageModel(models.Model):
     image_desktop = models.ImageField(upload_to=get_custom_made_upload_path)
     image_mobile = models.ImageField(upload_to=get_custom_made_upload_path)
-    image_alt = models.CharField(max_length=64, blank=True, null=True)
+    image_alt = models.CharField(max_length=256, blank=True, null=True)
 
     content1_text = models.TextField()
     content1_right_title = models.CharField(max_length=32)
     content1_right_image = models.ImageField(upload_to=get_custom_made_upload_path)
-    content1_right_image_alt = models.CharField(max_length=64, blank=True, null=True)
+    content1_right_image_alt = models.CharField(max_length=256, blank=True, null=True)
     content1_mid_title = models.CharField(max_length=326)
     content1_mid_image = models.ImageField(upload_to=get_custom_made_upload_path)
-    content1_mid_image_alt = models.CharField(max_length=64, blank=True, null=True)
+    content1_mid_image_alt = models.CharField(max_length=256, blank=True, null=True)
     content1_left_title = models.CharField(max_length=32)
     content1_left_image = models.ImageField(upload_to=get_custom_made_upload_path)
-    content1_left_image_alt = models.CharField(max_length=64, blank=True, null=True)
+    content1_left_image_alt = models.CharField(max_length=256, blank=True, null=True)
 
     content2_text = models.TextField()
     content2_image = models.ImageField(upload_to=get_custom_made_upload_path)
-    content2_image_alt = models.CharField(max_length=64, blank=True, null=True)
+    content2_image_alt = models.CharField(max_length=256, blank=True, null=True)
     content2_link = models.CharField(max_length=128)
 
     content3_text = models.TextField()
@@ -760,7 +760,7 @@ class CustomMadePageModel(models.Model):
 
     content4_text = models.TextField()
     content4_image = models.ImageField(upload_to=get_custom_made_upload_path)
-    content4_image_alt = models.CharField(max_length=64, blank=True, null=True)
+    content4_image_alt = models.CharField(max_length=256, blank=True, null=True)
     content4_right = models.TextField()
     content4_mid = models.TextField()
     content4_left = models.TextField()
@@ -814,31 +814,31 @@ class CustomerTestimonialsModel(models.Model):
 class ProductBrandModel(models.Model):
     brand = models.CharField(max_length=32)
     brand_logo = models.ImageField(upload_to=get_brand_logo_upload_path, null=True, blank=True)
-    brand_logo_alt = models.CharField(max_length=64, null=True, blank=True)
+    brand_logo_alt = models.CharField(max_length=256, null=True, blank=True)
     slug = models.SlugField(unique=True)
 
     image_desktop = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
     image_mobile = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
-    image_alt = models.CharField(max_length=64, blank=True, null=True)
+    image_alt = models.CharField(max_length=256, blank=True, null=True)
 
     content1_title = models.CharField(max_length=64, blank=True, null=True)
     content1_image = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
-    content1_image_alt = models.CharField(max_length=64, blank=True, null=True)
+    content1_image_alt = models.CharField(max_length=256, blank=True, null=True)
     content1_text = models.TextField(blank=True, null=True)
 
     content2_text = models.TextField(blank=True, null=True)
     content2_right_image = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
-    content2_right_image_alt = models.CharField(max_length=64, blank=True, null=True)
+    content2_right_image_alt = models.CharField(max_length=256, blank=True, null=True)
     content2_right = models.TextField(blank=True, null=True)
     content2_mid_image = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
-    content2_mid_image_alt = models.CharField(max_length=64, blank=True, null=True)
+    content2_mid_image_alt = models.CharField(max_length=256, blank=True, null=True)
     content2_mid = models.TextField(blank=True, null=True)
     content2_left_image = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
-    content2_left_image_alt = models.CharField(max_length=64, blank=True, null=True)
+    content2_left_image_alt = models.CharField(max_length=256, blank=True, null=True)
     content2_left = models.TextField(blank=True, null=True)
 
     contact_image = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
-    contact_image_alt = models.CharField(max_length=64, blank=True, null=True)
+    contact_image_alt = models.CharField(max_length=256, blank=True, null=True)
     contact_text = models.TextField(blank=True, null=True)
 
     active_page = models.BooleanField(default=False)
@@ -858,7 +858,7 @@ class BrandCartModel(models.Model):
 class BrandCartImageModel(models.Model):
     brand_cart = models.ForeignKey(BrandCartModel, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to=get_brand_cart_upload_path)
-    image_alt = models.CharField(max_length=64, blank=True, null=True)
+    image_alt = models.CharField(max_length=256, blank=True, null=True)
     priority = models.IntegerField(blank=True, null=True)
 
     class Meta:

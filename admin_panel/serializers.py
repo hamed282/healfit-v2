@@ -107,7 +107,7 @@ class AddBlogTagSerializer(ModelSerializer):
 
 class CombinedBlogSerializer(serializers.Serializer):
     cover_image = serializers.ImageField()
-    cover_image_alt = serializers.CharField(max_length=125)
+    cover_image_alt = serializers.CharField(max_length=256)
     title = serializers.CharField(max_length=250)
     short_description = serializers.CharField(max_length=160)
     body = serializers.CharField()
