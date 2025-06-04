@@ -51,12 +51,12 @@ class TabbyPayment:
                     "reference_id": str(self.order.id),
                     "items": [
                         {
-                            "title": item.product.name,
-                            "description": item.product.name,  # Placeholder, update if you have description
-                            "quantity": item.quantity,
-                            "unit_price": str(item.price),
+                            "title": "item.product.name",
+                            "description": "item.product.name",  # Placeholder, update if you have description
+                            "quantity": 1,
+                            "unit_price": "1000",
                             "discount_amount": "0.00",
-                            "reference_id": str(item.product.id),
+                            "reference_id": "SKU123",
                             "image_url": "https://example.com/",  # Placeholder
                             "product_url": "https://example.com/",  # Placeholder
                             "gender": "Other",  # Placeholder, update if you have gender
@@ -67,7 +67,7 @@ class TabbyPayment:
                             "size": "M",  # Placeholder, update if you have size
                             "brand": "Brand",  # Placeholder, update if you have brand
                             "is_refundable": True
-                        } for item in self.order.items.all()
+                        }
                     ]
                 },
                 # Optional fields below, add if you have data
