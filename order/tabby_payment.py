@@ -83,7 +83,7 @@ class TabbyPayment:
                 "cancel": self.config['CANCEL_URL'],
                 "failure": self.config['FAILURE_URL'],
             },
-            "token": None,  # Optional
+            # "token": None,  # Optional
         }
 
         try:
