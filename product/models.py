@@ -117,7 +117,10 @@ class ProductModel(models.Model):
 
         # اعمال فیلترهای بیشتر بر روی محصولات
         if gender:
-            queryset = queryset.filter(Q(gender__gender=gender) | Q(gender__gender='unisex'))
+            if gender in ["male", "female"]:
+                queryset = queryset.filter(Q(gender__gender=gender) | Q(gender__gender="unisex"))
+            else:
+                queryset = queryset.filter(gender__gender=gender)
         if category:
             queryset = queryset.filter(cat_product__category__category=category)
         if subcategory:
