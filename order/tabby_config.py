@@ -2,7 +2,7 @@ from django.conf import settings
 
 TABBY_CONFIG = {
     'API_KEY': settings.TABBY_API_KEY,
-    'API_URL': 'https://api.tabby.ai/api/v2/', #  if not settings.TABBY_SANDBOX else 'https://api.tabby.ai/sandbox/api/v2/',
+    'API_URL': 'https://api.tabby.ai/api/v2/checkout/', #  if not settings.TABBY_SANDBOX else 'https://api.tabby.ai/sandbox/api/v2/',
     'MERCHANT_CODE': settings.TABBY_MERCHANT_CODE,
     'CURRENCY': 'AED',
     'MIN_AMOUNT': 100,
