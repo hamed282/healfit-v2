@@ -116,7 +116,9 @@ class ProductModel(models.Model):
         queryset = cls.objects.filter(id__in=product_ids, is_active=True)
 
         if gender:
-            if gender in ["male", "female"]:
+            all_genders = list(ProductGenderModel.objects.values_list('gender', flat=True))
+            gender_list = [g for g in all_genders if g.lower() != 'unisex']
+            if gender in gender_list:
                 queryset = queryset.filter(Q(gender__gender=gender) | Q(gender__gender="unisex"))
             else:
                 queryset = queryset.filter(gender__gender=gender)
