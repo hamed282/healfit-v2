@@ -11,4 +11,4 @@ TABBY_CONFIG = {
     'FAILURE_URL': f'{settings.SITE_URL}/payment/tabby/failure/',
     'CANCEL_URL': f'{settings.SITE_URL}/payment/tabby/cancel/',
     'SANDBOX': settings.TABBY_SANDBOX,
-} 
+}

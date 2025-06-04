@@ -19,7 +19,7 @@ class TabbyPayment:
         url = f"{self.config['API_URL']}checkout"
         
         # تبدیل مبلغ به درهم
-        amount_aed = self.order.total_price / 10  # فرض بر این که قیمت به ریال است و هر درهم 10 ریال
+        amount_aed = self.order.get_total_price() / 10  # فرض بر این که قیمت به ریال است و هر درهم 10 ریال
         
         if amount_aed < self.config['MIN_AMOUNT']:
             raise ValueError(f"مبلغ خرید باید حداقل {self.config['MIN_AMOUNT']} درهم باشد")
