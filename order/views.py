@@ -472,15 +472,16 @@ class TabbyPaymentView(APIView):
         try:
             tabby = TabbyPayment(order_id)
             payment_session = tabby.create_payment_session()
-            if (
-                'configuration' in payment_session and
-                'available_products' in payment_session['configuration'] and
-                len(payment_session['configuration']['available_products']) > 0 and
-                'web_url' in payment_session['configuration']['available_products'][0]
-            ):
+            # دسترسی صحیح به installments
+            installments = (
+                payment_session.get('configuration', {})
+                .get('available_products', {})
+                .get('installments', [])
+            )
+            if installments and 'web_url' in installments[0]:
                 return Response({
                     'status': 'success',
-                    'payment_url': payment_session['configuration']['available_products'][0]['web_url']
+                    'payment_url': installments[0]['web_url']
                 })
             else:
                 return Response({
