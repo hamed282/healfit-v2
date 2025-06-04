@@ -44,7 +44,7 @@ class TabbyPayment:
                             "title": item.product.product,
                             "quantity": item.quantity,
                             "unit_price": str(item.price / 10),  # تبدیل به درهم
-                        } for item in self.order.order_items.all()
+                        } for item in self.order.items.all()
                     ]
                 }
             },
