@@ -472,7 +472,6 @@ class TabbyPaymentView(APIView):
         try:
             tabby = TabbyPayment(order_id)
             payment_session = tabby.create_payment_session()
-            # بررسی وجود کلیدها
             if (
                 'configuration' in payment_session and
                 'available_products' in payment_session['configuration'] and
