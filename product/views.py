@@ -226,7 +226,10 @@ class ProductAllView(APIView):
             queryset = ProductModel.objects.filter(id__in=product_ids, is_active=True).order_by('priority')
             
             if gender:
-                queryset = queryset.filter(gender__gender=gender)
+                if gender.lower() in ["men", "women"]:
+                    queryset = queryset.filter(Q(gender__gender__iexact=gender) | Q(gender__gender__iexact="unisex"))
+                else:
+                    queryset = queryset.filter(gender__gender__iexact=gender)
             if category:
                 queryset = queryset.filter(cat_product__category__category__in=category.split(','))
             if subcategory:
