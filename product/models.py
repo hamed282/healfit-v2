@@ -115,7 +115,6 @@ class ProductModel(models.Model):
         product_ids = variant_queryset.values_list('product_id', flat=True)
         queryset = cls.objects.filter(id__in=product_ids, is_active=True)
 
-        # اعمال فیلترهای بیشتر بر روی محصولات
         if gender:
             if gender in ["male", "female"]:
                 queryset = queryset.filter(Q(gender__gender=gender) | Q(gender__gender="unisex"))
