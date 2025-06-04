@@ -77,7 +77,7 @@ class TabbyPayment:
                 # "attachment": {...},
             },
             "lang": "en",
-            "merchant_code": "self.config['MERCHANT_CODE']",
+            "merchant_code": self.config['MERCHANT_CODE'],
             "merchant_urls": {
                 "success": self.config['SUCCESS_URL'],
                 "cancel": self.config['CANCEL_URL'],
