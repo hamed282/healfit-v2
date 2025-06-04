@@ -116,10 +116,10 @@ class ProductModel(models.Model):
         queryset = cls.objects.filter(id__in=product_ids, is_active=True)
 
         if gender:
-            if gender in ["women", "men"]:
-                queryset = queryset.filter(Q(gender__gender=gender) | Q(gender__gender="unisex"))
+            if gender.lower() in ["men", "women"]:
+                queryset = queryset.filter(Q(gender__gender__iexact=gender) | Q(gender__gender__iexact="unisex"))
             else:
-                queryset = queryset.filter(gender__gender=gender)
+                queryset = queryset.filter(gender__gender__iexact=gender)
         if category:
             queryset = queryset.filter(cat_product__category__category=category)
         if subcategory:
