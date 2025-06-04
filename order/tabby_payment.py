@@ -41,7 +41,7 @@ class TabbyPayment:
                     "reference_id": str(self.order.id),
                     "items": [
                         {
-                            "title": item.product.product,
+                            "title": item.product.name,
                             "quantity": item.quantity,
                             "unit_price": str(item.price / 10),  # تبدیل به درهم
                         } for item in self.order.items.all()
