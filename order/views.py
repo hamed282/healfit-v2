@@ -469,18 +469,31 @@ class ShippingView(APIView):
 
 class TabbyPaymentView(APIView):
     def post(self, request, order_id):
-        # try:
+        try:
             tabby = TabbyPayment(order_id)
             payment_session = tabby.create_payment_session()
+            # بررسی وجود کلیدها
+            if (
+                'configuration' in payment_session and
+                'available_products' in payment_session['configuration'] and
+                len(payment_session['configuration']['available_products']) > 0 and
+                'web_url' in payment_session['configuration']['available_products'][0]
+            ):
+                return Response({
+                    'status': 'success',
+                    'payment_url': payment_session['configuration']['available_products'][0]['web_url']
+                })
+            else:
+                return Response({
+                    'status': 'error',
+                    'message': 'ساختار پاسخ Tabby نامعتبر است',
+                    'tabby_response': payment_session
+                }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
             return Response({
-                'status': 'success',
-                'payment_url': payment_session['configuration']['available_products'][0]['web_url']
-            })
-        # except Exception as e:
-        #     return Response({
-        #         'status': 'error',
-        #         'message': str(e)
-        #     }, status=status.HTTP_400_BAD_REQUEST)
+                'status': 'error',
+                'message': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TabbyPaymentSuccessView(APIView):
