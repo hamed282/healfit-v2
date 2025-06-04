@@ -182,17 +182,25 @@ class CombinedBlogSerializer(serializers.Serializer):
             # Create new category associations
             categories = [cat.strip() for cat in categories_str.split(',') if cat.strip()]
             for category_name in categories:
+                # Normalize category name (e.g., remove extra spaces, convert to consistent case)
+                normalized_name = category_name.strip()
+                slug = slugify(normalized_name)
+
+                # Try to find category by name or slug
                 try:
-                    category = BlogCategoryModel.objects.get(category=category_name)
+                    category = BlogCategoryModel.objects.get(category=normalized_name)
                 except BlogCategoryModel.DoesNotExist:
-                    category = BlogCategoryModel.objects.create(
-                        category=category_name,
-                        slug=slugify(category_name)
-                    )
+                    try:
+                        category = BlogCategoryModel.objects.get(slug=slug)
+                    except BlogCategoryModel.DoesNotExist:
+                        # Create new category if not found by name or slug
+                        category = BlogCategoryModel.objects.create(
+                            category=normalized_name,
+                            slug=slug
+                        )
                 AddBlogCategoryModel.objects.create(blog=instance, category=category)
 
         return instance
-
     def to_representation(self, instance):
         blog_data = BlogModelSerializer(instance).data
         category_data = [cat.category.category for cat in instance.cat_blog.all()]
