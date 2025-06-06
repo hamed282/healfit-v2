@@ -201,6 +201,8 @@ class ProductCategoryModel(models.Model):
     objects = None
     category = models.CharField(max_length=50)
     category_title = models.CharField(max_length=50)
+    banner_title = models.CharField(max_length=256, blank=True, null=True)
+    banner_description = models.TextField(blank=True, null=True)
     short_description = models.TextField()
     description = models.TextField(blank=True, null=True)
     priority = models.IntegerField(blank=True, null=True)
