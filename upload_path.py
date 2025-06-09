@@ -93,9 +93,9 @@ def get_custom_made_upload_path(instance, filename):
 
 
 def get_brand_upload_path(instance, filename):
-    content_image = instance.image_alt
+    brand_image = instance.image_brand
 
-    return os.path.join('brand', content_image, filename)
+    return os.path.join('brand', brand_image, filename)
 
 
 def get_brand_cart_upload_path(instance, filename):
