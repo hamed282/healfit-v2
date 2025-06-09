@@ -7,8 +7,8 @@ from django.db.models import Q
 from upload_path import (get_cover_image_upload_path, get_gallery_upload_path, get_description_image_upload_path,
                          get_size_table_upload_path, get_category_upload_path, get_subcategory_upload_path,
                          get_gender_upload_path, get_video_product_upload_path, get_brand_logo_upload_path,
-                         get_custom_made_upload_path, get_brand_upload_path, get_brand_cart_upload_path,
-                         get_attach_file_upload_path)
+                         get_custom_made_upload_path, get_brand_cart_upload_path,
+                         get_attach_file_upload_path, get_brand_desktop_upload_path, get_brand_mobile_upload_path)
 from accounts.models import User
 from django.utils import timezone
 
@@ -823,8 +823,8 @@ class ProductBrandModel(models.Model):
     brand_logo_alt = models.CharField(max_length=256, null=True, blank=True)
     slug = models.SlugField(unique=True)
 
-    image_desktop = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
-    image_mobile = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
+    image_desktop = models.ImageField(upload_to=get_brand_desktop_upload_path, blank=True, null=True)
+    image_mobile = models.ImageField(upload_to=get_brand_mobile_upload_path, blank=True, null=True)
     image_alt = models.CharField(max_length=256, blank=True, null=True)
 
     content1_title = models.CharField(max_length=64, blank=True, null=True)

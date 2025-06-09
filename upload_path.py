@@ -92,10 +92,16 @@ def get_custom_made_upload_path(instance, filename):
     return os.path.join('custom', content_image, filename)
 
 
-def get_brand_upload_path(instance, filename):
-    brand_image = instance.image
+def get_brand_mobile_upload_path(instance, filename):
+    image_mobile = instance.image_mobile
 
-    return os.path.join('brand', brand_image, filename)
+    return os.path.join('brand', image_mobile, filename)
+
+
+def get_brand_desktop_upload_path(instance, filename):
+    image_desktop = instance.image_desktop
+
+    return os.path.join('brand', image_desktop, filename)
 
 
 def get_brand_cart_upload_path(instance, filename):
