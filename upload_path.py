@@ -115,3 +115,32 @@ def get_attach_file_upload_path(instance, filename):
         attach_file = attach_file.name
     return os.path.join('attach_file', attach_file, filename)
 
+
+def get_brand_c1_upload_path(instance, filename):
+    content1_image = instance.content1_image
+
+    return os.path.join('brand', content1_image, filename)
+
+
+def get_brand_c2r_upload_path(instance, filename):
+    content2_right_image = instance.content2_right_image
+
+    return os.path.join('brand', content2_right_image, filename)
+
+
+def get_brand_c2m_upload_path(instance, filename):
+    content2_mid_image = instance.content2_mid_image
+
+    return os.path.join('brand', content2_mid_image, filename)
+
+
+def get_brand_c2l_upload_path(instance, filename):
+    content2_left_image = instance.content2_left_image
+
+    return os.path.join('brand', content2_left_image, filename)
+
+
+def get_brand_c_upload_path(instance, filename):
+    contact_image = instance.contact_image
+
+    return os.path.join('brand', contact_image, filename)

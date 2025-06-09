@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='productbrandmodel',
             name='contact_image',
-            field=models.ImageField(default=1, upload_to=upload_path.get_brand_upload_path),
+            field=models.ImageField(default=1, upload_to=upload_path.get_brand_logo_upload_path),
             preserve_default=False,
         ),
         migrations.AddField(
@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='productbrandmodel',
             name='content1_image',
-            field=models.ImageField(default=1, upload_to=upload_path.get_brand_upload_path),
+            field=models.ImageField(default=1, upload_to=upload_path.get_brand_logo_upload_path),
             preserve_default=False,
         ),
         migrations.AddField(
@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='productbrandmodel',
             name='content2_left_image',
-            field=models.ImageField(default=1, upload_to=upload_path.get_brand_upload_path),
+            field=models.ImageField(default=1, upload_to=upload_path.get_brand_logo_upload_path),
             preserve_default=False,
         ),
         migrations.AddField(
@@ -77,7 +77,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='productbrandmodel',
             name='content2_mid_image',
-            field=models.ImageField(default=1, upload_to=upload_path.get_brand_upload_path),
+            field=models.ImageField(default=1, upload_to=upload_path.get_brand_logo_upload_path),
             preserve_default=False,
         ),
         migrations.AddField(
@@ -94,7 +94,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='productbrandmodel',
             name='content2_right_image',
-            field=models.ImageField(default=1, upload_to=upload_path.get_brand_upload_path),
+            field=models.ImageField(default=1, upload_to=upload_path.get_brand_logo_upload_path),
             preserve_default=False,
         ),
         migrations.AddField(
@@ -116,13 +116,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='productbrandmodel',
             name='image_desktop',
-            field=models.ImageField(default=1, upload_to=upload_path.get_brand_upload_path),
+            field=models.ImageField(default=1, upload_to=upload_path.get_brand_logo_upload_path),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='productbrandmodel',
             name='image_mobile',
-            field=models.ImageField(default=1, upload_to=upload_path.get_brand_upload_path),
+            field=models.ImageField(default=1, upload_to=upload_path.get_brand_logo_upload_path),
             preserve_default=False,
         ),
         migrations.DeleteModel(

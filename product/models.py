@@ -8,7 +8,9 @@ from upload_path import (get_cover_image_upload_path, get_gallery_upload_path, g
                          get_size_table_upload_path, get_category_upload_path, get_subcategory_upload_path,
                          get_gender_upload_path, get_video_product_upload_path, get_brand_logo_upload_path,
                          get_custom_made_upload_path, get_brand_cart_upload_path,
-                         get_attach_file_upload_path, get_brand_desktop_upload_path, get_brand_mobile_upload_path)
+                         get_attach_file_upload_path, get_brand_desktop_upload_path, get_brand_mobile_upload_path,
+                         get_brand_c1_upload_path, get_brand_c2r_upload_path, get_brand_c2m_upload_path,
+                         get_brand_c2l_upload_path, get_brand_c_upload_path)
 from accounts.models import User
 from django.utils import timezone
 
@@ -828,22 +830,22 @@ class ProductBrandModel(models.Model):
     image_alt = models.CharField(max_length=256, blank=True, null=True)
 
     content1_title = models.CharField(max_length=64, blank=True, null=True)
-    content1_image = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
+    content1_image = models.ImageField(upload_to=get_brand_c1_upload_path, blank=True, null=True)
     content1_image_alt = models.CharField(max_length=256, blank=True, null=True)
     content1_text = models.TextField(blank=True, null=True)
 
     content2_text = models.TextField(blank=True, null=True)
-    content2_right_image = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
+    content2_right_image = models.ImageField(upload_to=get_brand_c2r_upload_path, blank=True, null=True)
     content2_right_image_alt = models.CharField(max_length=256, blank=True, null=True)
     content2_right = models.TextField(blank=True, null=True)
-    content2_mid_image = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
+    content2_mid_image = models.ImageField(upload_to=get_brand_c2m_upload_path, blank=True, null=True)
     content2_mid_image_alt = models.CharField(max_length=256, blank=True, null=True)
     content2_mid = models.TextField(blank=True, null=True)
-    content2_left_image = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
+    content2_left_image = models.ImageField(upload_to=get_brand_c2l_upload_path, blank=True, null=True)
     content2_left_image_alt = models.CharField(max_length=256, blank=True, null=True)
     content2_left = models.TextField(blank=True, null=True)
 
-    contact_image = models.ImageField(upload_to=get_brand_upload_path, blank=True, null=True)
+    contact_image = models.ImageField(upload_to=get_brand_c_upload_path, blank=True, null=True)
     contact_image_alt = models.CharField(max_length=256, blank=True, null=True)
     contact_text = models.TextField(blank=True, null=True)
 

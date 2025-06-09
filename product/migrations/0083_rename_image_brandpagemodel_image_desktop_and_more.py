@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='brandpagemodel',
             name='image_mobile',
-            field=models.ImageField(default=1, upload_to=upload_path.get_brand_upload_path),
+            field=models.ImageField(default=1, upload_to=upload_path.get_brand_logo_upload_path),
             preserve_default=False,
         ),
         migrations.AddField(
