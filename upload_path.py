@@ -34,15 +34,15 @@ def get_cover_blog_upload_path(instance, filename):
 
 
 def get_banner_blog_upload_path(instance, filename):
-    blog_name = instance.title_name
+    blog_name = instance.title
 
-    return os.path.join('blog_name', blog_name, 'banner', filename)
+    return os.path.join('blog', blog_name, 'banner', filename)
 
 
 def get_title_blog_upload_path(instance, filename):
-    blog_name = instance.title_title
+    blog_name = instance.title
 
-    return os.path.join('blog_title', blog_name, 'title', filename)
+    return os.path.join('blog', blog_name, 'title', filename)
 
 
 def get_category_upload_path(instance, filename):
@@ -93,9 +93,9 @@ def get_custom_made_upload_path(instance, filename):
 
 
 def get_brand_upload_path(instance, filename):
-    brand_image = instance.image_brand
+    brand_image = instance.image
 
-    return os.path.join('brand_image', brand_image, filename)
+    return os.path.join('brand', brand_image, filename)
 
 
 def get_brand_cart_upload_path(instance, filename):
