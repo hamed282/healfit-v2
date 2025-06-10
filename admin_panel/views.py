@@ -491,13 +491,10 @@ class BlogImageView(APIView):
 class BlogCommentsView(APIView):
     def get(self, request):
         comments = CommentBlogModel.objects.all()
-        unseen_count = CommentBlogModel.objects.filter(new_comment=True).count()
+        comments.update(new_comment=False)
         ser_data = CommentBlogSerializer(instance=comments, many=True)
-        return Response({
-            'data': ser_data.data,
-            'unseen_count': unseen_count,
-            'has_unseen': unseen_count > 0
-        }, status=status.HTTP_200_OK)
+
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 
 class BlogCommentEditView(APIView):
@@ -1775,8 +1772,8 @@ class CouponItemView(APIView):
 class ContactUsView(APIView):
     def get(self, request):
         contact = ContactSubmitModel.objects.all()
-        unseen_count = ContactSubmitModel.objects.filter(new_comment=True).count()
         ser_data = ContactSubmitSerializer(instance=contact, many=True)
+        unseen_count = ContactSubmitModel.objects.filter(new_comment=True).count()
         return Response({
             'data': ser_data.data,
             'unseen_count': unseen_count,
@@ -2074,7 +2071,12 @@ class CustomMadeView(APIView):
     def get(self, request):
         custom_made = CustomMadeModel.objects.all()
         ser_data = CustomMadeSerializer(instance=custom_made, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        unseen_count = CustomMadeModel.objects.filter(new_comment=True).count()
+        return Response({
+            'data': ser_data.data,
+            'unseen_count': unseen_count,
+            'has_unseen': unseen_count > 0
+        }, status=status.HTTP_200_OK)
 
     def post(self, request):
         form = request.data
