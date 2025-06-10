@@ -468,18 +468,35 @@ class ShippingView(APIView):
 
 
 class TabbyPaymentView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
-        order_id = request.data.get('order_id')
-        if not order_id:
-            # Create order like OrderPayView
-            forms = request.data['product']
-            discount_code = request.data.get('discount_code', None)
+        forms = request.data['product']
+        discount_code = request.data.get('discount_code', None)
+
+        def shipping_fee(country, city, amount):
+            if ShippingCountryModel.objects.filter(country=country).exists():
+                country_model = ShippingCountryModel.objects.get(country=country)
+                if ShippingModel.objects.filter(country=country_model, city=city).exists():
+                    shipping = ShippingModel.objects.get(country=country_model, city=city)
+                    if float(shipping.threshold_free) > amount:
+                        return shipping.shipping_fee
+                    return 0
+                else:
+                    shipping = ShippingCountryModel.objects.get(country=country)
+                    if float(shipping.threshold_free) > amount:
+                        return shipping.shipping_fee
+                    return 0
+            else:
+                return 300
+
+        if len(forms) > 0:
             address = get_object_or_404(AddressModel, id=request.data['address_id'])
             order = OrderModel.objects.create(user=request.user, address=address,
                                               status=OrderStatusModel.objects.get(status='New'))
+
             discount_percent = None
             discount_amount = None
-            code = None
             if discount_code:
                 try:
                     code = CouponModel.objects.get(coupon_code=discount_code)
@@ -490,6 +507,9 @@ class TabbyPaymentView(APIView):
                             discount_amount = int(code.discount_amount)
                 except:
                     code = None
+            else:
+                code = None
+
             for form in forms:
                 product = ProductVariantModel.objects.get(id=form['product_id'])
                 color = product.color
@@ -514,6 +534,9 @@ class TabbyPaymentView(APIView):
                                     selling_price = discount_price
                     except:
                         code = None
+                else:
+                    code = None
+
                 OrderItemModel.objects.create(order=order,
                                               user=request.user,
                                               product=product,
@@ -523,31 +546,82 @@ class TabbyPaymentView(APIView):
                                               quantity=quantity,
                                               color=color,
                                               size=size,)
-            order_id = order.id
-        try:
-            tabby = TabbyPayment(order_id)
-            payment_session = tabby.create_payment_session()
-            installments = (
-                payment_session.get('configuration', {})
-                .get('available_products', {})
-                .get('installments', [])
-            )
-            if installments and 'web_url' in installments[0]:
-                return Response({
-                    'status': 'success',
-                    'payment_url': installments[0]['web_url']
-                })
+
+            def total_price_without_discount():
+                total_price = 0
+                for frm in forms:
+                    prd = ProductVariantModel.objects.get(id=frm['product_id'])
+                    qnt = frm['quantity']
+                    prc = prd.price
+                    total_price += int(qnt) * int(prc)
+                return total_price
+
+            def total_price_with_discount():
+                total_price = 0
+                for frm in forms:
+                    prd = ProductVariantModel.objects.get(id=frm['product_id'])
+                    qnt = frm['quantity']
+                    prc = prd.get_off_price()
+                    total_price += int(qnt) * int(prc)
+                return total_price
+
+            total_price_without_discount = total_price_without_discount()
+            total_price_with_discount = total_price_with_discount()
+
+            if code and not code.extra_discount and int(code.discount_threshold) <= total_price_without_discount:
+                if discount_percent:
+                    amount = int(
+                        total_price_without_discount - (total_price_without_discount * int(discount_percent)) / 100)
+                    amount_shipping = amount + int(shipping_fee(address.country, address.city, amount))
+                elif discount_amount:
+                    amount = int(total_price_without_discount - int(discount_amount))
+                    amount_shipping = amount + int(shipping_fee(address.country, address.city, amount))
+            elif code and code.extra_discount and int(code.discount_threshold) <= total_price_with_discount:
+                if discount_percent:
+                    amount = int(total_price_with_discount - (total_price_with_discount * int(discount_percent)) / 100)
+                    amount_shipping = amount + int(shipping_fee(address.country, address.city, amount))
+                elif discount_amount:
+                    amount = int(total_price_with_discount - int(discount_amount))
+                    amount_shipping = amount + int(shipping_fee(address.country, address.city, amount))
             else:
+                amount = int(str(order.get_total_price()))
+                amount_shipping = amount + int(shipping_fee(address.country, address.city, amount))
+
+            # Create Tabby payment session
+            try:
+                tabby = TabbyPayment(order.id)
+                payment_session = tabby.create_payment_session(amount=amount_shipping, currency=settings.CURRENCY)
+                installments = (
+                    payment_session.get('configuration', {})
+                    .get('available_products', {})
+                    .get('installments', [])
+                )
+                if installments and 'web_url' in installments[0]:
+                    order.ref_id = payment_session.get('id', '')
+                    order.cart_id = str(order.id)
+                    order.coupon = code
+                    order.total_discount = int(total_price_without_discount) - int(amount)
+                    order.total_amount = amount
+                    order.shipping = int(shipping_fee(address.country, address.city, amount))
+                    order.save()
+                    if code and not code.infinite:
+                        code.limit -= 1
+                        code.save()
+                    return Response({
+                        'status': 'success',
+                        'payment_url': installments[0]['web_url']
+                    })
+                else:
+                    return Response({
+                        'status': 'error',
+                        'message': 'ساختار پاسخ Tabby نامعتبر است',
+                        'tabby_response': payment_session
+                    }, status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e:
                 return Response({
                     'status': 'error',
-                    'message': 'ساختار پاسخ Tabby نامعتبر است',
-                    'tabby_response': payment_session
+                    'message': str(e)
                 }, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({
-                'status': 'error',
-                'message': str(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TabbyPaymentSuccessView(APIView):
