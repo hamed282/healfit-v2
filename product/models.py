@@ -727,6 +727,7 @@ class CustomMadeModel(models.Model):
     description = models.TextField()
     hear_about_us = models.ForeignKey(HearAboutUsModel, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
+    new_comment = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.email}'

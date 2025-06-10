@@ -76,6 +76,7 @@ class ContactSubmitSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactSubmitModel
         fields = '__all__'
+        read_only_fields = ['new_comment']
 
 
 class AboutPageSerializer(serializers.ModelSerializer):

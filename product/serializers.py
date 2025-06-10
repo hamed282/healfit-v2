@@ -791,6 +791,7 @@ class CustomMadeSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomMadeModel
         fields = '__all__'
+        read_only_fields = ['new_comment']
 
 
 class CustomerTypeSerializer(serializers.ModelSerializer):

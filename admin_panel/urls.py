@@ -237,4 +237,7 @@ urlpatterns = [
 
     # path('pages/brand/', views.BrandPageView.as_view(), name='brand_page'),
     # path('pages/brand/<int:brand_id>/', views.BrandPageView.as_view(), name='brand_page_detail'),
+
+    path('custom_made/notif/', views.CustomMadeNotifView.as_view(), name='custom_made_notif'),
+    path('contactus/notif/', views.ContactUsNotifView.as_view(), name='contactus_notif'),
 ]

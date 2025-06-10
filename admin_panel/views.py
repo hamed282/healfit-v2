@@ -491,10 +491,13 @@ class BlogImageView(APIView):
 class BlogCommentsView(APIView):
     def get(self, request):
         comments = CommentBlogModel.objects.all()
-        comments.update(new_comment=False)
+        unseen_count = CommentBlogModel.objects.filter(new_comment=True).count()
         ser_data = CommentBlogSerializer(instance=comments, many=True)
-
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response({
+            'data': ser_data.data,
+            'unseen_count': unseen_count,
+            'has_unseen': unseen_count > 0
+        }, status=status.HTTP_200_OK)
 
 
 class BlogCommentEditView(APIView):
@@ -1772,8 +1775,13 @@ class CouponItemView(APIView):
 class ContactUsView(APIView):
     def get(self, request):
         contact = ContactSubmitModel.objects.all()
+        unseen_count = ContactSubmitModel.objects.filter(new_comment=True).count()
         ser_data = ContactSubmitSerializer(instance=contact, many=True)
-        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response({
+            'data': ser_data.data,
+            'unseen_count': unseen_count,
+            'has_unseen': unseen_count > 0
+        }, status=status.HTTP_200_OK)
 
 
 class ContactUsItemView(APIView):
@@ -2627,3 +2635,21 @@ class BrandCartImageDeleteView(APIView):
             return Response(status=204)
         except CustomMadePageModel.DoesNotExist:
             return Response({"error": "page not found"}, status=404)
+
+
+class CustomMadeNotifView(APIView):
+    def get(self, request):
+        count = CustomMadeModel.objects.filter(new_comment=True).count()
+        return Response({
+            'unseen_count': count,
+            'has_unseen': count > 0
+        })
+
+
+class ContactUsNotifView(APIView):
+    def get(self, request):
+        count = ContactSubmitModel.objects.filter(new_comment=True).count()
+        return Response({
+            'unseen_count': count,
+            'has_unseen': count > 0
+        })
