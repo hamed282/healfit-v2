@@ -578,6 +578,7 @@ class PopularProductSerializer(serializers.ModelSerializer):
 class ProductSubCategorySerializer(serializers.ModelSerializer):
     category_name = serializers.SerializerMethodField()
     category_slug = serializers.SerializerMethodField()
+    slug = serializers.CharField(required=False)
 
     class Meta:
         model = ProductSubCategoryModel
@@ -592,6 +593,7 @@ class ProductSubCategorySerializer(serializers.ModelSerializer):
 
 class ProductCategorySerializer(serializers.ModelSerializer):
     subcategories = serializers.SerializerMethodField()
+    slug = serializers.CharField(required=False)
 
     class Meta:
         model = ProductCategoryModel

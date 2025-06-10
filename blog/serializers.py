@@ -89,6 +89,7 @@ class CommentCreateSerializer(serializers.Serializer):
 
 
 class BlogCategorySerializer(serializers.ModelSerializer):
+    slug = serializers.CharField(required=False)
     class Meta:
         model = BlogCategoryModel
         fields = ['id', 'category', 'slug']

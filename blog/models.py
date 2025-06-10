@@ -2,6 +2,7 @@ from django.db import models
 from upload_path import (get_cover_blog_upload_path, get_title_blog_upload_path, get_banner_blog_upload_path,
                          get_author_upload_path)
 from accounts.models import User
+from django.utils.text import slugify
 
 
 class BlogCategoryModel(models.Model):
@@ -15,6 +16,17 @@ class BlogCategoryModel(models.Model):
     canonical = models.CharField(max_length=256, null=True, blank=True)
     meta_title = models.CharField(max_length=60, null=True, blank=True)
     meta_description = models.CharField(max_length=160, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            original_slug = slugify(self.category)
+            unique_slug = original_slug
+            num = 1
+            while BlogCategoryModel.objects.filter(slug=unique_slug).exists():
+                unique_slug = f'{original_slug}-{num}'
+                num += 1
+            self.slug = unique_slug
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.category}'

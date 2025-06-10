@@ -229,15 +229,13 @@ class ProductCategoryModel(models.Model):
         verbose_name_plural = 'Product Category'
 
     def save(self, *args, **kwargs):
-        if self.slug is None:
+        if not self.slug:
             original_slug = slugify(self.category)
             unique_slug = original_slug
-
             num = 1
             while ProductCategoryModel.objects.filter(slug=unique_slug).exists():
                 unique_slug = f'{original_slug}-{num}'
                 num += 1
-
             self.slug = unique_slug
 
         # تنظیم priority به ترتیب و بدون فاصله
@@ -293,15 +291,13 @@ class ProductSubCategoryModel(models.Model):
         verbose_name_plural = 'Product SubCategory'
 
     def save(self, *args, **kwargs):
-        if self.slug is None:
+        if not self.slug:
             original_slug = slugify(self.subcategory)
             unique_slug = original_slug
-
             num = 1
             while ProductSubCategoryModel.objects.filter(slug=unique_slug).exists():
                 unique_slug = f'{original_slug}-{num}'
                 num += 1
-
             self.slug = unique_slug
 
         # تنظیم priority به ترتیب و بدون فاصله
