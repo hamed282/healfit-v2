@@ -468,11 +468,65 @@ class ShippingView(APIView):
 
 
 class TabbyPaymentView(APIView):
-    def post(self, request, order_id):
+    def post(self, request):
+        order_id = request.data.get('order_id')
+        if not order_id:
+            # Create order like OrderPayView
+            forms = request.data['product']
+            discount_code = request.data.get('discount_code', None)
+            address = get_object_or_404(AddressModel, id=request.data['address_id'])
+            order = OrderModel.objects.create(user=request.user, address=address,
+                                              status=OrderStatusModel.objects.get(status='New'))
+            discount_percent = None
+            discount_amount = None
+            code = None
+            if discount_code:
+                try:
+                    code = CouponModel.objects.get(coupon_code=discount_code)
+                    if code.is_valid() and code.active and (code.limit > 0 or code.infinite):
+                        if code.discount_percent is not None and int(code.discount_percent) != 0:
+                            discount_percent = int(code.discount_percent)
+                        elif code.discount_amount is not None and int(code.discount_amount) != 0:
+                            discount_amount = int(code.discount_amount)
+                except:
+                    code = None
+            for form in forms:
+                product = ProductVariantModel.objects.get(id=form['product_id'])
+                color = product.color
+                size = product.size
+                quantity = form['quantity']
+                price = product.price
+                discount_price = product.get_off_price()
+                selling_price = product.get_off_price()
+                if discount_code is not None:
+                    try:
+                        code = CouponModel.objects.get(coupon_code=discount_code)
+                        if code.is_valid() and code.active and (code.limit > 0 or code.infinite):
+                            if not code.extra_discount:
+                                if discount_percent:
+                                    selling_price = price - (price * discount_percent) / 100
+                                elif discount_amount:
+                                    selling_price = price
+                            else:
+                                if discount_percent:
+                                    selling_price = discount_price - (discount_price * discount_percent) / 100
+                                elif discount_amount:
+                                    selling_price = discount_price
+                    except:
+                        code = None
+                OrderItemModel.objects.create(order=order,
+                                              user=request.user,
+                                              product=product,
+                                              price=price,
+                                              discount_price=discount_price,
+                                              selling_price=selling_price,
+                                              quantity=quantity,
+                                              color=color,
+                                              size=size,)
+            order_id = order.id
         try:
             tabby = TabbyPayment(order_id)
             payment_session = tabby.create_payment_session()
-            # دسترسی صحیح به installments
             installments = (
                 payment_session.get('configuration', {})
                 .get('available_products', {})
