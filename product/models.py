@@ -820,10 +820,10 @@ class CustomerTestimonialsModel(models.Model):
 
 
 class ProductBrandModel(models.Model):
-    brand = models.CharField(max_length=32)
+    brand = models.CharField(max_length=32, blank=True, null=True)
     brand_logo = models.ImageField(upload_to=get_brand_logo_upload_path, null=True, blank=True)
     brand_logo_alt = models.CharField(max_length=256, null=True, blank=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
 
     image_desktop = models.ImageField(upload_to=get_brand_desktop_upload_path, blank=True, null=True)
     image_mobile = models.ImageField(upload_to=get_brand_mobile_upload_path, blank=True, null=True)

@@ -825,6 +825,8 @@ class BrandCartSerializer(serializers.ModelSerializer):
 
 
 class ProductBrandCreateSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(required=False, allow_null=True)
+    slug = serializers.SlugField(required=False, allow_null=True)
     brand_carts = serializers.JSONField(write_only=True, required=False)
 
     class Meta:
@@ -866,6 +868,8 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
 
 
 class ProductBrandUpdateSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(required=False, allow_null=True)
+    slug = serializers.SlugField(required=False, allow_null=True)
     brand_carts = serializers.JSONField(write_only=True, required=False)
     brand_cart_images = serializers.JSONField(write_only=True, required=False)
     brand_logo = serializers.ImageField(write_only=True, required=False)
