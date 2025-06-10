@@ -590,7 +590,7 @@ class TabbyPaymentView(APIView):
             # Create Tabby payment session
             try:
                 tabby = TabbyPayment(order.id)
-                payment_session = tabby.create_payment_session(amount=amount_shipping, currency=settings.CURRENCY)
+                payment_session = tabby.create_payment_session()
                 installments = (
                     payment_session.get('configuration', {})
                     .get('available_products', {})
