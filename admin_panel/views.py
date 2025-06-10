@@ -1771,6 +1771,7 @@ class CouponItemView(APIView):
 
 class ContactUsView(APIView):
     def get(self, request):
+        ContactSubmitModel.objects.update(new_comment=False)
         contact = ContactSubmitModel.objects.all()
         ser_data = ContactSubmitSerializer(instance=contact, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
@@ -2064,6 +2065,7 @@ class CustomMadeView(APIView):
         return super().get_permissions()
 
     def get(self, request):
+        CustomMadeModel.objects.update(new_comment=False)
         custom_made = CustomMadeModel.objects.all()
         ser_data = CustomMadeSerializer(instance=custom_made, many=True)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
