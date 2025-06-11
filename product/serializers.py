@@ -872,3 +872,11 @@ class BrandCartSerializer(serializers.ModelSerializer):
     class Meta:
         model = BrandCartModel
         fields = ['id', 'brand', 'content', 'images']
+
+
+class BrandPageSerializer(serializers.ModelSerializer):
+    brand = ProductBrandSerializer()
+
+    class Meta:
+        model = ProductBrandModel
+        fields = '__all__'
