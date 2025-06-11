@@ -875,7 +875,6 @@ class BrandCartSerializer(serializers.ModelSerializer):
 
 
 class BrandPageSerializer(serializers.ModelSerializer):
-    brand = ProductBrandSerializer()
 
     class Meta:
         model = ProductBrandModel
