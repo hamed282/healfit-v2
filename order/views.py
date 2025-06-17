@@ -204,25 +204,56 @@ class OrderPayView(APIView):
                 return Response({'details': str(response.json()['errors'])})
 
 
+def process_order_payment(order):
+    """
+    عملیات نهایی‌سازی سفارش پس از پرداخت موفق:
+    - کاهش موجودی محصولات
+    - ثبت UserProductModel
+    - ارسال ایمیل و تلگرام
+    - بروزرسانی فاکتور زوهو
+    """
+    if order.paid:
+        return False  # قبلاً انجام شده
+    order.paid = True
+    order.save()
+    order_items = order.items.all()
+    user = order.user
+    for item in order_items:
+        product_variant = item.product
+        price = product_variant.get_off_price()
+        quantity = item.quantity
+        product_variant.quantity = product_variant.quantity - quantity
+        product_variant.save()
+        item.trace = order.trace
+        item.save()
+        UserProductModel.objects.create(user=user, product=product_variant, order=order,
+                                        quantity=quantity, price=price)
+    # بروزرسانی فاکتور زوهو
+    line_items = [{'item_id': item.product.item_id, 'quantity': item.quantity} for item in order_items]
+    zoho_invoice_quantity_update(order.user.first_name, order.user.last_name, order.user.email,
+                                 order.address.address, order.address.city, line_items,
+                                 country='United Arab Emirates', customer_id=order.user.zoho_customer_id)
+    recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae', order.user.email]
+    send_order_email(order, order_items, recipient_list)
+    send_order_telegram(order, order_items)
+    return True
+
+
 class OrderPayAuthorisedView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
-
         try:
             order = OrderModel.objects.filter(user=user).first()
             order.error_note = 'Error 00'
             order.save()
         except Exception as e:
-            # return HttpResponseRedirect(redirect_to='https://gogle.com')
             print('order error')
             print(f'Error occurred: {e}')
             return Response(data={'message': 'invalid order'})
-
         order.error_note = 'Error 01'
         order.save()
-
         payload = {
             "method": "check",
             "store": settings.SOTRE_ID,
@@ -233,77 +264,33 @@ class OrderPayAuthorisedView(APIView):
             "accept": "application/json",
             "Content-Type": "application/json"
         }
-        ## to do: if quantity = 0 dont send request
-
         response = requests.post(settings.TELR_API_VERIFY, json=payload, headers=headers)
         response = response.json()
-
         order.error_note = 'Error 02'
         order.save()
-
         if 'order' in response:
-
             if 'transaction' in response['order']:
                 transaction = response['order']['transaction']['ref']
             else:
                 transaction = None
-
             order.trace = response['trace']
             order.transaction_ref = transaction
-
             order.error_message = '03'
             order.error_note = '03'
-            order.paid = True
+            # جلوگیری از عملیات تکراری
+            if order.paid:
+                return Response(data={'message': 'Order already paid', 'cart_id': order.cart_id, 'transaction_ref': transaction})
             order.save()
-            order_items = order.items.all()
-
-            for item in order_items:
-
-                order.error_note = 'Error 04'
-                order.save()
-
-                product_variant = item.product
-                price = product_variant.get_off_price()
-                quantity = item.quantity
-
-                product_variant.quantity = product_variant.quantity - quantity
-                product_variant.save()
-
-                item.trace = response['trace']
-                item.save()
-
-                order.error_note = 'Error 05'
-                order.save()
-
-                UserProductModel.objects.create(user=user, product=product_variant, order=order,
-                                                quantity=quantity, price=price)
-
-                order.error_note = 'Error 06'
-                order.save()
-
-            # Move zoho_invoice_quantity_update outside the loop
-            line_items = [{'item_id': item.product.item_id, 'quantity': item.quantity} for item in order_items]
-            zoho_invoice_quantity_update(order.user.first_name, order.user.last_name, order.user.email,
-                                         order.address.address, order.address.city, line_items,
-                                         country='United Arab Emirates', customer_id=order.user.zoho_customer_id)
-
-            recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae', order.user.email]
-            send_order_email(order, order_items, recipient_list)
-
-            send_order_telegram(order, order_items)
-
-            # return HttpResponseRedirect(redirect_to='https://gogle.com')
+            # عملیات پرداخت و ارسال ایمیل فقط یک بار
+            process_order_payment(order)
             return Response(data={'message': 'success', 'cart_id': order.cart_id,
                                   'transaction_ref': transaction})
-
         else:
             order.paid = False
             order.trace = 'Eroor 07'
             order.error_message = 'Error 07'
             order.error_note = 'Eroor 07'
-
             order.save()
-            # return HttpResponseRedirect(redirect_to='https://gogle.com')
             return Response(data={'message': 'failed'})
 
 
@@ -628,10 +615,14 @@ class TabbyPaymentSuccessView(APIView):
     def get(self, request):
         payment_id = request.GET.get('payment_id')
         order_id = request.GET.get('order_id')
-        
         try:
             tabby = TabbyPayment(order_id)
+            order = tabby.order
+            if order.paid:
+                return redirect(f'{settings.FRONTEND_URL}/payment/success/')
             if tabby.verify_payment(payment_id):
+                # عملیات پرداخت و ارسال ایمیل فقط یک بار
+                process_order_payment(order)
                 return redirect(f'{settings.FRONTEND_URL}/payment/success/')
             return redirect(f'{settings.FRONTEND_URL}/payment/failure/')
         except Exception as e:
