@@ -1,6 +1,8 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from services.send_order_message import send_custom_made_email, send_custom_made_telegram
 from .models import (ProductGenderModel, ProductModel, SizeProductModel, ColorProductModel, ProductVariantModel,
                      AddImageGalleryModel, PopularProductModel, ProductCategoryModel, ProductSubCategoryModel,
                      FavUserModel, CouponModel, CompressionClassModel, SideModel, CustomerTypeModel, ProductTypeModel,
@@ -597,6 +599,9 @@ class CustomMadeView(APIView):
             for file in files:
                 CustomMadeAttachFileModel.objects.create(custom_made=custom_made, attach_file=file)
 
+            recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae', data.email]
+            send_custom_made_email(recipient_list)
+            send_custom_made_telegram()
             return Response(
                 {
                     "message": "Your custom made request has been submitted successfully.",

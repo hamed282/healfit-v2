@@ -109,6 +109,71 @@ def send_order_telegram(order, order_items):
         print(response.json())
 
 
+def send_custom_made_email(recipient_list):
+    subject = 'Your Form Has been Received'
+
+    # context = {'invoice_number': f'E-INV-{str(order.created.year)[-2:]}-{str(order.cart_id).zfill(6)}',
+    #            'bill_to': {'name': f'{order.user.first_name} {order.user.last_name}',
+    #                        'address': f'{order.address.address}',
+    #                        'city': f'{order.address.city}',
+    #                        'country': f'{order.address.country}'},
+    #            'invoice_date': order.created.strftime("%d-%m-%Y"),
+    #            'products': products,
+    #            'total_invoice': sum(int(item.selling_price) * int(item.quantity)
+    #                                 for item in order_items) + int(order.shipping),
+    #            'shipping_fee': order.shipping,
+    #            'total_taxable_amount': sum(round(int(item.selling_price) / 1.05, 2) * int(item.quantity)
+    #                                        for item in order_items),
+    #            'total_tax_amount': sum(round(int(item.selling_price) - round(int(item.selling_price) / 1.05, 2), 2)
+    #                                    * int(item.quantity) for item in order_items)
+    #            }
+
+    # html_content = render_to_string('invoice/invoice.html', context=context)
+
+    text_content = f'New Form Received'
+
+    email_from = settings.EMAIL_HOST_USER
+
+    # Split the recipient list - customer email is the main recipient, others go to BCC
+    customer_email = recipient_list[-1]  # Last email is the customer's email
+    bcc_list = recipient_list[:-1]  # All other emails go to BCC
+
+    email = EmailMultiAlternatives(subject, text_content, email_from, [customer_email], bcc=bcc_list)
+
+    # اضافه کردن نسخه HTML
+    # email.attach_alternative(html_content, "text/html")
+
+    # ارسال ایمیل
+    email.send()
+
+
+def send_custom_made_telegram():
+    token = '7634802186:AAEXRh2YALEoXZXDA6TywGckdG_7erAgrxA'
+    # bill_to = {'name': f'{order.user.first_name} {order.user.last_name}',
+    #            'address': f'{order.address.address}',
+    #            'city': f'{order.address.city}',
+    #            'country': f'{order.address.country}',
+    #            'email': f'{order.user.email}',
+    #            'phone': f'{order.address.phone_number}',
+    #            'ref_id': f'{order.ref_id}',
+    #            'order_id': f'{order.cart_id}'}
+    #
+    # products = [{'name': item.product.name,
+    #              'quantity': item.quantity,
+    #              'amount': item.selling_price,
+    #              'taxable_amount': round(int(item.selling_price)/1.05, 2),
+    #              'tax_amount': round(int(item.selling_price) - round(int(item.selling_price)/1.05, 2), 2),
+    #              } for item in order_items]
+
+    message = 'New Form Received'
+
+    chat_list = TelegramBotModel.objects.all()
+    chat_list = [chat_id for chat_id in chat_list]
+    for chat_id in chat_list:
+        url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&parse_mode=Markdown&text={message}"
+        response = requests.get(url)
+        print(response.json())
+
 # from order.models import OrderModel
 # order = OrderModel.objects.filter(user=1).first()
 # order_items = order.items.all()
