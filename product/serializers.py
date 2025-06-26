@@ -798,7 +798,7 @@ class CustomMadeSerializer(serializers.ModelSerializer):
 
     def get_created(self, obj):
         # For English month name
-        return obj.created.strftime('%d %B %Y')
+        return obj.created.strftime('%d %B %Y, %H:%M')
 
 
 class CustomerTypeSerializer(serializers.ModelSerializer):
