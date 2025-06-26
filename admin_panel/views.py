@@ -2647,3 +2647,29 @@ class ContactUsNotifView(APIView):
             'unseen_count': count,
             'has_unseen': count > 0
         })
+
+
+class ImageDeleteView(APIView):
+    # permission_classes = [IsAdminUser, IsProductAdmin]
+    #
+    # def get_permissions(self):
+    #     if self.request.method in ['PUT', 'GET', 'DELETE']:
+    #         return [OrPermission(IsProductAdmin, IsSEOAdmin)]
+    #     return super().get_permissions()
+
+    allowed_fields = ['size_table_image',]
+
+    def delete(self, request, product_id, image_field):
+        if image_field not in self.allowed_fields:
+            return Response({'message': 'Invalid image field name'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            product = ProductModel.objects.get(id=product_id)
+        except ProductModel.DoesNotExist:
+            return Response({'message': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # حذف تصویر (مقداردهی None)
+        setattr(product, image_field, None)
+        product.save()
+
+        return Response({'message': f'{image_field} was deleted successfully'}, status=status.HTTP_200_OK)

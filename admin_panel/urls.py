@@ -15,6 +15,7 @@ urlpatterns = [
 
     # General
     path('language/active/', views.LanguageView.as_view(), name='language'),
+    path('image_remove/<int:product_id>/<str:image_field>/', views.ImageDeleteView.as_view(), name='remove_image'),
 
     # Blog
     path('blog/list/', views.BlogListView.as_view(), name='blog_list'),
