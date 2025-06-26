@@ -789,11 +789,16 @@ class CustomMadeAttachFileSerializer(serializers.ModelSerializer):
 class CustomMadeSerializer(serializers.ModelSerializer):
     attach_file = CustomMadeAttachFileSerializer(many=True, required=False, read_only=True,
                                                  source='custommadeattachfilemodel_set')
+    created = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomMadeModel
         fields = '__all__'
         read_only_fields = ['new_comment']
+
+    def get_created(self, obj):
+        # For English month name
+        return obj.created.strftime('%d %B %Y')
 
 
 class CustomerTypeSerializer(serializers.ModelSerializer):
