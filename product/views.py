@@ -599,9 +599,10 @@ class CustomMadeView(APIView):
             for file in files:
                 CustomMadeAttachFileModel.objects.create(custom_made=custom_made, attach_file=file)
 
-            recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae', data.email]
+            recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae', custom_made.email]
             send_custom_made_email(recipient_list)
             send_custom_made_telegram()
+
             return Response(
                 {
                     "message": "Your custom made request has been submitted successfully.",
