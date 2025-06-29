@@ -305,3 +305,4 @@ TABBY_MERCHANT_CODE = os.getenv('TABBY_MERCHANT_CODE')
 SITE_URL = os.getenv('SITE_URL')
 SITE_NAME = os.getenv('SITE_NAME')
 FRONTEND_URL = os.getenv('FRONTEND_URL')
+
