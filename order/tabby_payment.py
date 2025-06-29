@@ -78,7 +78,7 @@ class TabbyPayment:
             },
             "customer": {
                 "email": self.order.user.email,
-                "phone": "9999",
+                # "phone": self.order.address.phone_number,
                 "name": f"{self.order.user.first_name} {self.order.user.last_name}"
             },
             "lang": "en",
