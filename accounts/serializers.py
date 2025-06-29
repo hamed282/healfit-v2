@@ -3,6 +3,7 @@ from .models import User, AddressModel, CurrentAddressModel
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
+    phone_number = serializers.CharField(required=True)
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email', 'phone_number', 'company_name', 'trn_number', 'password']
@@ -19,6 +20,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 
 class UserAddressSerializer(serializers.ModelSerializer):
+    phone_number = serializers.CharField(required=True)
     current_address = serializers.SerializerMethodField()
 
     class Meta:
