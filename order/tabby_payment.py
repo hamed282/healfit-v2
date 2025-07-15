@@ -33,9 +33,9 @@ class TabbyPayment:
                 "currency": self.config['CURRENCY'],
                 "description": f"خرید از {settings.SITE_NAME}",
                 "buyer": {
-                    # "phone": self.order.address.phone_number,
-                    # "email": self.order.user.email,
-                    # "name": f"{self.order.user.first_name} {self.order.user.last_name}",
+                    "phone": self.order.address.phone_number,
+                    "email": self.order.user.email,
+                    "name": f"{self.order.user.first_name} {self.order.user.last_name}",
                     # dob is optional, add if available
                 },
                 "shipping_address": {
