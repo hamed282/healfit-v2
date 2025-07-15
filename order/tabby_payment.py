@@ -31,7 +31,7 @@ class TabbyPayment:
             "payment": {
                 "amount": str(amount_aed),
                 "currency": self.config['CURRENCY'],
-                "description": f"خرید از {settings.SITE_NAME}",
+                "description": f"buy from {settings.SITE_NAME}",
                 "buyer": {
                     "phone": self.order.address.phone_number,
                     "email": self.order.user.email,
@@ -90,6 +90,10 @@ class TabbyPayment:
             },
             # "token": None,  # Optional
         }
+
+        # Debug print statements
+        print("Tabby customer section:", payload["customer"])
+        print("Tabby full payload:", json.dumps(payload, indent=2, ensure_ascii=False))
 
         try:
             response = requests.post(url, headers=self.headers, json=payload)
