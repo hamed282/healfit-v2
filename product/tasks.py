@@ -29,8 +29,9 @@ def zoho_product_update():
         response_itemgroups = response_itemgroups.json()
 
         for item in response_itemgroups['itemgroups']:
+            print(item['group_name'])
             try:
-                print(item['group_name'])
+
                 product = item['group_name'].strip()
                 group_id = item['group_id']
 
