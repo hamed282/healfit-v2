@@ -28,15 +28,13 @@ def zoho_product_update():
         response_itemgroups = requests.get(url=url_itemgroups, headers=headers)
         response_itemgroups = response_itemgroups.json()
 
-        print(response_itemgroups['itemgroups'])
-
         for item in response_itemgroups['itemgroups']:
             try:
                 product = item['group_name'].strip()
                 group_id = item['group_id']
 
                 product_exists = ProductModel.objects.filter(product=product)
-
+                print(product)
                 if product_exists.exists():
                     product_obj = product_exists.get(product=product)
                     product_obj.price = item['items'][0]['rate']
