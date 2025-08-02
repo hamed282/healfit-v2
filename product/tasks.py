@@ -63,11 +63,12 @@ def zoho_product_update():
         for item in response_items['items']:
             ccl = None
             side = None
+            print(f"product2: {item['group_name']}")
+
             try:
                 product = item['group_name']
 
                 product = ProductModel.objects.get(product=product)
-                print(f"product2: {product}")
 
                 name = item['name']
 
