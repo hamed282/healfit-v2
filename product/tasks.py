@@ -27,8 +27,11 @@ def zoho_product_update():
 
         response_itemgroups = requests.get(url=url_itemgroups, headers=headers)
         response_itemgroups = response_itemgroups.json()
-
+        print(response_itemgroups)
         for item in response_itemgroups['itemgroups']:
+            # print(item)
+            # print(item['group_name'])
+
             try:
                 product = item['group_name'].strip()
                 group_id = item['group_id']
@@ -64,7 +67,10 @@ def zoho_product_update():
             ccl = None
             side = None
             try:
-                product = item['group_name']
+                # print(item['group_name'])
+                product = item.get('group_name')
+                if product is None:
+                    continue
 
                 product = ProductModel.objects.get(product=product)
 
@@ -75,7 +81,7 @@ def zoho_product_update():
                     # print(f"color: {color}")
 
                     color = ColorProductModel.objects.get(color=color)
-                    print(f"product: {product}")
+                    # print(f"product: {product}")
                     size = item['attribute_option_name2']
                     # print(f"size: {size}")
 
@@ -91,6 +97,7 @@ def zoho_product_update():
                         side = item['attribute_option_name3']
                         side = SideModel.objects.get(side=side)
                 else:
+                    # print(f"product2: {product}")
                     color = 'not color'
                     color = ColorProductModel.objects.get(color=color)
 
