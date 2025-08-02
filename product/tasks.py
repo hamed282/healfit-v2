@@ -64,7 +64,7 @@ def zoho_product_update():
             ccl = None
             side = None
             try:
-                print(item)
+                print(item['group_name'])
                 product = item['group_name']
 
                 product = ProductModel.objects.get(product=product)
