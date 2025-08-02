@@ -63,8 +63,6 @@ def zoho_product_update():
         for item in response_items['items']:
             ccl = None
             side = None
-            print(f"product2: {item['group_name']}")
-
             try:
                 product = item['group_name']
 
@@ -93,6 +91,7 @@ def zoho_product_update():
                         side = item['attribute_option_name3']
                         side = SideModel.objects.get(side=side)
                 else:
+                    print(f"product2: {product}")
                     color = 'not color'
                     color = ColorProductModel.objects.get(color=color)
 
