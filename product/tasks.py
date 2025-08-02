@@ -13,7 +13,7 @@ def zoho_product_update():
     logger.exception("logger test")
     organization_id = settings.ORGANIZATION_ID
     oauth = zoho_refresh_token(settings.SCOPE_READING)
-    per_page = '50'
+    per_page = '200'
     headers = {
         'Authorization': f"Zoho-oauthtoken {oauth}"}
 
@@ -29,7 +29,9 @@ def zoho_product_update():
         response_itemgroups = response_itemgroups.json()
         # print(response_itemgroups)
         for item in response_itemgroups['itemgroups']:
-            print(item['group_name'])
+            print(item)
+
+            # print(item['group_name'])
 
             try:
                 product = item['group_name'].strip()
