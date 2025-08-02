@@ -29,6 +29,8 @@ def zoho_product_update():
         response_itemgroups = response_itemgroups.json()
 
         for item in response_itemgroups['itemgroups']:
+            print(item['group_name'])
+
             try:
                 product = item['group_name'].strip()
                 group_id = item['group_id']
@@ -64,8 +66,10 @@ def zoho_product_update():
             ccl = None
             side = None
             try:
-                print(item['group_name'])
-                product = item['group_name']
+                # print(item['group_name'])
+                product = item.get('group_name')
+                if product is None:
+                    continue
 
                 product = ProductModel.objects.get(product=product)
 
