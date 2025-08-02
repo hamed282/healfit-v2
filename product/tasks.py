@@ -30,7 +30,7 @@ def zoho_product_update():
 
         for item in response_itemgroups['itemgroups']:
             # print(item)
-            print(item['group_name'])
+            # print(item['group_name'])
 
             try:
                 product = item['group_name'].strip()
