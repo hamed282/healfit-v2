@@ -52,7 +52,6 @@ def zoho_product_update():
     #             continue
     #     has_more_page = response_itemgroups['page_context']['has_more_page']
 
-    c = 0
     has_more_page = True
     page = 0
     i = 1
@@ -65,10 +64,9 @@ def zoho_product_update():
 
         for item in response_items['items']:
             # print(item)
-            c += 1
 
             try:
-                print(item['group_name'])
+                # print(item['group_name'])
                 product = item['group_name'].strip()
                 group_id = item['group_id']
 
@@ -173,4 +171,3 @@ def zoho_product_update():
             i += 1
 
         has_more_page = response_items['page_context']['has_more_page']
-    print(f"count: {c}")
