@@ -21,37 +21,37 @@ def zoho_product_update():
     page = 0
     i = 1
     c = 0
-    while has_more_page:
-        page += 1
-        url_itemgroups = f'https://www.zohoapis.com/inventory/v1/itemgroups?organization_id={organization_id}&page={page}&per_page={per_page}'
+    # while has_more_page:
+    page += 1
+    url_itemgroups = f'https://www.zohoapis.com/inventory/v1/itemgroups?organization_id={organization_id}'
 
-        response_itemgroups = requests.get(url=url_itemgroups, headers=headers)
-        response_itemgroups = response_itemgroups.json()
-        for item in response_itemgroups['itemgroups']:
-            # print(item)
+    response_itemgroups = requests.get(url=url_itemgroups, headers=headers)
+    response_itemgroups = response_itemgroups.json()
+    for item in response_itemgroups['itemgroups']:
+        # print(item)
 
-            c += 1
-            print(item['group_name'])
-            try:
-                product = item['group_name'].strip()
-                group_id = item['group_id']
+        c += 1
+        print(item['group_name'])
+        try:
+            product = item['group_name'].strip()
+            group_id = item['group_id']
 
-                product_exists = ProductModel.objects.filter(product=product)
+            product_exists = ProductModel.objects.filter(product=product)
 
-                if product_exists.exists():
-                    product_obj = product_exists.get(product=product)
-                    product_obj.price = item['items'][0]['rate']
-                    product_obj.save()
+            if product_exists.exists():
+                product_obj = product_exists.get(product=product)
+                product_obj.price = item['items'][0]['rate']
+                product_obj.save()
 
-                else:
-                    ProductModel.objects.create(product=product,
-                                                group_id=group_id,
-                                                price=item['items'][0]['rate'],
-                                                slug=slugify(product))
-                i += 1
-            except:
-                continue
-        has_more_page = response_itemgroups['page_context']['has_more_page']
+            else:
+                ProductModel.objects.create(product=product,
+                                            group_id=group_id,
+                                            price=item['items'][0]['rate'],
+                                            slug=slugify(product))
+            i += 1
+        except:
+            continue
+    has_more_page = response_itemgroups['page_context']['has_more_page']
     print(f"count: {c}")
     has_more_page = True
     page = 0
