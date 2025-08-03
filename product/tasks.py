@@ -13,46 +13,46 @@ def zoho_product_update():
     logger.exception("logger test")
     organization_id = settings.ORGANIZATION_ID
     oauth = zoho_refresh_token(settings.SCOPE_READING)
-    per_page = '20'
+    per_page = '200'
     headers = {
         'Authorization': f"Zoho-oauthtoken {oauth}"}
 
-    has_more_page = True
-    page = 0
-    i = 1
-    c = 0
+    # has_more_page = True
+    # page = 0
+    # i = 1
     # while has_more_page:
-    page += 1
-    url_itemgroups = f'https://www.zohoapis.com/inventory/v1/itemgroups?organization_id={organization_id}'
+    #     page += 1
+    #     url_itemgroups = f'https://www.zohoapis.com/inventory/v1/itemgroups?organization_id={organization_id}&page={page}&per_page={per_page}'
+    #
+    #     response_itemgroups = requests.get(url=url_itemgroups, headers=headers)
+    #     response_itemgroups = response_itemgroups.json()
+    #     for item in response_itemgroups['itemgroups']:
+    #         # print(item)
+    #
+    #
+    #         print(item['group_name'])
+    #         try:
+    #             product = item['group_name'].strip()
+    #             group_id = item['group_id']
+    #
+    #             product_exists = ProductModel.objects.filter(product=product)
+    #
+    #             if product_exists.exists():
+    #                 product_obj = product_exists.get(product=product)
+    #                 product_obj.price = item['items'][0]['rate']
+    #                 product_obj.save()
+    #
+    #             else:
+    #                 ProductModel.objects.create(product=product,
+    #                                             group_id=group_id,
+    #                                             price=item['items'][0]['rate'],
+    #                                             slug=slugify(product))
+    #             i += 1
+    #         except:
+    #             continue
+    #     has_more_page = response_itemgroups['page_context']['has_more_page']
 
-    response_itemgroups = requests.get(url=url_itemgroups, headers=headers)
-    response_itemgroups = response_itemgroups.json()
-    for item in response_itemgroups['itemgroups']:
-        # print(item)
-
-        c += 1
-        print(item['group_name'])
-        try:
-            product = item['group_name'].strip()
-            group_id = item['group_id']
-
-            product_exists = ProductModel.objects.filter(product=product)
-
-            if product_exists.exists():
-                product_obj = product_exists.get(product=product)
-                product_obj.price = item['items'][0]['rate']
-                product_obj.save()
-
-            else:
-                ProductModel.objects.create(product=product,
-                                            group_id=group_id,
-                                            price=item['items'][0]['rate'],
-                                            slug=slugify(product))
-            i += 1
-        except:
-            continue
-    has_more_page = response_itemgroups['page_context']['has_more_page']
-    print(f"count: {c}")
+    c = 0
     has_more_page = True
     page = 0
     i = 1
@@ -62,6 +62,30 @@ def zoho_product_update():
 
         response_items = requests.get(url=url_items, headers=headers)
         response_items = response_items.json()
+
+        for item in response_items['items']:
+            # print(item)
+            c += 1
+            print(item['group_name'])
+            try:
+                product = item['group_name'].strip()
+                group_id = item['group_id']
+
+                product_exists = ProductModel.objects.filter(product=product)
+
+                if product_exists.exists():
+                    product_obj = product_exists.get(product=product)
+                    product_obj.price = item['rate']
+                    product_obj.save()
+
+                else:
+                    ProductModel.objects.create(product=product,
+                                                group_id=group_id,
+                                                price=item['rate'],
+                                                slug=slugify(product))
+                i += 1
+            except:
+                continue
 
         for item in response_items['items']:
             ccl = None
@@ -148,3 +172,4 @@ def zoho_product_update():
             i += 1
 
         has_more_page = response_items['page_context']['has_more_page']
+    print(f"count: {c}")
