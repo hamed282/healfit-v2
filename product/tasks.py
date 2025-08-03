@@ -13,7 +13,7 @@ def zoho_product_update():
     logger.exception("logger test")
     organization_id = settings.ORGANIZATION_ID
     oauth = zoho_refresh_token(settings.SCOPE_READING)
-    per_page = '200'
+    per_page = '20'
     headers = {
         'Authorization': f"Zoho-oauthtoken {oauth}"}
 
