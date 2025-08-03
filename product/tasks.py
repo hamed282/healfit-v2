@@ -20,18 +20,18 @@ def zoho_product_update():
     has_more_page = True
     page = 0
     i = 1
-
+    c = 0
     while has_more_page:
         page += 1
         url_itemgroups = f'https://www.zohoapis.com/inventory/v1/itemgroups?organization_id={organization_id}&page={page}&per_page={per_page}'
 
         response_itemgroups = requests.get(url=url_itemgroups, headers=headers)
         response_itemgroups = response_itemgroups.json()
-        print(response_itemgroups['itemgroups'])
         for item in response_itemgroups['itemgroups']:
             # print(item)
-            # print(item['group_name'])
 
+            c += 1
+            print(item['group_name'])
             try:
                 product = item['group_name'].strip()
                 group_id = item['group_id']
@@ -52,7 +52,7 @@ def zoho_product_update():
             except:
                 continue
         has_more_page = response_itemgroups['page_context']['has_more_page']
-
+    print(f"count: {c}")
     has_more_page = True
     page = 0
     i = 1
