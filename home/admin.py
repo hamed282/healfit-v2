@@ -3,7 +3,8 @@ from .models import (BannerSliderModel, VideoHomeModel, CommentHomeModel, Banner
                      SEOHomeModel, NewsLetterModel, ContactSubmitModel, TelegramBotModel, AboutPageModel,
                      CareerPageModel, SitemapPageModel, CustomerCarePageModel, BlogPageModel, ShopPageModel,
                      RefundPolicyPageModel, ContactUsPageModel, WholesaleInquiryPageModel, BannerSliderMobileModel,
-                     Content1Model, Content2Model, Content3Model, FAQModel)
+                     Content1Model, Content2Model, Content3Model, FAQModel, PrivacyPolicyPageModel,
+                     TermConditionPageModel, ShippingDeliveryPageModel)
 
 
 class BannerSliderAdmin(admin.ModelAdmin):
@@ -28,6 +29,9 @@ admin.site.register(NewsLetterModel)
 admin.site.register(ContactSubmitModel)
 admin.site.register(TelegramBotModel)
 admin.site.register(CareerPageModel)
+admin.site.register(PrivacyPolicyPageModel)
+admin.site.register(TermConditionPageModel)
+admin.site.register(ShippingDeliveryPageModel)
 admin.site.register(RefundPolicyPageModel)
 admin.site.register(ContactUsPageModel)
 admin.site.register(SitemapPageModel)
