@@ -5,13 +5,15 @@ from .models import (BannerSliderModel, CommentHomeModel, VideoHomeModel, Conten
                      BannerShopModel, LogoModel,
                      SEOHomeModel, ContactSubmitModel, TelegramBotModel, AboutPageModel, CareerPageModel, BlogPageModel,
                      ShopPageModel, SitemapPageModel, WholesaleInquiryPageModel, CustomerCarePageModel,
-                     RefundPolicyPageModel, ContactUsPageModel, BannerSliderMobileModel, FAQModel)
+                     RefundPolicyPageModel, ContactUsPageModel, BannerSliderMobileModel, FAQModel,
+                     PrivacyPolicyPageModel, TermConditionPageModel, ShippingDeliveryPageModel)
 from .serializers import (BannerSliderSerializer, CommentHomeSerializer, VideoHomeSerializer, ContentHome1Serializer,
                           BannerShopSerializer, SEOHomeSerializer, LogoHomeSerializer, NewsLetterSerializer,
                           ContactSubmitSerializer, AboutPageSerializer, ShopPageSerializer, BlogPageSerializer,
                           CareerPageSerializer, SitemapPageSerializer, ContactUsPageSerializer,
                           RefundPolicyPageSerializer, WholesaleInquiryPageSerializer, CustomerCarePageSerializer,
-                          ContentHome2Serializer, ContentHome3Serializer, FAQSerializer)
+                          ContentHome2Serializer, ContentHome3Serializer, FAQSerializer, PrivacyPolicyPageSerializer,
+                          TermConditionPageSerializer, ShippingDeliverySerializer)
 from django.conf import settings
 from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
@@ -221,6 +223,27 @@ class BlogPageView(APIView):
     def get(self, request):
         blog = BlogPageModel.objects.all().first()
         ser_data = BlogPageSerializer(instance=blog)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class PrivacyPolicyPageView(APIView):
+    def get(self, request):
+        privacy = PrivacyPolicyPageModel.objects.all().first()
+        ser_data = PrivacyPolicyPageSerializer(instance=privacy)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class TermConditionPageView(APIView):
+    def get(self, request):
+        condition = TermConditionPageModel.objects.all().first()
+        ser_data = TermConditionPageSerializer(instance=condition)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+
+class ShippingDeliveryPageView(APIView):
+    def get(self, request):
+        delivery = ShippingDeliveryPageModel.objects.all().first()
+        ser_data = ShippingDeliverySerializer(instance=delivery)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
 

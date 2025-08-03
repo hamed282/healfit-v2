@@ -194,6 +194,15 @@ urlpatterns = [
     path('pages/blog/', views.BlogPageView.as_view(), name='blog'),
     path('pages/blog/<int:blog_id>/', views.BlogPageView.as_view(), name='blog'),
 
+    path('pages/privacyPolicy/', views.PrivacyPolicyPageView.as_view(), name='privacy'),
+    path('pages/privacyPolicy/<int:privacy_id>/', views.PrivacyPolicyPageView.as_view(), name='privacy_id'),
+
+    path('pages/termCondition/', views.TermConditionPageView.as_view(), name='term_condition'),
+    path('pages/termCondition/<int:condition_id>/', views.TermConditionPageView.as_view(), name='term_condition_id'),
+
+    path('pages/shippingDelivery/', views.ShippingDeliveryPageView.as_view(), name='delivery'),
+    path('pages/shippingDelivery/<int:delivery_id>/', views.ShippingDeliveryPageView.as_view(), name='delivery_id'),
+
     # Custom Made
     path('product/custom_made/', views.CustomMadeView.as_view(), name='custom_made'),
     path('product/custom_made/<int:custom_id>/', views.CustomMadeItemView.as_view(), name='custom_made_put'),

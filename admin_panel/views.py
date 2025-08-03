@@ -27,14 +27,16 @@ from home.models import (CommentHomeModel, BannerSliderModel, VideoHomeModel, Ba
                          SEOHomeModel, LogoModel, NewsLetterModel, ContactSubmitModel, AboutPageModel, CareerPageModel,
                          BlogPageModel, ShopPageModel, SitemapPageModel, WholesaleInquiryPageModel,
                          CustomerCarePageModel, RefundPolicyPageModel, ContactUsPageModel, BannerSliderMobileModel,
-                         Content1Model, Content2Model, Content3Model, FAQModel)
+                         Content1Model, Content2Model, Content3Model, FAQModel, PrivacyPolicyPageModel,
+                         TermConditionPageModel, ShippingDeliveryPageModel)
 from home.serializers import (CommentHomeSerializer, VideoHomeSerializer, BannerSliderSerializer,
                               BannerShopSerializer, LogoHomeSerializer, SEOHomeSerializer, NewsLetterSerializer,
                               ContactSubmitSerializer, AboutPageSerializer, ShopPageSerializer, BlogPageSerializer,
                               CareerPageSerializer, SitemapPageSerializer, ContactUsPageSerializer,
                               RefundPolicyPageSerializer, WholesaleInquiryPageSerializer, CustomerCarePageSerializer,
                               BannerSliderMobileSerializer, ContentHome1Serializer, ContentHome2Serializer,
-                              ContentHome3Serializer, FAQSerializer)
+                              ContentHome3Serializer, FAQSerializer, PrivacyPolicyPageSerializer,
+                              TermConditionPageSerializer, ShippingDeliverySerializer)
 from product.models import (ProductCategoryModel, ProductSubCategoryModel, ExtraGroupModel, SizeProductModel,
                             ColorProductModel, ProductModel, ProductTagModel, AddProductTagModel, ProductGenderModel,
                             ProductVariantModel, AddImageGalleryModel, CouponModel, CustomMadeModel, CustomerTypeModel,
@@ -2005,6 +2007,54 @@ class BlogPageView(APIView):
         form = request.data
         blog = get_object_or_404(BlogPageModel, id=blog_id)
         ser_data = BlogPageSerializer(instance=blog, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PrivacyPolicyPageView(APIView):
+    def get(self, request):
+        privacy = PrivacyPolicyPageModel.objects.all().first()
+        ser_data = PrivacyPolicyPageSerializer(instance=privacy)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, privacy_id):
+        form = request.data
+        privacy = get_object_or_404(PrivacyPolicyPageModel, id=privacy_id)
+        ser_data = PrivacyPolicyPageSerializer(instance=privacy, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TermConditionPageView(APIView):
+    def get(self, request):
+        condition = TermConditionPageModel.objects.all().first()
+        ser_data = TermConditionPageSerializer(instance=condition)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, condition_id):
+        form = request.data
+        condition = get_object_or_404(TermConditionPageModel, id=condition_id)
+        ser_data = TermConditionPageSerializer(instance=condition, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ShippingDeliveryPageView(APIView):
+    def get(self, request):
+        delivery = ShippingDeliveryPageModel.objects.all().first()
+        ser_data = ShippingDeliverySerializer(instance=delivery)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, delivery_id):
+        form = request.data
+        delivery = get_object_or_404(ShippingDeliveryPageModel, id=delivery_id)
+        ser_data = ShippingDeliverySerializer(instance=delivery, data=form, partial=True)
         if ser_data.is_valid():
             ser_data.save()
             return Response(data=ser_data.data, status=status.HTTP_200_OK)

@@ -23,6 +23,9 @@ urlpatterns = [
     path('career/', views.CareerPageView.as_view(), name='career'),
     path('shop/', views.ShopPageView.as_view(), name='shop'),
     path('blog/', views.BlogPageView.as_view(), name='blog'),
+    path('privacyPolicy/', views.PrivacyPolicyPageView.as_view(), name='privacy'),
+    path('termCondition/', views.TermConditionPageView.as_view(), name='term_condition'),
+    path('shippingDelivery/', views.ShippingDeliveryPageView.as_view(), name='delivery'),
     path('faq/', views.FAQView.as_view(), name='faq'),
 ]
 

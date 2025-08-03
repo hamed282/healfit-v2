@@ -428,6 +428,69 @@ class BlogPageModel(models.Model):
             )
 
 
+class PrivacyPolicyPageModel(models.Model):
+    objects = None
+    body = models.TextField()
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Career Page'
+
+    def clean(self):
+        if not self.pk and CareerPageModel.objects.exists():
+            # This below line will render error by breaking page, you will see
+            raise ValidationError(
+                "There can be only one Career Page you can not add another"
+            )
+
+
+class TermConditionPageModel(models.Model):
+    objects = None
+    body = models.TextField()
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Career Page'
+
+    def clean(self):
+        if not self.pk and CareerPageModel.objects.exists():
+            # This below line will render error by breaking page, you will see
+            raise ValidationError(
+                "There can be only one Career Page you can not add another"
+            )
+
+
+class ShippingDeliveryPageModel(models.Model):
+    objects = None
+    body = models.TextField()
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Career Page'
+
+    def clean(self):
+        if not self.pk and CareerPageModel.objects.exists():
+            # This below line will render error by breaking page, you will see
+            raise ValidationError(
+                "There can be only one Career Page you can not add another"
+            )
+
+
 class Content1Model(models.Model):
     objects = None
     title = models.CharField(max_length=64)

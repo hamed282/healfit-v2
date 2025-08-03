@@ -3,7 +3,8 @@ from .models import (BannerSliderModel, VideoHomeModel, CommentHomeModel, Banner
                      SEOHomeModel, LogoModel, NewsLetterModel, ContactSubmitModel, AboutPageModel, ShopPageModel,
                      CareerPageModel, RefundPolicyPageModel, SitemapPageModel, ContactUsPageModel, BlogPageModel,
                      CustomerCarePageModel, WholesaleInquiryPageModel, BannerSliderMobileModel, Content1Model,
-                     Content2Model, Content3Model, FAQModel)
+                     Content2Model, Content3Model, FAQModel, PrivacyPolicyPageModel, TermConditionPageModel,
+                     ShippingDeliveryPageModel)
 
 
 class BannerSliderSerializer(serializers.ModelSerializer):
@@ -130,6 +131,24 @@ class ShopPageSerializer(serializers.ModelSerializer):
 class BlogPageSerializer(serializers.ModelSerializer):
     class Meta:
         model = BlogPageModel
+        fields = '__all__'
+
+
+class PrivacyPolicyPageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PrivacyPolicyPageModel
+        fields = '__all__'
+
+
+class TermConditionPageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TermConditionPageModel
+        fields = '__all__'
+
+
+class ShippingDeliverySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShippingDeliveryPageModel
         fields = '__all__'
 
 
