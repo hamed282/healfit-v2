@@ -175,10 +175,10 @@ def send_custom_made_telegram():
         print(response.json())
 
 
-def send_failed_payment_email(recipient_list):
+def send_failed_payment_email(recipient_list, message):
     subject = 'Failed Payment'
 
-    text_content = f'Failed Payment'
+    text_content = message
 
     email_from = settings.EMAIL_HOST_USER
 
@@ -195,9 +195,9 @@ def send_failed_payment_email(recipient_list):
     email.send()
 
 
-def send_failed_payment_telegram():
+def send_failed_payment_telegram(message):
     token = '7634802186:AAEXRh2YALEoXZXDA6TywGckdG_7erAgrxA'
-    message = 'Failed Payment'
+    message = message
 
     chat_list = TelegramBotModel.objects.all()
     chat_list = [chat_id for chat_id in chat_list]

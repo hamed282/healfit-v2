@@ -294,8 +294,9 @@ class OrderPayAuthorisedView(APIView):
             order.save()
 
             recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae']
-            send_failed_payment_email(recipient_list)
-            send_failed_payment_telegram()
+            send_failed_payment_email(recipient_list, 'Failled')
+            send_failed_payment_telegram('Failled')
+
             return Response(data={'message': 'failed'})
 
 
@@ -335,6 +336,10 @@ class OrderPayDeclinedView(APIView):
         order.error_message = 'Declined'
         order.save()
 
+        recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae']
+        send_failed_payment_email(recipient_list, 'Declined')
+        send_failed_payment_telegram('Declined')
+
         return Response(data={'message': 'Declined'})
 
 
@@ -369,6 +374,10 @@ class OrderPayCancelledView(APIView):
         order.transaction_ref = transaction
         order.error_message = 'cancelled'
         order.save()
+
+        recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae']
+        send_failed_payment_email(recipient_list, 'Cancelled')
+        send_failed_payment_telegram('Cancelled')
 
         return Response(data={'message': 'Cancelled'})
 
