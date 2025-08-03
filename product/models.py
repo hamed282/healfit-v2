@@ -848,6 +848,14 @@ class ProductBrandModel(models.Model):
 
     active_page = models.BooleanField(default=False)
 
+    # SEO Fields
+    follow = models.BooleanField(default=False)
+    index = models.BooleanField(default=False)
+    canonical = models.CharField(max_length=256, null=True, blank=True)
+    meta_title = models.CharField(max_length=60, blank=True, null=True)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    schema_markup = models.TextField(null=True, blank=True)
+
     def __str__(self):
         return f'{self.brand}'
 

@@ -838,7 +838,7 @@ class ProductBrandCreateSerializer(serializers.ModelSerializer):
                   'content2_mid_image', 'content2_mid_image_alt', 'content2_mid',
                   'content2_left_image', 'content2_left_image_alt', 'content2_left',
                   'contact_image', 'contact_image_alt', 'contact_text',
-                  'brand_carts']  # 👈 اینجا اضافه شود
+                  'brand_carts', 'follow', 'index', 'canonical', 'meta_title', 'meta_description', 'schema_markup']
 
     def create(self, validated_data):
         brand_carts_data = validated_data.pop('brand_carts', [])
@@ -880,6 +880,13 @@ class ProductBrandUpdateSerializer(serializers.ModelSerializer):
     content2_mid_image = serializers.ImageField(write_only=True, required=False)
     content2_left_image = serializers.ImageField(write_only=True, required=False)
     contact_image = serializers.ImageField(write_only=True, required=False)
+
+    follow = serializers.BooleanField(required=False, allow_null=True)
+    index = serializers.BooleanField(required=False, allow_null=True)
+    canonical = serializers.CharField(required=False, allow_null=True)
+    meta_title = serializers.CharField(required=False, allow_null=True)
+    meta_description = serializers.CharField(required=False, allow_null=True)
+    schema_markup = serializers.CharField(required=False, allow_null=True)
 
     class Meta:
         model = ProductBrandModel
@@ -940,6 +947,7 @@ class ProductBrandUpdateSerializer(serializers.ModelSerializer):
                             )
 
         return instance
+
 
 class BrandSerializer(serializers.ModelSerializer):
     brand_carts = BrandCartSerializer(source='brandcartmodel_set', many=True, read_only=True)
