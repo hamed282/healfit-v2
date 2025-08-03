@@ -12,7 +12,8 @@ from accounts.models import AddressModel
 from django.shortcuts import get_object_or_404, redirect
 from .serializers import OrderUserSerializer
 from services.zoho_services import zoho_invoice_quantity_update
-from services.send_order_message import send_order_email, send_order_telegram
+from services.send_order_message import (send_order_email, send_order_telegram, send_failed_payment_email,
+                                         send_failed_payment_telegram)
 from .tabby_payment import TabbyPayment
 
 
@@ -287,10 +288,14 @@ class OrderPayAuthorisedView(APIView):
                                   'transaction_ref': transaction})
         else:
             order.paid = False
-            order.trace = 'Eroor 07'
+            order.trace = 'Error 07'
             order.error_message = 'Error 07'
-            order.error_note = 'Eroor 07'
+            order.error_note = 'Error 07'
             order.save()
+
+            recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae']
+            send_failed_payment_email(recipient_list)
+            send_failed_payment_telegram()
             return Response(data={'message': 'failed'})
 
 

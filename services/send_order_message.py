@@ -174,8 +174,42 @@ def send_custom_made_telegram():
         response = requests.get(url)
         print(response.json())
 
+
+def send_failed_payment_email(recipient_list):
+    subject = 'Failed Payment'
+
+    text_content = f'Failed Payment'
+
+    email_from = settings.EMAIL_HOST_USER
+
+    # Split the recipient list - customer email is the main recipient, others go to BCC
+    customer_email = recipient_list[-1]  # Last email is the customer's email
+    bcc_list = recipient_list[:-1]  # All other emails go to BCC
+
+    email = EmailMultiAlternatives(subject, text_content, email_from, [customer_email], bcc=bcc_list)
+
+    # اضافه کردن نسخه HTML
+    # email.attach_alternative(html_content, "text/html")
+
+    # ارسال ایمیل
+    email.send()
+
+
+def send_failed_payment_telegram():
+    token = '7634802186:AAEXRh2YALEoXZXDA6TywGckdG_7erAgrxA'
+    message = 'Failed Payment'
+
+    chat_list = TelegramBotModel.objects.all()
+    chat_list = [chat_id for chat_id in chat_list]
+    for chat_id in chat_list:
+        url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&parse_mode=Markdown&text={message}"
+        response = requests.get(url)
+        print(response.json())
+
 # from order.models import OrderModel
 # order = OrderModel.objects.filter(user=1).first()
 # order_items = order.items.all()
 # recipient_list = ['hamed.alizadegan@gmail.com']
 # send_order_email(order, order_items, recipient_list)
+
+
