@@ -66,8 +66,9 @@ def zoho_product_update():
         for item in response_items['items']:
             # print(item)
             c += 1
-            print(item['group_name'])
+
             try:
+                print(item['group_name'])
                 product = item['group_name'].strip()
                 group_id = item['group_id']
 
