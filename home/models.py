@@ -439,13 +439,13 @@ class PrivacyPolicyPageModel(models.Model):
     schema_markup = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f'Career Page'
+        return f'PrivacyPolicy Page'
 
     def clean(self):
-        if not self.pk and CareerPageModel.objects.exists():
+        if not self.pk and PrivacyPolicyPageModel.objects.exists():
             # This below line will render error by breaking page, you will see
             raise ValidationError(
-                "There can be only one Career Page you can not add another"
+                "There can be only one PrivacyPolicy Page you can not add another"
             )
 
 
@@ -460,13 +460,13 @@ class TermConditionPageModel(models.Model):
     schema_markup = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f'Career Page'
+        return f'TermCondition Page'
 
     def clean(self):
-        if not self.pk and CareerPageModel.objects.exists():
+        if not self.pk and TermConditionPageModel.objects.exists():
             # This below line will render error by breaking page, you will see
             raise ValidationError(
-                "There can be only one Career Page you can not add another"
+                "There can be only one TermCondition Page you can not add another"
             )
 
 
@@ -481,13 +481,13 @@ class ShippingDeliveryPageModel(models.Model):
     schema_markup = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f'Career Page'
+        return f'ShippingDelivery Page'
 
     def clean(self):
-        if not self.pk and CareerPageModel.objects.exists():
+        if not self.pk and ShippingDeliveryPageModel.objects.exists():
             # This below line will render error by breaking page, you will see
             raise ValidationError(
-                "There can be only one Career Page you can not add another"
+                "There can be only one ShippingDelivery Page you can not add another"
             )
 
 
