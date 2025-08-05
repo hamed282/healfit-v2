@@ -454,6 +454,13 @@ class CartView(APIView):
     def get(self, request, format=None):
         cart = Cart(request)
 
+        for item in list(cart.__iter__()):
+            quantity_buy = item['quantity']
+            quantity_database = item['product']['max_quantity']
+            product = request.data["product"]
+            if quantity_buy < quantity_database:
+                cart.remove(product)
+
         return Response(
             {
                 "data": list(cart.__iter__()),
