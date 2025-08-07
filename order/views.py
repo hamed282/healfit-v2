@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 import requests
+
+from product.service import Cart
 from services.shipping_utiles import delivery_date
 from .models import OrderModel, OrderItemModel, OrderStatusModel, ShippingModel, ShippingCountryModel
 from product.models import ProductVariantModel, CouponModel
@@ -284,6 +286,10 @@ class OrderPayAuthorisedView(APIView):
             order.save()
             # عملیات پرداخت و ارسال ایمیل فقط یک بار
             process_order_payment(order)
+
+            cart = Cart(request)
+            cart.clear()
+
             return Response(data={'message': 'success', 'cart_id': order.cart_id,
                                   'transaction_ref': transaction})
         else:
