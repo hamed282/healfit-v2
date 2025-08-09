@@ -114,7 +114,7 @@ def zoho_invoice_quantity_update(first_name, last_name, email, address, city, li
         payload = {'customer_id': customer_id,
                    # "status": "paid",
                    "notes": "Looking forward for your business.",
-                   # "is_inclusive_tax": True,
+                   "is_inclusive_tax": True,
                    "line_items": line_items,
                    }
 
