@@ -1,6 +1,7 @@
 from django.conf import settings
 from accounts.models import User
 import requests
+from datetime import datetime
 
 
 def zoho_refresh_token(scope):
@@ -111,35 +112,41 @@ def zoho_invoice_quantity_update(first_name, last_name, email, address, city, li
             'content-type': "application/json"}
 
         payload = {'customer_id': customer_id,
-                   # "status": "paid",  # حذف این خط چون Zoho اجازه نمی‌دهد
+                   # "status": "paid",
                    "notes": "Looking forward for your business.",
                    # "is_inclusive_tax": True,
-                   "tax_type": "tax",
                    "line_items": line_items,
                    }
 
         response_item = requests.post(url=url_invoice, headers=headers, json=payload)
         response_item = response_item.json()
 
-        # --- افزودن پرداخت پس از ساخت فاکتور ---
-        try:
+        print(response_item)
+
+        # --- Add payment to mark invoice as paid ---
+        if 'invoice' in response_item and 'invoice_id' in response_item['invoice']:
             invoice_id = response_item['invoice']['invoice_id']
             invoice_total = response_item['invoice']['total']
-            from datetime import datetime
-            today = datetime.now().strftime('%Y-%m-%d')
             url_payment = f'https://www.zohoapis.com/books/v3/customerpayments?organization_id={organization_id}'
             payment_payload = {
                 "customer_id": customer_id,
-                "invoice_id": invoice_id,
+                "payment_mode": "creditcard",
                 "amount": invoice_total,
-                "date": today
+                "date": datetime.now().strftime('%Y-%m-%d'),
+                "invoices": [
+                    {
+                        "invoice_id": invoice_id,
+                        "amount_applied": invoice_total
+                    }
+                ],
+                "invoice_id": invoice_id,
+                "amount_applied": invoice_total,
+
             }
             payment_response = requests.post(url=url_payment, headers=headers, json=payment_payload)
             payment_response = payment_response.json()
-            # می‌توانید وضعیت پرداخت را به خروجی اضافه کنید
-            return {"invoice": response_item, "payment": payment_response}
-        except Exception as e:
-            # اگر مشکلی در پرداخت بود فقط فاکتور را برگردان
-            return {"invoice": response_item, "payment_error": str(e)}
+            response_item['payment'] = payment_response
+
+        return response_item
     else:
         return response_item
