@@ -232,7 +232,10 @@ def process_order_payment(order):
         UserProductModel.objects.create(user=user, product=product_variant, order=order,
                                         quantity=quantity, price=price)
     # بروزرسانی فاکتور زوهو
-    line_items = [{'item_id': item.product.item_id, 'quantity': item.quantity, "discount_amount": 10, "discount": 20} for item in order_items]
+    line_items = [{'item_id': item.product.item_id, 'quantity': item.quantity,
+                   "discount": (item.quantity * (item.price - item.discount_price)),
+                   "tax_name": "VAT", "tax_type": "tax", "tax_percentage": 5
+                   } for item in order_items]
     zoho_invoice_quantity_update(order.user.first_name, order.user.last_name, order.user.email,
                                  order.address.address, order.address.city, line_items,
                                  country='United Arab Emirates', customer_id=order.user.zoho_customer_id)
