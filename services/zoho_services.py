@@ -114,8 +114,8 @@ def zoho_invoice_quantity_update(first_name, last_name, email, address, city, li
         payload = {'customer_id': customer_id,
                    "notes": "Looking forward for your business.",
                    "is_inclusive_tax": True,
-                   "discount": 30,
-                   "discount_type": "entity_level",
+                   # "discount": 30,
+                   # "discount_type": "entity_level",
                    "line_items": line_items,
                    }
 
@@ -125,21 +125,25 @@ def zoho_invoice_quantity_update(first_name, last_name, email, address, city, li
         # --- Add payment to mark invoice as paid ---
         if 'invoice' in response_item and 'invoice_id' in response_item['invoice']:
             invoice_id = response_item['invoice']['invoice_id']
-            invoice_total = response_item['invoice']['total']
+            invoice_balance = response_item['invoice']['balance']
             url_payment = f'https://www.zohoapis.com/books/v3/customerpayments?organization_id={organization_id}'
+
+            oauth = zoho_refresh_token(settings.SCOPE_BOOK_CUSTOMERPAYMENTS)
+            headers = {
+                'Authorization': f"Zoho-oauthtoken {oauth}",
+                'content-type': "application/json"}
+
             payment_payload = {
                 "customer_id": customer_id,
                 "payment_mode": "creditcard",
-                "amount": invoice_total,
+                "amount": invoice_balance,
                 "date": datetime.now().strftime('%Y-%m-%d'),
                 "invoices": [
                     {
                         "invoice_id": invoice_id,
-                        "amount_applied": invoice_total
+                        "amount_applied": invoice_balance
                     }
                 ],
-                "invoice_id": invoice_id,
-                "amount_applied": invoice_total,
 
             }
             payment_response = requests.post(url=url_payment, headers=headers, json=payment_payload)
