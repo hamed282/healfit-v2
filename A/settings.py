@@ -233,7 +233,6 @@ SCOPE_READING = os.getenv('SCOPE_READING')
 SCOPE_UPDATE = os.getenv('SCOPE_UPDATE')
 SCOPE_BOOK_CONTACTS = os.getenv('SCOPE_BOOK_CONTACTS')
 SCOPE_BOOK_INVOICE = os.getenv('SCOPE_BOOK_INVOICE')
-SCOPE_BOOK_CUSTOMERPAYMENTS = os.getenv('SCOPE_BOOK_CUSTOMERPAYMENTS')
 SCOPE_BOOK_TAX = os.getenv('SCOPE_BOOK_TAX')
 SIOD = os.getenv('SIOD')
 
@@ -265,7 +264,7 @@ AWS_S3_SIGNATURE_VERSION = os.getenv('AWS_S3_SIGNATURE_VERSION')
 # TELR Settings
 TELR_API_REQUEST = f"https://secure.telr.com/gateway/order.json"
 TELR_API_VERIFY = f"https://secure.telr.com/gateway/order.json"
-TEST = "0"
+TEST = "1"
 FRAMED = 0
 SOTRE_ID = os.getenv('SOTRE_ID')
 AUTHKEY = os.getenv('AUTHKEY')
