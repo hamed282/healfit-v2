@@ -111,7 +111,7 @@ def zoho_invoice_quantity_update(first_name, last_name, email, address, city, li
             'content-type': "application/json"}
 
         payload = {'customer_id': customer_id,
-                   "status": "paid",
+                   # "status": "paid",  # حذف این خط چون Zoho اجازه نمی‌دهد
                    "notes": "Looking forward for your business.",
                    "is_inclusive_tax": True,
                    "line_items": line_items,
@@ -119,6 +119,26 @@ def zoho_invoice_quantity_update(first_name, last_name, email, address, city, li
 
         response_item = requests.post(url=url_invoice, headers=headers, json=payload)
         response_item = response_item.json()
-        return response_item
+
+        # --- افزودن پرداخت پس از ساخت فاکتور ---
+        try:
+            invoice_id = response_item['invoice']['invoice_id']
+            invoice_total = response_item['invoice']['total']
+            from datetime import datetime
+            today = datetime.now().strftime('%Y-%m-%d')
+            url_payment = f'https://www.zohoapis.com/books/v3/customerpayments?organization_id={organization_id}'
+            payment_payload = {
+                "customer_id": customer_id,
+                "invoice_id": invoice_id,
+                "amount": invoice_total,
+                "date": today
+            }
+            payment_response = requests.post(url=url_payment, headers=headers, json=payment_payload)
+            payment_response = payment_response.json()
+            # می‌توانید وضعیت پرداخت را به خروجی اضافه کنید
+            return {"invoice": response_item, "payment": payment_response}
+        except Exception as e:
+            # اگر مشکلی در پرداخت بود فقط فاکتور را برگردان
+            return {"invoice": response_item, "payment_error": str(e)}
     else:
         return response_item
