@@ -127,12 +127,6 @@ def zoho_invoice_quantity_update(first_name, last_name, email, address, city, li
             invoice_id = response_item['invoice']['invoice_id']
             invoice_balance = response_item['invoice']['balance']
             url_payment = f'https://www.zohoapis.com/books/v3/customerpayments?organization_id={organization_id}'
-
-            oauth = zoho_refresh_token(settings.SCOPE_BOOK_CUSTOMERPAYMENTS)
-            headers = {
-                'Authorization': f"Zoho-oauthtoken {oauth}",
-                'content-type': "application/json"}
-
             payment_payload = {
                 "customer_id": customer_id,
                 "payment_mode": "creditcard",
