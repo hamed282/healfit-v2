@@ -236,6 +236,12 @@ def process_order_payment(order):
                    "discount": (item.quantity * (item.price - item.discount_price)),
                    'tax_id': 5021936000000102037
                    } for item in order_items]
+    line_items.append({
+        "name": "Shipping",
+        "rate": 50,
+        "quantity": 1,
+        'tax_id': 5021936000000102037
+    })
     zoho_invoice_quantity_update(order.user.first_name, order.user.last_name, order.user.email,
                                  order.address.address, order.address.city, line_items,
                                  country='United Arab Emirates', customer_id=order.user.zoho_customer_id)
