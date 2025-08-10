@@ -75,7 +75,7 @@ def send_order_telegram(order, order_items):
                'city': f'{order.address.city}',
                'country': f'{order.address.country}',
                'email': f'{order.user.email}',
-               'phone': f'{order.address.phone_number}',
+               'phone': f'{order.address.prefix_number} {order.address.phone_number}',
                'ref_id': f'{order.ref_id}',
                'order_id': f'{order.cart_id}'}
 
