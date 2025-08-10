@@ -232,7 +232,7 @@ def process_order_payment(order):
         UserProductModel.objects.create(user=user, product=product_variant, order=order,
                                         quantity=quantity, price=price)
     # بروزرسانی فاکتور زوهو
-    line_items = [{'item_id': item.product.item_id, 'quantity': item.quantity,
+    line_items = [{'item_id': item.product.item_id, 'quantity': item.quantity, 'rate': item.price,
                    # "discount": (item.quantity * (item.price - item.discount_price)),
                    "discount": 15,
                    "discount_type": "percentage",
