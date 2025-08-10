@@ -233,7 +233,9 @@ def process_order_payment(order):
                                         quantity=quantity, price=price)
     # بروزرسانی فاکتور زوهو
     line_items = [{'item_id': item.product.item_id, 'quantity': item.quantity,
-                   "discount": (item.quantity * (item.price - item.discount_price)),
+                   # "discount": (item.quantity * (item.price - item.discount_price)),
+                   "discount": 15,
+                   "discount_type": "percentage",
                    'tax_id': 5021936000000102037
                    } for item in order_items]
     line_items.append({
@@ -245,8 +247,8 @@ def process_order_payment(order):
     zoho_invoice_quantity_update(order.user.first_name, order.user.last_name, order.user.email,
                                  order.address.address, order.address.city, line_items,
                                  country='United Arab Emirates', customer_id=order.user.zoho_customer_id)
-    recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae', order.user.email]
-    send_order_email(order, order_items, recipient_list)
+    # recipient_list = ['hamed.alizadegan@gmail.com', 'hamed@healfit.ae', order.user.email]
+    # send_order_email(order, order_items, recipient_list)
     send_order_telegram(order, order_items)
     return True
 

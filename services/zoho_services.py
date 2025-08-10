@@ -133,7 +133,7 @@ def zoho_invoice_quantity_update(first_name, last_name, email, address, city, li
                 'content-type': "application/json"}
 
             payload = {
-                "to_mail_ids": ["hamed.alizadegan@gmail.com"],
+                "to_mail_ids": [email, "hamed.alizadegan@gmail.com"],
                 "cc_mail_ids": ["info@healfit.ae"],
                 "subject": "Invoice from Healfit.ae",
                 "body": f"""Dear {first_name} {last_name},
