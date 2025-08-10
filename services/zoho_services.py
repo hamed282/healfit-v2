@@ -116,7 +116,7 @@ def zoho_invoice_quantity_update(first_name, last_name, email, address, city, li
                    "is_inclusive_tax": True,
                    # "discount": 30,
                    # "discount_type": "entity_level",
-                   # "shipping_charge": 50,
+                   "shipping_charge": '50',
                    "line_items": line_items,
                    }
 
