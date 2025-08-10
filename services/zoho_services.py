@@ -123,6 +123,24 @@ def zoho_invoice_quantity_update(first_name, last_name, email, address, city, li
         response_item = requests.post(url=url_invoice, headers=headers, json=payload)
         response_item = response_item.json()
 
+        if 'invoice' in response_item and 'invoice_id' in response_item['invoice']:
+            invoice_id = response_item['invoice']['invoice_id']
+            url_sent = f"https://invoice.zoho.com/api/v3/invoices/{invoice_id}/email?organization_id={organization_id}"
+            oauth = zoho_refresh_token(settings.SCOPE_BOOK_INVOICE)
+
+            headers = {
+                'Authorization': f"Zoho-oauthtoken {oauth}",
+                'content-type': "application/json"}
+
+            payload = {
+                "to_mail_ids": ["hamed.alizadegan@gmail.com"],
+                "cc_mail_ids": ["hamed@healfit.ae"],
+                "subject": "Invoice from My Company",
+                "body": "Dear customer, please find your invoice attached."
+            }
+
+            response = requests.post(url_sent, json=payload, headers=headers)
+
         # --- Add payment to mark invoice as paid ---
         if 'invoice' in response_item and 'invoice_id' in response_item['invoice']:
             invoice_id = response_item['invoice']['invoice_id']
