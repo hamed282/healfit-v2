@@ -125,7 +125,7 @@ def zoho_invoice_quantity_update(first_name, last_name, email, address, city, li
 
         if 'invoice' in response_item and 'invoice_id' in response_item['invoice']:
             invoice_id = response_item['invoice']['invoice_id']
-            url_sent = f"https://invoice.zoho.com/api/v3/invoices/{invoice_id}/email?organization_id={organization_id}"
+            url_sent = f"https://www.zohoapis.com/books/v3/invoices/{invoice_id}/email?organization_id={organization_id}"
             oauth = zoho_refresh_token(settings.SCOPE_BOOK_INVOICE)
 
             headers = {
