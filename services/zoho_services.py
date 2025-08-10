@@ -134,9 +134,15 @@ def zoho_invoice_quantity_update(first_name, last_name, email, address, city, li
 
             payload = {
                 "to_mail_ids": ["hamed.alizadegan@gmail.com"],
-                "cc_mail_ids": ["hamed@healfit.ae"],
-                "subject": "Invoice from My Company",
-                "body": "Dear customer, please find your invoice attached."
+                "cc_mail_ids": ["info@healfit.ae"],
+                "subject": "Invoice from Healfit.ae",
+                "body": f"""Dear {first_name} {last_name},
+
+Thank you for your purchase! 
+Please find your invoice attached.
+
+Best regards,
+Healfit Team"""
             }
 
             response = requests.post(url_sent, json=payload, headers=headers)

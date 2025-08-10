@@ -238,7 +238,7 @@ def process_order_payment(order):
                    } for item in order_items]
     line_items.append({
         "name": "Shipping",
-        "rate": 50,
+        "rate": float(order.shipping),
         "quantity": 1,
         'tax_id': 5021936000000102037
     })
