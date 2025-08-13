@@ -140,6 +140,10 @@ def zoho_product_update():
                     elif item['attribute_name3'] == 'Side':
                         side = item['attribute_option_name3']
                         side = SideModel.objects.get(side=side)
+                elif item['attribute_name1'] == 'Model':
+                    color = item['attribute_option_name2'].lower()
+                    color = ColorProductModel.objects.get(color=color)
+                    size = None
 
                 else:
                     # print(f"product2: {product}")
