@@ -1,5 +1,6 @@
 import requests
-from .models import ProductModel, ProductVariantModel, ColorProductModel, SizeProductModel, CompressionClassModel, SideModel
+from .models import ProductModel, ProductVariantModel, ColorProductModel, SizeProductModel, CompressionClassModel, \
+    SideModel, ModelVariant
 from celery import shared_task
 from django.conf import settings
 from services.zoho_services import zoho_refresh_token
@@ -89,6 +90,7 @@ def zoho_product_update():
         for item in response_items['items']:
             ccl = None
             side = None
+            product_model = None
             try:
                 # print(item['group_name'])
                 product = item.get('group_name')
@@ -141,6 +143,9 @@ def zoho_product_update():
                         side = item['attribute_option_name3']
                         side = SideModel.objects.get(side=side)
                 elif item['attribute_name1'] == 'Model':
+                    product_model = item['attribute_option_name1'].lower()
+                    product_model = ModelVariant.objects.get(color=product_model)
+
                     color = item['attribute_option_name2'].lower()
                     color = ColorProductModel.objects.get(color=color)
                     size = None
@@ -186,6 +191,7 @@ def zoho_product_update():
                                                        item_id=item_id,
                                                        color=color,
                                                        size=size,
+                                                       product_model=product_model,
                                                        compression_class=ccl,
                                                        side=side,
                                                        price=price,
