@@ -146,7 +146,7 @@ def zoho_product_update():
                     model_variant = item['attribute_option_name1'].lower()
                     model_variant = ModelVariant.objects.get(model_variant=model_variant)
 
-                    color = item['attribute_option_name2'].lower()
+                    color = 'not color'
                     color = ColorProductModel.objects.get(color=color)
 
                     size = None
