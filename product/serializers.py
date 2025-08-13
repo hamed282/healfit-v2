@@ -306,7 +306,7 @@ class NewProductSerializer(serializers.ModelSerializer):
         product = ProductVariantModel.objects.filter(product=obj, compression_class=compression_class, side=side)
         # print(product)
 
-        product_model = set([f'{str(p.product_model)} - {str(p.product_model.priority)}' for p in product if p.quantity > 0])
+        product_model = set([f'{str(p.product_model)} - {str(p.product_model.priority)}' for p in product if (p.quantity > 0 and p.product_model is not None)])
         models = sorted(product_model, key=lambda x: int(x.split(" - ")[1]))
         product_model = [product_model.split(" - ")[0] for product_model in models]
         return product_model
