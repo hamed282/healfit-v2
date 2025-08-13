@@ -114,6 +114,15 @@ def zoho_product_update():
                         side = item['attribute_option_name3']
                         side = SideModel.objects.get(side=side)
 
+                elif item['attribute_name1'] == 'Model':
+                    model_variant = item['attribute_option_name1'].lower()
+                    model_variant = ModelVariant.objects.get(model_variant=model_variant)
+
+                    color = 'not color'
+                    color = ColorProductModel.objects.get(color=color)
+
+                    size = None
+
                 elif item['attribute_name2'] == 'Color' and item['attribute_name1'] == 'Size':
                     color = item['attribute_option_name2'].lower()
 
@@ -131,14 +140,6 @@ def zoho_product_update():
                     elif item['attribute_name3'] == 'Side':
                         side = item['attribute_option_name3']
                         side = SideModel.objects.get(side=side)
-                elif item['attribute_name1'] == 'Model':
-                    model_variant = item['attribute_option_name1'].lower()
-                    model_variant = ModelVariant.objects.get(model_variant=model_variant)
-
-                    color = 'not color'
-                    color = ColorProductModel.objects.get(color=color)
-
-                    size = None
 
                 else:
                     color = 'not color'
