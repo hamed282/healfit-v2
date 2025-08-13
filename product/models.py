@@ -136,13 +136,14 @@ class ProductVariantModel(models.Model):
     product = models.ForeignKey(ProductModel, on_delete=models.CASCADE, related_name='product_color_size')
     name = models.CharField(max_length=200, unique=True)
     item_id = models.CharField(max_length=100, verbose_name='Product ID', unique=True, blank=True, null=True)
-    color = models.ForeignKey('ColorProductModel', on_delete=models.CASCADE, related_name='color_product')
-    size = models.ForeignKey('SizeProductModel', on_delete=models.CASCADE, related_name='size_product')
+    color = models.ForeignKey('ColorProductModel', on_delete=models.CASCADE, related_name='color_product', blank=True, null=True)
+    size = models.ForeignKey('SizeProductModel', on_delete=models.CASCADE, related_name='size_product', blank=True, null=True)
     price = models.IntegerField()
     percent_discount = models.IntegerField(null=True, blank=True)
     quantity = models.IntegerField()
     compression_class = models.ForeignKey('CompressionClassModel', on_delete=models.CASCADE, blank=True, null=True)
     side = models.ForeignKey('SideModel', on_delete=models.CASCADE, blank=True, null=True)
+    product_model = models.ForeignKey('ModelVariant', on_delete=models.CASCADE, blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -197,6 +198,19 @@ class SideModel(models.Model):
 
     def __str__(self):
         return f'{self.side}'
+
+
+class ModelVariant(models.Model):
+    objects = None
+    model_variant = models.CharField(max_length=32)
+    priority = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Model Variant'
+        verbose_name_plural = 'Model Variant'
+
+    def __str__(self):
+        return f'{self.model_variant}'
 
 
 class ProductCategoryModel(models.Model):
@@ -526,6 +540,36 @@ def increment_numbers_after_existing(sender, instance, **kwargs):
     elif not instance.pk and instance.priority:
         if SideModel.objects.filter(priority__lte=instance.priority).exists():
             SideModel.objects.filter(priority__gte=instance.priority).update(
+                priority=models.F('priority') + 1)
+
+
+@receiver(pre_save, sender=ModelVariant)
+def increment_numbers_after_existing(sender, instance, **kwargs):
+    if instance.pk:
+        existing_instance = ModelVariant.objects.get(pk=instance.pk)
+        if not existing_instance.priority:
+            last_number = ModelVariant.objects.aggregate(max_number=Max('priority'))['max_number']
+            existing_instance.priority = last_number
+        else:
+            current_priority = existing_instance.priority
+            update_priority = instance.priority
+            if current_priority > update_priority:
+                ModelVariant.objects.filter(priority__lt=current_priority, priority__gte=update_priority).update(
+                    priority=models.F('priority') + 1)
+            if current_priority < update_priority:
+                ModelVariant.objects.filter(priority__gt=current_priority, priority__lte=update_priority).update(
+                    priority=models.F('priority') - 1)
+
+    elif not instance.pk and not instance.priority:
+        last_number = ModelVariant.objects.aggregate(max_number=Max('priority'))['max_number']
+        if last_number:
+            instance.priority = last_number + 1
+        else:
+            instance.priority = 1
+
+    elif not instance.pk and instance.priority:
+        if ModelVariant.objects.filter(priority__lte=instance.priority).exists():
+            ModelVariant.objects.filter(priority__gte=instance.priority).update(
                 priority=models.F('priority') + 1)
 
 

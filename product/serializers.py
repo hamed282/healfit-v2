@@ -207,6 +207,7 @@ class NewProductSerializer(serializers.ModelSerializer):
     colors = serializers.SerializerMethodField()
     all_size = serializers.SerializerMethodField()
     size = serializers.SerializerMethodField()
+    product_model = serializers.SerializerMethodField()
     # compression_class = serializers.SerializerMethodField()
     # side = serializers.SerializerMethodField()
     fav = serializers.SerializerMethodField()
@@ -251,6 +252,8 @@ class NewProductSerializer(serializers.ModelSerializer):
         # Create a dictionary to store color info and count available sizes
         color_info = {}
         for p in product:
+            if p.color is None:
+                continue
             color_key = f'{str(p.color.color)} - {str(p.color.color_code)} - {str(p.color.id)}'
             if color_key not in color_info:
                 color_info[color_key] = {
@@ -282,7 +285,8 @@ class NewProductSerializer(serializers.ModelSerializer):
         compression_class, side = self.get_context_data()
 
         product = ProductVariantModel.objects.filter(product=obj, compression_class=compression_class, side=side)
-        size = set([f'{str(p.size)} - {str(p.size.priority)} - {str(p.size.id)}' for p in product])
+
+        size = set([f'{str(p.size)} - {str(p.size.priority)} - {str(p.size.id)}' for p in product if p.size is not None])
         sizes = sorted(size, key=lambda x: int(x.split(" - ")[1]))
         all_size = [{'size': size.split(" - ")[0], 'id': size.split(" - ")[1]} for size in sizes]
         return all_size
@@ -291,10 +295,21 @@ class NewProductSerializer(serializers.ModelSerializer):
         compression_class, side = self.get_context_data()
 
         product = ProductVariantModel.objects.filter(product=obj, compression_class=compression_class, side=side)
-        size = set([f'{str(p.size)} - {str(p.size.priority)}' for p in product if p.quantity > 0])
+        size = set([f'{str(p.size)} - {str(p.size.priority)}' for p in product if (p.quantity > 0 and p.size is not None)])
         sizes = sorted(size, key=lambda x: int(x.split(" - ")[1]))
         size = [size.split(" - ")[0] for size in sizes]
         return size
+
+    def get_product_model(self, obj):
+        compression_class, side = self.get_context_data()
+
+        product = ProductVariantModel.objects.filter(product=obj, compression_class=compression_class, side=side)
+        # print(product)
+
+        product_model = set([f'{str(p.product_model)} - {str(p.product_model.priority)}' for p in product if p.quantity > 0])
+        models = sorted(product_model, key=lambda x: int(x.split(" - ")[1]))
+        product_model = [product_model.split(" - ")[0] for product_model in models]
+        return product_model
 
     def get_off_price(self, obj):
         price = float(obj.price)

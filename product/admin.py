@@ -5,7 +5,7 @@ from .models import (ProductCategoryModel, ProductModel, PopularProductModel, Si
                      FavUserModel, CouponModel, ProductCouponModel, CompressionClassModel, SideModel, ProductBrandModel,
                      CustomMadeModel, TreatmentCategoryModel, ProductTypeModel, BodyAreaModel, ClassNumberModel,
                      CustomerTypeModel, HearAboutUsModel, CustomMadePageModel, CustomerTestimonialsModel,
-                     BrandCartModel, BrandCartImageModel, CustomMadeAttachFileModel)
+                     BrandCartModel, BrandCartImageModel, CustomMadeAttachFileModel, ModelVariant)
 from django.utils.html import format_html
 
 
@@ -133,6 +133,7 @@ admin.site.register(AddCategoryModel)
 admin.site.register(AddSubCategoryModel)
 admin.site.register(CompressionClassModel)
 admin.site.register(SideModel)
+admin.site.register(ModelVariant)
 admin.site.register(ExtraGroupModel)
 admin.site.register(CustomMadeModel, CustomMadeAdmin)
 admin.site.register(HearAboutUsModel)
