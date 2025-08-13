@@ -28,10 +28,8 @@ def zoho_product_update():
     #     response_itemgroups = requests.get(url=url_itemgroups, headers=headers)
     #     response_itemgroups = response_itemgroups.json()
     #     for item in response_itemgroups['itemgroups']:
-    #         # print(item)
     #
     #
-    #         print(item['group_name'])
     #         try:
     #             product = item['group_name'].strip()
     #             group_id = item['group_id']
@@ -64,10 +62,8 @@ def zoho_product_update():
         response_items = response_items.json()
 
         for item in response_items['items']:
-            # print(item)
 
             try:
-                # print(item['group_name'])
                 product = item['group_name'].strip()
                 group_id = item['group_id']
 
@@ -92,7 +88,6 @@ def zoho_product_update():
             side = None
             model_variant = None
             try:
-                # print(item['group_name'])
                 product = item.get('group_name')
                 if product is None:
                     continue
@@ -103,12 +98,9 @@ def zoho_product_update():
 
                 if item['attribute_name1'] == 'Color':
                     color = item['attribute_option_name1'].lower()
-                    # print(f"color: {color}")
 
                     color = ColorProductModel.objects.get(color=color)
-                    # print(f"product: {product}")
                     size = item['attribute_option_name2']
-                    # print(f"size: {size}")
 
                     size = SizeProductModel.objects.get(size=size)
 
@@ -124,12 +116,9 @@ def zoho_product_update():
 
                 elif item['attribute_name2'] == 'Color':
                     color = item['attribute_option_name2'].lower()
-                    # print(f"color: {color}")
 
                     color = ColorProductModel.objects.get(color=color)
-                    # print(f"product: {product}")
                     size = item['attribute_option_name1']
-                    # print(f"size: {size}")
 
                     size = SizeProductModel.objects.get(size=size)
 
@@ -152,7 +141,6 @@ def zoho_product_update():
                     size = None
 
                 else:
-                    # print(f"product2: {product}")
                     color = 'not color'
                     color = ColorProductModel.objects.get(color=color)
 
