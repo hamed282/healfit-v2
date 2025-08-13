@@ -89,7 +89,6 @@ def zoho_product_update():
         for item in response_items['items']:
             ccl = None
             side = None
-            size = None
             try:
                 # print(item['group_name'])
                 product = item.get('group_name')
@@ -120,31 +119,6 @@ def zoho_product_update():
                     elif item['attribute_name3'] == 'Side':
                         side = item['attribute_option_name3']
                         side = SideModel.objects.get(side=side)
-
-                elif item['attribute_name2'] == 'Color':
-                    color = item['attribute_option_name1'].lower()
-                    # print(f"color: {color}")
-
-                    color = ColorProductModel.objects.get(color=color)
-                    # print(f"product: {product}")
-                    size = item['attribute_option_name1']
-                    # print(f"size: {size}")
-
-                    size = SizeProductModel.objects.get(size=size)
-
-                    if item['attribute_name3'] == 'Compression Class':
-                        ccl = item['attribute_option_name3']
-                        ccl = str(ccl).strip()
-                        if ccl.isdigit() or (not ccl.upper().startswith('CCL') and ccl.replace('CCL', '').replace('ccl', '').isdigit()):
-                            ccl = f"CCL{ccl.replace('CCL', '').replace('ccl', '')}"
-                        ccl = CompressionClassModel.objects.get(compression_class=ccl)
-                    elif item['attribute_name3'] == 'Side':
-                        side = item['attribute_option_name3']
-                        side = SideModel.objects.get(side=side)
-                elif item['attribute_name1'] == 'Model':
-                    color = item['attribute_option_name2'].lower()
-                    color = ColorProductModel.objects.get(color=color)
-
                 else:
                     # print(f"product2: {product}")
                     color = 'not color'
