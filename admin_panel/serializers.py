@@ -352,7 +352,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_all_size(self, obj):
         product = ProductVariantModel.objects.filter(product=obj)  # .order_by('-priority')
-        size = set([f'{str(p.size)} - {str(p.size.priority)} - {str(p.size.id)}' for p in product])
+        size = set([f'{str(p.size)} - {str(p.size.priority)} - {str(p.size.id)}' for p in product if p.size is not None])
         sizes = sorted(size, key=lambda x: int(x.split(" - ")[1]))
         all_size = [{'size': size.split(" - ")[0], 'id': size.split(" - ")[1]} for size in sizes]
         return all_size
