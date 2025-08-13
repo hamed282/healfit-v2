@@ -90,7 +90,7 @@ def zoho_product_update():
         for item in response_items['items']:
             ccl = None
             side = None
-            product_model = None
+            model_variant = None
             try:
                 # print(item['group_name'])
                 product = item.get('group_name')
@@ -143,8 +143,8 @@ def zoho_product_update():
                         side = item['attribute_option_name3']
                         side = SideModel.objects.get(side=side)
                 elif item['attribute_name1'] == 'Model':
-                    product_model = item['attribute_option_name1'].lower()
-                    product_model = ModelVariant.objects.get(model_variant=product_model)
+                    model_variant = item['attribute_option_name1'].lower()
+                    model_variant = ModelVariant.objects.get(model_variant=model_variant)
 
                     color = item['attribute_option_name2'].lower()
                     color = ColorProductModel.objects.get(color=color)
@@ -192,7 +192,7 @@ def zoho_product_update():
                                                        item_id=item_id,
                                                        color=color,
                                                        size=size,
-                                                       product_model=product_model,
+                                                       product_model=model_variant,
                                                        compression_class=ccl,
                                                        side=side,
                                                        price=price,
