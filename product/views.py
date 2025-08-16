@@ -66,6 +66,9 @@ class ProductVariantShopView(APIView):
         side = request.query_params.get('side', None)
         product_model = request.query_params.get('product_model', None)
 
+        if product_size == 'null':
+            product_size = None
+
         if product_name:
             # try:
             product_name = ProductModel.objects.get(product=product_name)
@@ -75,9 +78,9 @@ class ProductVariantShopView(APIView):
             }
 
             if product_size:
-                filters["product_size"] = SizeProductModel.objects.get(size=product_size)
+                filters["size"] = SizeProductModel.objects.get(size=product_size)
             if product_color:
-                filters["product_color"] = ColorProductModel.objects.get(color=product_color)
+                filters["color"] = ColorProductModel.objects.get(color=product_color)
             if product_model:
                 filters["product_model"] = ModelVariant.objects.get(model_variant=product_model)
             if compression_class:
