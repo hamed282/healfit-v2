@@ -346,7 +346,7 @@ class ProductSerializer(serializers.ModelSerializer):
     def get_colors(self, obj):
         product = ProductVariantModel.objects.filter(product=obj)
 
-        colors = set([f'{str(p.color.color)} - {str(p.color.color_code)} - {str(p.color.id)}' for p in product])
+        colors = set([f'{str(p.color.color)} - {str(p.color.color_code)} - {str(p.color.id)}' for p in product if p.color is not None])
         all_colors = [{'color': color.split(" - ")[0], 'code': color.split(" - ")[1], 'id': color.split(" - ")[2]} for color in colors]
         return all_colors
 

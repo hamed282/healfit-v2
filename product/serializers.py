@@ -432,12 +432,13 @@ class ProductVariantShopSerializer(serializers.ModelSerializer):
     product = serializers.SlugRelatedField(read_only=True, slug_field='product')
     size = serializers.SlugRelatedField(read_only=True, slug_field='size')
     color = serializers.SlugRelatedField(read_only=True, slug_field='color')
+    product_model = serializers.SlugRelatedField(read_only=True, slug_field='model_variant')
     off_price = serializers.SerializerMethodField()
 
     class Meta:
         model = ProductVariantModel
         fields = ['product', 'name', 'price', 'off_price', 'percent_discount',
-                  'quantity', 'size', 'color', 'item_id', 'slug', 'id', 'compression_class', 'side']
+                  'quantity', 'size', 'color', 'item_id', 'slug', 'id', 'compression_class', 'side', 'product_model']
 
     def get_off_price(self, obj):
         price = int(obj.price)

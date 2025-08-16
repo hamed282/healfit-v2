@@ -7,7 +7,7 @@ from .models import (ProductGenderModel, ProductModel, SizeProductModel, ColorPr
                      AddImageGalleryModel, PopularProductModel, ProductCategoryModel, ProductSubCategoryModel,
                      FavUserModel, CouponModel, CompressionClassModel, SideModel, CustomerTypeModel, ProductTypeModel,
                      BodyAreaModel, ClassNumberModel, TreatmentCategoryModel, HearAboutUsModel, CustomMadePageModel,
-                     BrandCartModel, ProductBrandModel, CustomMadeAttachFileModel)
+                     BrandCartModel, ProductBrandModel, CustomMadeAttachFileModel, ModelVariant)
 from .serializers import (ProductGenderSerializer, ProductSerializer, ProductVariantShopSerializer,
                           ProductColorImageSerializer, ColorSizeProductSerializer, ProductListSerializer,
                           UserFavSerializer, PopularProductSerializer, ProductAllSerializer,
@@ -64,35 +64,38 @@ class ProductVariantShopView(APIView):
         product_color = request.query_params.get('color', None)
         compression_class = request.query_params.get('compression_class', None)
         side = request.query_params.get('side', None)
+        product_model = request.query_params.get('product_model', None)
 
-        if product_name and product_size and product_color:
-            try:
-                product_name = ProductModel.objects.get(product=product_name)
-                product_size = SizeProductModel.objects.get(size=product_size)
-                product_color = ColorProductModel.objects.get(color=product_color)
+        if product_name:
+            # try:
+            product_name = ProductModel.objects.get(product=product_name)
 
-                filters = {
-                    "product": product_name,
-                    "size": product_size,
-                    "color": product_color
-                }
+            filters = {
+                "product": product_name,
+            }
 
-                if compression_class:
-                    filters["compression_class"] = CompressionClassModel.objects.get(compression_class=compression_class)
-                if side:
-                    filters["side"] = SideModel.objects.get(side=side)
+            if product_size:
+                filters["product_size"] = SizeProductModel.objects.get(size=product_size)
+            if product_color:
+                filters["product_color"] = ColorProductModel.objects.get(color=product_color)
+            if product_model:
+                filters["product_model"] = ModelVariant.objects.get(model_variant=product_model)
+            if compression_class:
+                filters["compression_class"] = CompressionClassModel.objects.get(compression_class=compression_class)
+            if side:
+                filters["side"] = SideModel.objects.get(side=side)
 
-                product_variants = ProductVariantModel.objects.filter(**filters)
+            product_variants = ProductVariantModel.objects.filter(**filters)
 
-                if not product_variants.exists():
-                    return Response({"message": "No matching product found"}, status=status.HTTP_404_NOT_FOUND)
+            if not product_variants.exists():
+                return Response({"message": "No matching product found"}, status=status.HTTP_404_NOT_FOUND)
 
-                ser_product = ProductVariantShopSerializer(instance=product_variants.first())
-                return Response(data=ser_product.data)
+            ser_product = ProductVariantShopSerializer(instance=product_variants.first())
+            return Response(data=ser_product.data)
 
-            except (ProductModel.DoesNotExist, SizeProductModel.DoesNotExist, ColorProductModel.DoesNotExist,
-                    CompressionClassModel.DoesNotExist, SideModel.DoesNotExist):
-                return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
+            # except (ProductModel.DoesNotExist, SizeProductModel.DoesNotExist, ColorProductModel.DoesNotExist,
+            #         CompressionClassModel.DoesNotExist, SideModel.DoesNotExist):
+            # return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"message": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
 
