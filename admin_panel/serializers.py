@@ -10,7 +10,7 @@ from product.models import (ExtraGroupModel, SizeProductModel, ColorProductModel
                             AddSubCategoryModel, ProductVariantModel, AddCategoryModel, ProductCategoryModel,
                             CustomerTypeModel, ProductTypeModel, BodyAreaModel, ClassNumberModel,
                             TreatmentCategoryModel, HearAboutUsModel, CompressionClassModel, SideModel,
-                            ProductBrandModel, BrandCartImageModel, BrandCartModel)
+                            ProductBrandModel, BrandCartImageModel, BrandCartModel, ModelVariant)
 from product.serializers import ProductColorImageSerializer, ProductBrandSerializer
 from order.models import OrderItemModel, OrderModel, OrderStatusModel, ShippingModel, ShippingCountryModel
 import re
@@ -551,9 +551,6 @@ class GenderSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
-
-
 class ProductVariantSerializer(serializers.Serializer):
     name = serializers.CharField()
     item_id = serializers.CharField()
@@ -800,6 +797,13 @@ class SideSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SideModel
+        fields = '__all__'
+
+
+class ModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ModelVariant
         fields = '__all__'
 
 

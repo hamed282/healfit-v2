@@ -12,7 +12,7 @@ from .serializers import (UserSerializer, UserValueSerializer, RoleSerializer, L
                           CustomerTypeSerializer, ProductTypeSerializer, BodyAreaSerializer, HearAboutUsSerializer,
                           TreatmentCategorySerializer, ClassNumberSerializer, CompressionClassSerializer,
                           SideSerializer, BrandSerializer, ProductSerializer, ProductBrandCreateSerializer,
-                          ProductBrandUpdateSerializer)
+                          ProductBrandUpdateSerializer, ModelSerializer)
 from accounts.serializers import UserRegisterSerializer, UserInfoSerializer
 from rest_framework import status
 from math import ceil
@@ -42,7 +42,7 @@ from product.models import (ProductCategoryModel, ProductSubCategoryModel, Extra
                             ProductVariantModel, AddImageGalleryModel, CouponModel, CustomMadeModel, CustomerTypeModel,
                             ProductTypeModel, BodyAreaModel, HearAboutUsModel, TreatmentCategoryModel, ClassNumberModel,
                             CompressionClassModel, SideModel, ProductBrandModel, CustomMadePageModel,
-                            BrandCartModel, BrandCartImageModel)
+                            BrandCartModel, BrandCartImageModel, ModelVariant)
 from product.serializers import (ProductCategorySerializer, ProductSubCategorySerializer,
                                  AddProductTagSerializer, ProductColorImageSerializer, ProductAdminSerializer,
                                  CouponSerializer, CouponCreateSerializer, CustomMadeSerializer,
@@ -1599,6 +1599,29 @@ class ColorImageView(APIView):
         #     compression_classes = None
         # print(sides)
         # print(compression_classes)
+
+        product_models = request.data['product_model']
+
+        if product_models is not None:
+            for product_model in product_models:
+                product_model = ModelVariant.objects.get(model_variant=product_model)
+                if not ProductVariantModel.objects.filter(product=product,
+                                                          product_model=product_model
+                                                          ).exists():
+                    ProductVariantModel.objects.create(product=product,
+                                                       product_model=product_model,
+                                                       color=None,
+                                                       size=None,
+                                                       side=None,
+                                                       compression_class=None,
+                                                       price=0,
+                                                       percent_discount=product.percent_discount,
+                                                       quantity=0,
+                                                       name=f'{product}-{product_model}')
+
+            return Response(data={'message': 'Create'}, status=status.HTTP_201_CREATED)
+
+
         for color in colors:
             for size in sizes:
                 if sides:
@@ -2489,6 +2512,28 @@ class SideView(APIView):
         return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ModelView(APIView):
+    # permission_classes = [IsAdminUser, IsProductAdmin]
+    #
+    # def get_permissions(self):
+    #     if self.request.method in ['PUT', 'GET', 'POST']:
+    #         return [OrPermission(IsProductAdmin)]
+    #     return super().get_permissions()
+
+    def get(self, request):
+        product_model = ModelVariant.objects.all()
+        ser_data = ModelSerializer(instance=product_model, many=True)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        ser_data = ModelSerializer(data=form)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class SideItemView(APIView):
     permission_classes = [IsAdminUser, IsProductAdmin]
 
@@ -2506,6 +2551,29 @@ class SideItemView(APIView):
         form = request.data
         product_type = SideModel.objects.get(id=side_id)
         ser_data = SideSerializer(instance=product_type, data=form, partial=True)
+        if ser_data.is_valid():
+            ser_data.save()
+            return Response(data=ser_data.data, status=status.HTTP_200_OK)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ModelItemView(APIView):
+    # permission_classes = [IsAdminUser, IsProductAdmin]
+    #
+    # def get_permissions(self):
+    #     if self.request.method in ['PUT', 'GET', 'POST']:
+    #         return [OrPermission(IsProductAdmin)]
+    #     return super().get_permissions()
+
+    def get(self, request, model_id):
+        product_model = get_object_or_404(ModelVariant, id=model_id)
+        ser_data = ModelSerializer(instance=product_model)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
+
+    def put(self, request, model_id):
+        form = request.data
+        product_model = ModelVariant.objects.get(id=model_id)
+        ser_data = ModelSerializer(instance=product_model, data=form, partial=True)
         if ser_data.is_valid():
             ser_data.save()
             return Response(data=ser_data.data, status=status.HTTP_200_OK)

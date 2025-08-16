@@ -236,6 +236,10 @@ urlpatterns = [
     path('product/side/', views.SideView.as_view()),
     path('product/side/<int:side_id>/', views.SideItemView.as_view()),
 
+    # Model
+    path('product/model/', views.ModelView.as_view()),
+    path('product/model/<int:model_id>/', views.ModelItemView.as_view()),
+
     # Brand
     path('product/brand/', views.BrandView.as_view()),
     path('product/brand/<int:brand_id>/', views.BrandItemView.as_view()),
